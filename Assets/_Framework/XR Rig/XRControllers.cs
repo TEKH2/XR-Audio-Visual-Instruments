@@ -329,6 +329,8 @@ public class XRControllers : MonoBehaviour
 {
     public static XRControllers Instance;
 
+    public TrackingSpaceType _SpaceType;
+
     List<XRNodeState> _States = new List<XRNodeState>();
     public Transform _RightController;
     public Transform _LeftController;
@@ -351,7 +353,9 @@ public class XRControllers : MonoBehaviour
         _AllDevices = new List<UnityEngine.XR.InputDevice>();
         _DevicesWithPrimaryButton = new List<UnityEngine.XR.InputDevice>();
        
-        InputTracking.nodeAdded += UpdateInputDevices;       
+        InputTracking.nodeAdded += UpdateInputDevices;
+
+        XRDevice.SetTrackingSpaceType(_SpaceType);
     }
 
     private void Update()
@@ -375,11 +379,16 @@ public class XRControllers : MonoBehaviour
         foreach (var device in _DevicesWithPrimaryButton)
         {
             // For each device
-            if(device.role == InputDeviceRole.RightHanded)            
+            if(device.characteristics == InputDeviceCharacteristics.Right)            
                _RightControllerFeatures.UpdateFeatureSet(device);   
-            else if (device.role == InputDeviceRole.LeftHanded)
+            else if (device.characteristics == InputDeviceCharacteristics.Left)
                 _LeftControllerFeatures.UpdateFeatureSet(device);
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+            InputTracking.Recenter();
+
+       
     }
 
     // Updates the controller positions and rotations
