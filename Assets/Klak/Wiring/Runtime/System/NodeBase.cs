@@ -69,6 +69,9 @@ namespace Klak.Wiring
         [Serializable]
         public class ColorEvent : UnityEvent<Color> {}
 
+        [Serializable]
+        public class Matrix4x4Event : UnityEvent<Matrix4x4> { }
+
         static public Vector2 uninitializedNodePosition {
             get { return new Vector2(-1000, -1000); }
         }

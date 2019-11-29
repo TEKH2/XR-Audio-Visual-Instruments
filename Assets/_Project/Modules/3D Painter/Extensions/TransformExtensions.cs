@@ -7,6 +7,18 @@ public static class TransformExtensions
     // Make heirarchy world 0
     // Follow XY, XZ, YZ
 
+    public static Matrix4x4 ToMatrix4x4Local(this Transform transform)
+    {
+        return Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
+    }
+
+    public static void FromMatrix(this Transform transform, Matrix4x4 matrix)
+    {
+        transform.localScale = matrix.ExtractScale();
+        transform.rotation = matrix.ExtractRotation();
+        transform.position = matrix.ExtractPosition();
+    }
+    
 
     [ContextMenu("Reset pivot")]
     public static void SetPosToFirstChild(this Transform t)
