@@ -52,7 +52,7 @@ namespace Klak.Wiring
         [Inlet]
         public void StartRecording()
         {           
-            _DataRecorder.StartRecording(_RecordingValue.ToMatrix4x4Local());
+            _DataRecorder.StartRecording(_RecordingValue.ToMatrix4x4());
             _State = State.Recording;
         }
 
@@ -87,7 +87,7 @@ namespace Klak.Wiring
         {
             if (_State == State.Recording)
             {
-                Matrix4x4 m = _RecordingValue.ToMatrix4x4Local();
+                Matrix4x4 m = _RecordingValue.ToMatrix4x4();
                 _DataRecorder.RecordValue(m);
                 _MatrixOutlet.Invoke(m);
             }

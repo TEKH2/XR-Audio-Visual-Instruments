@@ -1570,7 +1570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b4aca5806d89554ea1754d3f877fd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wiringNodePosition: {x: 0, y: -370}
+  _wiringNodePosition: {x: 230, y: -410}
   _targetTransform: {fileID: 0}
   _addToOriginal: 0
 --- !u!4 &1583546482454408085
