@@ -13,7 +13,7 @@ public class LevelSystem : ComponentSystem
         Entities.ForEach((ref LevelComponent levelComponent) =>
         {
             // Increment level by 1 per second
-            levelComponent.level += 1f * Time.deltaTime;
+            levelComponent._LevelTime += 1f * Time.DeltaTime;
         });
     }
 }
