@@ -5,7 +5,7 @@ using Unity.Entities;
 /// ComponentSystem allows for this code to be executed on its own,
 /// without being attached to any entities or game objects in Unity
 /// </summary>
-public class LevelSystem : ComponentSystem
+public class ECS_ComponentSystemExample : ComponentSystem
 {
     protected override void OnUpdate()
     {
@@ -13,7 +13,7 @@ public class LevelSystem : ComponentSystem
         Entities.ForEach((ref LevelComponent levelComponent) =>
         {
             // Increment level by 1 per second
-            levelComponent._LevelTime += 1f * Time.DeltaTime;
+            levelComponent._LevelTime += 1f * Time.deltaTime;
         });
     }
 }

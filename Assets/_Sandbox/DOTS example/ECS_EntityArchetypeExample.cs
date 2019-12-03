@@ -10,17 +10,17 @@ using Unity.Mathematics;
 /// https://www.undefinedgames.org/2019/10/14/unity-ecs-dots-introduction/
 /// </summary>
 
-public class Testing : MonoBehaviour
+public class ECS_EntityArchetypeExample : MonoBehaviour
 {
     // Mesh and material to render
     [SerializeField] private Mesh _Mesh;
     [SerializeField] private Material _Material;
-    [SerializeField] private int _Count;
+    [SerializeField] private int _Count = 2000;
 
     private void Start()
     {
         // Create entity manager
-        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        EntityManager entityManager = World.Active.EntityManager;
 
         // Create an archetype with
         // Level component
@@ -58,4 +58,14 @@ public class Testing : MonoBehaviour
         // Dispose of the entity array because they have already been created
         entityArray.Dispose();
     }
+}
+
+
+/// <summary>
+/// Note that components are always structs
+/// https://www.undefinedgames.org/2019/10/14/unity-ecs-dots-introduction/
+/// </summary>
+public struct LevelComponent : IComponentData
+{
+    public float _LevelTime;
 }
