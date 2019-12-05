@@ -149,7 +149,7 @@ public class DOTS_FindTargetSystem : JobComponentSystem
         {
             if(_ClosestTargetEntityArray[index] != Entity.Null)
             {
-                _EntityCommandBuffer.AddComponent(index, entity, new HasTarget { _TargetEntity = _ClosestTargetEntityArray[index] });
+                //_EntityCommandBuffer.AddComponent(index, entity, new HasTarget { _TargetEntity = _ClosestTargetEntityArray[index] });
             }
         }
     }
