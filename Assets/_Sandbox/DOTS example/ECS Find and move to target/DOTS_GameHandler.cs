@@ -8,7 +8,40 @@ using Unity.Rendering;
 using Unity.Entities;
 using Unity.Transforms;
 
-public class ECS_FindAndMoveGameHandler : MonoBehaviour
+
+#region ECS COMPONENTS
+public struct Unit : IComponentData { }
+public struct Target : IComponentData { }
+public struct HasTarget : IComponentData
+{
+    public Entity _TargetEntity;
+}
+#endregion
+
+public class HasTargetDebug : ComponentSystem
+{
+    protected override void OnUpdate()
+    {
+        Entities.ForEach
+        (
+            (Entity entity, ref Translation translation, ref HasTarget hasTarget) =>
+            {
+                if (World.Active.EntityManager.Exists(hasTarget._TargetEntity))
+                {
+                    Translation targetTrans = World.Active.EntityManager.GetComponentData<Translation>(hasTarget._TargetEntity);
+                    Debug.DrawLine(translation.Value, targetTrans.Value);
+                }
+                else
+                {
+                    // Remove componenet bc target entity is already destroyed
+                    PostUpdateCommands.RemoveComponent(entity, typeof(HasTarget));
+                }
+            }
+        );
+    }
+}
+
+public class DOTS_GameHandler : MonoBehaviour
 {
     [SerializeField] private Material _UnitMat;
     [SerializeField] private Material _TargetMat;
@@ -71,11 +104,12 @@ public class ECS_FindAndMoveGameHandler : MonoBehaviour
             typeof(LocalToWorld),
             typeof(RenderMesh),
             typeof(Scale),
-            typeof(Unit)
+            typeof(Unit),
+            typeof(QuadEntityType)
         );
 
         SetEntityComponentData(unitEntity, pos, _UnitMesh, _UnitMat, .3f );
-       
+        _EntityManager.SetComponentData(unitEntity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Unit });
     }
     
     void SpawnTargetEntity()
@@ -86,11 +120,12 @@ public class ECS_FindAndMoveGameHandler : MonoBehaviour
            typeof(LocalToWorld),
            typeof(RenderMesh),
            typeof(Scale),
-           typeof(Target)
+           typeof(Target),
+            typeof(QuadEntityType)
         );
 
-        SetEntityComponentData(targetEntity, new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0), _TargetMesh, _TargetMat, .5f);
-        _EntityManager.SetComponentData(targetEntity, new Scale { Value = .1f });
+        SetEntityComponentData(targetEntity, new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0), _TargetMesh, _TargetMat, .15f);
+        _EntityManager.SetComponentData(targetEntity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Target });
     }
 
     void SetEntityComponentData(Entity entity, float3 pos, Mesh mesh, Material mat, float scale)
@@ -115,36 +150,5 @@ public class ECS_FindAndMoveGameHandler : MonoBehaviour
         );
 
         _EntityManager.SetComponentData(entity, new Scale { Value = scale });
-    }
-}
-
-public struct Unit : IComponentData { }
-public struct Target : IComponentData { }
-
-public struct HasTarget : IComponentData
-{
-    public Entity _TargetEntity;
-}
-
-public class HasTargetDebug : ComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        Entities.ForEach
-        (
-            (Entity entity, ref Translation translation, ref HasTarget hasTarget) =>
-            {
-                if (World.Active.EntityManager.Exists(hasTarget._TargetEntity))
-                {
-                    Translation targetTrans = World.Active.EntityManager.GetComponentData<Translation>(hasTarget._TargetEntity);
-                    Debug.DrawLine(translation.Value, targetTrans.Value);
-                }
-                else
-                {
-                    // Remove componenet bc target entity is already destroyed
-                    PostUpdateCommands.RemoveComponent(entity, typeof(HasTarget));
-                }
-            }
-        );
     }
 }

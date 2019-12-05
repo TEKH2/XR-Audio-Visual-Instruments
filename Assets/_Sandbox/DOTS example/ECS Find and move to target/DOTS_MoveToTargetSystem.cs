@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using Unity.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.Jobs;
+using Unity.Mathematics;
+using Unity.Burst;
+using Unity.Rendering;
 using Unity.Entities;
 using Unity.Transforms;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 
-
-
-public class ECS_UnitMoveToTargetSystem : ComponentSystem
+public class DOTS_MoveToTargetSystem : ComponentSystem
 {
     protected override void OnUpdate()
     {

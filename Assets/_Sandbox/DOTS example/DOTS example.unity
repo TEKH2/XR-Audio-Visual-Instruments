@@ -292,7 +292,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604838220}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.24, z: -6.15}
+  m_LocalPosition: {x: 0, y: 1.24, z: -14.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -462,9 +462,9 @@ MonoBehaviour:
   _TargetMat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
   _UnitMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   _TargetMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  _UnitCount: 100
-  _TargetCount: 10000
-  _SpawnMoreTargets: 1
+  _UnitCount: 10
+  _TargetCount: 100
+  _SpawnMoreTargets: 0
 --- !u!1 &1237088293
 GameObject:
   m_ObjectHideFlags: 0
