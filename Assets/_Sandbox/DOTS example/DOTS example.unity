@@ -462,8 +462,8 @@ MonoBehaviour:
   _TargetMat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
   _UnitMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   _TargetMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  _UnitCount: 2000
-  _TargetCount: 20000
+  _UnitCount: 1000
+  _TargetCount: 10000
   _SpawnMoreTargets: 1
 --- !u!1 &1237088293
 GameObject:

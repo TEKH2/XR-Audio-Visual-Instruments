@@ -65,7 +65,33 @@ public class DOTS_FindTargetSystem : JobComponentSystem
             FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier - 1, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
             FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier + 1, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
             FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier - 1, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
-            
+
+            // FRONT
+            // Search edge quads
+            FindTarget(hashMapKey + 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+
+            // Search corner quads
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier + 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier - 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier + 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier - 1 - DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+
+            // BACK
+            // Search edge quads
+            FindTarget(hashMapKey + 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+
+            // Search corner quads
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier + 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey + DOTS_QuadrantSystem._QuadYHashMultiplier - 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier + 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+            FindTarget(hashMapKey - DOTS_QuadrantSystem._QuadYHashMultiplier - 1 + DOTS_QuadrantSystem._QuadZHashMultiplier, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
+
             _ClosestTargetEntityArray[index] = closestTargetEntity;
         }
 

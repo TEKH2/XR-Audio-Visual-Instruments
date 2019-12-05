@@ -37,6 +37,7 @@ public class DOTS_QuadrantSystem : ComponentSystem
 {
     // used to scale the y component of the hash map so values don't overlap
     public const int _QuadYHashMultiplier = 1000;
+    public const int _QuadZHashMultiplier = 10000;
     private const int _QuadCellSize = 5;
 
     public static NativeMultiHashMap<int, QuadData> _QuadrantMultiHashMap;
@@ -58,7 +59,7 @@ public class DOTS_QuadrantSystem : ComponentSystem
     // returns a unique hashmap int key using the position
     public static int GetPosHashMapKey(float3 pos)
     {
-        return (int)(math.floor(pos.x / _QuadCellSize) + (_QuadYHashMultiplier * math.floor(pos.y / _QuadCellSize)));
+        return (int)(math.floor(pos.x / _QuadCellSize) + (_QuadYHashMultiplier * math.floor(pos.y / _QuadCellSize) + (_QuadZHashMultiplier * math.floor(pos.z / _QuadCellSize))));
     }
 
     // Draws debug lines areound the quadrant
