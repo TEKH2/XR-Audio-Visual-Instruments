@@ -8,7 +8,7 @@ using Unity.Rendering;
 using Unity.Entities;
 using Unity.Transforms;
 
-
+/*
 public class DOTS_MoveToTargetSystem : JobComponentSystem
 {
     // The command buffer system that runs after the main simulation
@@ -69,8 +69,9 @@ public class DOTS_MoveToTargetSystem : JobComponentSystem
         }
     }
 }
+*/
 
-/*
+
 // To turn into a job would need to store the translation of the target so I dont have to use the
 // World.Active.EntityManager.GetComponentData<Translation>(hasTarget._TargetEntity); call
 public class DOTS_MoveToTargetSystem : ComponentSystem
@@ -105,4 +106,4 @@ public class DOTS_MoveToTargetSystem : ComponentSystem
         );
     }
 }
-*/
+
