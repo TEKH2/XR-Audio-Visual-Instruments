@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e0dc531db244ef4f949444fcd956aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _VoxelCount: 2
+  _VoxelCount: 10
   _VoxelSize: 1
   _VectorLength: 1
   _Mat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}

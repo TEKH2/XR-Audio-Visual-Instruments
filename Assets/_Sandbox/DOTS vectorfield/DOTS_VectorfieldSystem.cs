@@ -38,11 +38,17 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
     float3 _Center;
     float Size { get { return _VoxelCount * _VoxelSize; } }
 
-   
+    MoverSystem _MoverSystem;
+
+
 
     private void Awake()
     {
         _EntityManager = World.Active.EntityManager;
+
+        _MoverSystem = World.Active.GetExistingSystem(typeof(MoverSystem)) as MoverSystem;
+        _MoverSystem._HashMin = 0;
+        _MoverSystem._HashMax = Size;
 
         _Center = new float3(((_VoxelSize * _VoxelCount) * .5f) - (_VoxelSize * .5f));// (_VoxelSize/2.0f)*(_VoxelCount/2.0f), (_VoxelSize / 2.0f) * (_VoxelCount / 2.0f), (_VoxelSize / 2.0f) * (_VoxelCount / 2.0f));
 
@@ -53,7 +59,7 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
                 for (int z = 0; z < _VoxelCount; z++)
                 {
                     float3 pos = new float3(x * _VoxelSize, y * _VoxelSize, z * _VoxelSize);
-                    Debug.Log("Cell pos: " + pos);
+                    //Debug.Log("Cell pos: " + pos);
                     SpawnVectorfieldCellEntity(pos);
                 }
             }
@@ -144,6 +150,8 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
 public class MoverSystem : ComponentSystem
 {
     public static NativeHashMap<int, VectorfieldCell> _CellHashMap;
+    public float _HashMin = 0;
+    public float _HashMax = 100;
     
     protected override void OnCreate()
     {
@@ -162,7 +170,7 @@ public class MoverSystem : ComponentSystem
 
         for (int i = 0; i < vectorCellForces.Length; i++)
         {
-            Debug.Log("Query lenght: " + vectorCellForces.Length + "    " + vectorCellForces[i]._Pos );
+            //Debug.Log("Query lenght: " + vectorCellForces.Length + "    " + vectorCellForces[i]._Pos );
             int hash = GetVectorfieldHashMapKey(vectorCellForces[i]._Pos);           
             _CellHashMap.TryAdd(hash, vectorCellForces[i]);
         }
@@ -195,8 +203,12 @@ public class MoverSystem : ComponentSystem
             // add velocity to position
             translation.Value += mover._Velocity * Time.deltaTime;
 
+            Debug.DrawLine(translation.Value, translation.Value + (mover._Velocity * 2));
+            Debug.DrawLine(translation.Value, translation.Value + (cell._Force * 4));
+
+
             // reset acceleration
-           // mover._Acc = float3.zero;
+            // mover._Acc = float3.zero;
         });
     }
 
@@ -231,6 +243,8 @@ public class MoverSystem : ComponentSystem
 
             // add velocity to position
             translation.Value += mover._Velocity * Time.deltaTime;
+            Debug.Log("here   " + mover._Velocity);
+            Debug.DrawLine(translation.Value, translation.Value + (mover._Velocity*10));     
 
             // reset acceleration
             // mover._Acc = float3.zero;
@@ -243,8 +257,12 @@ public class MoverSystem : ComponentSystem
 
     public int GetVectorfieldHashMapKey(float3 pos)
     {
-        int hash = (int) ( math.floor(pos.x) + (1000 * math.floor(pos.y)) + (100000 * math.floor(pos.z) ) );
-        Debug.Log(pos + "    " + hash);
+        float x = math.clamp(math.floor(pos.x), _HashMin, _HashMax);
+        float y = math.clamp(math.floor(pos.y), _HashMin, _HashMax);
+        float z = math.clamp(math.floor(pos.z), _HashMin, _HashMax);
+
+        int hash = (int) ( x + (y*1000) + (z*10000));
+        //Debug.Log(pos + "    " + hash);
         return hash;
     }
 }
@@ -252,17 +270,14 @@ public class MoverSystem : ComponentSystem
 
 public class VectorfieldDebugSystem : ComponentSystem
 {
-
     protected override void OnUpdate()
-    {
-        
+    {        
         Entities.ForEach
         (
             (Entity entity, ref VectorfieldCell vectorCell) =>
             {
-                Debug.DrawLine(vectorCell._Pos, vectorCell._Pos + vectorCell._Force * .4f);              
+                //Debug.DrawLine(vectorCell._Pos, vectorCell._Pos + vectorCell._Force * .4f);              
             }
-        );
-        
+        );        
     }
 }
