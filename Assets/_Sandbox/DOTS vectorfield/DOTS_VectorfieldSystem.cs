@@ -9,12 +9,27 @@ using Unity.Entities;
 using Unity.Transforms;
 
 
+// Vector field cell contain a direction
 public struct VectorfieldCell : IComponentData
 {
     public float3 _Force;
     public float3 _Pos;
 }
 
+// Vector field cell contain a direction
+public struct EntityInVoxelData : IComponentData
+{
+    public Entity _Entity;
+    public Mover _Mover;
+    public Translation _EntityTranslation;
+}
+
+public struct PosHash : IComponentData
+{
+    public int _Hash;
+}
+
+// Mover objects have basic physics
 public struct Mover : IComponentData
 {
     public float3 _Acc;
@@ -22,66 +37,97 @@ public struct Mover : IComponentData
     public float _Drag;
 }
 
+// Mover objects have basic physics
+public struct MoverAvoid : IComponentData
+{
+    public float _AvoidDist;
+    public float _AvoidStrength;
+}
+
+
 public class DOTS_VectorfieldSystem : MonoBehaviour
 {
+    #region VARIABLES
+    // Reference ot entity manager
     private static EntityManager _EntityManager;
 
+    // Voxel vars
     public int _VoxelCount = 50;
     public float _VoxelSize = 1;
     public float _VectorLength = 1;
-
-    [SerializeField] private Material _Mat;
-    [SerializeField] private Mesh _Mesh;
-
-    public int _MoverCount = 10;
-
-    float3 _Center;
+    float3 _VectorfieldCenter;
     float Size { get { return _VoxelCount * _VoxelSize; } }
+
+    // Mover vars
+    [SerializeField] Material _MoverMat;
+    [SerializeField] Mesh _MoverMesh;
+    [SerializeField] int _MoverCount = 10;
 
     MoverSystem _MoverSystem;
 
-
+    #endregion
 
     private void Awake()
     {
+        // Get entity manager
         _EntityManager = World.Active.EntityManager;
 
+        World.Active.GetExistingSystem<DOTS_QuadrantSystem>().Enabled = false;
+        World.Active.GetExistingSystem<DOTS_MoveToTargetSystem>().Enabled = false;
+        World.Active.GetExistingSystem<DOTS_FindTargetSystem>().Enabled = false;
+        World.Active.GetExistingSystem<ECS_ComponentSystemExample>().Enabled = false;
+
+
+        // Init mover system
         _MoverSystem = World.Active.GetExistingSystem(typeof(MoverSystem)) as MoverSystem;
-        _MoverSystem._HashMin = 0;
-        _MoverSystem._HashMax = Size;
-
-        _Center = new float3(((_VoxelSize * _VoxelCount) * .5f) - (_VoxelSize * .5f));// (_VoxelSize/2.0f)*(_VoxelCount/2.0f), (_VoxelSize / 2.0f) * (_VoxelCount / 2.0f), (_VoxelSize / 2.0f) * (_VoxelCount / 2.0f));
-
+      
+        // Init vector field
+        _VectorfieldCenter = new float3(((_VoxelSize * _VoxelCount) * .5f) - (_VoxelSize * .5f));
         for (int x = 0; x < _VoxelCount; x++)
         {
             for (int y = 0; y < _VoxelCount; y++)
             {
                 for (int z = 0; z < _VoxelCount; z++)
                 {
-                    float3 pos = new float3(x * _VoxelSize, y * _VoxelSize, z * _VoxelSize);
-                    //Debug.Log("Cell pos: " + pos);
+                    float3 pos = new float3(x * _VoxelSize, y * _VoxelSize, z * _VoxelSize);                  
                     SpawnVectorfieldCellEntity(pos);
                 }
             }
         }
 
+        // Initialze the mover system. It requires the vector field entitys to be intied first
+        _MoverSystem.Initialize(Size);
+
+        // Init movers
         for (int i = 0; i < _MoverCount; i++)
         {
             SpawnMoverEntity();
         }
     }
 
-
+    #region SPAWN METHODS
     void SpawnVectorfieldCellEntity(float3 pos)
     {
         // Create entity
         Entity vecCellEntity = _EntityManager.CreateEntity
         (
-           typeof(VectorfieldCell)
+            typeof(VectorfieldCell),
+            typeof(PosHash)
         );
 
+        // Set force to float zero if in center to avoid NaNs
+        float3 force = math.normalize(_VectorfieldCenter - pos);
+        if (pos.Equals(_VectorfieldCenter))
+            force = new float3(0, 0, 0);
+
         // Set component data
-        _EntityManager.SetComponentData(vecCellEntity, new VectorfieldCell { _Force =  math.normalize(_Center - pos), _Pos = pos } );    
+        _EntityManager.SetComponentData(vecCellEntity,
+            new VectorfieldCell { _Force = force, _Pos = pos }
+            );
+
+        _EntityManager.SetComponentData(vecCellEntity,
+           new PosHash { _Hash = _MoverSystem.GetVectorfieldHashMapKey(pos) }
+           );
     }
 
     void SpawnMoverEntity()
@@ -92,11 +138,13 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
            typeof(LocalToWorld),
            typeof(RenderMesh),
            typeof(Scale),
-           typeof(Mover)
+           typeof(Mover),
+           typeof(MoverAvoid)
         );
 
-        SetEntityComponentData( moverEntity, RandomPosInVectorfield(), _Mesh, _Mat, .4f );
-        _EntityManager.SetComponentData( moverEntity, new Mover { _Velocity = new float3(1, 1, 1), _Drag = .2f } );
+        SetEntityComponentData( moverEntity, RandomPosInVectorfield(), _MoverMesh, _MoverMat, .2f );
+        _EntityManager.SetComponentData( moverEntity, new Mover { _Velocity = float3.zero, _Drag = .2f } );
+        _EntityManager.SetComponentData(moverEntity, new MoverAvoid { _AvoidDist = 1, _AvoidStrength = 100 });
     }
 
     void SetEntityComponentData(Entity entity, float3 pos, Mesh mesh, Material mat, float scale)
@@ -123,146 +171,279 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
         _EntityManager.SetComponentData(entity, new Scale { Value = scale });
     }
 
-    float3 Noise(float3 pos)
-    {
-        float perlinScalar = .009f;
-        pos += new float3(UnityEngine.Random.Range(10, 100), UnityEngine.Random.Range(10, 100), UnityEngine.Random.Range(10, 100));
-        float noiseX = Mathf.PerlinNoise(pos.x * perlinScalar, (pos.y + pos.z) * perlinScalar);
-        float noiseY = 0;// Mathf.PerlinNoise(pos.y * perlinScalar, (pos.z + pos.x) * perlinScalar);
-        float noiseZ = 0;// Mathf.PerlinNoise(pos.z * perlinScalar, (pos.x + pos.y) * perlinScalar);
+    #endregion
 
-        float3 noise = new float3(noiseX, noiseY, noiseZ);
-        noise -= new float3(.5f, .5f, .5f);
-        noise *= _VectorLength;
-
-        //Debug.Log(pos + "    " + noise);
-
-        return noise;
-    }
-
+    #region HELPER METHODS
     float3 RandomPosInVectorfield()
     {
         return new float3(UnityEngine.Random.Range(0 + (Size *.2f), Size - (Size * .2f)), UnityEngine.Random.Range(0 + (Size * .2f), Size - (Size * .2f)), UnityEngine.Random.Range(0 + (Size * .2f), Size - (Size * .2f)));
     }
-
+    #endregion
 }
 
+// A system that sets the velocity of all movers from the vector field
 public class MoverSystem : ComponentSystem
 {
-    public static NativeHashMap<int, VectorfieldCell> _CellHashMap;
-    public float _HashMin = 0;
-    public float _HashMax = 100;
+    // Bounds for the vectorfield   
+    float _VectorfeildResolution = 100;
+
+    // Hashmap of all the vector cells
+    public static NativeHashMap<int, VectorfieldCell> _VectorfieldCellHashMap;   
     
+    // position hash as key 
+    public static NativeMultiHashMap<int, EntityInVoxelData> _EnitityInVoxelsMultiHash;
+
+    // Hash multiplyers - Offset each axis so we get a hash without and duplicates
+    public const int _YHashMultiplier = 10000;
+    public const int _ZHashMultiplier = 1000000;
+
     protected override void OnCreate()
     {
-        _CellHashMap = new NativeHashMap<int, VectorfieldCell>(0, Allocator.Persistent);
-
+        _VectorfieldCellHashMap = new NativeHashMap<int, VectorfieldCell>(0, Allocator.Persistent);
+        _EnitityInVoxelsMultiHash = new NativeMultiHashMap<int, EntityInVoxelData>(0, Allocator.Persistent);
         base.OnCreate();
     }
 
-    void InitHashMap()
+    public void Initialize(float vectorfieldResolution)
     {
-        // fill cell hashmap
-        EntityQuery entityQuery = GetEntityQuery(typeof(VectorfieldCell));
-        NativeArray<VectorfieldCell> vectorCellForces = entityQuery.ToComponentDataArray<VectorfieldCell>(Allocator.TempJob);
+        _VectorfeildResolution = vectorfieldResolution;
+        InitVectorfieldCellHashMap();
+    }
 
-       
+    void InitVectorfieldCellHashMap()
+    {
+        // Get all entitys with a VectorfieldCell component 
+        EntityQuery entityQuery = GetEntityQuery(typeof(VectorfieldCell), typeof(PosHash));
+        NativeArray<VectorfieldCell> vectorCellForces = entityQuery.ToComponentDataArray<VectorfieldCell>(Allocator.TempJob);
+        NativeArray<PosHash> posHashes = entityQuery.ToComponentDataArray<PosHash>(Allocator.TempJob);
 
         for (int i = 0; i < vectorCellForces.Length; i++)
         {
-            //Debug.Log("Query lenght: " + vectorCellForces.Length + "    " + vectorCellForces[i]._Pos );
-            int hash = GetVectorfieldHashMapKey(vectorCellForces[i]._Pos);           
-            _CellHashMap.TryAdd(hash, vectorCellForces[i]);
+            // Get hash and check if it is aready contained in the hashmap
+            int hash = posHashes[i]._Hash;
+
+            if (_VectorfieldCellHashMap.ContainsKey(hash))
+                Debug.LogError("HASH MAP - Already contains : " + hash);
+
+            // Add the vector cell to the hashmap
+            _VectorfieldCellHashMap.TryAdd(hash, vectorCellForces[i]);
         }
 
+        // Dispose temporary arrays
         vectorCellForces.Dispose();
+        posHashes.Dispose();
+
+        Debug.Log("HASH MAP - Initialized with hash count: " + _VectorfieldCellHashMap.Length);
+    }
+
+    protected override void OnUpdate()
+    {
+        // Build query for entitys we want to work on
+        EntityQuery moverQuery = GetEntityQuery(typeof(Mover), typeof(Translation));
+
+        // Clear the hash map each update
+        _EnitityInVoxelsMultiHash.Clear();
+
+        // Expand capacity of the quadrant multi hash map if there are more entitys in teh query than capacity
+        if (moverQuery.CalculateEntityCount() > _EnitityInVoxelsMultiHash.Capacity)
+        {
+            _EnitityInVoxelsMultiHash.Capacity = moverQuery.CalculateEntityCount();
+        }
+
+        // Fill entity in voxel hash map
+        Entities.ForEach((Entity entity, ref Mover mover, ref Translation translation) =>
+        {
+            int hashMapKey = GetVectorfieldHashMapKey(translation.Value);
+
+            _EnitityInVoxelsMultiHash.Add
+            (
+                hashMapKey,
+                new EntityInVoxelData
+                {
+                    _Entity = entity,
+                    _Mover = mover,
+                    _EntityTranslation = translation
+                }
+            );
+
+            //Debug.DrawLine(translation.Value, _VectorfieldCellHashMap[hashMapKey]._Pos);
+        });
+
+
+
+        // Movers accumulate acceleration from vector field
+        Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover) =>
+        {
+            // Get hash from position
+            int hash = GetVectorfieldHashMapKey(translation.Value);
+
+            float3 acceleration = float3.zero;
+
+            #region Search adjascent cells
+
+            acceleration = _VectorfieldCellHashMap[hash]._Force;
+
+            // Search edge cells
+            acceleration += _VectorfieldCellHashMap[hash + 1]._Force;   // Right
+            acceleration += _VectorfieldCellHashMap[hash - 1]._Force;   // Left
+            acceleration += _VectorfieldCellHashMap[hash + _YHashMultiplier]._Force; // Top
+            acceleration += _VectorfieldCellHashMap[hash - _YHashMultiplier]._Force; // Bottom
+
+            // Search corner cells
+            acceleration += _VectorfieldCellHashMap[hash + 1 + _YHashMultiplier]._Force; // Top Right
+            acceleration += _VectorfieldCellHashMap[hash + 1 - _YHashMultiplier]._Force; // Bottom Right
+            acceleration += _VectorfieldCellHashMap[hash - 1 - _YHashMultiplier]._Force; // Bottom Left
+            acceleration += _VectorfieldCellHashMap[hash - 1 + _YHashMultiplier]._Force; // Bottom Left
+
+
+            // FRONT ALONG Z
+            // Search edge cells
+            acceleration += _VectorfieldCellHashMap[hash + 1 + _ZHashMultiplier]._Force;   // Right
+            acceleration += _VectorfieldCellHashMap[hash - 1 + _ZHashMultiplier]._Force;   // Left
+            acceleration += _VectorfieldCellHashMap[hash + _YHashMultiplier + _ZHashMultiplier]._Force; // Top
+            acceleration += _VectorfieldCellHashMap[hash - _YHashMultiplier + _ZHashMultiplier]._Force; // Bottom
+
+            // Search corner cells
+            acceleration += _VectorfieldCellHashMap[hash + 1 + _YHashMultiplier + _ZHashMultiplier]._Force; // Top Right
+            acceleration += _VectorfieldCellHashMap[hash + 1 - _YHashMultiplier + _ZHashMultiplier]._Force; // Bottom Right
+            acceleration += _VectorfieldCellHashMap[hash - 1 - _YHashMultiplier + _ZHashMultiplier]._Force; // Bottom Left
+            acceleration += _VectorfieldCellHashMap[hash - 1 + _YHashMultiplier + _ZHashMultiplier]._Force; // Bottom Left
+
+
+            // REAR ALONG Z
+            // Search edge cells
+            acceleration += _VectorfieldCellHashMap[hash + 1 - _ZHashMultiplier]._Force;   // Right
+            acceleration += _VectorfieldCellHashMap[hash - 1 - _ZHashMultiplier]._Force;   // Left
+            acceleration += _VectorfieldCellHashMap[hash + _YHashMultiplier - _ZHashMultiplier]._Force; // Top
+            acceleration += _VectorfieldCellHashMap[hash - _YHashMultiplier - _ZHashMultiplier]._Force; // Bottom
+
+            // Search corner cells
+            acceleration += _VectorfieldCellHashMap[hash + 1 + _YHashMultiplier - _ZHashMultiplier]._Force; // Top Right
+            acceleration += _VectorfieldCellHashMap[hash + 1 - _YHashMultiplier - _ZHashMultiplier]._Force; // Bottom Right
+            acceleration += _VectorfieldCellHashMap[hash - 1 - _YHashMultiplier - _ZHashMultiplier]._Force; // Bottom Left
+            acceleration += _VectorfieldCellHashMap[hash - 1 + _YHashMultiplier - _ZHashMultiplier]._Force; // Bottom Left
+
+            acceleration /= 27.0f;
+
+            #endregion
+
+            mover._Acc = acceleration;
+        });
+
+
+        // Avoid entities nearby by applying force
+        Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover, ref MoverAvoid avoid) =>
+        {
+            // Get hash from position
+            int hash = GetVectorfieldHashMapKey(translation.Value);
+
+            float3 acceleration;
+            acceleration = GetAvoidStrengthAtHash(hash, ref translation, ref avoid) * Time.deltaTime;
+
+            // Search edge cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1, ref translation, ref avoid);   // Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1, ref translation, ref avoid);   // Left
+            acceleration += GetAvoidStrengthAtHash(hash + _YHashMultiplier, ref translation, ref avoid); // Top
+            acceleration += GetAvoidStrengthAtHash(hash - _YHashMultiplier, ref translation, ref avoid); // Bottom
+
+            // Search corner cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1 + _YHashMultiplier, ref translation, ref avoid); // Top Right
+            acceleration += GetAvoidStrengthAtHash(hash + 1 - _YHashMultiplier, ref translation, ref avoid); // Bottom Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1 - _YHashMultiplier, ref translation, ref avoid); // Bottom Left
+            acceleration += GetAvoidStrengthAtHash(hash - 1 + _YHashMultiplier, ref translation, ref avoid); // Bottom Left
+
+
+            // FRONT ALONG Z
+            // Search edge cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1 + _ZHashMultiplier, ref translation, ref avoid);   // Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1 + _ZHashMultiplier, ref translation, ref avoid);   // Left
+            acceleration += GetAvoidStrengthAtHash(hash + _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Top
+            acceleration += GetAvoidStrengthAtHash(hash - _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Bottom
+
+            // Search corner cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1 + _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Top Right
+            acceleration += GetAvoidStrengthAtHash(hash + 1 - _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Bottom Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1 - _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Bottom Left
+            acceleration += GetAvoidStrengthAtHash(hash - 1 + _YHashMultiplier + _ZHashMultiplier, ref translation, ref avoid); // Bottom Left
+
+
+            // REAR ALONG Z
+            // Search edge cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1 - _ZHashMultiplier, ref translation, ref avoid);   // Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1 - _ZHashMultiplier, ref translation, ref avoid);   // Left
+            acceleration += GetAvoidStrengthAtHash(hash + _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Top
+            acceleration += GetAvoidStrengthAtHash(hash - _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Bottom
+
+            // Search corner cells
+            acceleration += GetAvoidStrengthAtHash(hash + 1 + _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Top Right
+            acceleration += GetAvoidStrengthAtHash(hash + 1 - _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Bottom Right
+            acceleration += GetAvoidStrengthAtHash(hash - 1 - _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Bottom Left
+            acceleration += GetAvoidStrengthAtHash(hash - 1 + _YHashMultiplier - _ZHashMultiplier, ref translation, ref avoid); // Bottom Left
+
+            acceleration /= 27f;
+
+            mover._Acc += acceleration * Time.deltaTime;
+        });
+
+        // Update mover velocities
+        Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover) =>
+        {
+            // add acceerlation to velocity and apply drag
+            mover._Velocity += mover._Acc * Time.deltaTime;
+            mover._Velocity *= 1 - (mover._Drag * Time.deltaTime);
+
+            // add velocity to position
+            translation.Value += mover._Velocity * Time.deltaTime;
+
+            // reset acceleration
+            mover._Acc = float3.zero;
+        });
+    }
+
+    float3 GetAvoidStrengthAtHash(int hash, ref Translation translation, ref MoverAvoid avoid)
+    {
+        EntityInVoxelData voxelData;
+        NativeMultiHashMapIterator<int> nativeMultiHashMapIterator;
+        float3 accel = 0;
+
+        if (_EnitityInVoxelsMultiHash.TryGetFirstValue(hash, out voxelData, out nativeMultiHashMapIterator))
+        {
+            do
+            {
+                float dist = math.distancesq(translation.Value, voxelData._EntityTranslation.Value);
+                float3 directionAwayFromEntity = translation.Value - voxelData._EntityTranslation.Value;
+
+                if (dist < 2)
+                {
+                    //translation.Value = voxelData._EntityTranslation.Value + (math.normalize(directionAwayFromEntity) * 2);
+                }
+
+               // Debug.DrawLine(translation.Value, voxelData._EntityTranslation.Value);
+               // Debug.DrawLine(translation.Value + new float3(0, .1f, 0), translation.Value + new float3(0, .1f, 0) + (translation.Value - voxelData._EntityTranslation.Value) * .3f);
+
+                accel = directionAwayFromEntity * avoid._AvoidStrength;
+            }
+            while (_EnitityInVoxelsMultiHash.TryGetNextValue(out voxelData, ref nativeMultiHashMapIterator));
+        }
+
+        return accel;
     }
 
     protected override void OnDestroy()
     {
-        _CellHashMap.Dispose();
+        _VectorfieldCellHashMap.Dispose();
+        _EnitityInVoxelsMultiHash.Dispose();
         base.OnDestroy();
     }
 
-    protected override void OnUpdate()
-    {
-        if (_CellHashMap.Length == 0)
-            InitHashMap();
-
-        // Foreach mover
-        Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover) =>
-        {
-            VectorfieldCell cell = _CellHashMap[GetVectorfieldHashMapKey(translation.Value)];
-
-            mover._Acc = cell._Force;
-
-            // add acceerlation to velocity and apply drag
-            mover._Velocity += mover._Acc * Time.deltaTime;
-            mover._Velocity *= 1 - (mover._Drag * Time.deltaTime);
-
-            // add velocity to position
-            translation.Value += mover._Velocity * Time.deltaTime;
-
-            Debug.DrawLine(translation.Value, translation.Value + (mover._Velocity * 2));
-            Debug.DrawLine(translation.Value, translation.Value + (cell._Force * 4));
-
-
-            // reset acceleration
-            // mover._Acc = float3.zero;
-        });
-    }
-
-    /*
-    protected override void OnUpdate()
-    {
-        EntityQuery entityQuery = GetEntityQuery(typeof(Translation), typeof(VectorfieldCell));
-        NativeArray<Translation> vectorCellTranslations = entityQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-        NativeArray<VectorfieldCell> vectorCellForces = entityQuery.ToComponentDataArray<VectorfieldCell>(Allocator.TempJob);
-
-        // Foreach mover
-        Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover) =>
-        {
-            float closestDist = float.MaxValue;
-            int closestIndex = 0;
-
-            for (int i = 0; i < vectorCellTranslations.Length; i++)
-            {
-                float dist = math.distancesq(translation.Value, vectorCellTranslations[i].Value);
-                if (dist < closestDist * closestDist)
-                {
-                    closestDist = dist;
-                    closestIndex = i;
-                }
-            }
-
-            mover._Acc = vectorCellForces[closestIndex]._Force;
-
-            // add acceerlation to velocity and apply drag
-            mover._Velocity += mover._Acc * Time.deltaTime;
-            mover._Velocity *= 1 - (mover._Drag * Time.deltaTime);
-
-            // add velocity to position
-            translation.Value += mover._Velocity * Time.deltaTime;
-            Debug.Log("here   " + mover._Velocity);
-            Debug.DrawLine(translation.Value, translation.Value + (mover._Velocity*10));     
-
-            // reset acceleration
-            // mover._Acc = float3.zero;
-        });
-
-        vectorCellTranslations.Dispose();
-        vectorCellForces.Dispose();
-    }
-    */
-
+    // returns a hash based on a position
     public int GetVectorfieldHashMapKey(float3 pos)
     {
-        float x = math.clamp(math.floor(pos.x), _HashMin, _HashMax);
-        float y = math.clamp(math.floor(pos.y), _HashMin, _HashMax);
-        float z = math.clamp(math.floor(pos.z), _HashMin, _HashMax);
-
-        int hash = (int) ( x + (y*1000) + (z*10000));
-        //Debug.Log(pos + "    " + hash);
+        float x = math.clamp(math.round(pos.x), 0, _VectorfeildResolution);
+        float y = math.clamp(math.round(pos.y), 0, _VectorfeildResolution);
+        float z = math.clamp(math.round(pos.z), 0, _VectorfeildResolution);
+        int hash = (int) ( x + (y * _YHashMultiplier) + (z * _ZHashMultiplier));   
+        
         return hash;
     }
 }
@@ -276,7 +457,7 @@ public class VectorfieldDebugSystem : ComponentSystem
         (
             (Entity entity, ref VectorfieldCell vectorCell) =>
             {
-                //Debug.DrawLine(vectorCell._Pos, vectorCell._Pos + vectorCell._Force * .4f);              
+               // Debug.DrawLine(vectorCell._Pos, vectorCell._Pos + vectorCell._Force * .4f);              
             }
         );        
     }

@@ -121,7 +121,7 @@ public class DOTS_GameHandler : MonoBehaviour
            typeof(RenderMesh),
            typeof(Scale),
            typeof(Target),
-            typeof(QuadEntityType)
+           typeof(QuadEntityType)
         );
 
         SetEntityComponentData(targetEntity, new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f)), _TargetMesh, _TargetMat, .15f);

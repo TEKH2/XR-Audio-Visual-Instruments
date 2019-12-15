@@ -59,7 +59,7 @@ public class DOTS_QuadrantSystem : ComponentSystem
     // returns a unique hashmap int key using the position
     public static int GetPosHashMapKey(float3 pos)
     {
-        return (int)(math.floor(pos.x / _QuadCellSize) + (_QuadYHashMultiplier * math.floor(pos.y / _QuadCellSize) + (_QuadZHashMultiplier * math.floor(pos.z / _QuadCellSize))));
+        return (int)( math.floor(pos.x / _QuadCellSize) + (_QuadYHashMultiplier * math.floor(pos.y / _QuadCellSize) + (_QuadZHashMultiplier * math.floor(pos.z / _QuadCellSize))));
     }
 
     // Draws debug lines areound the quadrant

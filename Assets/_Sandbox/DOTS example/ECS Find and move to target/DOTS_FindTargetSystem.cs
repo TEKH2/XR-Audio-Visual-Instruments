@@ -53,7 +53,6 @@ public class DOTS_FindTargetSystem : JobComponentSystem
 
             // Search own quad
             FindTarget(hashMapKey, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
-
             // Search edge quads
             FindTarget(hashMapKey+1, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
             FindTarget(hashMapKey-1, translation.Value, quadEntityType, ref closestTargetEntity, ref closestDistance);
@@ -191,7 +190,6 @@ public class DOTS_FindTargetSystem : JobComponentSystem
         base.OnCreate();
     }
 
-
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         // Setup query for entities
@@ -212,7 +210,6 @@ public class DOTS_FindTargetSystem : JobComponentSystem
         JobHandle jobHandle = findTargetJob.Schedule(this, inputDeps);
 
         #endregion
-
 
 
         #region ADD HASTARGET COMPONENT JOB
@@ -236,45 +233,3 @@ public class DOTS_FindTargetSystem : JobComponentSystem
 
     #endregion
 }
-
-/*
-// Comment this in to test with a straight component system 
-// 1000 units searching for 1000 targets - 315ms
-public class ECS_FindTargetSystem : ComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        Entities.WithAll<Unit>().WithNone<HasTarget>().ForEach((Entity entity, ref Translation unitTranslation) => 
-        {
-            // Code running on all entities with 'tag' component unit
-            //Debug.Log("Unit: " + entity);
-            Entity closestTargetEntity = Entity.Null;
-            float closestDistance = float.MaxValue;
-            float3 unitPos = unitTranslation.Value;
-
-            Entities.WithAll<Target>().ForEach((Entity targetEntity, ref Translation targetTranslation) =>
-            {
-                // Cycling through all the entities with 'Target' tag
-                //Debug.Log("Target: " + targetEntity);
-
-                float dist = math.distance(unitPos, targetTranslation.Value);
-
-                if(dist < closestDistance)
-                {
-                    // No target
-                    closestDistance = dist;
-                    closestTargetEntity = targetEntity;
-                }
-            });
-
-            // Closest target
-            if(closestTargetEntity != Entity.Null)
-            {
-                //Debug.DrawLine(unitPos, closestTargetPos);
-                PostUpdateCommands.AddComponent(entity, new HasTarget { _TargetEntity = closestTargetEntity });
-            }
-        });        
-    }
-}
-*/
-
