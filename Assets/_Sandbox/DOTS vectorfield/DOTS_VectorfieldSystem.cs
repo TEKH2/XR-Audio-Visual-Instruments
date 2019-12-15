@@ -144,7 +144,7 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
 
         SetEntityComponentData( moverEntity, RandomPosInVectorfield(), _MoverMesh, _MoverMat, .2f );
         _EntityManager.SetComponentData( moverEntity, new Mover { _Velocity = float3.zero, _Drag = .2f } );
-        _EntityManager.SetComponentData(moverEntity, new MoverAvoid { _AvoidDist = 1, _AvoidStrength = 100 });
+        _EntityManager.SetComponentData(moverEntity, new MoverAvoid { _AvoidDist = 1, _AvoidStrength = 9f });
     }
 
     void SetEntityComponentData(Entity entity, float3 pos, Mesh mesh, Material mat, float scale)
@@ -382,7 +382,7 @@ public class MoverSystem : ComponentSystem
 
             acceleration /= 27f;
 
-            mover._Acc += acceleration * Time.deltaTime;
+            mover._Acc += acceleration;
         });
 
         // Update mover velocities
@@ -410,18 +410,13 @@ public class MoverSystem : ComponentSystem
         {
             do
             {
-                float dist = math.distancesq(translation.Value, voxelData._EntityTranslation.Value);
+                float dist = math.distance(translation.Value, voxelData._EntityTranslation.Value);
                 float3 directionAwayFromEntity = translation.Value - voxelData._EntityTranslation.Value;
 
-                if (dist < 2)
-                {
-                    //translation.Value = voxelData._EntityTranslation.Value + (math.normalize(directionAwayFromEntity) * 2);
-                }
+                float normDist = 1 - math.clamp((dist / avoid._AvoidDist), 0, 1);
+                normDist = math.sqrt(normDist);
 
-               // Debug.DrawLine(translation.Value, voxelData._EntityTranslation.Value);
-               // Debug.DrawLine(translation.Value + new float3(0, .1f, 0), translation.Value + new float3(0, .1f, 0) + (translation.Value - voxelData._EntityTranslation.Value) * .3f);
-
-                accel = directionAwayFromEntity * avoid._AvoidStrength;
+                accel = directionAwayFromEntity * avoid._AvoidStrength * normDist;
             }
             while (_EnitityInVoxelsMultiHash.TryGetNextValue(out voxelData, ref nativeMultiHashMapIterator));
         }
