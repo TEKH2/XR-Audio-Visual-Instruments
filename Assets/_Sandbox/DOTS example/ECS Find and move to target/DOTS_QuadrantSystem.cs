@@ -139,9 +139,9 @@ public class DOTS_QuadrantSystem : ComponentSystem
 
         #region DEBUG
         // Get mouse pos in world
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+       // Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
         // Draw debug quadrant
-        DebugDrawQuadrant(mouseWorldPos);
+       // DebugDrawQuadrant(mouseWorldPos);
         //Debug.Log("Entity in selected quadrant: " + GetEntityCountInHashMap(_QuadrantMultiHashMap, GetPosHashMapKey(mouseWorldPos) ) );
         #endregion
     }

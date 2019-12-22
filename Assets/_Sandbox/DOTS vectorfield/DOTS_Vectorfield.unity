@@ -340,8 +340,7 @@ MonoBehaviour:
   _VectorLength: 1
   _MoverMat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
   _MoverMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  _MoverCount: 5
-  _AvoidStr: 1
+  _MoverCount: 50
 --- !u!4 &1951985193
 Transform:
   m_ObjectHideFlags: 0
