@@ -335,12 +335,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e0dc531db244ef4f949444fcd956aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _VoxelCount: 10
+  _VoxelCount: 11
   _VoxelSize: 1
   _VectorLength: 1
-  _Mat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
-  _Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  _MoverCount: 5
+  _MoverMat: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
+  _MoverMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  _MoverCount: 50
 --- !u!4 &1951985193
 Transform:
   m_ObjectHideFlags: 0
