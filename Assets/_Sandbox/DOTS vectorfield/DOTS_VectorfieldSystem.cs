@@ -41,7 +41,6 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
     MoverSystem _MoverSystem;
 
 
-
     private void Awake()
     {
         _EntityManager = World.Active.EntityManager;
@@ -266,7 +265,6 @@ public class MoverSystem : ComponentSystem
         return hash;
     }
 }
-
 
 public class VectorfieldDebugSystem : ComponentSystem
 {
