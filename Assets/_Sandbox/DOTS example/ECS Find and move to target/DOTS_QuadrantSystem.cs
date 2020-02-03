@@ -8,45 +8,24 @@ using Unity.Rendering;
 using Unity.Entities;
 using Unity.Transforms;
 
-public struct QuadEntityType : IComponentData
-{
-    public QuadEntityTypeEnum _Type;
-
-    public enum QuadEntityTypeEnum
-    {
-        Unit,
-        Target,
-    }
-}
-
-public struct QuadData
-{
-    public Entity _Entity;
-    public float3 _Pos;
-    public QuadEntityType _QuadEntityType;
-
-    public QuadData( Entity entity, float3 pos, QuadEntityType quadEntity)
-    {
-        _Entity = entity;
-        _Pos = pos;
-        _QuadEntityType = quadEntity;
-    }
-}
-
+// Quadrant system assigns entitys to a quadrant 
 public class DOTS_QuadrantSystem : ComponentSystem
 {
+    // Store of hashmap data
+    public static NativeMultiHashMap<int, QuadrantData> _QuadrantMultiHashMap;
+
     // used to scale the y component of the hash map so values don't overlap
     public const int _QuadYHashMultiplier = 1000;
     public const int _QuadZHashMultiplier = 10000;
     private const int _QuadCellSize = 5;
 
-    public static NativeMultiHashMap<int, QuadData> _QuadrantMultiHashMap;
+ 
 
     protected override void OnCreate()
     {
         // Multi hash map that has a single key which holds many values, in this case a has for a quadrant which holds entities
         // This is created as a persistant collection so it can be used by other classes
-        _QuadrantMultiHashMap = new NativeMultiHashMap<int, QuadData>(0, Allocator.Persistent);
+        _QuadrantMultiHashMap = new NativeMultiHashMap<int, QuadrantData>(0, Allocator.Persistent);
         base.OnCreate();
     }
 
@@ -75,9 +54,9 @@ public class DOTS_QuadrantSystem : ComponentSystem
         //Debug.Log("Hashmap key: " + GetPosHashMapKey(pos) + "     Position: " + pos);
     }
 
-    private static int GetEntityCountInHashMap(NativeMultiHashMap<int, QuadData> quadMultiHashMap, int hashMapKey )
+    private static int GetEntityCountInHashMap(NativeMultiHashMap<int, QuadrantData> quadMultiHashMap, int hashMapKey )
     {
-        QuadData quadData;
+        QuadrantData quadData;
         NativeMultiHashMapIterator<int> nativeMultiHashMapIterator;
         int count = 0;
 
@@ -96,7 +75,7 @@ public class DOTS_QuadrantSystem : ComponentSystem
     [BurstCompile]
     private struct SetQuadrantDataHashMapJob : IJobForEachWithEntity<Translation, QuadEntityType>
     {
-        public NativeMultiHashMap<int, QuadData>.ParallelWriter quadrantMultiHashMap;
+        public NativeMultiHashMap<int, QuadrantData>.ParallelWriter quadrantMultiHashMap;
 
         public void Execute(Entity entity, int index, ref Translation translation, ref QuadEntityType quadEntity)
         {
@@ -105,7 +84,7 @@ public class DOTS_QuadrantSystem : ComponentSystem
             quadrantMultiHashMap.Add
             (
                 hashMapKey,
-                new QuadData
+                new QuadrantData
                 (
                     entity,
                     translation.Value,
@@ -144,5 +123,32 @@ public class DOTS_QuadrantSystem : ComponentSystem
        // DebugDrawQuadrant(mouseWorldPos);
         //Debug.Log("Entity in selected quadrant: " + GetEntityCountInHashMap(_QuadrantMultiHashMap, GetPosHashMapKey(mouseWorldPos) ) );
         #endregion
+    }
+}
+
+
+public struct QuadEntityType : IComponentData
+{
+    public QuadEntityTypeEnum _Type;
+
+    public enum QuadEntityTypeEnum
+    {
+        PhysicsEntity,
+        Unit,
+        Target,
+    }
+}
+
+public struct QuadrantData
+{
+    public Entity _Entity;
+    public float3 _Pos;
+    public QuadEntityType _QuadEntityType;
+
+    public QuadrantData(Entity entity, float3 pos, QuadEntityType quadEntity)
+    {
+        _Entity = entity;
+        _Pos = pos;
+        _QuadEntityType = quadEntity;
     }
 }

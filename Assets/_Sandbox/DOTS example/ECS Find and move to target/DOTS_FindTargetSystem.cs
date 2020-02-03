@@ -38,7 +38,7 @@ public class DOTS_FindTargetSystem : JobComponentSystem
     [BurstCompile]
     private struct FindTargetQuadrantSystemJob : IJobForEachWithEntity<Translation, QuadEntityType>
     {
-        [ReadOnly] public NativeMultiHashMap<int, QuadData> _QuadMultiHashMap;
+        [ReadOnly] public NativeMultiHashMap<int, QuadrantData> _QuadMultiHashMap;
         public NativeArray<Entity> _ClosestTargetEntityArray;
 
         public void Execute(Entity entity, int index, [ReadOnly] ref Translation translation, [ReadOnly] ref QuadEntityType quadEntityType)
@@ -97,7 +97,7 @@ public class DOTS_FindTargetSystem : JobComponentSystem
         void FindTarget(int hashMapKey, float3 unitPos, QuadEntityType quadEntityType, ref Entity closestTargetEntity, ref float closestTargetDistance)
         {
             // Iterate through multi hash map
-            QuadData quadData;
+            QuadrantData quadData;
             NativeMultiHashMapIterator<int> nativeMultiHashMapIterator;
             if (_QuadMultiHashMap.TryGetFirstValue(hashMapKey, out quadData, out nativeMultiHashMapIterator))
             {

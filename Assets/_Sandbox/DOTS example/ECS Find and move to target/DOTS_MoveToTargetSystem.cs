@@ -88,7 +88,7 @@ public class DOTS_MoveToTargetSystem : ComponentSystem
 
                     float3 targetDir = math.normalize(targetTrans.Value - trans.Value);
                     float moveSpeed = 5f;
-                    trans.Value += targetDir * moveSpeed * Time.deltaTime;
+                    trans.Value += targetDir * moveSpeed * Time.DeltaTime;
 
                     if (math.distance(trans.Value, targetTrans.Value) < .2f)
                     {

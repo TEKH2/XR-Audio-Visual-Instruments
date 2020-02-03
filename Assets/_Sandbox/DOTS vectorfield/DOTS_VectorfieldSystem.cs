@@ -130,6 +130,30 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
            );
     }
 
+    void SpawnCollisionCellEntity(float3 pos)
+    {
+        // Create entity
+        Entity vecCellEntity = _EntityManager.CreateEntity
+        (
+            typeof(VectorfieldCell),
+            typeof(PosHash)
+        );
+
+        // Set force to float zero if in center to avoid NaNs
+        float3 force = math.normalize(_VectorfieldCenter - pos);
+        if (pos.Equals(_VectorfieldCenter))
+            force = new float3(0, 0, 0);
+
+        // Set component data
+        _EntityManager.SetComponentData(vecCellEntity,
+            new VectorfieldCell { _Force = force, _Pos = pos }
+            );
+
+        _EntityManager.SetComponentData(vecCellEntity,
+           new PosHash { _Hash = _MoverSystem.GetVectorfieldHashMapKey(pos) }
+           );
+    }
+
     void SpawnMoverEntity()
     {
         Entity moverEntity = _EntityManager.CreateEntity
@@ -144,7 +168,7 @@ public class DOTS_VectorfieldSystem : MonoBehaviour
 
         SetEntityComponentData( moverEntity, RandomPosInVectorfield(), _MoverMesh, _MoverMat, .2f );
         _EntityManager.SetComponentData( moverEntity, new Mover { _Velocity = float3.zero, _Drag = .2f } );
-        _EntityManager.SetComponentData(moverEntity, new MoverAvoid { _AvoidDist = 1, _AvoidStrength = 9f });
+        _EntityManager.SetComponentData(moverEntity, new MoverAvoid { _AvoidDist = 1, _AvoidStrength = 20f });
     }
 
     void SetEntityComponentData(Entity entity, float3 pos, Mesh mesh, Material mat, float scale)
@@ -338,7 +362,7 @@ public class MoverSystem : ComponentSystem
             int hash = GetVectorfieldHashMapKey(translation.Value);
 
             float3 acceleration;
-            acceleration = GetAvoidStrengthAtHash(hash, ref translation, ref avoid) * Time.deltaTime;
+            acceleration = GetAvoidStrengthAtHash(hash, ref translation, ref avoid) * Time.DeltaTime;
 
             // Search edge cells
             acceleration += GetAvoidStrengthAtHash(hash + 1, ref translation, ref avoid);   // Right
@@ -389,11 +413,11 @@ public class MoverSystem : ComponentSystem
         Entities.ForEach((Entity entity, ref Translation translation, ref Mover mover) =>
         {
             // add acceerlation to velocity and apply drag
-            mover._Velocity += mover._Acc * Time.deltaTime;
-            mover._Velocity *= 1 - (mover._Drag * Time.deltaTime);
+            mover._Velocity += mover._Acc * Time.DeltaTime;
+            mover._Velocity *= 1 - (mover._Drag * Time.DeltaTime);
 
             // add velocity to position
-            translation.Value += mover._Velocity * Time.deltaTime;
+            translation.Value += mover._Velocity * Time.DeltaTime;
 
             // reset acceleration
             mover._Acc = float3.zero;
