@@ -14,7 +14,7 @@ Unity version: 2019.3.3f
 <strong>Framework</strong>
 <ul>
   <li>XR Interaction Toolkit: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@0.9/manual/index.html</li>
-  <li>stella3d/OscCore:https://github.com/stella3d/OscCore</li>
+  <li>stella3d/OscCore: https://github.com/stella3d/OscCore</li>
 </ul>
 
 <p>&nbsp</p>
