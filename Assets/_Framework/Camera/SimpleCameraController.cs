@@ -109,6 +109,7 @@ namespace UnityTemplateProjects
         void Update()
         {
             // Exit Sample  
+
             if (Input.GetKey(KeyCode.Escape))
             {
                 Application.Quit();
@@ -116,7 +117,6 @@ namespace UnityTemplateProjects
 				UnityEditor.EditorApplication.isPlaying = false; 
 				#endif
             }
-
             // Hide and lock cursor when right mouse button pressed
             if (Input.GetMouseButtonDown(1))
             {
