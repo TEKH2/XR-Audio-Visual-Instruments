@@ -6,8 +6,9 @@ Unity version: 2019.3.3f
 
 <strong>Our Links</strong>
 <ul>
-  <li>Management: https://github.com/XY01/Ethnotekhv2_baseproject/tree/master#zenhub</li>
   <li>Discord: https://discord.gg/2pDqvm</li>
+  <li>Twitter: https://twitter.com/ethnotekh https://twitter.com/MaxVram https://twitter.com/xy01
+  <li>Management: https://github.com/XY01/Ethnotekhv2_baseproject/tree/master#zenhub</li>
 </ul>
 
 <p>&nbsp</p>
