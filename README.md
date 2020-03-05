@@ -1,10 +1,18 @@
 # Ethnotekhv2_baseproject
 
-Unity version: 2019.3.3f
+<p>&nbsp</p>
 
+We're getting the band back together, starting with a funded period from Creative Victoria's Creator's Fund grant program. Our aim is to research and develop audio/visual instrument concepts for VR performance.
+
+The entire process is open-sourced, which anyone will be able to test and contribute to. Towards mid-2020, Brad and Chris will host workshops that reflect on the research period, discuss our findings, and provide a friendly introduction to using the open-source software.
+
+<p>&nbsp</p>
 
 This project currently does nothing. Stay tuned!
 
+<p>&nbsp</p>
+
+<strong>Unity version:</strong> 2019.3.3f
 
 <p>&nbsp</p>
 
