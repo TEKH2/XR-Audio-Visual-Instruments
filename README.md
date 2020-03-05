@@ -7,11 +7,12 @@ Unity version: 2019.3.3f
 <strong>Our Links</strong>
 <ul>
   <li>Management: https://github.com/XY01/Ethnotekhv2_baseproject/tree/master#zenhub</li>
+  <li>Discord: https://discord.gg/2pDqvm</li>
 </ul>
 
 <p>&nbsp</p>
 
-<strong>Framework</strong>
+<strong>Framework/Dependencies</strong>
 <ul>
   <li>XR Interaction Toolkit: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@0.9/manual/index.html</li>
   <li>stella3d/OscCore: https://github.com/stella3d/OscCore</li>
