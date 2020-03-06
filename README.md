@@ -1,6 +1,6 @@
 # Ethnotekhv2_baseproject
 
-<p>&nbsp</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/1NXzxCW"><a href="//imgur.com/a/1NXzxCW"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 We're getting the band back together, starting with a funded period from Creative Victoria's Creator's Fund grant program. Our aim is to research and develop audio/visual instrument concepts for VR performance.
 
