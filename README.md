@@ -27,8 +27,9 @@ This project currently does nothing. Stay tuned!
 
 <strong>Framework/Dependencies</strong>
 <ul>
-  <li>XR Interaction Toolkit: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@0.9/manual/index.html</li>
-  <li>stella3d/OscCore: https://github.com/stella3d/OscCore</li>
+  <li>XR Interaction Toolkit: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@latest</li>
+  <li>Stella3d/OscCore: https://github.com/stella3d/OscCore</li>
+  <li>JUCE: https://juce.com/</li>
 </ul>
 
 <p>&nbsp</p>
