@@ -11,6 +11,7 @@ public class EffectNode
 
 }
 
+[RequireComponent(typeof(LineRenderer))]
 public class Instrument_WobbleString : MonoBehaviour
 {
     public int _NodeCount = 100;
@@ -32,6 +33,16 @@ public class Instrument_WobbleString : MonoBehaviour
 
     public Vector2 ScaleRange = new Vector2(.05f, .3f);
 
+    public bool _AddPush = true;
+    public bool _AddScale = true;
+    public bool _AddSpringToPosition = false;
+
+    public float _Drag = .5f;
+    public float _AngularDrag = .5f;
+
+    LineRenderer _LineRend;
+
+    public bool _AddJointSprings = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,14 +54,18 @@ public class Instrument_WobbleString : MonoBehaviour
     {
         _Nodes = new EffectNode[_NodeCount];
 
+        _LineRend = GetComponent<LineRenderer>();
+        _LineRend.positionCount = _NodeCount;
+
         float norm = 0;
         for (int i = 0; i < _NodeCount; i++)
         {
             norm = i / (float)(_NodeCount - 1f);
             float angleRads =  ((norm * _Degrees) - (_Degrees / 2f)) * Mathf.Deg2Rad;
             Rigidbody rb = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<Rigidbody>();
+            rb.gameObject.name = "Node " + i;
             rb.useGravity = false;
-            rb.isKinematic = true;           
+            //rb.isKinematic = true;           
 
             Vector3 pos = new Vector3();
             pos.x = Mathf.Sin(angleRads) * _Radius;
@@ -65,6 +80,35 @@ public class Instrument_WobbleString : MonoBehaviour
             _Nodes[i].transform.localRotation = Quaternion.LookRotation(new Vector3(pos.x, 0, pos.z), Vector3.up);
 
             _Nodes[i].transform.SetParent(transform);
+
+          
+        }
+
+        if (_AddJointSprings)
+        {
+            for (int i = 1; i < _NodeCount-1; i++)
+            {
+                Rigidbody leftAnchor = _Nodes[i - 1]._RB;
+                Rigidbody rightAnchor = _Nodes[i + 1]._RB;
+
+                SpringJoint springLeft = _Nodes[i]._RB.gameObject.AddComponent<SpringJoint>();
+                springLeft.connectedBody = leftAnchor;
+                springLeft.spring = 50;
+
+                SpringJoint springRight = _Nodes[i]._RB.gameObject.AddComponent<SpringJoint>();
+                springRight.connectedBody = rightAnchor;
+                springRight.spring = 50;
+
+                SpringJoint springSource = _Nodes[i]._RB.gameObject.AddComponent<SpringJoint>();
+                Rigidbody rb = new GameObject("Anchor " + i).AddComponent<Rigidbody>();// _Nodes[i].transform.position);
+                rb.isKinematic = true;
+                rb.useGravity = false;
+                springSource.connectedBody = rb;
+                springSource.spring = 50;
+            }
+
+            _Nodes[0]._RB.isKinematic = true;
+            _Nodes[_NodeCount-1]._RB.isKinematic = true;
         }
     }
 
@@ -83,12 +127,20 @@ public class Instrument_WobbleString : MonoBehaviour
             // Add force away from the effector
             Vector3 direction = Vector3.Normalize(_RTform.position - _Nodes[i].transform.position);
             Vector3 force = direction * effectStrength * _PushForce;
-            _Nodes[i]._RB.AddForceAtPosition(force, _RTform.position);
+            if (_AddPush)
+                _Nodes[i]._RB.AddForceAtPosition(force, _RTform.position);
 
             // Add spring force to orig pos
-            _Nodes[i]._RB.AddForce((_Nodes[i].transform.position - _Nodes[i]._OriginalPos).normalized * _SpringForce);
+            if (_AddSpringToPosition)                
+                _Nodes[i]._RB.AddForce((_Nodes[i]._OriginalPos - _Nodes[i].transform.position).normalized * _SpringForce);
 
-            _Nodes[i].transform.localScale = Vector3.one * Mathf.Lerp(ScaleRange.x, ScaleRange.y, _TFormEffectCurve.Evaluate(effectStrength));
+            _Nodes[i]._RB.drag = _Drag;
+            _Nodes[i]._RB.angularDrag = _AngularDrag;
+
+            if (_AddScale)
+                _Nodes[i].transform.localScale = Vector3.one * Mathf.Lerp(ScaleRange.x, ScaleRange.y, _TFormEffectCurve.Evaluate(effectStrength));
+
+            _LineRend.SetPosition(i, _Nodes[i].transform.position);
 
             //Vector3 direction = Vector3.Normalize(_RTform.position - _Nodes[i].position);
             //Vector3 force = direction * _TFormEffectCurve.Evaluate(effectStrength);
