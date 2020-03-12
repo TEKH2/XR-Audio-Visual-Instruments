@@ -13,72 +13,50 @@ public class AttractSystem : JobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        //NativeArray<Entity> attractorEntities = GetEntityQuery(typeof(AttractComponent), typeof(Translation)).ToEntityArray(Allocator.TempJob);
+        NativeArray<Entity> attractorEntities = GetEntityQuery(typeof(AttractComponent), typeof(Translation)).ToEntityArray(Allocator.TempJob);
 
-        inputDeps = new AttractJob2
+        JobHandle attractJobHandle = new AttractJob
         {
-            //attractorEntities = attractorEntities,
-            //attractComponents = GetComponentDataFromEntity<AttractComponent>(),
-            //attractTranslationComponents = GetComponentDataFromEntity<Translation>(),
+            attractorEntities = attractorEntities,
+            attractComponents = GetComponentDataFromEntity<AttractComponent>(true),
+            attractTranslationComponents = GetComponentDataFromEntity<Translation>(true),
         }.Schedule(this, inputDeps);
 
-        inputDeps.Complete();
+        attractJobHandle.Complete();
 
-        //attractorEntities.Dispose();
+        attractorEntities.Dispose();
 
-        return inputDeps;
+        return attractJobHandle;
     }
 
     [BurstCompile]
-    struct AttractJob2 : IJobForEach<PhysicsVelocity, Translation>
+    struct AttractJob : IJobForEach<PhysicsVelocity, Translation>
     {
-        //[ReadOnly] public NativeArray<Entity> attractorEntities;
-        //[ReadOnly] public ComponentDataFromEntity<AttractComponent> attractComponents;
-        //[ReadOnly] public ComponentDataFromEntity<Translation> attractTranslationComponents;
+        [ReadOnly] public NativeArray<Entity> attractorEntities;
+        [ReadOnly] public ComponentDataFromEntity<AttractComponent> attractComponents;
+        [ReadOnly] public ComponentDataFromEntity<Translation> attractTranslationComponents;
 
         public void Execute(ref PhysicsVelocity physVelComponent, [ReadOnly] ref Translation attractableTranslation)
         {
-            physVelComponent.Linear = new float3(0, .4f, 0);
-            //foreach (var entity in attractorEntities)
-            //{
-            //    AttractComponent attractorComp = attractComponents[entity];
-            //    Translation attractorTranslation = attractTranslationComponents[entity];
-
-            //    float3 vectorToAttractor = attractorTranslation.Value - attractableTranslation.Value;
-            //    float distSqrd = math.lengthsq(vectorToAttractor);
-
-            //    if (distSqrd < attractorComp._MaxDistanceSqrd)
-            //    {
-            //        // Alter linear velocity
-            //        physVelComponent.Linear += attractorComp._Strength * (vectorToAttractor / math.sqrt(distSqrd));
-            //    }
-            //}
-        }
-    }
-
-
-    struct AttractJob : IJobForEach<Translation, AttractComponent>
-    {
-        public NativeArray<Entity> attractableEntities;
-        public ComponentDataFromEntity<PhysicsVelocity> physVelComponents;
-        public ComponentDataFromEntity<Translation> transComponents;
-
-        public void Execute(ref Translation attractorTranslation, ref AttractComponent attract)
-        {
-            foreach (var entity in attractableEntities)
+            float3 attraction = new float3(0, 0, 0);
+            foreach (var entity in attractorEntities)
             {
-                PhysicsVelocity physVelComponent = physVelComponents[entity];
-                Translation attractableTranslation = transComponents[entity];
+                AttractComponent attractorComp = attractComponents[entity];
+                Translation attractorTranslation = attractTranslationComponents[entity];
+
+                Debug.Log(entity + "    " + attractorTranslation.Value);
 
                 float3 vectorToAttractor = attractorTranslation.Value - attractableTranslation.Value;
                 float distSqrd = math.lengthsq(vectorToAttractor);
 
-                if (distSqrd < attract._MaxDistanceSqrd)
+                if (distSqrd < attractorComp._MaxDistanceSqrd)
                 {
                     // Alter linear velocity
-                    physVelComponent.Linear += attract._Strength * (vectorToAttractor / math.sqrt(distSqrd));
+                    attraction += attractorComp._Strength * (vectorToAttractor / math.sqrt(distSqrd));
                 }
             }
+
+            physVelComponent.Linear += attraction;
         }
     }
 };
