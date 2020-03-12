@@ -80,8 +80,6 @@ public class Instrument_WobbleString : MonoBehaviour
             _Nodes[i].transform.localRotation = Quaternion.LookRotation(new Vector3(pos.x, 0, pos.z), Vector3.up);
 
             _Nodes[i].transform.SetParent(transform);
-
-          
         }
 
         if (_AddJointSprings)
