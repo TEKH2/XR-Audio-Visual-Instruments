@@ -39,8 +39,9 @@ public class AttractSystem : JobComponentSystem
         public void Execute(ref PhysicsVelocity physVelComponent, [ReadOnly] ref Translation attractableTranslation)
         {
             float3 attraction = new float3(0, 0, 0);
-            foreach (var entity in attractorEntities)
+            for (int i = 0; i < attractorEntities.Length; i++)
             {
+                Entity entity = attractorEntities[i];
                 AttractComponent attractorComp = attractComponents[entity];
                 Translation attractorTranslation = attractTranslationComponents[entity];
 

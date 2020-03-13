@@ -4,6 +4,7 @@ using Unity.Mathematics;
 
 public class EntitySpawnerSystem : ComponentSystem
 {
+    /*
     float _SpawnTimer;
     public float _SpawnInterval = .2f;
     Random _Random = new Random(56);
@@ -69,5 +70,10 @@ public class EntitySpawnerSystem : ComponentSystem
         // Instantiate entity from prefab entity component
         Entity spawnedEntity = EntityManager.Instantiate(prefabEntity);
         EntityManager.SetComponentData(spawnedEntity, new Translation { Value = _Random.NextFloat3(-3f, 3f) });
+    }
+    */
+    protected override void OnUpdate()
+    {
+        
     }
 }
