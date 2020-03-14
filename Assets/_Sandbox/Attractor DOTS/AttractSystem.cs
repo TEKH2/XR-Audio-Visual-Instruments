@@ -8,6 +8,11 @@ using Unity.Jobs;
 using Unity.Physics.Systems;
 using Unity.Burst;
 
+// Create a dynamic buffer of attractors
+// Create a dynamic buffer of movers
+// Job on both buffers at once
+
+
 [UpdateBefore(typeof(BuildPhysicsWorld))]
 public class AttractSystem : JobComponentSystem
 {
