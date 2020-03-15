@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 
 [GenerateAuthoringComponent]
-public struct Tag_Alice : IComponentData
+public struct Tag_Enemies : IComponentData
 {
 
 }

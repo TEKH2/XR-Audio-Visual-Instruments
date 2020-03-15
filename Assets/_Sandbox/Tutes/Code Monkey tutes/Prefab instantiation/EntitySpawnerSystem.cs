@@ -2,9 +2,9 @@
 using Unity.Transforms;
 using Unity.Mathematics;
 
+[DisableAutoCreation]
 public class EntitySpawnerSystem : ComponentSystem
-{
-    /*
+{    
     float _SpawnTimer;
     public float _SpawnInterval = .2f;
     Random _Random = new Random(56);
@@ -49,7 +49,7 @@ public class EntitySpawnerSystem : ComponentSystem
             if (_SpawnTimer <= 0f)
             {
                 _SpawnTimer = _SpawnInterval;
-                SpawnPrefab(PrefabEntities._PrefabEntity);
+                SpawnPrefab(PrefabEntities_V1._PrefabEntity);
             }
         }
 
@@ -60,7 +60,9 @@ public class EntitySpawnerSystem : ComponentSystem
             if (_SpawnTimer <= 0f)
             {
                 _SpawnTimer = _SpawnInterval;
-                SpawnPrefab(PrefabEntities_V2._PrefabEntity);            
+                SpawnPrefab(PrefabEntities_V2._PrefabEntity);
+                SpawnPrefab(PrefabEntities_V2._PrefabEntity2);
+                SpawnPrefab(PrefabEntities_V2._PrefabEntity3);
             }
         }
     }
@@ -70,10 +72,5 @@ public class EntitySpawnerSystem : ComponentSystem
         // Instantiate entity from prefab entity component
         Entity spawnedEntity = EntityManager.Instantiate(prefabEntity);
         EntityManager.SetComponentData(spawnedEntity, new Translation { Value = _Random.NextFloat3(-3f, 3f) });
-    }
-    */
-    protected override void OnUpdate()
-    {
-        
     }
 }

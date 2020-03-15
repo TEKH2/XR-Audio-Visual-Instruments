@@ -5,7 +5,7 @@ public class TestBufferFromEntitySystem : ComponentSystem
 {
     protected override void OnUpdate()
     {
-        Entities.WithAll<Tag_Bob>().ForEach((Entity bobEntity) =>
+        Entities.WithAll<Tag_Player>().ForEach((Entity bobEntity) =>
         {
             // Get buffer from entity with Bob Tag
             BufferFromEntity<IntBufferElement> intBufferFromEntity = GetBufferFromEntity<IntBufferElement>();
@@ -14,7 +14,7 @@ public class TestBufferFromEntitySystem : ComponentSystem
             Entity aliceEntity = Entity.Null;
 
             // Get the alice entity
-            Entities.WithAll<Tag_Alice>().ForEach((Entity aliceEntityTmp) =>
+            Entities.WithAll<Tag_Enemies>().ForEach((Entity aliceEntityTmp) =>
             {
                 aliceEntity = aliceEntityTmp;
             });

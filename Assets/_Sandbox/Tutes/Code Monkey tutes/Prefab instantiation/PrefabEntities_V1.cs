@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 
-public class PrefabEntities : MonoBehaviour, IConvertGameObjectToEntity
+public class PrefabEntities_V1 : MonoBehaviour, IConvertGameObjectToEntity
 {
     public static Entity _PrefabEntity;
     public GameObject _PrefabEntityGameObject;
@@ -18,7 +18,7 @@ public class PrefabEntities : MonoBehaviour, IConvertGameObjectToEntity
                 GameObjectConversionSettings.FromWorld(dstManager.World, blobAssetStore)
             );
 
-            PrefabEntities._PrefabEntity = prefabEntity;
+            PrefabEntities_V1._PrefabEntity = prefabEntity;
         }
     }
 }
