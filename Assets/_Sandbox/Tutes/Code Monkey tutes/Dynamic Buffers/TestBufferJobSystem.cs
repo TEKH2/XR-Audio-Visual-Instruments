@@ -3,6 +3,11 @@ using Unity.Jobs;
 
 public class TestBufferJobSystem : JobComponentSystem
 {
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        return new BufferJob().Schedule(this, inputDeps);
+    }
+
     public struct BufferJob : IJobForEachWithEntity_EB<IntBufferElement>
     {
         public void Execute(Entity entity, int index, DynamicBuffer<IntBufferElement> dynamicBuffer)
@@ -14,10 +19,5 @@ public class TestBufferJobSystem : JobComponentSystem
                 dynamicBuffer[i] = intBufferElement;
             }
         }
-    }
-    
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        return new BufferJob().Schedule(this, inputDeps);
-    }
+    } 
 }
