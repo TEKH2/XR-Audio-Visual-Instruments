@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using Newtonsoft.Json;
+using Newtonsoft.Json.Old;
 
 using System.IO;
 using UnityEngine.EventSystems;
@@ -149,16 +149,16 @@ namespace EXP.Painter
 
         void Load(string filename)
         {
-            //try
-            //{   // Read JSON from text file
-            //    string jsonPayload = System.IO.File.ReadAllText(filename);
+            try
+            {   // Read JSON from text file
+                string jsonPayload = System.IO.File.ReadAllText(filename);
 
-            //    CanvasData canvasData = new CanvasData();
-            //    canvasData = (CanvasData)JsonConvert.DeserializeObject(jsonPayload, canvasData.GetType());
+                CanvasData canvasData = new CanvasData();
+                canvasData = (CanvasData)JsonConvert.DeserializeObject(jsonPayload, canvasData.GetType());
 
-            //    m_ActiveCanvas.LoadCanvas(canvasData);         
-            //}
-            //catch { }
+                m_ActiveCanvas.LoadCanvas(canvasData);
+            }
+            catch { }
         }
 
         public void SaveAndClear()
@@ -172,10 +172,10 @@ namespace EXP.Painter
 
         public void Save(string filename)
         {
-            //// Create pay load, pass in canvas data and write
-            //string payload = "";
-            //payload = JsonConvert.SerializeObject(m_ActiveCanvas.GetCanvasData());
-            //System.IO.File.WriteAllText(filename, payload);
+            // Create pay load, pass in canvas data and write
+            string payload = "";
+            payload = JsonConvert.SerializeObject(m_ActiveCanvas.GetCanvasData());
+            System.IO.File.WriteAllText(filename, payload);
         }
         #endregion
          
