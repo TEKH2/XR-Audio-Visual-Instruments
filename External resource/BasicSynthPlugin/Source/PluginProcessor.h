@@ -20,8 +20,17 @@
 class BasicSynthAudioProcessor  : public AudioProcessor
 {
 public:
+
     //==============================================================================
-    BasicSynthAudioProcessor();
+    BasicSynthAudioProcessor()
+    {
+        addParameter(level = new AudioParameterFloat("level", // parameterID
+            "Level", // parameter name
+            0.0f,   // minimum value
+            1.0f,   // maximum value
+            0.5f)); // default value
+    };
+
     ~BasicSynthAudioProcessor();
 
     //==============================================================================
@@ -60,6 +69,8 @@ public:
 private:
     Synthesiser mySynth;
     SynthVoice* myVoice;
+
+    AudioParameterFloat* level;
     
     double lastSampleRate;
 

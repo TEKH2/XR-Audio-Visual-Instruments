@@ -4,6 +4,32 @@
               pluginFormats="buildStandalone,buildUnity,buildVST3" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="pbGQIN" name="BasicSynth">
     <GROUP id="{42EEBE76-3F10-DAC8-371D-4500AADA7286}" name="Source">
+      <GROUP id="{8E117DDE-D80C-BEFD-8BBD-5D49B86B6222}" name="Maximilian">
+        <FILE id="bSvySa" name="fft.cpp" compile="1" resource="0" file="Maximilian/fft.cpp"/>
+        <FILE id="UzD2uW" name="fft.h" compile="0" resource="0" file="Maximilian/fft.h"/>
+        <FILE id="y0hTpg" name="maxiAtoms.cpp" compile="1" resource="0" file="Maximilian/maxiAtoms.cpp"/>
+        <FILE id="VF5QPN" name="maxiAtoms.h" compile="0" resource="0" file="Maximilian/maxiAtoms.h"/>
+        <FILE id="fuVgwl" name="maxiBark.cpp" compile="1" resource="0" file="Maximilian/maxiBark.cpp"/>
+        <FILE id="SLrvP3" name="maxiBark.h" compile="0" resource="0" file="Maximilian/maxiBark.h"/>
+        <FILE id="CMzovn" name="maxiConvolve.cpp" compile="1" resource="0"
+              file="Maximilian/maxiConvolve.cpp"/>
+        <FILE id="MhTcyy" name="maxiConvolve.h" compile="0" resource="0" file="Maximilian/maxiConvolve.h"/>
+        <FILE id="gXp8VK" name="maxiFFT.cpp" compile="1" resource="0" file="Maximilian/maxiFFT.cpp"/>
+        <FILE id="NMAvaD" name="maxiFFT.h" compile="0" resource="0" file="Maximilian/maxiFFT.h"/>
+        <FILE id="D022dj" name="maxiGrains.cpp" compile="1" resource="0" file="Maximilian/maxiGrains.cpp"/>
+        <FILE id="tVA2S1" name="maxiGrains.h" compile="0" resource="0" file="Maximilian/maxiGrains.h"/>
+        <FILE id="czKLla" name="maxim.h" compile="0" resource="0" file="Maximilian/maxim.h"/>
+        <FILE id="tdiNUF" name="maxiMFCC.cpp" compile="1" resource="0" file="Maximilian/maxiMFCC.cpp"/>
+        <FILE id="vSgg0W" name="maxiMFCC.h" compile="0" resource="0" file="Maximilian/maxiMFCC.h"/>
+        <FILE id="mbPATn" name="maximilian.cpp" compile="1" resource="0" file="Maximilian/maximilian.cpp"/>
+        <FILE id="naBNGT" name="maximilian.h" compile="0" resource="0" file="Maximilian/maximilian.h"/>
+        <FILE id="wqTi4I" name="maxiReverb.cpp" compile="1" resource="0" file="Maximilian/maxiReverb.cpp"/>
+        <FILE id="MJHWSo" name="maxiReverb.h" compile="0" resource="0" file="Maximilian/maxiReverb.h"/>
+        <FILE id="ec3lSr" name="maxiSynths.h" compile="0" resource="0" file="Maximilian/maxiSynths.h"/>
+        <FILE id="DWXFco" name="sineTable.h" compile="0" resource="0" file="Maximilian/sineTable.h"/>
+        <FILE id="H1TtC0" name="stb_vorbis.c" compile="1" resource="0" file="Maximilian/stb_vorbis.c"/>
+        <FILE id="PM4LGK" name="stb_vorbis.h" compile="0" resource="0" file="Maximilian/stb_vorbis.h"/>
+      </GROUP>
       <FILE id="w4XPTX" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="Qevh1y" name="PluginProcessor.h" compile="0" resource="0"
@@ -19,7 +45,7 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" enablePluginBinaryCopyStep="1" unityPluginBinaryLocation="C:\Users\Chris\Documents\Coding Repos\JUCE_tests\Plugins"
-                       vst3BinaryLocation="C:\Users\Chris\Dropbox\_VST3"/>
+                       vst3BinaryLocation="C:\Users\Chris\Dropbox\_VST3" headerPath="C:\Users\Chris\Documents\Coding Repos\Libraries\Maximilian"/>
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -29,7 +29,7 @@ BasicSynthAudioProcessor::BasicSynthAudioProcessor()
 
     for (int i = 0; i < 5; i++)
     {
-        mySynth.addVoice(new SynthVoice());
+        mySynth.addVoice(new SynthVoice(*level));
     }
 
     mySynth.clearSounds();
@@ -145,6 +145,9 @@ void BasicSynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuf
     buffer.clear();
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
+
+
+    /*
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -170,6 +173,7 @@ void BasicSynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuf
 
         // ..do something to the data...
     }
+    */
 }
 
 //==============================================================================
