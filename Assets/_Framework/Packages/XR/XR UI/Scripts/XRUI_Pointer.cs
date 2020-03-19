@@ -57,6 +57,11 @@ namespace EXP.XR
             print(name + "  TRIGGER STAY: " + other.name);
 
             InteractableBase interactable = other.GetComponent<InteractableBase>();
+            if (interactable == null)
+            {
+                print("Trying to get component from non interactable.");
+                return;
+            }
 
             // If there is an existing active interactable, set it to normal
             if (_ActiveInteractable != null)
