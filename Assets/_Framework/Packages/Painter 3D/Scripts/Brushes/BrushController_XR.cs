@@ -75,12 +75,12 @@ namespace EXP.Painter
             // if the pointer is interacting then return
             if (_XRPointer.State != InteractableState.Normal)            
                 return;
-                       
-            if (!_Brush.Painting && trigger > 0)
+           
+            if (!_Brush.Painting && trigger > 0.01f)
             {
                 _Brush.BeginStroke(_BrushTip);
             }
-            else if(_Brush.Painting && trigger == 0)
+            else if(_Brush.Painting && trigger <= 0.01f)
             {
                 _Brush.EndStroke();
             }

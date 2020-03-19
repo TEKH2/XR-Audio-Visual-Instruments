@@ -123,7 +123,7 @@ namespace EXP.Painter
                 return null;
             }
 
-            Debug.Log("Starting stroke");
+            Debug.Log("Beginning stroke...");
 
             // Set painting flag
             m_Painting = true;
@@ -180,7 +180,7 @@ namespace EXP.Painter
                 */
             }
 
-            Debug.Log("End stroke");
+            Debug.Log("Ending stroke.");
         }
         #endregion
 

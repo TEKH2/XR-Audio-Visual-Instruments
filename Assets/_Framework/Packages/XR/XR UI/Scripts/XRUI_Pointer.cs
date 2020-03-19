@@ -96,8 +96,7 @@ namespace EXP.XR
         {
             // If hovering then execture the interaction
             if (_State == InteractableState.Hover && _ActiveInteractable != null)
-            {
-               
+            {               
                 // If the interaction works then set state to interacting
                 if (_ActiveInteractable.Interact())
                 {                   

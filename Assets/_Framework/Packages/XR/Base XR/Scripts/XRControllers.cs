@@ -102,27 +102,30 @@ namespace EXP.XR
     {
         public InputFeatureUsage<float> _InputFeature = CommonUsages.trigger;
         float _Value = 0;
+
+        float _HighCutoff = .99f;
+        float _Lowcutoff = .01f;
+
         public float Value
         {
             set
             {
                 if (value != _Value)
                 {
-                    if (value == 1 && _Value != 1)
+                    if (value >= _HighCutoff && _Value < _HighCutoff)
                     {
                         OnValueOne.Invoke();
                         if (XRControllers.Instance._DebugControllerEvents)
                             Debug.Log(_InputFeature.name.ToString() + "  OnValueOne");
                     }
-
-                    if (value != 1 && _Value == 1)
+                    else if (value < _HighCutoff && _Value >= _HighCutoff)
                     {
                         OnValueExitOne.Invoke();
                         if (XRControllers.Instance._DebugControllerEvents)
                             Debug.Log(_InputFeature.name.ToString() + "  OnValue ExitOne");
                     }
 
-                    if (value == 0 && _Value != 0)
+                    if (value <= _Lowcutoff && _Value > _Lowcutoff)
                     {
                         OnValueZero.Invoke();
                         if (XRControllers.Instance._DebugControllerEvents)
