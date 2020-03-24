@@ -121,6 +121,43 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &49856165 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3581089537890627616, guid: b4b77796fef876f41b86d49c57dd8ee7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482186745}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &49856167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49856165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_CameraOutput: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &170171480
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,6 +473,11 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3581089538798428260, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3581089539063031995, guid: b4b77796fef876f41b86d49c57dd8ee7,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -461,11 +503,21 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3581089539406586674, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3582052690561396167, guid: b4b77796fef876f41b86d49c57dd8ee7,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3594792075739455481, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c616611489a339348b82b92cefcdceae, type: 2}
     - target: {fileID: 6410448344342088391, guid: b4b77796fef876f41b86d49c57dd8ee7,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
