@@ -29,7 +29,7 @@ namespace EXP.Painter
         public float _Speed;
         public Vector3 _Velocity;
         public float _TimeSinceStrokeStart;
-        public float _DotToLastNode;
+        public float _NormAngleChange;
 
         #endregion
 
@@ -83,15 +83,16 @@ namespace EXP.Painter
                 tanget = brushTipT.forward;
                 normal = Vector3.Cross(tanget, Vector3.up).normalized;
                 binormal = Vector3.Cross(tanget, normal).normalized;
-                _DotToLastNode = 0;
+                _NormAngleChange = 0;
             }
             else
             {
                 tanget = (brushTipT.position - prevNode.OriginalPos).normalized;
                 normal = Vector3.Cross(prevNode.binormal, tanget).normalized;
                 binormal = Vector3.Cross(tanget, normal).normalized;
-                _DotToLastNode = Vector3.Dot(_Direction, prevNode._Direction);
-                Debug.Log(_DotToLastNode);
+                float newDot = Vector3.Dot(_Direction, prevNode._Direction);
+                float delta = _TimeSinceStrokeStart - prevNode._TimeSinceStrokeStart;
+                _NormAngleChange = Vector3.Angle(_Direction, prevNode._Direction) / 180f;
             }
 
             if (prevNode != null)

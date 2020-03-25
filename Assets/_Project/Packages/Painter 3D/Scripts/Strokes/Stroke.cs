@@ -345,9 +345,9 @@ namespace EXP.Painter
             {
                 for (int i = 0; i < m_RawStrokeNodes.Count; i++)
                 {
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedScale.x * m_RawStrokeNodes[i]._DotToLastNode * .2f);
-                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .2f);
+                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed/3);
+                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f) + (m_RawStrokeNodes[i]._NormAngleChange * m_RawStrokeNodes[i].ModifiedScale.x * .75f));
+                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .1f);
                 }
             }
 
@@ -355,7 +355,7 @@ namespace EXP.Painter
             {
                 for (int i = 0; i < m_SpacedStrokeNodes.Count; i++)
                 {
-                    Gizmos.color = Color.yellow;
+                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed / 3);
                     Gizmos.DrawSphere(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedScale.x * .2f);
                     Gizmos.DrawLine(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedPos + m_SpacedStrokeNodes[i]._Velocity);
                 }                
