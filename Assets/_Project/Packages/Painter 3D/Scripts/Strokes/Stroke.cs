@@ -31,13 +31,16 @@ namespace EXP.Painter
        
         // The renderer
         public StrokeRenderer m_StrokeRenderer;
-               
-        public bool m_DrawGizmos = false;
 
         float m_TotalLength;
-        public float TotalLength{ get{ return m_TotalLength; } }
+        public float TotalLength { get { return m_TotalLength; } }
 
         public bool redraw = false;
+
+        float _StrokeStartTime;
+
+        public bool _DEBUG_DrawRawdNodes = true;
+        public bool _DEBUG_DrawSpacedNodes = false;
 
         #region Intialization and constructors
         public static BrushStroke GetNewStroke(StrokeRenderer sRend, int layer, float scale, Color col)
@@ -280,25 +283,26 @@ namespace EXP.Painter
         #endregion
 
         #region Begin, update and end stroke
-        public void BeginStroke(Transform brushTip)
+        public void BeginStroke(Transform brushTip, Vector3 velocity)
         {
             m_RecordingInput = true;
-            UpdateStroke(brushTip);
+            UpdateStroke(brushTip, velocity);
 
             // Set total length to 0
             m_TotalLength = 0;
+            _StrokeStartTime = Time.time;
         }
 
-        public void UpdateStroke(Transform brushTip)
+        public void UpdateStroke(Transform brushTip, Vector3 brushVelocity)
         {
             // Create a new stoke node and add it to the list
             if (m_RawStrokeNodes.Count > 1)
             {                
-                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform, m_RawStrokeNodes[m_RawStrokeNodes.Count-1]));
+                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity, m_RawStrokeNodes[m_RawStrokeNodes.Count-1]));
             }
             else
             {
-                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform));
+                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity));
             }
 
             // If there is more than 1 matrics then add to total length
@@ -320,10 +324,10 @@ namespace EXP.Painter
                 m_StrokeRenderer.DrawStroke(false);            
         }
 
-        public void EndStroke(Transform brushTip)
+        public void EndStroke(Transform brushTip, Vector3 velocity)
         {
             m_RecordingInput = false;
-            UpdateStroke(brushTip);
+            UpdateStroke(brushTip, velocity);
 
             // Check to make sure stroke has more than 1 stroke node, otherwise delete
             if( m_RawStrokeNodes.Count <= 1 )
@@ -337,13 +341,23 @@ namespace EXP.Painter
         #region Debug
         public void OnDrawGizmos()
         {
-            if (m_DrawGizmos)
+            if (_DEBUG_DrawRawdNodes)
+            {
+                for (int i = 0; i < m_RawStrokeNodes.Count; i++)
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedScale.x * m_RawStrokeNodes[i]._DotToLastNode * .2f);
+                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .2f);
+                }
+            }
+
+            if (_DEBUG_DrawSpacedNodes)
             {
                 for (int i = 0; i < m_SpacedStrokeNodes.Count; i++)
                 {
                     Gizmos.color = Color.yellow;
-                    Gizmos.DrawSphere(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedScale.x/4f);
-                    Gizmos.DrawLine(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedPos + m_SpacedStrokeNodes[i].GetNormal());
+                    Gizmos.DrawSphere(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedScale.x * .2f);
+                    Gizmos.DrawLine(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedPos + m_SpacedStrokeNodes[i]._Velocity);
                 }                
             }
         }

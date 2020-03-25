@@ -33,6 +33,9 @@ namespace EXP.Painter
         #region Brush Tip
         // The transform the the brush guides
         private Transform _BrushTip;
+        Vector3 _BrushPrevPosition;
+        Vector3 BrushTipVelocity { get { return (_BrushTip.position - _BrushPrevPosition) / Time.deltaTime; } }
+
         // The size of the brush tip
         float _BrushSize = .05f;
         public float BrushSize {
@@ -104,9 +107,9 @@ namespace EXP.Painter
             }
         }
 
-        private void OnDrawGizmos()
+        private void LateUpdate()
         {
-            // m_BrushTip.transform
+            _BrushPrevPosition = _BrushTip.position;
         }
 
         #endregion
@@ -139,7 +142,7 @@ namespace EXP.Painter
             m_PaintManager.ActiveCanvas.AddStroke(m_ActiveStroke);
 
             // Begin stroke
-            m_ActiveStroke.BeginStroke(brushTip);
+            m_ActiveStroke.BeginStroke(brushTip, BrushTipVelocity);
 
             // Set prev node pos
             m_PrevNodePos = brushTip.position;
@@ -154,7 +157,7 @@ namespace EXP.Painter
             {
                 if (Vector3.Distance(_BrushTip.position, m_PrevNodePos) > m_MinNodeSpacing)
                 {
-                    m_ActiveStroke.UpdateStroke(_BrushTip);
+                    m_ActiveStroke.UpdateStroke(_BrushTip, BrushTipVelocity);
                     m_PrevNodePos = _BrushTip.position;
                 }
             }
@@ -167,7 +170,7 @@ namespace EXP.Painter
         {
             if (m_Painting)
             {
-                m_ActiveStroke.EndStroke(_BrushTip);
+                m_ActiveStroke.EndStroke(_BrushTip, BrushTipVelocity);
                 m_Painting = false;
 
                 if (OnStrokeCompleteEvent != null) OnStrokeCompleteEvent(m_ActiveStroke);

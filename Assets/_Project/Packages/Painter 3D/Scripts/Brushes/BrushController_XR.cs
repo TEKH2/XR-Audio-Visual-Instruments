@@ -20,7 +20,6 @@ namespace EXP.Painter
         public XRUI_ColourPad _ColourPicker;
 
         XRUI_Pointer _UIPointer;
-
         XRUI_Pointer _XRPointer;
                 
         private void Start()

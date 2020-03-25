@@ -8,15 +8,18 @@ namespace EXP.Painter
     public class BrushController_Mouse : MonoBehaviour
     {
         public Camera m_Cam;        
-        public Brush m_Brush;
-        Transform m_BrushTip;
+        public Brush _Brush;
+        Transform _BrushTip;
         public bool m_UpdateFacing = false;
-        float m_Depth = 3;
+        float m_Depth = 1.5f;
         public float m_Smoothing = 2;
 
         void Start()
         {
-            m_BrushTip = transform;
+            _BrushTip = transform;
+
+            // Set Brush tip
+            _Brush.SetBrushTip(_BrushTip);
         }
 
         // Update is called once per frame
@@ -28,15 +31,15 @@ namespace EXP.Painter
 
             if (Input.GetMouseButtonDown(0))
             {
-                m_Brush.BeginStroke(transform);
+                _Brush.BeginStroke(transform);
             }
-            else if (Input.GetMouseButton(0) && m_Brush.Painting)
+            else if (Input.GetMouseButton(0) && _Brush.Painting)
             {
-                m_Brush.UpdateStroke();
+                _Brush.UpdateStroke();
             }
-            else if (Input.GetMouseButtonUp(0) && m_Brush.Painting)
+            else if (Input.GetMouseButtonUp(0) && _Brush.Painting)
             {
-                m_Brush.EndStroke();
+                _Brush.EndStroke();
             }
 
 
@@ -44,7 +47,7 @@ namespace EXP.Painter
             if (Input.GetMouseButtonDown(1))
             {
                 m_UpdateFacing = false;
-                PainterManager.Instance.ActiveCanvas.BeginMoveCanvas(m_BrushTip);
+                PainterManager.Instance.ActiveCanvas.BeginMoveCanvas(_BrushTip);
             }
             else if(Input.GetMouseButton(1))
             {
@@ -71,9 +74,9 @@ namespace EXP.Painter
                 targetPos = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * m_Smoothing);
 
             // Update the rotation of the brush tip
-            if (m_UpdateFacing && Vector3.Distance(targetPos, m_BrushTip.position) > .01f)
+            if (m_UpdateFacing && Vector3.Distance(targetPos, _BrushTip.position) > .01f)
             {
-                UpdateTipAngleOnXY(m_BrushTip.transform.position, targetPos);
+                UpdateTipAngleOnXY(_BrushTip.transform.position, targetPos);
             }
 
             transform.position = targetPos;
@@ -84,7 +87,7 @@ namespace EXP.Painter
             var newRotation = Quaternion.LookRotation(currentPos - targetPos, Vector3.forward);
             newRotation.x = 0.0f;
             newRotation.y = 0.0f;
-            m_BrushTip.rotation = Quaternion.Slerp(m_BrushTip.transform.rotation, newRotation, 1);
+            _BrushTip.rotation = Quaternion.Slerp(_BrushTip.transform.rotation, newRotation, 1);
         }
     }
 }

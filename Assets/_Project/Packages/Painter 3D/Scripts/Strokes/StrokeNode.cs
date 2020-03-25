@@ -25,8 +25,13 @@ namespace EXP.Painter
         public Quaternion OffsetRot { get; set; }
         public Vector3 OffsetScale { get; set; }
 
-        #endregion
+        public Vector3 _Direction;
+        public float _Speed;
+        public Vector3 _Velocity;
+        public float _TimeSinceStrokeStart;
+        public float _DotToLastNode;
 
+        #endregion
 
         #region Modified transform values
        
@@ -60,7 +65,7 @@ namespace EXP.Painter
         public Vector3 tanget;
         public Vector3 normal;
         public Vector3 binormal;
-        public StrokeNode(Transform brushTipT, Transform strokeTransform, StrokeNode prevNode = null)
+        public StrokeNode(Transform brushTipT, Transform strokeTransform, float timeSinceStrokeStart, Vector3 velocity, StrokeNode prevNode = null)
         {
             Transform preParent = brushTipT.parent;
             brushTipT.SetParent(strokeTransform);
@@ -68,17 +73,25 @@ namespace EXP.Painter
             OriginalPos = brushTipT.localPosition;          
             OriginalScale = brushTipT.localScale;
 
+            _Velocity = velocity;
+            _Speed = _Velocity.magnitude;
+            _Direction = _Velocity.normalized;
+            _TimeSinceStrokeStart = timeSinceStrokeStart;
+
             if (prevNode == null)
             {
                 tanget = brushTipT.forward;
                 normal = Vector3.Cross(tanget, Vector3.up).normalized;
                 binormal = Vector3.Cross(tanget, normal).normalized;
+                _DotToLastNode = 0;
             }
             else
             {
                 tanget = (brushTipT.position - prevNode.OriginalPos).normalized;
                 normal = Vector3.Cross(prevNode.binormal, tanget).normalized;
                 binormal = Vector3.Cross(tanget, normal).normalized;
+                _DotToLastNode = Vector3.Dot(_Direction, prevNode._Direction);
+                Debug.Log(_DotToLastNode);
             }
 
             if (prevNode != null)

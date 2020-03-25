@@ -49,10 +49,10 @@ namespace EXP.Painter
             tempBrushTip.localPosition = -(Vector3.right * m_Length * .5f);
 
             // Begin stroke
-            m_ExampleStroke.BeginStroke(tempBrushTip);
+            m_ExampleStroke.BeginStroke(tempBrushTip, Vector3.zero);
 
             tempBrushTip.localPosition =  (Vector3.right * m_Length * .5f);
-            m_ExampleStroke.EndStroke(tempBrushTip);
+            m_ExampleStroke.EndStroke(tempBrushTip, Vector3.zero);
         }
 
         // Update is called once per frame
