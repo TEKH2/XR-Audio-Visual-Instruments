@@ -20,14 +20,7 @@ public:
 
     SynthVoice()
     {
-        gain = 0.5f;
     };
-
-    //SynthVoice(AudioParameterFloat *level)
-    //{
-    //    *frequency = frequencyOfA;
-    //    gain = *level;
-    //};
 
     bool canPlaySound (SynthesiserSound* sound)
     {
@@ -75,7 +68,6 @@ public:
 private:
     AudioParameterFloat* frequency;
     const double frequencyOfA = 440;
-    float gain;
 
     maxiOsc osc1;
     
