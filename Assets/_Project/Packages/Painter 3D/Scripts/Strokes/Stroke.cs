@@ -17,11 +17,11 @@ namespace EXP.Painter
 
         #region Raw and spaced matracie lists
         // List of stroke nodes to replace the matracies
-        public List<StrokeNode> m_RawStrokeNodes = new List<StrokeNode>();
-        public List<StrokeNode> RawStrokeNodes { get { return m_RawStrokeNodes; } }
-        public int RawNodeCount { get { return m_RawStrokeNodes.Count; } }
-        public List<StrokeNode> m_SpacedStrokeNodes = new List<StrokeNode>();
-        public List<StrokeNode> SpacedStrokeNodes { get { return m_SpacedStrokeNodes; } }
+        public List<StrokeNode> _RawStrokeNodes = new List<StrokeNode>();
+        public List<StrokeNode> RawStrokeNodes { get { return _RawStrokeNodes; } }
+        public int RawNodeCount { get { return _RawStrokeNodes.Count; } }
+        public List<StrokeNode> _SpacedStrokeNodes = new List<StrokeNode>();
+        public List<StrokeNode> SpacedStrokeNodes { get { return _SpacedStrokeNodes; } }
         #endregion      
 
         #region Spacing and size
@@ -37,7 +37,10 @@ namespace EXP.Painter
 
         public bool redraw = false;
 
+      
         float _StrokeStartTime;
+        float _StrokeEndTime;
+        public float _TotalTime;
 
         public bool _DEBUG_DrawRawdNodes = true;
         public bool _DEBUG_DrawSpacedNodes = false;
@@ -61,9 +64,9 @@ namespace EXP.Painter
         {
             BrushStroke s = GetNewStroke(Instantiate(m_StrokeRenderer), 0, m_Scale, m_StrokeRenderer.m_Color);
 
-            s.m_RawStrokeNodes = new List<StrokeNode>();
+            s._RawStrokeNodes = new List<StrokeNode>();
             // Copy all raw nodes
-            for (int i = 0; i < m_RawStrokeNodes.Count; i++)
+            for (int i = 0; i < _RawStrokeNodes.Count; i++)
             {
                 Vector3 pos = RawStrokeNodes[i].OriginalPos;
                 Quaternion rot = RawStrokeNodes[i].OriginalRot;
@@ -88,7 +91,7 @@ namespace EXP.Painter
                     vel = new Vector3(-vel.x, vel.y, vel.z);
                 }
 
-                s.m_RawStrokeNodes.Add(new StrokeNode(pos, rot, scale, vel, RawStrokeNodes[i]._Time, RawStrokeNodes[i]._NormAngleChange));
+                s._RawStrokeNodes.Add(new StrokeNode(pos, rot, scale, vel, RawStrokeNodes[i]._Time, RawStrokeNodes[i]._NormAngleChange));
             }
 
             s.CalculateLength();
@@ -143,10 +146,10 @@ namespace EXP.Painter
 
             // If force rebuild then clear the matracie list, forcing them all to be regenerated
             if (forceRebuild)
-                m_SpacedStrokeNodes.Clear();
+                _SpacedStrokeNodes.Clear();
 
             // Generate new matracies
-            for (int i = m_SpacedStrokeNodes.Count; i < newCount; i++)
+            for (int i = _SpacedStrokeNodes.Count; i < newCount; i++)
             {
                 float length = i * scaledSpacing;
 
@@ -154,13 +157,13 @@ namespace EXP.Painter
                 length = Mathf.Clamp(length, 0, TotalLength);
 
                 // Get new node at length
-                StrokeNode newNode = GetStrokeNodeAtLength(length);
+                StrokeNode newNode = GetNodeAtLength(length);
 
                 // Set node jitter
                 m_StrokeRenderer.SetJitter(newNode, i);
 
                 // Add node to list
-                m_SpacedStrokeNodes.Add(newNode);
+                _SpacedStrokeNodes.Add(newNode);
             }            
         }
 
@@ -184,7 +187,7 @@ namespace EXP.Painter
                 // TODO load in proper vel time and angle change
                 // For each stroke node data add a new node
                 StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale, Vector3.right, norm, 0);
-                m_RawStrokeNodes.Add(newNode);
+                _RawStrokeNodes.Add(newNode);
 
                 // Accumulate length
                 if (i > 0)
@@ -224,7 +227,7 @@ namespace EXP.Painter
 
                 // For each stroke node data add a new node
                 StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale, Vector3.right, norm, 0);
-                m_RawStrokeNodes.Add(newNode);
+                _RawStrokeNodes.Add(newNode);
 
                 // Accumulate length
                 if (i > 0)
@@ -249,21 +252,21 @@ namespace EXP.Painter
         #region Get pos, rot, scale
         public Vector3 GetPositionAt(int index)
         {
-            return m_RawStrokeNodes[index].OriginalPos;
+            return _RawStrokeNodes[index].OriginalPos;
         }        
                
         // Returns the position at the length along the stroke
-        public StrokeNode GetStrokeNodeAtLength(float targetDist)
+        public StrokeNode GetNodeAtLength(float targetDist)
         {
             targetDist = Mathf.Clamp(targetDist, 0, TotalLength);
 
             float currentDist = 0;
             float lerp = 0;
-            for (int i = 0; i < m_RawStrokeNodes.Count - 1; i++)
+            for (int i = 0; i < _RawStrokeNodes.Count - 1; i++)
             {
                 // Get the distance between of the current and next stroke nodes
-                Vector3 currentPos = m_RawStrokeNodes[i].OriginalPos;
-                Vector3 nextPos = m_RawStrokeNodes[i + 1].OriginalPos;
+                Vector3 currentPos = _RawStrokeNodes[i].OriginalPos;
+                Vector3 nextPos = _RawStrokeNodes[i + 1].OriginalPos;
 
                 float interNodeDist = Vector3.Distance(currentPos, nextPos);
 
@@ -271,7 +274,7 @@ namespace EXP.Painter
                 if (currentDist + interNodeDist > targetDist)
                 {
                     lerp = (targetDist - currentDist) / interNodeDist;
-                    return LerpStrokeNodes(m_RawStrokeNodes[i], m_RawStrokeNodes[i + 1], lerp);
+                    return LerpStrokeNodes(_RawStrokeNodes[i], _RawStrokeNodes[i + 1], lerp);
                 }
                 else
                 {
@@ -279,7 +282,33 @@ namespace EXP.Painter
                 }
             }
 
-            return m_RawStrokeNodes[0];
+            return _RawStrokeNodes[0];
+        }
+
+        // Returns the position at the time along the stroke
+        public StrokeNode GetNodeAtTime(float targetTime)
+        {
+            targetTime %= _TotalTime;
+            float lerp = 0;
+
+            if (_RawStrokeNodes.Count > 1)
+            {
+                for (int i = 1; i < _RawStrokeNodes.Count - 1; i++)
+                {
+                    // find first node with a time larger than target time
+                    if (_RawStrokeNodes[i]._Time > targetTime)
+                    {
+                        StrokeNode prevNode = _RawStrokeNodes[i - 1];
+                        float timeDiff = _RawStrokeNodes[i]._Time - prevNode._Time;
+                        lerp = (targetTime - prevNode._Time) / timeDiff;
+
+                        //print("Getting node: " + i + "    targetTime/Stroke time: " + targetTime +"/"+ _TotalTime + "    node: " + _RawStrokeNodes[i]._Time);
+                        return LerpStrokeNodes(_RawStrokeNodes[i - 1], _RawStrokeNodes[i], lerp);
+                    }
+                }
+            }
+
+            return _RawStrokeNodes[0];
         }
 
         StrokeNode LerpStrokeNodes( StrokeNode node1, StrokeNode node2, float lerp)
@@ -287,8 +316,12 @@ namespace EXP.Painter
             Vector3 pos = Vector3.Lerp(node1.OriginalPos, node2.OriginalPos, lerp);
             Quaternion rot = Quaternion.Slerp(node1.OriginalRot, node2.OriginalRot, lerp);
             Vector3 scale = Vector3.Lerp(node1.OriginalScale, node2.OriginalScale, lerp);
-            
-            return new StrokeNode(pos, rot, scale);
+
+            Vector3 vel = Vector3.Lerp(node1._Velocity, node2._Velocity, lerp);
+            float time = Mathf.Lerp(node1._Time, node2._Time, lerp);
+            float angle = Mathf.Lerp(node1._NormAngleChange, node2._NormAngleChange, lerp);
+
+            return new StrokeNode(pos, rot, scale, vel, time, angle);
         }
         #endregion
 
@@ -306,26 +339,26 @@ namespace EXP.Painter
         public void UpdateStroke(Transform brushTip, Vector3 brushVelocity)
         {
             // Create a new stoke node and add it to the list
-            if (m_RawStrokeNodes.Count > 1)
+            if (_RawStrokeNodes.Count > 1)
             {                
-                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity, m_RawStrokeNodes[m_RawStrokeNodes.Count-1]));
+                _RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity, _RawStrokeNodes[_RawStrokeNodes.Count-1]));
             }
             else
             {
-                m_RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity));
+                _RawStrokeNodes.Add(new StrokeNode(brushTip, transform, Time.time - _StrokeStartTime, brushVelocity));
             }
 
             // If there is more than 1 matrics then add to total length
-            if (m_RawStrokeNodes.Count > 1)
+            if (_RawStrokeNodes.Count > 1)
             {
                 // Update total length by adding previous stroke node distance              
-                m_TotalLength += Vector3.Distance(m_RawStrokeNodes[m_RawStrokeNodes.Count - 1].OriginalPos, m_RawStrokeNodes[m_RawStrokeNodes.Count - 2].OriginalPos);
+                m_TotalLength += Vector3.Distance(_RawStrokeNodes[_RawStrokeNodes.Count - 1].OriginalPos, _RawStrokeNodes[_RawStrokeNodes.Count - 2].OriginalPos);
             }    
             
             // if adding the second raw matrix, set the rotation of the first matrix to the same as the second          
-            if( m_RawStrokeNodes.Count == 2)
+            if( _RawStrokeNodes.Count == 2)
             {
-                m_RawStrokeNodes[0].SetOriginalRotation(m_RawStrokeNodes[1].OriginalRot);
+                _RawStrokeNodes[0].SetOriginalRotation(_RawStrokeNodes[1].OriginalRot);
             }
             
             UpdateSpacedStrokeNodes(false);
@@ -339,8 +372,10 @@ namespace EXP.Painter
             m_RecordingInput = false;
             UpdateStroke(brushTip, velocity);
 
+            _TotalTime = Time.time - _StrokeStartTime;
+
             // Check to make sure stroke has more than 1 stroke node, otherwise delete
-            if( m_RawStrokeNodes.Count <= 1 )
+            if( _RawStrokeNodes.Count <= 1 )
             {
                 print("Removing stroke with less than 2 nodes");
                 PainterManager.Instance.UndoLastStroke();
@@ -353,23 +388,23 @@ namespace EXP.Painter
         {
             if (_DEBUG_DrawRawdNodes)
             {
-                for (int i = 0; i < m_RawStrokeNodes.Count; i++)
-                {
-                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed/2.5f);
-                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f));
-                    Gizmos.DrawWireSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f) + (m_RawStrokeNodes[i]._NormAngleChange * m_RawStrokeNodes[i].ModifiedScale.x * 2));
-                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .2f);
-                }
+                DrawDebug(_RawStrokeNodes);
             }
 
             if (_DEBUG_DrawSpacedNodes)
             {
-                for (int i = 0; i < m_SpacedStrokeNodes.Count; i++)
-                {
-                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed / 3);
-                    Gizmos.DrawSphere(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedScale.x * .2f);
-                    Gizmos.DrawLine(m_SpacedStrokeNodes[i].ModifiedPos, m_SpacedStrokeNodes[i].ModifiedPos + m_SpacedStrokeNodes[i]._Velocity);
-                }                
+                DrawDebug(_SpacedStrokeNodes);
+            }
+        }
+
+        void DrawDebug(List<StrokeNode> strokeNodes)
+        {
+            for (int i = 0; i < _RawStrokeNodes.Count; i++)
+            {
+                Gizmos.color = Color.Lerp(Color.blue, Color.yellow, strokeNodes[i]._Speed / 2.5f);
+                Gizmos.DrawSphere(strokeNodes[i].ModifiedPos, (strokeNodes[i].ModifiedScale.x * .25f));
+                Gizmos.DrawWireSphere(strokeNodes[i].ModifiedPos, (strokeNodes[i].ModifiedScale.x * .25f) + (strokeNodes[i]._NormAngleChange * strokeNodes[i].ModifiedScale.x * 2));
+                Gizmos.DrawLine(strokeNodes[i].ModifiedPos, strokeNodes[i].ModifiedPos + strokeNodes[i]._Velocity * .2f);
             }
         }
         #endregion
@@ -379,7 +414,7 @@ namespace EXP.Painter
             m_TotalLength = 0;
             for (int i = 1; i < RawNodeCount; i++)
             {
-                m_TotalLength += Vector3.Distance(m_RawStrokeNodes[i - 1].OriginalPos, m_RawStrokeNodes[i].OriginalPos);
+                m_TotalLength += Vector3.Distance(_RawStrokeNodes[i - 1].OriginalPos, _RawStrokeNodes[i].OriginalPos);
             }
         }
 

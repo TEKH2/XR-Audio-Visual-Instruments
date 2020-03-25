@@ -104,19 +104,6 @@ namespace EXP.Painter
             brushTipT.SetParent(preParent);
         }
 
-        public StrokeNode(Vector3 pos, Quaternion rot, Vector3 scale)
-        {
-            OriginalPos = pos;
-            OriginalRot = rot;
-            OriginalScale = scale;
-
-            _Velocity = Vector3.up;
-            _Direction = _Velocity.normalized;
-            _Speed = _Velocity.magnitude;
-            _Time = 0;
-            _NormAngleChange = 0;
-        }
-
         public StrokeNode(Vector3 pos, Quaternion rot, Vector3 scale, Vector3 vel, float time, float normAngleChange)
         {
             OriginalPos = pos;

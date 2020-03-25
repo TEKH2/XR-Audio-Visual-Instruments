@@ -9,6 +9,9 @@ namespace EXP.Painter
     /// </summary>
     public class PainterCanvas : MonoBehaviour
     {
+        public delegate void OnAddStroke(BrushStroke stroke);
+        public OnAddStroke OnStrokeAdded;
+
         #region Variables
         // The strokes that the canvas contains
         public List<BrushStroke> m_Strokes = new List<BrushStroke>();
@@ -64,6 +67,8 @@ namespace EXP.Painter
             // Add stroke to the list and set parent to canvas
             m_Strokes.Add(s);
             s.transform.SetParent(transform);
+
+            OnStrokeAdded?.Invoke(s);
 
             PainterManager.Instance.ClearRedo();
         }
