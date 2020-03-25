@@ -29,11 +29,18 @@ BasicSynthAudioProcessor::BasicSynthAudioProcessor()
 
     for (int i = 0; i < 5; i++)
     {
-        mySynth.addVoice(new SynthVoice(*level));
+        mySynth.addVoice(new SynthVoice());
     }
 
     mySynth.clearSounds();
     mySynth.addSound(new SynthSound());
+
+    addParameter(level = new AudioParameterFloat(
+        "level", // parameterID
+        "Level", // parameter name
+        0.0f,   // minimum value
+        1.0f,   // maximum value
+        0.5f)); // default value
 }
 
 BasicSynthAudioProcessor::~BasicSynthAudioProcessor()
@@ -144,7 +151,7 @@ void BasicSynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuf
 {
     buffer.clear();
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-
+    buffer.applyGain(*level);
 
 
     /*

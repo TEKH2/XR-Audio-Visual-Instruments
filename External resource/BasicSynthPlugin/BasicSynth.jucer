@@ -44,7 +44,7 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" enablePluginBinaryCopyStep="1" unityPluginBinaryLocation="C:\Users\Chris\Documents\Coding Repos\JUCE_tests\Plugins"
+        <CONFIGURATION isDebug="1" name="Debug" enablePluginBinaryCopyStep="1" unityPluginBinaryLocation="C:\Users\Chris\Documents\Coding Repos\Ethnotekhv2_baseproject\Assets\Plugins"
                        vst3BinaryLocation="C:\Users\Chris\Dropbox\_VST3" headerPath="C:\Users\Chris\Documents\Coding Repos\Libraries\Maximilian"/>
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>

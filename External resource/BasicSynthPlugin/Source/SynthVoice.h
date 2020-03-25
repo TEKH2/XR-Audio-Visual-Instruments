@@ -20,14 +20,14 @@ public:
 
     SynthVoice()
     {
-        *frequency = frequencyOfA;
+        gain = 0.5f;
     };
 
-    SynthVoice(AudioParameterFloat* level)
-    {
-        *frequency = frequencyOfA;
-        *gain = *level;
-    };
+    //SynthVoice(AudioParameterFloat *level)
+    //{
+    //    *frequency = frequencyOfA;
+    //    gain = *level;
+    //};
 
     bool canPlaySound (SynthesiserSound* sound)
     {
@@ -57,14 +57,11 @@ public:
 
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
     {
-        // DSP CODE HERE
-        
-        
-
+        //DSP CODE
         for (int sample = 0; sample < numSamples; ++sample)
         {
             
-            double theWave = osc1.sinewave(frequencyOfA) * *gain;
+            double theWave = osc1.sinewave(frequencyOfA);
 
             for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
             {
@@ -78,7 +75,7 @@ public:
 private:
     AudioParameterFloat* frequency;
     const double frequencyOfA = 440;
-    float* gain;
+    float gain;
 
     maxiOsc osc1;
     
