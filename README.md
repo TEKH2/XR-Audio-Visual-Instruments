@@ -21,7 +21,7 @@ This project currently does nothing. Stay tuned!
   <li>Discord: https://discord.gg/xP7tHmq</li>
   <li>Twitter: https://twitter.com/ethnotekh | https://twitter.com/MaxVram | https://twitter.com/xy01
   <li>Tasks: https://github.com/XY01/Ethnotekhv2_baseproject/tree/master#zenhub</li>
-  <li>Doco/Ideation: https://app.milanote.com/1JgTgA1GCDBtbB/instrument-painting-and-playback </li>
+  <li>Doco/Ideation: https://app.milanote.com/1JgTf01GCDBtbA/et-v2 </li>
 </ul>
 
 <p>&nbsp</p>
