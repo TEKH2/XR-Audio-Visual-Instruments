@@ -22,15 +22,7 @@ class BasicSynthAudioProcessor  : public AudioProcessor
 public:
 
     //==============================================================================
-    BasicSynthAudioProcessor()
-    {
-        addParameter(level = new AudioParameterFloat("level", // parameterID
-            "Level", // parameter name
-            0.0f,   // minimum value
-            1.0f,   // maximum value
-            0.5f)); // default value
-    };
-
+    BasicSynthAudioProcessor();
     ~BasicSynthAudioProcessor();
 
     //==============================================================================
