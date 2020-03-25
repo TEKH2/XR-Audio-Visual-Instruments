@@ -27,8 +27,8 @@ namespace EXP.Painter
 
         public Vector3 _Direction;
         public float _Speed;
-        public Vector3 _Velocity;
-        public float _TimeSinceStrokeStart;
+        public Vector3 _Velocity = Vector3.up;
+        public float _Time;
         public float _NormAngleChange;
 
         #endregion
@@ -76,7 +76,7 @@ namespace EXP.Painter
             _Velocity = velocity;
             _Speed = _Velocity.magnitude;
             _Direction = _Velocity.normalized;
-            _TimeSinceStrokeStart = timeSinceStrokeStart;
+            _Time = timeSinceStrokeStart;
 
             if (prevNode == null)
             {
@@ -91,7 +91,7 @@ namespace EXP.Painter
                 normal = Vector3.Cross(prevNode.binormal, tanget).normalized;
                 binormal = Vector3.Cross(tanget, normal).normalized;
                 float newDot = Vector3.Dot(_Direction, prevNode._Direction);
-                float delta = _TimeSinceStrokeStart - prevNode._TimeSinceStrokeStart;
+                float delta = _Time - prevNode._Time;
                 _NormAngleChange = Vector3.Angle(_Direction, prevNode._Direction) / 180f;
             }
 
@@ -109,6 +109,25 @@ namespace EXP.Painter
             OriginalPos = pos;
             OriginalRot = rot;
             OriginalScale = scale;
+
+            _Velocity = Vector3.up;
+            _Direction = _Velocity.normalized;
+            _Speed = _Velocity.magnitude;
+            _Time = 0;
+            _NormAngleChange = 0;
+        }
+
+        public StrokeNode(Vector3 pos, Quaternion rot, Vector3 scale, Vector3 vel, float time, float normAngleChange)
+        {
+            OriginalPos = pos;
+            OriginalRot = rot;
+            OriginalScale = scale;
+
+            _Velocity = vel;
+            _Direction = _Velocity.normalized;
+            _Speed = _Velocity.magnitude;
+            _Time = time;
+            _NormAngleChange = normAngleChange;
         }
         #endregion
 

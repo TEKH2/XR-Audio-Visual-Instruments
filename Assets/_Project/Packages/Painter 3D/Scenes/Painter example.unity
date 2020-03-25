@@ -420,6 +420,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.92
       objectReference: {fileID: 0}
+    - target: {fileID: 3581089537890627621, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3581089537890627621, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.4528302
+      objectReference: {fileID: 0}
+    - target: {fileID: 3581089537890627621, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.4528302
+      objectReference: {fileID: 0}
+    - target: {fileID: 3581089537890627621, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.4528302
+      objectReference: {fileID: 0}
     - target: {fileID: 3581089538497679748, guid: b4b77796fef876f41b86d49c57dd8ee7,
         type: 3}
       propertyPath: m_Name
@@ -825,7 +845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1722112547
 MonoBehaviour:
   m_ObjectHideFlags: 0

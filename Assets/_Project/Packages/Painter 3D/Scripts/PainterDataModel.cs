@@ -83,7 +83,11 @@ namespace EXP.Painter
         public string m_RotData;
         public string m_ScaleData;
 
-        public TransformData( Transform t)
+        public string _VelData;
+        public string _TimeData;
+        public string _NormAngleChange;
+
+        public TransformData( Transform t )
         {
             m_PosData = t.localPosition.ToString("G3");
             m_RotData = t.localRotation.eulerAngles.ToString("G3");

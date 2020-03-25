@@ -69,6 +69,8 @@ namespace EXP.Painter
                 Quaternion rot = RawStrokeNodes[i].OriginalRot;
                 Vector3 scale = RawStrokeNodes[i].OriginalScale;
 
+                Vector3 vel = RawStrokeNodes[i]._Velocity;
+
                 if (x)
                 {
                     Vector3 fwd = rot * Vector3.back;
@@ -82,9 +84,11 @@ namespace EXP.Painter
                     pos.x = -pos.x;
 
                     scale.x = -scale.x;
+
+                    vel = new Vector3(-vel.x, vel.y, vel.z);
                 }
 
-                s.m_RawStrokeNodes.Add(new StrokeNode(pos, rot, scale));
+                s.m_RawStrokeNodes.Add(new StrokeNode(pos, rot, scale, vel, RawStrokeNodes[i]._Time, RawStrokeNodes[i]._NormAngleChange));
             }
 
             s.CalculateLength();
@@ -165,17 +169,21 @@ namespace EXP.Painter
         {
             m_TotalLength = 0;
             Vector3 prevPos = Vector3.zero;
+            float norm = 0;
 
             for (int i = 0; i < sData.m_RawStrokeNodeData.Length; i++)
             {
+                norm = i / (sData.m_RawStrokeNodeData.Length - 1f);
+
                 TransformData sNodeData = sData.m_RawStrokeNodeData[i];
 
                 Vector3 pos = VectorExtensions.Parse(sNodeData.m_PosData);
                 Vector3 rot = VectorExtensions.Parse(sNodeData.m_RotData);
                 Vector3 scale = VectorExtensions.Parse(sNodeData.m_ScaleData);
 
+                // TODO load in proper vel time and angle change
                 // For each stroke node data add a new node
-                StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale);
+                StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale, Vector3.right, norm, 0);
                 m_RawStrokeNodes.Add(newNode);
 
                 // Accumulate length
@@ -203,9 +211,11 @@ namespace EXP.Painter
             Vector3 prevPos = Vector3.zero;
 
             float timeBetweenNodes = duration / sData.m_RawStrokeNodeData.Length;
+            float norm = 0;
 
             for (int i = 0; i < sData.m_RawStrokeNodeData.Length; i++)
             {
+                norm = i / (sData.m_RawStrokeNodeData.Length - 1f);
                 TransformData sNodeData = sData.m_RawStrokeNodeData[i];
 
                 Vector3 pos = VectorExtensions.Parse(sNodeData.m_PosData);
@@ -213,7 +223,7 @@ namespace EXP.Painter
                 Vector3 scale = VectorExtensions.Parse(sNodeData.m_ScaleData);
 
                 // For each stroke node data add a new node
-                StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale);
+                StrokeNode newNode = new StrokeNode(pos, Quaternion.Euler(rot), scale, Vector3.right, norm, 0);
                 m_RawStrokeNodes.Add(newNode);
 
                 // Accumulate length
@@ -345,9 +355,10 @@ namespace EXP.Painter
             {
                 for (int i = 0; i < m_RawStrokeNodes.Count; i++)
                 {
-                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed/3);
-                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f) + (m_RawStrokeNodes[i]._NormAngleChange * m_RawStrokeNodes[i].ModifiedScale.x * .75f));
-                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .1f);
+                    Gizmos.color = Color.Lerp(Color.blue, Color.yellow, m_RawStrokeNodes[i]._Speed/2.5f);
+                    Gizmos.DrawSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f));
+                    Gizmos.DrawWireSphere(m_RawStrokeNodes[i].ModifiedPos, (m_RawStrokeNodes[i].ModifiedScale.x * .25f) + (m_RawStrokeNodes[i]._NormAngleChange * m_RawStrokeNodes[i].ModifiedScale.x * 2));
+                    Gizmos.DrawLine(m_RawStrokeNodes[i].ModifiedPos, m_RawStrokeNodes[i].ModifiedPos + m_RawStrokeNodes[i]._Velocity * .2f);
                 }
             }
 
