@@ -79,7 +79,7 @@ namespace EXP.Painter
                 _PlaybackHeadTransform.position = strokeNode.OriginalPos;
 
                 _PSMain.startColor = Color.Lerp(_LowAngle, _HighAngle, strokeNode._Speed / _MaxSpeed);
-                print(strokeNode._NormAngleChange);
+                //print(strokeNode._NormAngleChange);
 
                 //Output
                 _Out_Speed?.Invoke(strokeNode._Speed);
