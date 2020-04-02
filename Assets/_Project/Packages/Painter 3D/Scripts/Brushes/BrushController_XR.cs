@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using EXP.XR;
+public enum Handedness
+{
+    Left,
+    Right,
+}
 
 namespace EXP.Painter
 {
@@ -21,25 +26,51 @@ namespace EXP.Painter
 
         XRUI_Pointer _UIPointer;
         XRUI_Pointer _XRPointer;
-                
+
         private void Start()
         {
-            // Trigger draws stroke
-            XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => UdpateStroke(f));
+            if (XRControllers.Instance._Handedness == Handedness.Right)
+            {
+                // Trigger draws stroke
+                XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => UdpateStroke(f));
 
-            // Left grip moves canvas
-            XRControllers.Instance._LeftControllerFeatures._XRBoolDict[XRBools.GripButton].OnDownEvent.AddListener(() => MoveCanvasBegin());
-            XRControllers.Instance._LeftControllerFeatures._XRBoolDict[XRBools.GripButton].OnUpEvent.AddListener(() => MoveCanvasEnd());
+                // Left grip moves canvas
+                XRControllers.Instance._LeftControllerFeatures._XRBoolDict[XRBools.GripButton].OnDownEvent.AddListener(() => MoveCanvasBegin());
+                XRControllers.Instance._LeftControllerFeatures._XRBoolDict[XRBools.GripButton].OnUpEvent.AddListener(() => MoveCanvasEnd());
 
-            // Left thumb LR changes brush
-            XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXNegOne.AddListener(() => BrushPresetSelector.Instance.Prev());
-            XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXOne.AddListener(() => BrushPresetSelector.Instance.Prev());
+                // Left thumb LR changes brush
+                XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXNegOne.AddListener(() => BrushPresetSelector.Instance.Prev());
+                XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXOne.AddListener(() => BrushPresetSelector.Instance.Prev());
 
-            // Right thumb LR chanegs size
-            XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => IncrementBrushSize(v.x));
+                // Right thumb LR chanegs size
+                XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => IncrementBrushSize(v.x));
 
-            // Right primary button is undo
-            XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnDownEvent.AddListener(() => PainterManager.Instance.UndoLastStroke());
+                // Right primary button is undo
+                XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnDownEvent.AddListener(() => PainterManager.Instance.UndoLastStroke());
+            }
+            else
+            {
+                // Trigger draws stroke
+                XRControllers.Instance._LeftControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => UdpateStroke(f));
+
+                // Right thumb LR chanegs size
+                XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => IncrementBrushSize(v.x));
+
+                // Right primary button is undo
+                XRControllers.Instance._LeftControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnDownEvent.AddListener(() => PainterManager.Instance.UndoLastStroke());
+
+
+
+                // Left grip moves canvas
+                XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.GripButton].OnDownEvent.AddListener(() => MoveCanvasBegin());
+                XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.GripButton].OnUpEvent.AddListener(() => MoveCanvasEnd());
+
+                // Left thumb LR changes brush
+                XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXNegOne.AddListener(() => BrushPresetSelector.Instance.Prev());
+                XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnXOne.AddListener(() => BrushPresetSelector.Instance.Prev());
+
+              
+            }
 
             // Right secondary button is col
             _ColourPicker._PadEvent.AddListener((Color c) => _Brush.SetCol(c));

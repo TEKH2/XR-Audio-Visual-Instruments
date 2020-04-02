@@ -12,14 +12,23 @@ namespace EXP.XR
     {
         // The interactable that the pointer is currently hovering or interacting with
         public InteractableBase _ActiveInteractable;
-        
+
         #region UNITY METHODS
 
         // Start is called before the first frame update
         void Start()
         {
-            XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueOne.AddListener(InteractionTrigger);
-            XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueZero.AddListener(EndInteraction);
+            if (XRControllers.Instance._Handedness == Handedness.Left)
+            {
+                XRControllers.Instance._LeftControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueOne.AddListener(InteractionTrigger);
+                XRControllers.Instance._LeftControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueZero.AddListener(EndInteraction);
+            }
+            else
+            {
+                XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueOne.AddListener(InteractionTrigger);
+                XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueZero.AddListener(EndInteraction);
+            }
+         
 
             Rigidbody rb = GetComponent<Rigidbody>();
             rb.isKinematic = true;

@@ -368,6 +368,8 @@ namespace EXP.XR
 
         public TrackingSpaceType _TrackingSpaceType = TrackingSpaceType.RoomScale;
 
+        public Handedness _Handedness = Handedness.Right;
+
         public Transform _RightController;
         public Transform _LeftController;
         public Transform _HMD;
