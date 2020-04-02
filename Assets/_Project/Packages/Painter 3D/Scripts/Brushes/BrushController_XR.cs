@@ -17,7 +17,10 @@ namespace EXP.Painter
     {
         public Brush _Brush;
         public Transform _BrushTip;
-        public Transform _BrushtipFollowTransform;      
+
+        public Transform _RightBrushtipFollowTransform;
+        public Transform _LeftBrushtipFollowTransform;
+
         public float m_Smoothing = 2;
         public bool m_UpdateFacing = false;
 
@@ -119,9 +122,10 @@ namespace EXP.Painter
         // Update is called once per frame
         void Update()
         {
-          
+            Vector3 targetPos = _RightBrushtipFollowTransform.position;
 
-            Vector3 targetPos = _BrushtipFollowTransform.position;
+            if (XRControllers.Instance._Handedness == Handedness.Left)
+                targetPos = _LeftBrushtipFollowTransform.position;
 
             // Smooth toward targetpos of smoothing is larger than 0
             if (m_Smoothing != 0)
