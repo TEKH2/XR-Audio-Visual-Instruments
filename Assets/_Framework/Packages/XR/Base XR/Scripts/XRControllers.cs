@@ -80,7 +80,7 @@ namespace EXP.XR
                     else
                         OnUpEvent.Invoke();
 
-                    if (XRControllers.Instance._DebugControllers)
+                    if (XRControllers.Instance._DebugControllerFeatureValues)
                         Debug.Log(_InputFeature.name.ToString() + "   " + _Value);
                 }
             }
@@ -135,7 +135,7 @@ namespace EXP.XR
                     _Value = value;
                     OnValueUpdate.Invoke(_Value);
 
-                    if (XRControllers.Instance._DebugControllers)
+                    if (XRControllers.Instance._DebugControllerFeatureValues)
                         Debug.Log(_InputFeature.name.ToString() + "   " + _Value);
                 }
             }
@@ -176,7 +176,7 @@ namespace EXP.XR
 
                     OnValueUpdate.Invoke(_Value);                   
 
-                    if (XRControllers.Instance._DebugControllers)
+                    if (XRControllers.Instance._DebugControllerFeatureValues)
                         Debug.Log(_InputFeature.name.ToString() + "   " + _Value);
                 }
             }
@@ -207,7 +207,7 @@ namespace EXP.XR
                     _Value = value;
                     OnValueUpdate.Invoke(_Value);
 
-                    if (XRControllers.Instance._DebugControllers)
+                    if (XRControllers.Instance._DebugControllerFeatureValues)
                         Debug.Log(_InputFeature.name.ToString() + "   " + _Value);
                 }
             }
@@ -236,7 +236,7 @@ namespace EXP.XR
                     _Value = value;
                     OnValueUpdate.Invoke(_Value);
 
-                    if (XRControllers.Instance._DebugControllers)
+                    if (XRControllers.Instance._DebugControllerFeatureValues)
                         Debug.Log(_InputFeature.name.ToString() + "   " + _Value);
                 }
             }
@@ -366,13 +366,19 @@ namespace EXP.XR
 
         List<XRNodeState> _States = new List<XRNodeState>();
 
-        public TrackingSpaceType _TrackingSpaceType = TrackingSpaceType.RoomScale;
+        // Floor is normal room scale, Device means HMD is centered around the parent transform
+        public TrackingOriginModeFlags _TrackingOriginMode = TrackingOriginModeFlags.Floor;
+
+        List<Vector3> _BoundaryPoints = new List<Vector3>();
+
+        XRInputSubsystem _InputSubsystem;
 
         public Handedness _Handedness = Handedness.Right;
 
-        public Transform _RightController;
-        public Transform _LeftController;
+        [Header("DEVICE TRANSFORMS")]
         public Transform _HMD;
+        public Transform _RightController;
+        public Transform _LeftController;       
 
         private List<UnityEngine.XR.InputDevice> _AllDevices;
         private List<UnityEngine.XR.InputDevice> _DevicesWithPrimaryButton;
@@ -381,13 +387,17 @@ namespace EXP.XR
         public XRControllerFeatureSet _RightControllerFeatures;
         public XRControllerFeatureSet _LeftControllerFeatures;
 
-        public bool _DebugControllers = false;
+        [Header("DEBUG")]
+        public bool _DebugLogging = false;
+        public bool _DebugControllerFeatureValues = false;
         public bool _DebugControllerEvents = false;
-        public bool _Debug = false; 
+        public bool _DebugDrawBoundary = false;
 
         private void Awake()
         {
             Instance = this;
+
+          
 
             _RightControllerFeatures = new XRControllerFeatureSet();
             _LeftControllerFeatures = new XRControllerFeatureSet();
@@ -395,11 +405,19 @@ namespace EXP.XR
             _AllDevices = new List<UnityEngine.XR.InputDevice>();
             _DevicesWithPrimaryButton = new List<UnityEngine.XR.InputDevice>();
 
+
+
             lHandPos = CommonUsages.devicePosition;
             rHandPos = CommonUsages.devicePosition;
 
-            // Set Tracking space
-            XRDevice.SetTrackingSpaceType(_TrackingSpaceType);
+            // Get input subsystem
+            List<XRInputSubsystem> inputSubSystems = new List<XRInputSubsystem>();
+            SubsystemManager.GetInstances<XRInputSubsystem>(inputSubSystems);
+            _InputSubsystem = inputSubSystems[0];          
+
+            // Set tracking origin mode    ref: https://docs.unity3d.com/ScriptReference/XR.TrackingOriginModeFlags.html
+            _InputSubsystem.TrySetTrackingOriginMode(_TrackingOriginMode);
+            _InputSubsystem.TryGetBoundaryPoints(_BoundaryPoints);
 
             InputTracking.nodeAdded += UpdateInputDevices;
         }
@@ -415,7 +433,7 @@ namespace EXP.XR
             // UPDATE CONTROLLER TRANSFORMS
             for (int i = 0; i < _States.Count; i++)
             {
-                if(_Debug)
+                if(_DebugLogging)
                     Debug.Log(i + "    " + _States[i].nodeType.ToString());
 
                 if (_States[i].nodeType == XRNode.LeftHand && _LeftController != null)
@@ -446,7 +464,7 @@ namespace EXP.XR
         // Updates the controller positions and rotations
         void UpdateControllerTransform(Transform t, XRNodeState state)
         {
-            if (_Debug)
+            if (_DebugLogging)
                 Debug.Log("Updating controller transform: " + t.name + "    node: " + state.nodeType.ToString());
 
             Vector3 pos = t.position;
@@ -470,8 +488,19 @@ namespace EXP.XR
                 if (device.TryGetFeatureValue(CommonUsages.primaryButton, out discardedValue))
                 {
                     _DevicesWithPrimaryButton.Add(device); // Add any devices that have a primary button.
-                    if (_Debug)
+                    if (_DebugLogging)
                         Debug.Log("Adding device: " + device.name);
+                }
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_DebugDrawBoundary)
+            {
+                foreach (Vector3 point in _BoundaryPoints)
+                {
+                    Gizmos.DrawSphere(point, .1f);
                 }
             }
         }
