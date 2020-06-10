@@ -6130,6 +6130,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3581089538987617815, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: _TrackingSpaceType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3581089538987617815, guid: b4b77796fef876f41b86d49c57dd8ee7,
+        type: 3}
+      propertyPath: _TrackingOriginMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3581089539063031995, guid: b4b77796fef876f41b86d49c57dd8ee7,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -6330,7 +6340,8 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d9e067ad86644df42854ddb944e6dc47, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3581089538987617815, guid: b4b77796fef876f41b86d49c57dd8ee7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b4b77796fef876f41b86d49c57dd8ee7, type: 3}
 --- !u!4 &1482186746 stripped
 Transform:

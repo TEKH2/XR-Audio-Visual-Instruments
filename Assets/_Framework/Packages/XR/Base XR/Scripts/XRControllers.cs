@@ -397,18 +397,13 @@ namespace EXP.XR
         {
             Instance = this;
 
-          
-
-            _RightControllerFeatures = new XRControllerFeatureSet();
-            _LeftControllerFeatures = new XRControllerFeatureSet();
-
+            // Get devices
             _AllDevices = new List<UnityEngine.XR.InputDevice>();
             _DevicesWithPrimaryButton = new List<UnityEngine.XR.InputDevice>();
 
-
-
-            lHandPos = CommonUsages.devicePosition;
-            rHandPos = CommonUsages.devicePosition;
+            // Get feature sets for right and left controllers
+            _RightControllerFeatures = new XRControllerFeatureSet();
+            _LeftControllerFeatures = new XRControllerFeatureSet();
 
             // Get input subsystem
             List<XRInputSubsystem> inputSubSystems = new List<XRInputSubsystem>();
@@ -421,9 +416,6 @@ namespace EXP.XR
 
             InputTracking.nodeAdded += UpdateInputDevices;
         }
-
-        InputFeatureUsage<Vector3> lHandPos;
-        InputFeatureUsage<Vector3> rHandPos;
 
         private void Update()
         {

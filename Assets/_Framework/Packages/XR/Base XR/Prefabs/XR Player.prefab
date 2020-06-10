@@ -2517,7 +2517,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TrackingOriginMode: 2
   _Handedness: 1
-  _HMD: {fileID: 0}
+  _HMD: {fileID: 9121094739035754254}
   _RightController: {fileID: 9121094738911889092}
   _LeftController: {fileID: 9121094737662390647}
   _DebugLogging: 0

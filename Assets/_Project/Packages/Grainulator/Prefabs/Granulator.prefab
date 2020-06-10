@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1021502729408534
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4651155242276878}
+  - component: {fileID: 114747619626888988}
+  m_Layer: 0
+  m_Name: Granulator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4651155242276878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021502729408534}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114747619626888988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021502729408534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa148c57327197b419af9d89df4c4afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ParticleManager: {fileID: 0}
+  _MaxGrains: 10
+  _GrainLength: 160
+  _GrainLengthRand: 0
+  _GrainPos: 0
+  _GrainPosRand: 0
+  _GrainDist: 10
+  _GrainDistRand: 0
+  _GrainPitch: 1
+  _GrainPitchRand: 0
+  _GrainVol: 1
+  _GrainVolRand: 0
+  _GrainAttack: 0.3
+  _GrainRelease: 0.3
+  _IsPlaying: 1
+  _AudioClip: {fileID: 0}
+  _GrainPrefab: {fileID: 0}
+  _MoveGrains: 1
+  _ActivePool: []
+  _InactivePool: []
+  _GrainObjects: []
