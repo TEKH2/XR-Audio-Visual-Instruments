@@ -1,6 +1,6 @@
 # Ethnotekhv2_baseproject
 
-<img src="https://i.imgur.com/bhnJuzN.jpg" alt="EthnoTekhVR">
+<img src="http://www.ethnotekh.com/wp-content/uploads/2014/09/ET-No-Eveil2.jpg">
 
 We're getting the band back together, starting with a funded period from Creative Victoria's Creator's Fund grant program. Our aim is to research and develop audio/visual instrument concepts for VR performance.
 
