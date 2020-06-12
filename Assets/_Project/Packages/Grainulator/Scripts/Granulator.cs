@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Random = UnityEngine.Random;
 
 public class Granulator : MonoBehaviour
 {
@@ -139,7 +141,7 @@ public class Granulator : MonoBehaviour
 
     void Update()
     {
-        Profiler.BeginSample("Update 0");
+      //  Profiler.BeginSample("Update 0");
 
         //---------------------------------------------------------------------
         // UPDATE MAINTAINANCE
@@ -187,10 +189,10 @@ public class Granulator : MonoBehaviour
                 _GrainsPlaying.RemoveAt(i);
             }
         }
-        Profiler.EndSample();
+      //  Profiler.EndSample();
 
 
-        Profiler.BeginSample("Update 1");
+      //  Profiler.BeginSample("Update 1");
         //---------------------------------------------------------------------
         // EMITTER GRAIN TIMING GENERATION
         //---------------------------------------------------------------------
@@ -233,9 +235,9 @@ public class Granulator : MonoBehaviour
 
         _EmitterGrainsLastUpdate = emitterGrainsToPlay;
 
-        Profiler.EndSample();
+      //  Profiler.EndSample();
 
-        Profiler.BeginSample("Update 2");
+     //   Profiler.BeginSample("Update 2");
 
         //---------------------------------------------------------------------
         // CREATE EMITTER GRAINS
@@ -273,11 +275,11 @@ public class Granulator : MonoBehaviour
         // This provides the correct distribution of grains per x samples. Go to top of "emitter grain generation"
         // for more information
 
-        Profiler.EndSample();
+      //  Profiler.EndSample();
 
 
 
-        Profiler.BeginSample("Update 3");
+       // Profiler.BeginSample("Update 3");
 
         //---------------------------------------------------------------------
         // ADD COLLISION GRAINS TO THE END OF THE GRAIN QUEUE
@@ -292,12 +294,15 @@ public class Granulator : MonoBehaviour
         }
 
         _CollisionQueue.Clear();
-        Profiler.EndSample();
+       // Profiler.EndSample();
 
-        Profiler.BeginSample("Update 4");
+       // Profiler.BeginSample("Update 4");
         //---------------------------------------------------------------------
         // ASSIGN GRAIN QUEUE TO FREE GRAIN OBJECTS
-        //---------------------------------------------------------------------
+        //---------------------------------------------------------------------      
+      
+       // print("Queue/Finished: " + _GrainQueue.Count + "   " + _GrainsFinished.Count);
+
         foreach (GrainData grainData in _GrainQueue)
         {
             if (_GrainsFinished.Count > 0)
@@ -313,10 +318,11 @@ public class Granulator : MonoBehaviour
                 _GrainsFinished.Remove(grain);
             }
         }
-     
-        Profiler.EndSample();
+        
 
-        Profiler.BeginSample("Update 5");
+       // Profiler.EndSample();
+
+       // Profiler.BeginSample("Update 5");
 
         // Clears the grain queue for next update. Perhaps this might change if for some reason it's
         // better to maintain unfinished grains for the next udpate
@@ -334,9 +340,10 @@ public class Granulator : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
             _RigidBody.AddForce(_KeyboardForce, 0, 0);
 
-        Profiler.EndSample();
+       // Profiler.EndSample();
     }
 
+    public bool _DEBUG_NewListManager = false;
 
     void EmitterGrainTiming()
     {
