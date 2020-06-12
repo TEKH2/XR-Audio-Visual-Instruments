@@ -35,6 +35,8 @@ public class Grain : MonoBehaviour
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
         }
 
+        _AudioSource = this.gameObject.GetComponent<AudioSource>();
+
         if (_AudioSource == null)
             _AudioSource = this.gameObject.AddComponent<AudioSource>();
     }
