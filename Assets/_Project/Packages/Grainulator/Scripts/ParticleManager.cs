@@ -70,7 +70,7 @@ public class ParticleManager : MonoBehaviour
     // Particle spawning for emitter system. Utilises randomness from the trigger particle
     // system module settings
     //---------------------------------------------------------------------
-    public ParticleSystem.Particle SpawnEmitterParticle(Vector3 inheritVelocity, float startSpeed, float life)
+    public ParticleSystem.Particle SpawnEmitterParticle(Vector3 inheritVelocity, float life, float startSpeed = 0)
     {
         ParticleSystem.MainModule main = _TriggerParticleSystem.main;
         // Emit particle in the dummy system, get its values, then kill the particle

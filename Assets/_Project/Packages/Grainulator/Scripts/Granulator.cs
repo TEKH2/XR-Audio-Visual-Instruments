@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
+using System.Linq;
+
 
 [System.Serializable]
 public class GrainEmissionProps
@@ -95,66 +97,40 @@ public class GrainEmissionProps
 
 public class Granulator : MonoBehaviour
 {
-
-
-    public bool _IsPlaying = true;       // the on/off button
-
     public ParticleManager _ParticleManager;
     private ParticleSystem.Particle _TempParticle;
     private ParticleSystem.Particle[] _Particles;
 
     public GameObject _GrainObjectHolder;
     public GameObject _GrainPrefab;
+    public int _MaxGrains = 100;
 
     [Range(1.0f, 1000f)]
     public int _TimeBetweenGrains = 20;          // ms
     [Range(0.0f, 1000f)]
     public int _TimeBetweenGrainsRandom = 0;       // ms
 
-
-    public int _MaxGrains = 100;
-
     [Header("Emitter Grains")]
     public GrainEmissionProps _EmitGrainProps;
-   
-    
-
 
     [Header("Collision Grains")]   
     public GrainEmissionProps _CollisionGrainProps;
+
+    [Space]
     public int _CollisionGrainBurst = 5;
     [Range(1.0f, 1000f)]
     public int _CollisionDensity = 40;                  // ms
 
-
-
-
     [Space]
-    [Space]
-    [Space]
-    public ParticleMode _ParticleMode = ParticleMode.Spawning;
-    public enum ParticleMode { Spawning, Static };
-
-    private int _NewGrainDensity = 0;
-
     private int _SamplesSinceLastGrain;
     private int _EmitterGrainsLastUpdate = 0;
-    private int _SamplesLastUpdate = 0;
 
     private Rigidbody _RigidBody;
-    private Vector3 _ParticleSynthVelocity;
+    public float _InheritVelocityScalar = .5f;
 
-    public bool _MoveGrains = true;
-    public bool _Collisions = false;
+    public bool _EnableParticleCollisions = false;
     [Range(0.0f, 10f)]
-    public float _Mass = 0;
-    [Range(0.0f, 30.0f)]
-    public float _GrainSpeedOnBirth = 5.0f;
-
-    private bool _CollisionsPrevious;
-    private float _MassPrevious;
-
-    public float _KeyboardForce = 1;
+    public float _Mass = 0;       
 
     private List<GrainData> _GrainQueue;
     private List<GrainData> _CollisionQueue;
@@ -198,44 +174,30 @@ public class Granulator : MonoBehaviour
 
     void Update()
     {
-      //  Profiler.BeginSample("Update 0");
-
         //---------------------------------------------------------------------
         // UPDATE MAINTAINANCE   TODO - Move all clamping to properties
         //---------------------------------------------------------------------
-        _SamplesLastUpdate = (int)(Time.deltaTime * _SampleRate);
-        _NewGrainDensity = _TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom);
-        _ParticleSynthVelocity = _RigidBody.velocity * 0.5f;
+        int samplesLastUpdate = (int)(Time.deltaTime * _SampleRate);
 
-        // Check for updates from UI
-        if (_Mass != _MassPrevious)
-        {
-            _MassPrevious = _Mass;
-            _ParticleManager.SetMass(_Mass);
-        }
 
-        if (_Collisions != _CollisionsPrevious)
-        {
-            _CollisionsPrevious = _Collisions;
-            _ParticleManager.EnableCollisions(_Collisions);
-        }
+        // Update particle manager
+        _ParticleManager.SetMass(_Mass);
+        _ParticleManager.EnableCollisions(_EnableParticleCollisions);
 
-        //Move finished grains to inactive pool
+
+        // Remove finished grains from Playing List and add them to Finished list
         for (int i = _GrainsPlaying.Count - 1; i >= 0; i--)
         {
-            Grain tempGrain = _GrainsPlaying[i];
+            Grain playingGrain = _GrainsPlaying[i];
 
-            if (!tempGrain._IsPlaying)
+            if (!playingGrain._IsPlaying)
             {
-                //tempGrain.gameObject.SetActive(false);
-                _GrainsFinished.Add(_GrainsPlaying[i]);
                 _GrainsPlaying.RemoveAt(i);
+                _GrainsFinished.Add(playingGrain);
             }
         }
-      //  Profiler.EndSample();
 
 
-      //  Profiler.BeginSample("Update 1");
         //---------------------------------------------------------------------
         // EMITTER GRAIN TIMING GENERATION
         //---------------------------------------------------------------------
@@ -246,7 +208,7 @@ public class Granulator : MonoBehaviour
 
         int emitterGrainsToPlay = 0;
         int firstGrainOffset = 0;
-        int densityInSamples = _NewGrainDensity * (_SampleRate / 1000);
+        int densityInSamples = (_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * (_SampleRate / 1000);
 
         // If no sample was played last update, adding the previous update's samples count,
         // AFTER the update is complete, should correctly accumulate the samples since the
@@ -254,18 +216,18 @@ public class Granulator : MonoBehaviour
         // offset of that grain is subtracted from the total samples of the previous update.
         // This provides the correct number of samples since the most recent grain was started.
         if (_EmitterGrainsLastUpdate == 0)
-            _SamplesSinceLastGrain += _SamplesLastUpdate;
+            _SamplesSinceLastGrain += samplesLastUpdate;
         else
-            _SamplesSinceLastGrain = _SamplesLastUpdate - _SamplesSinceLastGrain;
+            _SamplesSinceLastGrain = samplesLastUpdate - _SamplesSinceLastGrain;
 
         // If the density of grains minus samples since last grain fits within the
         // estimated time for the this update, calculate number of grains to play this update
-        if (densityInSamples - _SamplesSinceLastGrain < _SamplesLastUpdate)
+        if (densityInSamples - _SamplesSinceLastGrain < samplesLastUpdate)
         {
             // Should always equal one or more
             // Not sure if the + 1 is correct here. Potentially introducing rounding errors?
             // Need to check
-            emitterGrainsToPlay = (int)(_SamplesLastUpdate / densityInSamples) + 1;
+            emitterGrainsToPlay = samplesLastUpdate / densityInSamples + 1;
             
             // Create initial grain offset for this update
             firstGrainOffset = densityInSamples - _SamplesSinceLastGrain;
@@ -278,30 +240,26 @@ public class Granulator : MonoBehaviour
 
         _EmitterGrainsLastUpdate = emitterGrainsToPlay;
 
-        //  Profiler.EndSample();
 
-        //   Profiler.BeginSample("Update 2");
-
+        //---------------------------------------------------------------------
+        // CREATE EMITTER GRAINS
+        //---------------------------------------------------------------------
+        // Populate grain queue with emitter grains
         if (_EmitGrainProps._Emit)
-        {
-            //---------------------------------------------------------------------
-            // CREATE EMITTER GRAINS
-            //---------------------------------------------------------------------
-            // Populate grain queue with emitter grains
-            //
+        {           
             for (int i = 0; i < emitterGrainsToPlay; i++)
             {              
                 // Store duration locally because it's used twice
                 float duration = _EmitGrainProps.Duration;
 
                 // Generate new particle in trigger particle system and return it here
-                ParticleSystem.Particle tempParticle = _ParticleManager.SpawnEmitterParticle(_RigidBody.velocity, _GrainSpeedOnBirth, duration / 1000f);
+                ParticleSystem.Particle tempParticle = _ParticleManager.SpawnEmitterParticle(_RigidBody.velocity, duration / 1000f);
 
                 // Calculate timing offset for grain
                 int offset = firstGrainOffset + i * densityInSamples;
 
                 // Create temporary grain data object and add it to the playback queue
-                GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainObjectHolder.transform, tempParticle.velocity + _ParticleSynthVelocity, _Mass,
+                GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainObjectHolder.transform, tempParticle.velocity + _RigidBody.velocity * _InheritVelocityScalar, _Mass,
                     _EmitGrainProps._Clip, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _GrainQueue.Add(tempGrainData);
@@ -319,28 +277,22 @@ public class Granulator : MonoBehaviour
         // This provides the correct distribution of grains per x samples. Go to top of "emitter grain generation"
         // for more information
 
-        //  Profiler.EndSample();
 
 
 
-       
-
+        //---------------------------------------------------------------------
+        // ADD COLLISION GRAINS TO THE END OF THE GRAIN QUEUE
+        //---------------------------------------------------------------------
+        // Because collisions are added during fixed update, they may overpopulate the grain queue
+        // before emitter grains have been added, causing incorrect timing to emitter grains.
+        // Adding the collisions after emitters have been added prevents this.
         if (_CollisionGrainProps._Emit)
         {
-            // Profiler.BeginSample("Update 3");
-            //---------------------------------------------------------------------
-            // ADD COLLISION GRAINS TO THE END OF THE GRAIN QUEUE
-            //---------------------------------------------------------------------
-            // Because collisions are added during fixed update, they may overpopulate the grain queue
-            // before emitter grains have been added, causing incorrect timing to emitter grains.
-            // Adding the collisions after emitters have been added prevents this.
-
             foreach (GrainData grain in _CollisionQueue)
             {
                 _GrainQueue.Add(grain);
             }
             _CollisionQueue.Clear();
-            // Profiler.EndSample();
         }
         
       
@@ -377,17 +329,7 @@ public class Granulator : MonoBehaviour
         // better to maintain unfinished grains for the next udpate
         _GrainQueue.Clear();
 
-        //---------------------------------------------------------------------
-        // INTERACTION KEYS
-        //---------------------------------------------------------------------
-        if (Input.GetKey(KeyCode.W))
-            _RigidBody.AddForce(0, 0, _KeyboardForce);
-        if (Input.GetKey(KeyCode.A))
-            _RigidBody.AddForce(-_KeyboardForce, 0, 0);
-        if (Input.GetKey(KeyCode.S))
-            _RigidBody.AddForce(0, 0, -_KeyboardForce);
-        if (Input.GetKey(KeyCode.D))
-            _RigidBody.AddForce(_KeyboardForce, 0, 0);
+      
 
        // Profiler.EndSample();
     }
@@ -405,8 +347,6 @@ public class Granulator : MonoBehaviour
         {
             for (int j = 0; j < _CollisionGrainBurst; j++)
             {
-                //GenerateGrainValues();
-
                 // Calculate timing offset for grain
                 int offset = j * _CollisionDensity * (_SampleRate / 1000);
 
