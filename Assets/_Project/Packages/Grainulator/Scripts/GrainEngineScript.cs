@@ -39,18 +39,10 @@ public class GrainEngineScript : MonoBehaviour
     void Update()
     {
         if (minGrainPitch < 0) minGrainPitch = 0;
-        granulator._GrainDuration = (int)map(RPM, 0.0f, 1f, minGrainLength, maxGrainLength);
-        granulator._GrainPosition = map(RPM, 0.0f, 1f, minGrainPos, maxGrainPos);
-        granulator._TimeBetweenGrains = (int)map(RPM, 0.0f, 1f, minGrainDist, maxGrainDist);
-        granulator._GrainPitch = map(RPM, 0.0f, 1f, minGrainPitch, maxGrainPitch);
-        granulator._GrainVolume = map(RPM, 0.0f, 1f, minGrainVol,maxGrainVol);
-
-    }
-
-    //---------------------------------------------------------------------
-    // utility func to map a value from one range to another range
-    private float map(float val, float inMin, float inMax, float outMin, float outMax)
-    {
-        return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
+        granulator._EmitGrainProps.Duration = (int)Mathf.Lerp(minGrainLength, maxGrainLength, RPM);
+        granulator._EmitGrainProps.Position = Mathf.Lerp(minGrainPos, maxGrainPos, RPM);
+        granulator._TimeBetweenGrains = (int)Mathf.Lerp(minGrainDist, maxGrainDist, RPM);
+        granulator._EmitGrainProps.Pitch = Mathf.Lerp(minGrainPitch, maxGrainPitch, RPM);
+        granulator._EmitGrainProps.Volume = Mathf.Lerp(minGrainVol,maxGrainVol, RPM);
     }
 }

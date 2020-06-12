@@ -13,48 +13,20 @@ public class ParticleManager : MonoBehaviour
 
     private Granulator _Granulator;
 
+    public int MaxParticles { get { return _EmitterParticleSystem.main.maxParticles; } }
+    public int ParticleCount { get { return _EmitterParticleSystem.particleCount; } }
+
     public enum ParticleGroup { Trigger, Emitter, Collision, Constant };
-
-
-
-    //---------------------------------------------------------------------
-    private void Awake()
-    {
-        _Particles = new ParticleSystem.Particle[_EmitterParticleSystem.main.maxParticles];
-        _TempParticle = new ParticleSystem.Particle[1];
-    }
-
-
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-    }
-
 
     //---------------------------------------------------------------------
     public void Initialise(Granulator granulator)
     {
+        _Particles = new ParticleSystem.Particle[_EmitterParticleSystem.main.maxParticles];
+        _TempParticle = new ParticleSystem.Particle[1];
         _Granulator = granulator;
     }
 
-
-    //---------------------------------------------------------------------
-    public void SetMass(float mass)
-    {
-        ParticleSystem.MainModule main = _EmitterParticleSystem.main;
-
-        main.gravityModifier = mass;
-    }
-
-    public void SetCollisions (bool collisions)
-    {
-        ParticleSystem.CollisionModule collisionModule = _EmitterParticleSystem.collision;
-
-        collisionModule.enabled = collisions;
-    }
+  
 
 
 
@@ -68,7 +40,7 @@ public class ParticleManager : MonoBehaviour
 
         foreach (ParticleCollisionEvent collision in collisions)
         {
-            SpawnCollisionParticle(collision, _Granulator._GrainDuration);
+            SpawnCollisionParticle(collision, _Granulator._EmitGrainProps.Duration);
         }
     }
 
@@ -160,17 +132,15 @@ public class ParticleManager : MonoBehaviour
         return particle;
     }
 
-
-    //---------------------------------------------------------------------
-    public int GetMaxParticles()
+    public void SetMass(float mass)
     {
-        return _EmitterParticleSystem.main.maxParticles;
+        ParticleSystem.MainModule main = _EmitterParticleSystem.main;
+        main.gravityModifier = mass;
     }
 
-
-    //---------------------------------------------------------------------
-    public int GetParticleCount()
+    public void EnableCollisions(bool enabled)
     {
-        return _EmitterParticleSystem.particleCount;
+        ParticleSystem.CollisionModule collisionModule = _EmitterParticleSystem.collision;
+        collisionModule.enabled = enabled;
     }
 }
