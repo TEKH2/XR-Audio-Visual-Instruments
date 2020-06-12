@@ -106,15 +106,17 @@ public class Granulator : MonoBehaviour
     public GameObject _GrainObjectHolder;
     public GameObject _GrainPrefab;
 
+    [Range(1.0f, 1000f)]
+    public int _TimeBetweenGrains = 20;          // ms
+    [Range(0.0f, 1000f)]
+    public int _TimeBetweenGrainsRandom = 0;       // ms
+
 
     public int _MaxGrains = 100;
 
     [Header("Emitter Grains")]
     public GrainEmissionProps _EmitGrainProps;
-    [Range(1.0f, 1000f)]
-    public int _TimeBetweenGrains = 20;          // ms
-    [Range(0.0f, 1000f)]
-    public int _TimeBetweenGrainsRandom = 0;       // ms
+   
     
 
 

@@ -1339,7 +1339,32 @@ PrefabInstance:
     - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
       propertyPath: _TimeBetweenGrains
-      value: 100
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 943d8a290713bca42aeac200b9cf6bca, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 943d8a290713bca42aeac200b9cf6bca, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Position
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Position
+      value: 0.092
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._PositionRandom
+      value: 0.226
       objectReference: {fileID: 0}
     - target: {fileID: 6866782291507566260, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
@@ -1354,7 +1379,7 @@ PrefabInstance:
     - target: {fileID: 6866782291507566261, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.26
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6866782291507566261, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
