@@ -25,4 +25,13 @@ public static class GameObjectExtensions
 	{
 		//
 	}
+
+
+    public static void DestroyAllChildren(this GameObject obj)
+    {
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            UnityEngine.Object.DestroyImmediate(obj.transform.GetChild(i).gameObject);
+        }
+    }
 }

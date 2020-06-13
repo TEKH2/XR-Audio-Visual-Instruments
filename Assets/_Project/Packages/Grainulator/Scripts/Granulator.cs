@@ -93,15 +93,30 @@ public class GrainEmissionProps
         }
     }
 
+    public GrainEmissionProps(float pos, int duration, float pitch, float volume, 
+        float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
+    {
+        _Position = pos;
+        _Duration = duration;
+        _Pitch = pitch;
+        _Volume = volume;
+
+        _PositionRandom = posRand;
+        _DurationRandom = durationRand;
+        _PitchRandom = pitchRand;
+        _VolumeRandom = volumeRand;
+    }
 }
 
 public class Granulator : MonoBehaviour
 {
+    // Particle vars
     public ParticleManager _ParticleManager;
     private ParticleSystem.Particle _TempParticle;
     private ParticleSystem.Particle[] _Particles;
 
-    public GameObject _GrainObjectHolder;
+    // Grain pooling
+    public GameObject _GrainParentTform;
     public GameObject _GrainPrefab;
     public int _MaxGrains = 100;
 
@@ -135,12 +150,14 @@ public class Granulator : MonoBehaviour
     private List<GrainData> _GrainQueue;
     private List<GrainData> _CollisionQueue;
 
-    private List<Grain> _GrainsPlaying;
-    private List<Grain> _GrainsFinished;
+    private List<Grain> _GrainsActive;
+    private List<Grain> _GrainsInactive;
 
 
     private const int _SampleRate = 44100;
     private float[] _Window;
+
+    //DrawMeshInstanced _DrawMeshInstanced;
 
 
     //---------------------------------------------------------------------
@@ -153,8 +170,8 @@ public class Granulator : MonoBehaviour
         this.gameObject.AddComponent<AudioSource>();
         _RigidBody = this.GetComponent<Rigidbody>();
 
-        _GrainsPlaying = new List<Grain>();
-        _GrainsFinished = new List<Grain>();
+        _GrainsActive = new List<Grain>();
+        _GrainsInactive = new List<Grain>();
         _GrainQueue = new List<GrainData>();
         _CollisionQueue = new List<GrainData>();
 
@@ -164,9 +181,8 @@ public class Granulator : MonoBehaviour
             GameObject go = Instantiate(_GrainPrefab);
             go.SetActive(true);
             Grain grain = go.GetComponent<Grain>();
-            grain._Granulator = this;
-            grain.transform.parent = _GrainObjectHolder.transform;
-            _GrainsFinished.Add(grain);
+            grain.transform.parent = _GrainParentTform.transform;
+            _GrainsInactive.Add(grain);
         }
 
         _SamplesSinceLastGrain = 0;
@@ -186,14 +202,14 @@ public class Granulator : MonoBehaviour
 
 
         // Remove finished grains from Playing List and add them to Finished list
-        for (int i = _GrainsPlaying.Count - 1; i >= 0; i--)
+        for (int i = _GrainsActive.Count - 1; i >= 0; i--)
         {
-            Grain playingGrain = _GrainsPlaying[i];
+            Grain playingGrain = _GrainsActive[i];
 
             if (!playingGrain._IsPlaying)
             {
-                _GrainsPlaying.RemoveAt(i);
-                _GrainsFinished.Add(playingGrain);
+                _GrainsActive.RemoveAt(i);
+                _GrainsInactive.Add(playingGrain);
             }
         }
 
@@ -259,7 +275,7 @@ public class Granulator : MonoBehaviour
                 int offset = firstGrainOffset + i * densityInSamples;
 
                 // Create temporary grain data object and add it to the playback queue
-                GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainObjectHolder.transform, tempParticle.velocity + _RigidBody.velocity * _InheritVelocityScalar, _Mass,
+                GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainParentTform.transform, tempParticle.velocity + _RigidBody.velocity * _InheritVelocityScalar, _Mass,
                     _EmitGrainProps._Clip, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _GrainQueue.Add(tempGrainData);
@@ -304,20 +320,22 @@ public class Granulator : MonoBehaviour
 
         // print("Queue/Finished: " + _GrainQueue.Count + "   " + _GrainsFinished.Count);
 
+
         foreach (GrainData grainData in _GrainQueue)
         {
-            if (_GrainsFinished.Count > 0)
-            {
-                // Get first grain
-                Grain grain = _GrainsFinished[0];
+            EmitGrain(grainData);
+            //if (_GrainsInactive.Count > 0)
+            //{
+            //    // Get first grain
+            //    Grain grain = _GrainsInactive[0];
 
-                // Init grain with data
-                grain.Initialise(grainData);
+            //    // Init grain with data
+            //    grain.Initialise(grainData);
 
-                // Add and remove from lists
-                _GrainsPlaying.Add(grain);
-                _GrainsFinished.Remove(grain);
-            }
+            //    // Add and remove from lists
+            //    _GrainsActive.Add(grain);
+            //    _GrainsInactive.Remove(grain);
+            //}
         }
         
 
@@ -332,6 +350,22 @@ public class Granulator : MonoBehaviour
       
 
        // Profiler.EndSample();
+    }
+
+    public void EmitGrain(GrainData grainData)
+    {
+        if (_GrainsInactive.Count == 0)
+            print("No inactive grains, trying to spawn too quickly. Potentially boost max grains");
+
+        // Get grain from inactive list and remove from list
+        Grain grain = _GrainsInactive[0];
+        _GrainsInactive.Remove(grain);
+
+        // Init grain with data
+        grain.Initialise(grainData);
+
+        // Add grain to active list
+        _GrainsActive.Add(grain);
     }
 
     public bool _DEBUG_NewListManager = false;
@@ -350,10 +384,10 @@ public class Granulator : MonoBehaviour
                 // Calculate timing offset for grain
                 int offset = j * _CollisionDensity * (_SampleRate / 1000);
 
-                Vector3 pos = _GrainObjectHolder.transform.InverseTransformPoint(collisions[i].intersection);
+                Vector3 pos = _GrainParentTform.transform.InverseTransformPoint(collisions[i].intersection);
 
                 // Create temporary grain data object and add it to the playback queue
-                GrainData collisionGrainData = new GrainData(pos, _GrainObjectHolder.transform, Vector3.zero, _Mass,
+                GrainData collisionGrainData = new GrainData(pos, _GrainParentTform.transform, Vector3.zero, _Mass,
                     _CollisionGrainProps._Clip, _CollisionGrainProps.Duration, offset, _CollisionGrainProps.Position, _CollisionGrainProps.Pitch, _CollisionGrainProps.Volume);
 
                 _CollisionQueue.Add(collisionGrainData);
@@ -364,8 +398,8 @@ public class Granulator : MonoBehaviour
     public void GrainNotPlaying(Grain grain)
     {
         //grain.SetActive(false);
-        _GrainsFinished.Add(grain);
-        _GrainsPlaying.Remove(grain);
+        _GrainsInactive.Add(grain);
+        _GrainsActive.Remove(grain);
     }
 
 

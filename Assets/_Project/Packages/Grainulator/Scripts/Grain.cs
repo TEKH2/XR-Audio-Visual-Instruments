@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 
 public class Grain : MonoBehaviour
@@ -17,8 +18,7 @@ public class Grain : MonoBehaviour
     private int _Channels;
     private int _PlaybackIndex = -1;
     private int _GrainOffset;
-    public Granulator _Granulator;
-    public Granulator.GrainData _GrainData;
+    
     public float _Mass;
     private Rigidbody _RigidBody;
     private float[] _Window;
@@ -73,7 +73,6 @@ public class Grain : MonoBehaviour
         _RigidBody.AddForce(new Vector3(0, -_Mass * 9.81f, 0));
     }
 
-
     //---------------------------------------------------------------------
     public void Initialise(Granulator.GrainData gd)
     {
@@ -82,13 +81,17 @@ public class Grain : MonoBehaviour
         _RigidBody.velocity = gd.objectVelocity;
         _Mass = gd.objectMass;
 
-        _AudioClip = gd.audioClip;
-        _Samples = new float[_AudioClip.samples * _AudioClip.channels];
-        _AudioClip.GetData(_Samples, 0);
-        _Channels = _AudioClip.channels;
+
+        if (_Samples == null || _AudioClip != gd.audioClip)
+        {
+            _AudioClip = gd.audioClip;
+            _Samples = new float[_AudioClip.samples * _AudioClip.channels];
+            _AudioClip.GetData(_Samples, 0);
+            _Channels = _AudioClip.channels;
+        }
+
 
         _GrainPos = (int)(gd.grainPos * _AudioClip.samples / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
-        //_GrainDuration = (int)(_AudioClip.frequency / 1000 * gd.grainDuration) + gd.offset;  // THIS IS WRONG (SAMPLE RATE THINGS)
         _GrainDuration = (int)(_AudioClip.frequency / 1000 * gd.grainDuration);
         _AudioSource.pitch = gd.grainPitch;
         _GrainVol = gd.grainVolume;
@@ -96,7 +99,6 @@ public class Grain : MonoBehaviour
 
         BuildSampleArray();
     }
-
 
     //---------------------------------------------------------------------
     private void BuildSampleArray()
@@ -140,8 +142,6 @@ public class Grain : MonoBehaviour
         //this.gameObject.SetActive(true);
     }
 
-
-
     //---------------------------------------------------------------------
     // AUDIO BUFFER CALLS
     //---------------------------------------------------------------------
@@ -159,8 +159,7 @@ public class Grain : MonoBehaviour
             }
         }
     }
-
-
+    
     //---------------------------------------------------------------------
     // GET SAMPLE FROM AUDIO ARRAY TO POPULATE OTUPUT BUFFER
     //---------------------------------------------------------------------
@@ -178,10 +177,6 @@ public class Grain : MonoBehaviour
 
         return returnSample;
     }
-
-
-
-
 
     //---------------------------------------------------------------------
     private float Windowing(int currentSample, int grainLength)
