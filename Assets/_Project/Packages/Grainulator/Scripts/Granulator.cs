@@ -8,10 +8,30 @@ using System.Linq;
 
 
 [System.Serializable]
+public class AudioClipLibrary
+{
+    public AudioClip[] _Clips;
+    public List<float[]> _ClipsDataArray = new List<float[]>();
+
+    public void Initialize()
+    {
+        Debug.Log("Initializing clip library.");
+        for (int i = 0; i < _Clips.Length; i++)
+        {
+            AudioClip audioClip = _Clips[i];
+            float[] samples = new float[audioClip.samples * audioClip.channels];
+            _Clips[i].GetData(samples, 0);
+            _ClipsDataArray.Add(samples);
+
+            Debug.Log("Clip sample: " + _ClipsDataArray[i][100]);
+        }
+    }
+}
+
+[System.Serializable]
 public class GrainEmissionProps
 {
-    public bool _Emit = true;
-    public AudioClip _Clip;
+    public int _ClipIndex = 0;
 
     // Position
     //---------------------------------------------------------------------
@@ -110,6 +130,8 @@ public class GrainEmissionProps
 
 public class Granulator : MonoBehaviour
 {
+    public AudioClipLibrary _AudioClipLibrary;
+
     // Particle vars
     public ParticleManager _ParticleManager;
     private ParticleSystem.Particle _TempParticle;
@@ -163,6 +185,8 @@ public class Granulator : MonoBehaviour
     //---------------------------------------------------------------------
     private void Start()
     {
+        _AudioClipLibrary.Initialize();
+
         _ParticleManager.Initialise(this);
 
         CreateWindowingLookupTable();
@@ -261,32 +285,31 @@ public class Granulator : MonoBehaviour
         // CREATE EMITTER GRAINS
         //---------------------------------------------------------------------
         // Populate grain queue with emitter grains
-        if (_EmitGrainProps._Emit)
-        {           
-            for (int i = 0; i < emitterGrainsToPlay; i++)
-            {              
-                // Store duration locally because it's used twice
-                float duration = _EmitGrainProps.Duration;
+                
+        for (int i = 0; i < emitterGrainsToPlay; i++)
+        {              
+            // Store duration locally because it's used twice
+            float duration = _EmitGrainProps.Duration;
 
-                // Generate new particle in trigger particle system and return it here
-                ParticleSystem.Particle tempParticle = _ParticleManager.SpawnEmitterParticle(_RigidBody.velocity, duration / 1000f);
+            // Generate new particle in trigger particle system and return it here
+            ParticleSystem.Particle tempParticle = _ParticleManager.SpawnEmitterParticle(_RigidBody.velocity, duration / 1000f);
 
-                // Calculate timing offset for grain
-                int offset = firstGrainOffset + i * densityInSamples;
+            // Calculate timing offset for grain
+            int offset = firstGrainOffset + i * densityInSamples;
 
-                // Create temporary grain data object and add it to the playback queue
-                GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainParentTform.transform, tempParticle.velocity + _RigidBody.velocity * _InheritVelocityScalar, _Mass,
-                    _EmitGrainProps._Clip, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+            // Create temporary grain data object and add it to the playback queue
+            GrainData tempGrainData = new GrainData(_TempParticle.position, _GrainParentTform.transform, tempParticle.velocity + _RigidBody.velocity * _InheritVelocityScalar, _Mass,
+                _EmitGrainProps._ClipIndex, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
-                _GrainQueue.Add(tempGrainData);
-            }
-
-
-            // If a grain is going to be played this update, set the samples since last grain
-            // counter to the sample offset value of the final grain
-            if (_GrainQueue.Count > 0)
-                _SamplesSinceLastGrain = _GrainQueue[_GrainQueue.Count - 1].offset;
+            _GrainQueue.Add(tempGrainData);
         }
+
+
+        // If a grain is going to be played this update, set the samples since last grain
+        // counter to the sample offset value of the final grain
+        if (_GrainQueue.Count > 0)
+            _SamplesSinceLastGrain = _GrainQueue[_GrainQueue.Count - 1].offset;
+        
 
         // NOTE: If no grains are played, the time that the current update takes
         // (determined next update) will be added to this "samples since last grain" counter instead.
@@ -302,14 +325,13 @@ public class Granulator : MonoBehaviour
         // Because collisions are added during fixed update, they may overpopulate the grain queue
         // before emitter grains have been added, causing incorrect timing to emitter grains.
         // Adding the collisions after emitters have been added prevents this.
-        if (_CollisionGrainProps._Emit)
+      
+        foreach (GrainData grain in _CollisionQueue)
         {
-            foreach (GrainData grain in _CollisionQueue)
-            {
-                _GrainQueue.Add(grain);
-            }
-            _CollisionQueue.Clear();
+            _GrainQueue.Add(grain);
         }
+        _CollisionQueue.Clear();
+        
         
       
 
@@ -361,8 +383,10 @@ public class Granulator : MonoBehaviour
         Grain grain = _GrainsInactive[0];
         _GrainsInactive.Remove(grain);
 
+        
+
         // Init grain with data
-        grain.Initialise(grainData);
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
 
         // Add grain to active list
         _GrainsActive.Add(grain);
@@ -374,9 +398,7 @@ public class Granulator : MonoBehaviour
     // Creates a burst of new grains on collision events
     //---------------------------------------------------------------------
     public void TriggerCollision(List<ParticleCollisionEvent> collisions, GameObject other)
-    {
-        if (!_CollisionGrainProps._Emit) return;
-
+    {       
         for (int i = 0; i < collisions.Count; i++)
         {
             for (int j = 0; j < _CollisionGrainBurst; j++)
@@ -388,7 +410,7 @@ public class Granulator : MonoBehaviour
 
                 // Create temporary grain data object and add it to the playback queue
                 GrainData collisionGrainData = new GrainData(pos, _GrainParentTform.transform, Vector3.zero, _Mass,
-                    _CollisionGrainProps._Clip, _CollisionGrainProps.Duration, offset, _CollisionGrainProps.Position, _CollisionGrainProps.Pitch, _CollisionGrainProps.Volume);
+                    _CollisionGrainProps._ClipIndex, _CollisionGrainProps.Duration, offset, _CollisionGrainProps.Position, _CollisionGrainProps.Pitch, _CollisionGrainProps.Volume);
 
                 _CollisionQueue.Add(collisionGrainData);
             }
@@ -428,7 +450,6 @@ public class Granulator : MonoBehaviour
         public Transform objectParent;
         public Vector3 objectVelocity;
         public float objectMass;
-        public AudioClip audioClip;
 
         public int offset;
         public float grainDuration;
@@ -436,15 +457,17 @@ public class Granulator : MonoBehaviour
         public float grainPitch;
         public float grainVolume;
 
+        public int _ClipIndex;
+
         public GrainData() { }
-        public GrainData(Vector3 position, Transform parent, Vector3 velocity, float mass, AudioClip grainAudioClip,
+        public GrainData(Vector3 position, Transform parent, Vector3 velocity, float mass, int grainAudioClipIndex,
             float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
         {
             objectPosition = position;
             objectParent = parent;
             objectVelocity = velocity;
             objectMass = mass;
-            audioClip = grainAudioClip;
+            _ClipIndex = grainAudioClipIndex;
             offset = grainOffsetInSamples;
             grainDuration = durationInMS;
             grainPos = playheadPosition;

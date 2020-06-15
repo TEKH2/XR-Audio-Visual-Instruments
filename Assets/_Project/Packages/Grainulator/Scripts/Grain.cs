@@ -11,7 +11,6 @@ public class Grain : MonoBehaviour
     private int _GrainDuration;
     private float _GrainPitch;
     private float _GrainVol;
-    private AudioClip _AudioClip;
     private AudioSource _AudioSource;
     private float[] _Samples;
     private float[] _GrainSamples;
@@ -74,25 +73,18 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void Initialise(Granulator.GrainData gd)
+    public void Initialise(Granulator.GrainData gd, float[] samples, int channels, int freq)
     {
         gameObject.transform.localPosition = gd.objectPosition;
         gameObject.transform.parent = gd.objectParent;
         _RigidBody.velocity = gd.objectVelocity;
         _Mass = gd.objectMass;
 
+        _Samples = samples;
+        _Channels = 2;
 
-        if (_Samples == null || _AudioClip != gd.audioClip)
-        {
-            _AudioClip = gd.audioClip;
-            _Samples = new float[_AudioClip.samples * _AudioClip.channels];
-            _AudioClip.GetData(_Samples, 0);
-            _Channels = _AudioClip.channels;
-        }
-
-
-        _GrainPos = (int)(gd.grainPos * _AudioClip.samples / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
-        _GrainDuration = (int)(_AudioClip.frequency / 1000 * gd.grainDuration);
+        _GrainPos = (int)(gd.grainPos * _Samples.Length / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
+        _GrainDuration = (int)(freq / 1000 * gd.grainDuration);
         _AudioSource.pitch = gd.grainPitch;
         _GrainVol = gd.grainVolume;
         _GrainOffset = gd.offset;

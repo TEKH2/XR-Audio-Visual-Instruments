@@ -1489,8 +1489,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
       propertyPath: _TimeBetweenGrains
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
@@ -1522,6 +1527,91 @@ PrefabInstance:
       propertyPath: _GrainParentTform
       value: 
       objectReference: {fileID: 1595330115}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 40644eeab2cbac44582d1712922c83ac, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Duration
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Duration
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _EmitGrainProps._Emit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _CollisionGrainProps._Emit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: baaf3eb83fa6d364c926f2d1dc31fe11, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _MaxGrains
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4c1423c577ed0704186bcef24ebf22dd, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2b1d52e33eb214348b460abdf2d6d909, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 31e78d3dee8f066499f5d0ad3da507e2, type: 3}
+    - target: {fileID: 6866782291507566250, guid: b5e7ef21c69428941bd1ddf30033ecea,
+        type: 3}
+      propertyPath: _AudioClipLibrary._Clips.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: b31e2fc4c1a34224aba99fed315577a2, type: 3}
     - target: {fileID: 6866782291507566260, guid: b5e7ef21c69428941bd1ddf30033ecea,
         type: 3}
       propertyPath: m_Name
