@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class ParticleManager : MonoBehaviour
 {
     public ParticleSystem _TriggerParticleSystem;
@@ -144,3 +145,4 @@ public class ParticleManager : MonoBehaviour
         collisionModule.enabled = enabled;
     }
 }
+*/

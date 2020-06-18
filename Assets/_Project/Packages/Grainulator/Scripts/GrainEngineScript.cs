@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/*
 [RequireComponent(typeof(Granulator))]
 public class GrainEngineScript : MonoBehaviour
 {
@@ -46,3 +46,4 @@ public class GrainEngineScript : MonoBehaviour
         granulator._EmitGrainProps.Volume = Mathf.Lerp(minGrainVol,maxGrainVol, RPM);
     }
 }
+*/

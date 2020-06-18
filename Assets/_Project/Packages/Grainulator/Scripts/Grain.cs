@@ -6,20 +6,17 @@ using UnityEngine.Profiling;
 
 public class Grain : MonoBehaviour
 {
+    Granulator1 _Granulator;
+    GrainData _GrainData;
+
     public bool _IsPlaying = false;
-    private int _GrainPos;
-    private int _GrainDuration;
-    private float _GrainPitch;
-    private float _GrainVol;
+      
     private AudioSource _AudioSource;
     private float[] _Samples;
     private float[] _GrainSamples;
     private int _Channels;
     private int _PlaybackIndex = -1;
-    private int _GrainOffset;
     
-    public float _Mass;
-    private Rigidbody _RigidBody;
     private float[] _Window;
 
 
@@ -40,63 +37,32 @@ public class Grain : MonoBehaviour
             _AudioSource = this.gameObject.AddComponent<AudioSource>();
     }
 
-    void Start()
-    {
-        _RigidBody = GetComponent<Rigidbody>();
-    }
-
-
-    //---------------------------------------------------------------------
-    void Update()
-    {
-        // Turn off grain if it's far away
-        //if (this.transform.position.sqrMagnitude > 10000)
-        //    _IsPlaying = false;
-
-        // Turn off grain if playback has finsihed
-        if (!_IsPlaying)
-        {
-            //this.gameObject.SetActive(false);
-            //_Granulator.GrainNotPlaying(this.gameObject);
-        }
-    }
-
     public void SetWindow(float[] window)
     {
         _Window = window;
     }
 
-
-    private void FixedUpdate()
-    {
-        _RigidBody.AddForce(new Vector3(0, -_Mass * 9.81f, 0));
-    }
-
     //---------------------------------------------------------------------
-    public void Initialise(Granulator.GrainData gd, float[] samples, int channels, int freq)
+    public void Initialise(Granulator1 granulator, GrainData gd, float[] samples, int channels, int freq)
     {
-        gameObject.transform.localPosition = gd.objectPosition;
-        gameObject.transform.parent = gd.objectParent;
-        _RigidBody.velocity = gd.objectVelocity;
-        _Mass = gd.objectMass;
-
+        _Granulator = granulator;
+        _GrainData = gd;
+      
         _Samples = samples;
         _Channels = 2;
 
-        _GrainPos = (int)(gd.grainPos * _Samples.Length / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
-        _GrainDuration = (int)(freq / 1000 * gd.grainDuration);
-        _AudioSource.pitch = gd.grainPitch;
-        _GrainVol = gd.grainVolume;
-        _GrainOffset = gd.offset;
+        int playheadPos = (int)(_GrainData._PlayheadPos * _Samples.Length / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
+        int duration = (int)(freq / 1000 * _GrainData._Duration);
+        _AudioSource.pitch = gd._Pitch;
 
-        BuildSampleArray();
+        BuildSampleArray(playheadPos, duration);
     }
 
     //---------------------------------------------------------------------
-    private void BuildSampleArray()
+    private void BuildSampleArray(int playheadPos, int duration)
     {
         // Grain array to pull samples into
-        _GrainSamples = new float[_GrainDuration];
+        _GrainSamples = new float[duration];
 
         int sourceIndex;
 
@@ -104,7 +70,7 @@ public class Grain : MonoBehaviour
         for (int i = 0; i < _GrainSamples.Length - _Channels; i += _Channels)
         {
             // Offset to source audio sample position for grain
-            sourceIndex = _GrainPos + i;
+            sourceIndex = playheadPos + i;
 
             // Loop to start if the grain is longer than source audio
             // TO DO: Change this to something more sonically pleasing.
@@ -129,7 +95,7 @@ public class Grain : MonoBehaviour
         }
 
         // Reset the playback index and ready the grain!
-        _PlaybackIndex = -_GrainOffset;
+        _PlaybackIndex = -_GrainData._SampleOffset;
         _IsPlaying = true;
         //this.gameObject.SetActive(true);
     }
@@ -145,7 +111,7 @@ public class Grain : MonoBehaviour
             for (int channel = 0; channel < channels; channel++)
             {
                 if (_IsPlaying)
-                    data[bufferIndex + channel] = GetNextSample() * _GrainVol;
+                    data[bufferIndex + channel] = GetNextSample() * _GrainData._Volume;
                 else
                     data[bufferIndex + channel] = 0;
             }
@@ -160,7 +126,10 @@ public class Grain : MonoBehaviour
         float returnSample = 0;
 
         if (_PlaybackIndex >= _GrainSamples.Length)
-            _IsPlaying = false;            
+        {
+            _IsPlaying = false;
+            _Granulator.GrainFinished(this);
+        }
 
         if (_PlaybackIndex >= 0 && _IsPlaying)
             returnSample = _GrainSamples[_PlaybackIndex];

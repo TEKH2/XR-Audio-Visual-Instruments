@@ -72,7 +72,7 @@ public class DebugGUI_FPS : MonoBehaviour
         //DebugGUI.LogPersistent("frameRate", "FPS: " + (1 / Time.smoothDeltaTime).ToString("F1"));
 
         if (Time.smoothDeltaTime != 0)
-            DebugGUI.Graph("smoothFrameRate", 1 / Time.smoothDeltaTime);
+            DebugGUI.Graph("SmoothFrameRate", 1 / Time.smoothDeltaTime);
         //if (Time.deltaTime != 0)
         //    DebugGUI.Graph("frameRate", 1 / Time.deltaTime);
     }

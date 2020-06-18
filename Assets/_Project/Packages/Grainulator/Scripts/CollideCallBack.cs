@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class CollideCallBack : MonoBehaviour
 {
     public ParticleManager _ParticleManager;
@@ -21,3 +22,4 @@ public class CollideCallBack : MonoBehaviour
         _ParticleManager.Collide(other, _CollisionEvents);
     }
 }
+*/

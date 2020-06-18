@@ -6,138 +6,17 @@ using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
 using System.Linq;
 
-
-[System.Serializable]
-public class AudioClipLibrary
-{
-    public AudioClip[] _Clips;
-    public List<float[]> _ClipsDataArray = new List<float[]>();
-
-    public void Initialize()
-    {
-        Debug.Log("Initializing clip library.");
-        for (int i = 0; i < _Clips.Length; i++)
-        {
-            AudioClip audioClip = _Clips[i];
-            float[] samples = new float[audioClip.samples * audioClip.channels];
-            _Clips[i].GetData(samples, 0);
-            _ClipsDataArray.Add(samples);
-
-            Debug.Log("Clip sample: " + _ClipsDataArray[i][100]);
-        }
-    }
-}
-
-[System.Serializable]
-public class GrainEmissionProps
-{
-    public int _ClipIndex = 0;
-
-    // Position
-    //---------------------------------------------------------------------
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    float _Position = 0;          // from 0 > 1   
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    public float _PositionRandom = 0;      // from 0 > 1
-    public float Position
-    {
-        get
-        {
-            return Mathf.Clamp(_Position + Random.Range(0, _PositionRandom), 0f, 1f);
-        }
-        set
-        {
-            _Position = Mathf.Clamp(value, 0, 1);
-        }
-    }
-
-    // Duration
-    //---------------------------------------------------------------------
-    [Range(2.0f, 1000f)]
-    [SerializeField]
-    int _Duration = 300;       // ms
-    [Range(0.0f, 1000f)]
-    [SerializeField]
-    int _DurationRandom = 0;     // ms
-    public float Duration
-    {
-        get
-        {
-            return Mathf.Clamp(_Duration + Random.Range(0, _DurationRandom), 2, 1000);
-        }
-        set
-        {
-            _Duration = (int)Mathf.Clamp(value, 2, 1000);
-        }
-    }
-
-    // Pitch
-    //---------------------------------------------------------------------
-    [Range(0.1f, 5f)]
-    [SerializeField]
-    float _Pitch = 1;
-    [Range(0.0f, 1f)]
-    [SerializeField]
-    float _PitchRandom = 0;
-    public float Pitch
-    {
-        get
-        {
-            return Mathf.Clamp(_Pitch + Random.Range(-_PitchRandom, _PitchRandom), 0.1f, 5f);
-        }
-        set
-        {
-            _Pitch = (int)Mathf.Clamp(value, 0.1f, 5f);
-        }
-    }
-
-    // Volume
-    //---------------------------------------------------------------------
-    [Range(0.0f, 2.0f)]
-    [SerializeField]
-    float _Volume = 1;          // from 0 > 1
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    float _VolumeRandom = 0;      // from 0 > 1
-    public float Volume
-    {
-        get
-        {
-            return Mathf.Clamp(_Volume + Random.Range(-_VolumeRandom, _VolumeRandom),0f, 3f);
-        }
-        set
-        {
-            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
-        }
-    }
-
-    public GrainEmissionProps(float pos, int duration, float pitch, float volume, 
-        float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
-    {
-        _Position = pos;
-        _Duration = duration;
-        _Pitch = pitch;
-        _Volume = volume;
-
-        _PositionRandom = posRand;
-        _DurationRandom = durationRand;
-        _PitchRandom = pitchRand;
-        _VolumeRandom = volumeRand;
-    }
-}
-
+/*
 public class Granulator : MonoBehaviour
 {
     public AudioClipLibrary _AudioClipLibrary;
 
-    // Particle vars
+    // ------------------------------------ PARTICLE VARS
     public ParticleManager _ParticleManager;
     private ParticleSystem.Particle _TempParticle;
     private ParticleSystem.Particle[] _Particles;
 
-    // Grain pooling
+    // ------------------------------------ GRAIN POOLING
     public GameObject _GrainParentTform;
     public GameObject _GrainPrefab;
     public int _MaxGrains = 100;
@@ -147,10 +26,8 @@ public class Granulator : MonoBehaviour
     [Range(0.0f, 1000f)]
     public int _TimeBetweenGrainsRandom = 0;       // ms
 
-    [Header("Emitter Grains")]
+    [Header("Emission properties")]
     public GrainEmissionProps _EmitGrainProps;
-
-    [Header("Collision Grains")]   
     public GrainEmissionProps _CollisionGrainProps;
 
     [Space]
@@ -476,3 +353,4 @@ public class Granulator : MonoBehaviour
         }
     }
 }
+*/
