@@ -192,6 +192,9 @@ public class Granulator1 : MonoBehaviour
     private List<Grain> _ActiveGrainList;
     private List<Grain> _InactiveGrainList;
 
+    float _PrevEmitTime = 0;
+    float _NextEmitTime = 0;
+
 
     private void Start()
     {
@@ -217,12 +220,34 @@ public class Granulator1 : MonoBehaviour
         _SamplesSinceLastGrain = 0;
     }
 
+    float emitCounter = 0;
+
     void Update()
-    {     
+    {
+        // Remove finished grains from Playing List and add them to Finished list
+        for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
+        {
+            Grain playingGrain = _ActiveGrainList[i];
+
+            if (!playingGrain._IsPlaying)
+            {
+                _ActiveGrainList.RemoveAt(i);
+                _InactiveGrainList.Add(playingGrain);
+                playingGrain.gameObject.SetActive(false);
+            }
+        }
+
         int samplesSinceLastUpdate = (int)(Time.deltaTime * _SampleRate);
-        int grainsToPlay = 0;
+        int numberOfGrainsToPlay = 0;
         int firstGrainOffset = 0;
         int densityInSamples = (_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * (_SampleRate / 1000);
+
+        // testing
+        float grainsPerSecond = 1000f / (_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom));
+        emitCounter += grainsPerSecond * Time.deltaTime;
+
+        //print(timeBetweenGrains + "   " + emitCounter + "   " + Time.time);
+
 
         /// If no sample was played last update, adding the previous update's samples count,
         /// AFTER the update is complete, should correctly accumulate the samples since the
@@ -240,7 +265,7 @@ public class Granulator1 : MonoBehaviour
         {
             // Should always equal one or more
             // TODO: Not sure if the + 1 is correct here. Potentially introducing rounding errors?
-            grainsToPlay = samplesSinceLastUpdate / densityInSamples + 1;
+            numberOfGrainsToPlay = samplesSinceLastUpdate / densityInSamples + 1;
             
             // Create initial grain offset for this update
             firstGrainOffset = densityInSamples - _SamplesSinceLastGrain;
@@ -251,13 +276,14 @@ public class Granulator1 : MonoBehaviour
                 firstGrainOffset = 0;
         }
 
-        _EmitterGrainsLastUpdate = grainsToPlay;
+        _EmitterGrainsLastUpdate = numberOfGrainsToPlay;
 
-        for (int i = 0; i < grainsToPlay; i++)
+        int emitted = 0;
+        for (int i = 0; i < emitCounter; i++)
         {              
             // Store duration locally because it's used twice
             float duration = _EmitGrainProps.Duration;
-      
+
             // Calculate timing offset for grain
             int offset = firstGrainOffset + i * densityInSamples;
 
@@ -266,7 +292,10 @@ public class Granulator1 : MonoBehaviour
                 _EmitGrainProps._ClipIndex, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
             _QueuedGrainData.Add(tempGrainData);
+            emitted++;
         }
+
+        emitCounter -= emitted;
 
         // If a grain is going to be played this update, set the samples since last grain
         // counter to the sample offset value of the final grain
@@ -278,7 +307,7 @@ public class Granulator1 : MonoBehaviour
 
         _QueuedGrainData.Clear();
 
-        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _TimeBetweenGrains );
+        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + grainsPerSecond );
         DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _ActiveGrainList.Count + "/"+ _MaxGrains);
     }
 
@@ -296,15 +325,12 @@ public class Granulator1 : MonoBehaviour
         // Add grain to active list
         _ActiveGrainList.Add(grain);
 
+        grain.gameObject.SetActive(true);
+
         // Init grain with data
         grain.Initialise(this, grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
-
-    }
-
-    public void GrainFinished(Grain grain)
-    {
-        _ActiveGrainList.Remove(grain);
-        _InactiveGrainList.Add(grain);
+        
+        _PrevEmitTime = Time.time;
     }
 
     void CreateWindowingLookupTable()

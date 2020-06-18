@@ -520,14 +520,14 @@ MonoBehaviour:
   _GrainParentTform: {fileID: 996187816}
   _GrainPrefab: {fileID: 1058601950276710, guid: 0439a9d037d24064abe436db9fded4c6,
     type: 3}
-  _MaxGrains: 50
-  _TimeBetweenGrains: 100
+  _MaxGrains: 100
+  _TimeBetweenGrains: 50
   _TimeBetweenGrainsRandom: 0
   _EmitGrainProps:
     _ClipIndex: 0
     _Position: 0.3
     _PositionRandom: 0
-    _Duration: 100
+    _Duration: 500
     _DurationRandom: 0
     _Pitch: 1
     _PitchRandom: 0

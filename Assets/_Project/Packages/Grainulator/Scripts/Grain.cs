@@ -125,11 +125,8 @@ public class Grain : MonoBehaviour
     {
         float returnSample = 0;
 
-        if (_PlaybackIndex >= _GrainSamples.Length)
-        {
-            _IsPlaying = false;
-            _Granulator.GrainFinished(this);
-        }
+        if (_PlaybackIndex >= _GrainSamples.Length)        
+            _IsPlaying = false;        
 
         if (_PlaybackIndex >= 0 && _IsPlaying)
             returnSample = _GrainSamples[_PlaybackIndex];
