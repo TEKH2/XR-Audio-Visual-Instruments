@@ -6,7 +6,7 @@ using UnityEngine.Profiling;
 
 public class Grain : MonoBehaviour
 {
-    GrainData _GrainData;
+    public GrainData _GrainData;
 
     public bool _IsPlaying = false;
       

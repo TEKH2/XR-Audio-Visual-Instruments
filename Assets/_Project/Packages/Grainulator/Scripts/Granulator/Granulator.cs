@@ -59,6 +59,21 @@ public class GrainData
         _Pitch = pitch;
         _Volume = volume;
     }
+
+    public void Initialize(Vector3 position, Transform parent, Vector3 velocity, float mass, int grainAudioClipIndex,
+        float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
+    {
+        _WorldPos = position;
+        _ParentTransform = parent;
+        _Velocity = velocity;
+        _Mass = mass;
+        _ClipIndex = grainAudioClipIndex;
+        _SampleOffset = grainOffsetInSamples;
+        _Duration = durationInMS;
+        _PlayheadPos = playheadPosition;
+        _Pitch = pitch;
+        _Volume = volume;
+    }
 }
 
 [System.Serializable]
@@ -161,15 +176,13 @@ public class GrainEmissionProps
     }
 }
 
-public class Granulator1 : MonoBehaviour
+public class Granulator : MonoBehaviour
 {
     // ------------------------------------ AUDIO VARS
     public AudioClipLibrary _AudioClipLibrary;
     private const int _SampleRate = 44100;
-    private float[] _Window;
 
     // ------------------------------------ GRAIN POOLING
-    public GameObject _GrainParentTform;
     public GameObject _GrainPrefab;
     public int _MaxGrains = 100;
 
@@ -181,9 +194,8 @@ public class Granulator1 : MonoBehaviour
 
     public GrainEmissionProps _EmitGrainProps;
 
-    // Number of samples since last grain, used to provide an interframe offset amount
-    private int _SamplesSinceLastGrain;
-    private int _EmitterGrainsLastUpdate = 0;
+    float _PrevEmissionSampleIndex = 0;
+    List<float> _SpawnAtSampleTimes = new List<float>();
 
     // Grains that are queued in between frames ready to fire at next update
     private List<GrainData> _QueuedGrainData;
@@ -192,11 +204,13 @@ public class Granulator1 : MonoBehaviour
     private List<Grain> _ActiveGrainList;
     private List<Grain> _InactiveGrainList;
 
+    private List<GrainData> _ActiveGrainDataList = new List<GrainData>();
+    private List<GrainData> _InactiveGrainDataList = new List<GrainData>();
+      
+
     private void Start()
     {
         _AudioClipLibrary.Initialize();
-
-        CreateWindowingLookupTable();
 
         gameObject.AddComponent<AudioSource>();
 
@@ -209,23 +223,17 @@ public class Granulator1 : MonoBehaviour
             GameObject go = Instantiate(_GrainPrefab);
             go.SetActive(true);
             Grain grain = go.GetComponent<Grain>();
-            grain.transform.parent = _GrainParentTform.transform;
+            grain.transform.parent = transform;
             grain.transform.localPosition = Vector3.zero;
             _InactiveGrainList.Add(grain);
+
+            _InactiveGrainDataList.Add(new GrainData());
         }
-
-        _SamplesSinceLastGrain = 0;
     }
-
-    float emitCounter = 0;
-
-    float _SamplesBetweenGrains;
-    float _PreviousEmissionSample = 0;
-
-    List<float> _SpawnAtSampleTimes = new List<float>();
 
     void Update()
     {
+        //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED
         // Remove finished grains from Playing List and add them to Finished list
         for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
         {
@@ -235,20 +243,20 @@ public class Granulator1 : MonoBehaviour
             {
                 _ActiveGrainList.RemoveAt(i);
                 _InactiveGrainList.Add(playingGrain);
-                //playingGrain.gameObject.SetActive(false);
+
+                _ActiveGrainDataList.Remove(playingGrain._GrainData);
+                _InactiveGrainDataList.Add(playingGrain._GrainData);
             }
         }
 
-        float grainsPerSecond = 1000 / _TimeBetweenGrains;
 
-        // Number of samples between grains
-        _SamplesBetweenGrains = _SampleRate * (_TimeBetweenGrains * .001f);
+        //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
         float frameSampleIndex = Time.time * _SampleRate;
         // Calculate random sample rate
         float randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
         // Find sample that next grain is emitted at
-        float nextEmitSampleIndex = _PreviousEmissionSample + randomSampleBetweenGrains;
+        float nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
 
         // fill the spawn sample time list while the next emit sample index 
         while(nextEmitSampleIndex <= frameSampleIndex)
@@ -257,39 +265,47 @@ public class Granulator1 : MonoBehaviour
             _SpawnAtSampleTimes.Add(nextEmitSampleIndex);
 
             // recalculate random sample rate
-            _PreviousEmissionSample = nextEmitSampleIndex;
+            _PrevEmissionSampleIndex = nextEmitSampleIndex;
             randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
-            nextEmitSampleIndex = _PreviousEmissionSample + randomSampleBetweenGrains;
+            nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
         }
 
-        for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
-        {              
-            // Store duration locally because it's used twice
-            float duration = _EmitGrainProps.Duration;
 
+        //------------------------------------------ GENERATE GRAIN DATA      
+        for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
+        {
             // Calculate timing offset for grain
             int offset = (int)frameSampleIndex - (int)_SpawnAtSampleTimes[i];
 
-            // Create temporary grain data object and add it to the playback queue
-            GrainData tempGrainData = new GrainData(transform.position + Random.insideUnitSphere, _GrainParentTform.transform, Vector3.right * 2, 1,
-                _EmitGrainProps._ClipIndex, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+            if (_InactiveGrainDataList.Count > 0)
+            {
+                GrainData tempGrainData = _InactiveGrainDataList[0];
+                _InactiveGrainDataList.Remove(tempGrainData);
+                _ActiveGrainDataList.Add(tempGrainData);
 
-            _QueuedGrainData.Add(tempGrainData);
+                // Create temporary grain data object and add it to the playback queue
+                tempGrainData.Initialize(transform.position + Random.insideUnitSphere, transform, Vector3.right * 2, 1,
+                    _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+
+                _QueuedGrainData.Add(tempGrainData);
+            }
+            else
+            {
+                print("Not enough grain datas to spawn a new grain.");
+            }
         }
 
-        _SpawnAtSampleTimes.Clear();
-
-        // If a grain is going to be played this update, set the samples since last grain
-        // counter to the sample offset value of the final grain
-        if (_QueuedGrainData.Count > 0)
-            _SamplesSinceLastGrain = _QueuedGrainData[_QueuedGrainData.Count - 1]._SampleOffset;
-
+        //------------------------------------------ SPAWN GRAINS 
         foreach (GrainData grainData in _QueuedGrainData)        
             EmitGrain(grainData);
 
-        _QueuedGrainData.Clear();
 
-        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + grainsPerSecond );
+        //------------------------------------------ CLEAN UP
+        _QueuedGrainData.Clear();
+        _SpawnAtSampleTimes.Clear();
+
+        //------------------------------------------ DEBUG
+        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _TimeBetweenGrains);
         DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _ActiveGrainList.Count + "/"+ _MaxGrains);
         DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
         DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_TimeBetweenGrains * .001f));
@@ -317,15 +333,4 @@ public class Granulator1 : MonoBehaviour
         grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
         
     }
-
-    void CreateWindowingLookupTable()
-    {
-        _Window = new float[512];
-
-        for (int i = 0; i < _Window.Length; i++)
-        {
-            _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
-        }
-    }
-
 }
