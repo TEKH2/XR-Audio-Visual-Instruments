@@ -219,6 +219,11 @@ public class Granulator1 : MonoBehaviour
 
     float emitCounter = 0;
 
+    float _SamplesBetweenGrains;
+    float _PreviousEmissionSample = 0;
+
+    List<float> _SpawnAtSampleTimes = new List<float>();
+
     void Update()
     {
         // Remove finished grains from Playing List and add them to Finished list
@@ -234,65 +239,45 @@ public class Granulator1 : MonoBehaviour
             }
         }
 
-        int samplesSinceLastUpdate = (int)(Time.deltaTime * _SampleRate);
-        int numberOfGrainsToPlay = 0;
-        int firstGrainOffset = 0;
-        int densityInSamples = (_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * (_SampleRate / 1000);
+        float grainsPerSecond = 1000 / _TimeBetweenGrains;
 
-        // testing
-        float grainsPerSecond = 1000f / (_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom));
-        emitCounter += grainsPerSecond * Time.deltaTime;
+        // Number of samples between grains
+        _SamplesBetweenGrains = _SampleRate * (_TimeBetweenGrains * .001f);
+        // Current sample we are up to in time
+        float frameSampleIndex = Time.time * _SampleRate;
+        // Calculate random sample rate
+        float randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
+        // Find sample that next grain is emitted at
+        float nextEmitSampleIndex = _PreviousEmissionSample + randomSampleBetweenGrains;
 
-        //print(timeBetweenGrains + "   " + emitCounter + "   " + Time.time);
-
-
-        /// If no sample was played last update, adding the previous update's samples count,
-        /// AFTER the update is complete, should correctly accumulate the samples since the
-        /// last grain playback. Otherwise, if a sample WAS played last update, the sample
-        /// offset of that grain is subtracted from the total samples of the previous update.
-        /// This provides the correct number of samples since the most recent grain was started.
-        if (_EmitterGrainsLastUpdate == 0)
-            _SamplesSinceLastGrain += samplesSinceLastUpdate;
-        else
-            _SamplesSinceLastGrain = samplesSinceLastUpdate - _SamplesSinceLastGrain;
-
-        // If the density of grains minus samples since last grain fits within the
-        // estimated time for the this update, calculate number of grains to play this update
-        if (densityInSamples - _SamplesSinceLastGrain < samplesSinceLastUpdate)
+        // fill the spawn sample time list while the next emit sample index 
+        while(nextEmitSampleIndex <= frameSampleIndex)
         {
-            // Should always equal one or more
-            // TODO: Not sure if the + 1 is correct here. Potentially introducing rounding errors?
-            numberOfGrainsToPlay = samplesSinceLastUpdate / densityInSamples + 1;
-            
-            // Create initial grain offset for this update
-            firstGrainOffset = densityInSamples - _SamplesSinceLastGrain;
-            
-            // Hacky check to avoid offsets lower than 0 (if this occurs, something
-            // isn't handled correctly. This is a precaution. Haven't properly checked this yet.
-            if (firstGrainOffset < 0)
-                firstGrainOffset = 0;
+            // add to spawn sample list
+            _SpawnAtSampleTimes.Add(nextEmitSampleIndex);
+
+            // recalculate random sample rate
+            _PreviousEmissionSample = nextEmitSampleIndex;
+            randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
+            nextEmitSampleIndex = _PreviousEmissionSample + randomSampleBetweenGrains;
         }
 
-        _EmitterGrainsLastUpdate = numberOfGrainsToPlay;
-
-        int emitted = 0;
-        for (int i = 0; i < numberOfGrainsToPlay; i++)
+        for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
         {              
             // Store duration locally because it's used twice
             float duration = _EmitGrainProps.Duration;
 
             // Calculate timing offset for grain
-            int offset = firstGrainOffset + i * densityInSamples;
+            int offset = (int)frameSampleIndex - (int)_SpawnAtSampleTimes[i];
 
             // Create temporary grain data object and add it to the playback queue
             GrainData tempGrainData = new GrainData(transform.position + Random.insideUnitSphere, _GrainParentTform.transform, Vector3.right * 2, 1,
                 _EmitGrainProps._ClipIndex, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
             _QueuedGrainData.Add(tempGrainData);
-            emitted++;
         }
 
-        emitCounter -= emitted;
+        _SpawnAtSampleTimes.Clear();
 
         // If a grain is going to be played this update, set the samples since last grain
         // counter to the sample offset value of the final grain
@@ -306,6 +291,9 @@ public class Granulator1 : MonoBehaviour
 
         DebugGUI.LogPersistent("Grains per second", "Grains per second: " + grainsPerSecond );
         DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _ActiveGrainList.Count + "/"+ _MaxGrains);
+        DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
+        DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_TimeBetweenGrains * .001f));
+        DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
     }
 
     public void EmitGrain(GrainData grainData)
