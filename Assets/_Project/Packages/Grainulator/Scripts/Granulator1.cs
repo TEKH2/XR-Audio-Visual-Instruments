@@ -192,10 +192,6 @@ public class Granulator1 : MonoBehaviour
     private List<Grain> _ActiveGrainList;
     private List<Grain> _InactiveGrainList;
 
-    float _PrevEmitTime = 0;
-    float _NextEmitTime = 0;
-
-
     private void Start()
     {
         _AudioClipLibrary.Initialize();
@@ -214,6 +210,7 @@ public class Granulator1 : MonoBehaviour
             go.SetActive(true);
             Grain grain = go.GetComponent<Grain>();
             grain.transform.parent = _GrainParentTform.transform;
+            grain.transform.localPosition = Vector3.zero;
             _InactiveGrainList.Add(grain);
         }
 
@@ -233,7 +230,7 @@ public class Granulator1 : MonoBehaviour
             {
                 _ActiveGrainList.RemoveAt(i);
                 _InactiveGrainList.Add(playingGrain);
-                playingGrain.gameObject.SetActive(false);
+                //playingGrain.gameObject.SetActive(false);
             }
         }
 
@@ -279,7 +276,7 @@ public class Granulator1 : MonoBehaviour
         _EmitterGrainsLastUpdate = numberOfGrainsToPlay;
 
         int emitted = 0;
-        for (int i = 0; i < emitCounter; i++)
+        for (int i = 0; i < numberOfGrainsToPlay; i++)
         {              
             // Store duration locally because it's used twice
             float duration = _EmitGrainProps.Duration;
@@ -288,7 +285,7 @@ public class Granulator1 : MonoBehaviour
             int offset = firstGrainOffset + i * densityInSamples;
 
             // Create temporary grain data object and add it to the playback queue
-            GrainData tempGrainData = new GrainData(transform.position, _GrainParentTform.transform, Vector3.right * 2, 1,
+            GrainData tempGrainData = new GrainData(transform.position + Random.insideUnitSphere, _GrainParentTform.transform, Vector3.right * 2, 1,
                 _EmitGrainProps._ClipIndex, duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
             _QueuedGrainData.Add(tempGrainData);
@@ -321,16 +318,16 @@ public class Granulator1 : MonoBehaviour
 
         // Get grain from inactive list and remove from list
         Grain grain = _InactiveGrainList[0];
+        grain.transform.position = grainData._WorldPos;
         _InactiveGrainList.Remove(grain);
         // Add grain to active list
         _ActiveGrainList.Add(grain);
 
-        grain.gameObject.SetActive(true);
+        //grain.gameObject.SetActive(true);
 
         // Init grain with data
-        grain.Initialise(this, grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
         
-        _PrevEmitTime = Time.time;
     }
 
     void CreateWindowingLookupTable()

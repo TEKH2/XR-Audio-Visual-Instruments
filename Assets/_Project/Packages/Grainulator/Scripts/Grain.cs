@@ -6,7 +6,6 @@ using UnityEngine.Profiling;
 
 public class Grain : MonoBehaviour
 {
-    Granulator1 _Granulator;
     GrainData _GrainData;
 
     public bool _IsPlaying = false;
@@ -14,7 +13,7 @@ public class Grain : MonoBehaviour
     private AudioSource _AudioSource;
     private float[] _Samples;
     private float[] _GrainSamples;
-    private int _Channels;
+    private int _Channels = 2;
     private int _PlaybackIndex = -1;
     
     private float[] _Window;
@@ -37,19 +36,12 @@ public class Grain : MonoBehaviour
             _AudioSource = this.gameObject.AddComponent<AudioSource>();
     }
 
-    public void SetWindow(float[] window)
-    {
-        _Window = window;
-    }
-
     //---------------------------------------------------------------------
-    public void Initialise(Granulator1 granulator, GrainData gd, float[] samples, int channels, int freq)
+    public void Initialise(GrainData gd, float[] samples, int channels, int freq)
     {
-        _Granulator = granulator;
         _GrainData = gd;
-      
         _Samples = samples;
-        _Channels = 2;
+        _Channels = channels;
 
         int playheadPos = (int)(_GrainData._PlayheadPos * _Samples.Length / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
         int duration = (int)(freq / 1000 * _GrainData._Duration);
@@ -59,7 +51,7 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    private void BuildSampleArray(int playheadPos, int duration)
+    private void BuildSampleArray(int playheadStartPos, int duration)
     {
         // Grain array to pull samples into
         _GrainSamples = new float[duration];
@@ -70,7 +62,7 @@ public class Grain : MonoBehaviour
         for (int i = 0; i < _GrainSamples.Length - _Channels; i += _Channels)
         {
             // Offset to source audio sample position for grain
-            sourceIndex = playheadPos + i;
+            sourceIndex = playheadStartPos + i;
 
             // Loop to start if the grain is longer than source audio
             // TO DO: Change this to something more sonically pleasing.
