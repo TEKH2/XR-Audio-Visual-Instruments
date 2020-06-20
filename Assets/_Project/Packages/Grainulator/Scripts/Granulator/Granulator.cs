@@ -284,7 +284,7 @@ public class Granulator : MonoBehaviour
                 _ActiveGrainDataList.Add(tempGrainData);
 
                 // Create temporary grain data object and add it to the playback queue
-                tempGrainData.Initialize(transform.position, transform, Vector3.right * 2, 1,
+                tempGrainData.Initialize(transform.position + Random.insideUnitSphere * .1f, transform, Vector3.right * 2, 1,
                     _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _QueuedGrainData.Add(tempGrainData);
