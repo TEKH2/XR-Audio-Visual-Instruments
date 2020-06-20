@@ -38,7 +38,7 @@ public class Granulator_TestInput : MonoBehaviour
         _Velocity = Vector3.Lerp(_Velocity, newVel, Time.deltaTime * _Smoothing);
         float speedNorm = Mathf.InverseLerp(_SpeedRange.x, _SpeedRange.y, _Velocity.magnitude);
         float emitCadence = Mathf.Lerp(_EmitCadence.x, _EmitCadence.y, speedNorm);
-        _Granulator._TimeBetweenGrains = (int)emitCadence;
+        //_Granulator._TimeBetweenGrains = (int)emitCadence;
 
 
         //print("Pos: " + pos + " Pitch: " + pitch * 2);

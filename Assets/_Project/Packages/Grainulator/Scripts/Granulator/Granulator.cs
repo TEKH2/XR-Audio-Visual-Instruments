@@ -85,7 +85,7 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(0.0f, 1.0f)]
     [SerializeField]
-    float _Position = 0;          // from 0 > 1   
+    float _PlayheadPos = 0;          // from 0 > 1   
     [Range(0.0f, 1.0f)]
     [SerializeField]
     public float _PositionRandom = 0;      // from 0 > 1
@@ -93,11 +93,11 @@ public class GrainEmissionProps
     {
         get
         {
-            return Mathf.Clamp(_Position + Random.Range(0, _PositionRandom), 0f, 1f);
+            return Mathf.Clamp(_PlayheadPos + Random.Range(0, _PositionRandom), 0f, 1f);
         }
         set
         {
-            _Position = Mathf.Clamp(value, 0, 1);
+            _PlayheadPos = Mathf.Clamp(value, 0, 1);
         }
     }
 
@@ -164,7 +164,7 @@ public class GrainEmissionProps
     public GrainEmissionProps(float pos, int duration, float pitch, float volume, 
         float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
     {
-        _Position = pos;
+        _PlayheadPos = pos;
         _Duration = duration;
         _Pitch = pitch;
         _Volume = volume;
@@ -284,7 +284,7 @@ public class Granulator : MonoBehaviour
                 _ActiveGrainDataList.Add(tempGrainData);
 
                 // Create temporary grain data object and add it to the playback queue
-                tempGrainData.Initialize(transform.position + Random.insideUnitSphere, transform, Vector3.right * 2, 1,
+                tempGrainData.Initialize(transform.position, transform, Vector3.right * 2, 1,
                     _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _QueuedGrainData.Add(tempGrainData);
