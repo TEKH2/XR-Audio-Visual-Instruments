@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Sandbox/Wobble string/Wobble string.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
+  - enabled: 0
+    path: Assets/_Project/Packages/Grainulator/Scenes/Granulator example scene.unity
+    guid: 06500776a180d394595db2c1c5b8c61c
+  - enabled: 1
+    path: Assets/_Project/Scenes/XR Granulator.unity
+    guid: 13db310e8fcf0e24cb534d2aa117dccf
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d706ac39f2e2cdf458fe53385d06423c,
       type: 2}
