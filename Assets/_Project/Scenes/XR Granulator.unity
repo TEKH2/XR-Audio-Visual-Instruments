@@ -708,7 +708,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1021502729408534, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4651155242276878, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3875,12 +3875,22 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _TimeBetweenGrains
-      value: 51
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._Duration
-      value: 150
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
+        type: 3}
+      propertyPath: _EmitGrainProps._PlayheadPos
+      value: 0.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
+        type: 3}
+      propertyPath: _EmitGrainProps._ClipIndex
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
@@ -4303,7 +4313,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821086921}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a2a9c34df4095f47b9ca8f975175f5b, type: 3}
   m_Name: 

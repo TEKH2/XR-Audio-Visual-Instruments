@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -13,7 +14,6 @@ public class Grain : MonoBehaviour
     private AudioSource _AudioSource;
     private float[] _Samples;
     private float[] _GrainSamples;
-    private int _Channels = 2;
     private int _PlaybackIndex = -1;
     
     private float[] _Window;
@@ -37,13 +37,12 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void Initialise(GrainData gd, float[] samples, int channels, int freq)
+    public void Initialise(GrainData gd, float[] samples, int freq)
     {
         _GrainData = gd;
         _Samples = samples;
-        _Channels = channels;
 
-        int playheadPos = (int)(_GrainData._PlayheadPos * _Samples.Length / _Channels) * _Channels; // Rounding to make sure pos always starts at first channel
+        int playheadPos = (int)(_GrainData._PlayheadPos * _Samples.Length);
         int duration = (int)(freq / 1000 * _GrainData._Duration);
         _AudioSource.pitch = gd._Pitch;
 
@@ -59,7 +58,7 @@ public class Grain : MonoBehaviour
         int sourceIndex;
 
         // Construct grain sample data
-        for (int i = 0; i < _GrainSamples.Length - _Channels; i += _Channels)
+        for (int i = 0; i < _GrainSamples.Length; i ++)
         {
             // Offset to source audio sample position for grain
             sourceIndex = playheadStartPos + i;
@@ -67,23 +66,13 @@ public class Grain : MonoBehaviour
             // Loop to start if the grain is longer than source audio
             // TO DO: Change this to something more sonically pleasing.
             // Something like ping-pong/mirroring is better than flicking to the start
-            while (sourceIndex + _Channels > _Samples.Length)
-                sourceIndex -= _Samples.Length;
-
-            // HACCCCCKKKY SHIT - was getting values in the negative somehow
-            // Couldn't be bothered debugging just yet
-            if (sourceIndex < 0)
-                sourceIndex = 0;
-
-            // Populate with source audio and apply windowing
-            for (int channel = 0; channel < _Channels; channel++)
+            if (sourceIndex > _Samples.Length)
             {
-                //_GrainSamples[i + channel] = _Samples[sourceIndex + channel]
-                //    * Windowing(i, _GrainSamples.Length);
-                
-                _GrainSamples[i + channel] = _Samples[sourceIndex + channel]
-                    * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)];
+                sourceIndex -= _Samples.Length;
+                sourceIndex = Mathf.Max(sourceIndex, 0);
             }
+
+            _GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)];
         }
 
         // Reset the playback index and ready the grain!
@@ -98,15 +87,12 @@ public class Grain : MonoBehaviour
     void OnAudioFilterRead(float[] data, int channels)
     {
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
-        for (int bufferIndex = 0; bufferIndex < data.Length; bufferIndex += channels)
-        {
-            for (int channel = 0; channel < channels; channel++)
-            {
-                if (_IsPlaying)
-                    data[bufferIndex + channel] = GetNextSample() * _GrainData._Volume;
-                else
-                    data[bufferIndex + channel] = 0;
-            }
+        for (int bufferIndex = 0; bufferIndex < data.Length; bufferIndex++)
+        {            
+            if (_IsPlaying)
+                data[bufferIndex] = GetNextSample() * _GrainData._Volume;
+            else
+                data[bufferIndex] = 0;
         }
     }
     

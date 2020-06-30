@@ -19,7 +19,14 @@ public class AudioClipLibrary
         for (int i = 0; i < _Clips.Length; i++)
         {
             AudioClip audioClip = _Clips[i];
-            float[] samples = new float[audioClip.samples * audioClip.channels];
+
+            if(audioClip.channels > 1)
+            {
+                Debug.LogError("Audio clip not mono");
+                Application.Quit();
+            }
+
+            float[] samples = new float[audioClip.samples];
             _Clips[i].GetData(samples, 0);
             _ClipsDataArray.Add(samples);
 
@@ -206,13 +213,13 @@ public class Granulator : MonoBehaviour
 
     private List<GrainData> _ActiveGrainDataList = new List<GrainData>();
     private List<GrainData> _InactiveGrainDataList = new List<GrainData>();
-      
+
+    public bool _DebugLog = false;
+    int _DebugFrameCounter = 0;
 
     private void Start()
     {
         _AudioClipLibrary.Initialize();
-
-        gameObject.AddComponent<AudioSource>();
 
         _ActiveGrainList = new List<Grain>();
         _InactiveGrainList = new List<Grain>();
@@ -248,7 +255,6 @@ public class Granulator : MonoBehaviour
                 _InactiveGrainDataList.Add(playingGrain._GrainData);
             }
         }
-
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
@@ -310,6 +316,8 @@ public class Granulator : MonoBehaviour
         DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
         DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_TimeBetweenGrains * .001f));
         DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
+
+        _DebugFrameCounter++;
     }
 
     public void EmitGrain(GrainData grainData)
@@ -328,9 +336,14 @@ public class Granulator : MonoBehaviour
         _ActiveGrainList.Add(grain);
 
         //grain.gameObject.SetActive(true);
+        if (_DebugLog)
+        {
+            Debug.Log(String.Format("Frame: {0}  Offset: {1}", _DebugFrameCounter, grainData._SampleOffset));
+        }
+
 
         // Init grain with data
-        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].channels, _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
         
     }
 }
