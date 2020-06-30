@@ -42,15 +42,17 @@ public class Grain : MonoBehaviour
         _GrainData = gd;
         _Samples = samples;
 
-        int playheadPos = (int)(_GrainData._PlayheadPos * _Samples.Length);
-        int duration = (int)(freq / 1000 * _GrainData._Duration);
+        int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
+        int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);
         _AudioSource.pitch = gd._Pitch;
 
-        BuildSampleArray(playheadPos, duration);
+        Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}", playheadSampleIndex, durationInSamples, gd._Pitch));
+
+        BuildSampleArray(playheadSampleIndex, durationInSamples);
     }
 
     //---------------------------------------------------------------------
-    private void BuildSampleArray(int playheadStartPos, int duration)
+    private void BuildSampleArray(int playheadSampleIndex, int duration)
     {
         // Grain array to pull samples into
         _GrainSamples = new float[duration];
@@ -61,7 +63,7 @@ public class Grain : MonoBehaviour
         for (int i = 0; i < _GrainSamples.Length; i ++)
         {
             // Offset to source audio sample position for grain
-            sourceIndex = playheadStartPos + i;
+            sourceIndex = playheadSampleIndex + i;
 
             // Loop to start if the grain is longer than source audio
             // TO DO: Change this to something more sonically pleasing.
@@ -74,6 +76,8 @@ public class Grain : MonoBehaviour
 
             _GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)];
         }
+
+        Debug.Log(String.Format("Sample 100 {0}   Sample 4000 {1}   Sample 6000 {2} ", _GrainSamples[100], _GrainSamples[4000], _GrainSamples[6000]));
 
         // Reset the playback index and ready the grain!
         _PlaybackIndex = -_GrainData._SampleOffset;
