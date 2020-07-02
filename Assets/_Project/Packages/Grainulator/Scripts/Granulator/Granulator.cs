@@ -296,7 +296,8 @@ public class Granulator : MonoBehaviour
             }
             else
             {
-                //print("Not enough grain datas to spawn a new grain.");
+                if(_DebugLog)
+                    print("Not enough grain datas to spawn a new grain.");
             }
         }
 

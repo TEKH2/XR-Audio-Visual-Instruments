@@ -85,14 +85,13 @@ public class Grain : MonoBehaviour
         _IsPlaying = true;
     }
 
-    public bool _FillBothChannels = false;
-    public bool _FillAlternateChannel = false;
-
     //---------------------------------------------------------------------
     // AUDIO BUFFER CALLS
     //---------------------------------------------------------------------
     void OnAudioFilterRead(float[] data, int channels)
     {
+        print(channels);
+
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
@@ -107,17 +106,7 @@ public class Grain : MonoBehaviour
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];
 
-               
-                if(_FillAlternateChannel)
-                    data[dataIndex + 1] = sample;
-                else  if (_FillBothChannels)
-                {
-                    data[dataIndex] = sample;
-                    data[dataIndex + 1] = sample;
-                }
-                else
-                    data[dataIndex] = sample;
-
+                data[dataIndex] = sample;
 
                 _PlaybackIndex++;
 

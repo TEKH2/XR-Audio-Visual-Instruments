@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsPlaying: 0
+  _FillBothChannels: 0
+  _FillAlternateChannel: 0
 --- !u!82 &2136637823309721297
 AudioSource:
   m_ObjectHideFlags: 0
