@@ -207,8 +207,14 @@ public class Granulator : MonoBehaviour
     private List<GrainData> _QueuedGrainData;
 
     // Lists to hold the active and inactive grains
-    private List<Grain> _ActiveGrainList;
-    private List<Grain> _InactiveGrainList;
+    private List<Grain> _PlayingGrainList = new List<Grain>();
+    private List<Grain> _InactiveGrainList = new List<Grain>();
+    private List<Grain> _WarmingUpGrainList = new List<Grain>();
+    private List<Grain> _ReadyGrainList = new List<Grain>();
+    public int _NumberOfReadyGrains = 5;
+    public int _FrameWait = 3;
+
+
 
     private List<GrainData> _ActiveGrainDataList = new List<GrainData>();
     private List<GrainData> _InactiveGrainDataList = new List<GrainData>();
@@ -220,8 +226,7 @@ public class Granulator : MonoBehaviour
     {
         _AudioClipLibrary.Initialize();
 
-        _ActiveGrainList = new List<Grain>();
-        _InactiveGrainList = new List<Grain>();
+        _PlayingGrainList = new List<Grain>();
         _QueuedGrainData = new List<GrainData>();
         
         for (int i = 0; i < _MaxGrains; i++)
@@ -238,29 +243,78 @@ public class Granulator : MonoBehaviour
             _InactiveGrainList.Add(grain);
 
             _InactiveGrainDataList.Add(new GrainData());
-            grain.Activate(false);
+            
+        }
+
+        // Ready up grains from the inactive list
+        for (int i = 0; i < _NumberOfReadyGrains; i++)
+        {
+            // Get grain from inactive grains
+            Grain grain = _InactiveGrainList[0];
+            _ReadyGrainList.Add(grain);
+            _InactiveGrainList.Remove(grain);
+            grain.Activate(true);
         }
     }
 
     void Update()
-    {
-        //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED
-        // Remove finished grains from Playing List and add them to Finished list
-        for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
+    {       
+        //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED FOR LONGER THAN 3 FRAMES
+        // Remove finished grains from Playing List and add them to incative list
+        for (int i = _PlayingGrainList.Count - 1; i >= 0; i--)
         {
-            Grain playingGrain = _ActiveGrainList[i];
+            Grain playingGrain = _PlayingGrainList[i];
 
-            if (!playingGrain._IsPlaying)
+            if(playingGrain._FrameCounter > 0)
             {
-                _ActiveGrainList.RemoveAt(i);
+                playingGrain._AudioSource.volume = 1f -((float)playingGrain._FrameCounter / (float)(_FrameWait-1f));
+            }
+
+            if (!playingGrain._IsPlaying && playingGrain._FrameCounter > _FrameWait)
+            {
+                _PlayingGrainList.Remove(playingGrain);
                 _InactiveGrainList.Add(playingGrain);
+                playingGrain.Activate(false);
 
                 _ActiveGrainDataList.Remove(playingGrain._GrainData);
                 _InactiveGrainDataList.Add(playingGrain._GrainData);
-
-                playingGrain.Activate(false);
             }
         }
+
+        // INACTIVE > WARMING UP        
+        int numberGrainsToWarmUp = _NumberOfReadyGrains - (_WarmingUpGrainList.Count + _ReadyGrainList.Count);
+        numberGrainsToWarmUp = Mathf.Min(_InactiveGrainList.Count, numberGrainsToWarmUp);
+        for (int i = 0; i < numberGrainsToWarmUp; i++)
+        {
+            // Get grain from inactive grains
+            Grain grain = _InactiveGrainList[0];
+            _InactiveGrainList.Remove(grain);
+            _WarmingUpGrainList.Add(grain);
+            grain.Activate(true);
+        }
+        
+
+        // WARMING UP > READY
+        for (int i = _WarmingUpGrainList.Count - 1; i >= 0; i--)
+        {
+            Grain grain = _WarmingUpGrainList[i];
+
+            if (grain._FrameCounter > 0)
+            {
+                grain._AudioSource.volume = (float)grain._FrameCounter / (float)(_FrameWait - 1f);
+            }
+
+            if (_WarmingUpGrainList[i]._FrameCounter > _FrameWait)
+            {
+                _WarmingUpGrainList.Remove(grain);
+                _ReadyGrainList.Add(grain);
+            }
+        }
+
+      
+
+        if(_DebugLog)
+            print(String.Format("Inactive: {0}       Warming Up: {1}    Ready: {2}        Playing: {3}", _InactiveGrainList.Count, _WarmingUpGrainList.Count, _ReadyGrainList.Count, _PlayingGrainList.Count));
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
@@ -318,7 +372,7 @@ public class Granulator : MonoBehaviour
 
         //------------------------------------------ DEBUG
         DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _Cadence);
-        DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _ActiveGrainList.Count + "/"+ _MaxGrains);
+        DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _PlayingGrainList.Count + "/"+ _MaxGrains);
         DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
         DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_Cadence * .001f));
         DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
@@ -328,26 +382,25 @@ public class Granulator : MonoBehaviour
 
     public void EmitGrain(GrainData grainData)
     {
-        if (_InactiveGrainList.Count <= 0)
+        if (_ReadyGrainList.Count <= 0)
         {
-            print("No inactive grains, trying to spawn too quickly. Potentially boost max grains. Active/Inactive: " + _ActiveGrainList.Count + " / " + _InactiveGrainList.Count);
+            print("No inactive grains, trying to spawn too quickly. Potentially boost max grains. Active/Inactive: " + _PlayingGrainList.Count + " / " + _ReadyGrainList.Count);
             return;
         }
 
         // Get grain from inactive list and remove from list
-        Grain grain = _InactiveGrainList[0];
+        Grain grain = _ReadyGrainList[0];
         grain.transform.position = grainData._WorldPos;
-        _InactiveGrainList.Remove(grain);
+        _ReadyGrainList.Remove(grain);
         // Add grain to active list
-        _ActiveGrainList.Add(grain);
+        _PlayingGrainList.Add(grain);
 
         //grain.gameObject.SetActive(true);
         if (_DebugLog)
         {
             Debug.Log(String.Format("Frame: {0}  Offset: {1}", _DebugFrameCounter, grainData._SampleOffset));
-        }
-
-        grain.Activate(true);
+        }        
+       
         // Init grain with data
         grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _DebugLog, Time.time * _SampleRate);        
     }

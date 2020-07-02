@@ -20,6 +20,7 @@ public class Grain : MonoBehaviour
     
     private float[] _Window;
 
+    public int _FrameCounter = 0;
 
     //---------------------------------------------------------------------
 
@@ -43,6 +44,8 @@ public class Grain : MonoBehaviour
     {
         _GrainData = gd;
         _Samples = samples;
+
+        _FrameCounter = 0;
 
         int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);        
@@ -101,8 +104,8 @@ public class Grain : MonoBehaviour
                 float sample = 0;
 
                 // Finish playing if playback index is larger than the grain sample length
-                if (_PlaybackIndex >= _GrainSamples.Length)                
-                    _IsPlaying = false;                
+                if (_PlaybackIndex >= _GrainSamples.Length)
+                    _IsPlaying = false;
                 // Otherwise, if grain is playing and has reached the offset, get the next sample
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];
@@ -113,7 +116,10 @@ public class Grain : MonoBehaviour
 
             }
             else
-                data[dataIndex] = 0;          
+            {
+                data[dataIndex] = 0;
+                _FrameCounter++;
+            }
         }
     }
 
@@ -121,13 +127,13 @@ public class Grain : MonoBehaviour
     {
         //_AudioSource.mute = active;
         gameObject.SetActive(active);
+        _FrameCounter = 0;
     }
 
     //---------------------------------------------------------------------
     private float Windowing(int currentSample, int grainLength)
     {
         float outputSample = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * currentSample / grainLength));
-
         return outputSample;
     }
 
