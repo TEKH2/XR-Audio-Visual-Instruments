@@ -194,9 +194,9 @@ public class Granulator : MonoBehaviour
 
     // ------------------------------------ GRAIN EMISSION
     [Range(1.0f, 1000f)]
-    public int _TimeBetweenGrains = 20;             // ms
+    public int _Cadence = 20;             // ms
     [Range(0.0f, 1000f)]
-    public int _TimeBetweenGrainsRandom = 0;        // ms
+    public int _CadenceRandom = 0;        // ms
 
     public GrainEmissionProps _EmitGrainProps;
 
@@ -259,7 +259,7 @@ public class Granulator : MonoBehaviour
         // Current sample we are up to in time
         float frameSampleIndex = Time.time * _SampleRate;
         // Calculate random sample rate
-        float randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
+        float randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
         float nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
 
@@ -271,7 +271,7 @@ public class Granulator : MonoBehaviour
 
             // recalculate random sample rate
             _PrevEmissionSampleIndex = nextEmitSampleIndex;
-            randomSampleBetweenGrains = _SampleRate * ((_TimeBetweenGrains + Random.Range(0, _TimeBetweenGrainsRandom)) * .001f);
+            randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
             nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
         }
 
@@ -289,7 +289,7 @@ public class Granulator : MonoBehaviour
                 _ActiveGrainDataList.Add(tempGrainData);
 
                 // Create temporary grain data object and add it to the playback queue
-                tempGrainData.Initialize(transform.position + Random.insideUnitSphere * .1f, transform, Vector3.right * 2, 1,
+                tempGrainData.Initialize(transform.position, transform, Vector3.zero, 0,
                     _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _QueuedGrainData.Add(tempGrainData);
@@ -310,10 +310,10 @@ public class Granulator : MonoBehaviour
         _SpawnAtSampleTimes.Clear();
 
         //------------------------------------------ DEBUG
-        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _TimeBetweenGrains);
+        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _Cadence);
         DebugGUI.LogPersistent("Grains Active/Inactive", "Grains Active/Inactive: " + _ActiveGrainList.Count + "/"+ _MaxGrains);
         DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
-        DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_TimeBetweenGrains * .001f));
+        DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_Cadence * .001f));
         DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
 
         _DebugFrameCounter++;

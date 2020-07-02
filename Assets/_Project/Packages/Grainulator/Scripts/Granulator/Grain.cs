@@ -85,6 +85,9 @@ public class Grain : MonoBehaviour
         _IsPlaying = true;
     }
 
+    public bool _FillBothChannels = false;
+    public bool _FillAlternateChannel = false;
+
     //---------------------------------------------------------------------
     // AUDIO BUFFER CALLS
     //---------------------------------------------------------------------
@@ -104,7 +107,17 @@ public class Grain : MonoBehaviour
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];
 
-                data[dataIndex] = sample;
+               
+                if(_FillAlternateChannel)
+                    data[dataIndex + 1] = sample;
+                else  if (_FillBothChannels)
+                {
+                    data[dataIndex] = sample;
+                    data[dataIndex + 1] = sample;
+                }
+                else
+                    data[dataIndex] = sample;
+
 
                 _PlaybackIndex++;
             }
