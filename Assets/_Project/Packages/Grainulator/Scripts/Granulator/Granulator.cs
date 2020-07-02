@@ -23,14 +23,13 @@ public class AudioClipLibrary
             if(audioClip.channels > 1)
             {
                 Debug.LogError("Audio clip not mono");
-                Application.Quit();
             }
 
             float[] samples = new float[audioClip.samples];
             _Clips[i].GetData(samples, 0);
             _ClipsDataArray.Add(samples);
 
-            Debug.Log("Clip sample: " + _ClipsDataArray[i][100]);
+            Debug.Log(String.Format("Clip {0}      Samples: {1}        Time length: {2} ", _Clips[i].name, _ClipsDataArray[i].Length, _ClipsDataArray[i].Length / (float)_Clips[i].frequency));
         }
     }
 }

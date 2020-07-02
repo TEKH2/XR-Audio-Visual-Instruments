@@ -46,7 +46,8 @@ public class Grain : MonoBehaviour
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);
         _AudioSource.pitch = gd._Pitch;
 
-        Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}", playheadSampleIndex, durationInSamples, gd._Pitch));
+       // Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3}", playheadSampleIndex, durationInSamples, gd._Pitch, Time.time));
+        
 
         BuildSampleArray(playheadSampleIndex, durationInSamples);
     }
@@ -74,15 +75,14 @@ public class Grain : MonoBehaviour
                 sourceIndex = Mathf.Max(sourceIndex, 0);
             }
 
-            _GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)];
+            _GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
         }
 
-        Debug.Log(String.Format("Sample 100 {0}   Sample 4000 {1}   Sample 6000 {2} ", _GrainSamples[100], _GrainSamples[4000], _GrainSamples[6000]));
+        // Debug.Log(String.Format("Grain sample - Grain samples: {0}       Grain length: {1}     Time started: {2} ", _GrainSamples.Length, _GrainSamples.Length / 44100f, Time.time));
 
         // Reset the playback index and ready the grain!
         _PlaybackIndex = -_GrainData._SampleOffset;
         _IsPlaying = true;
-        //this.gameObject.SetActive(true);
     }
 
     //---------------------------------------------------------------------
@@ -91,33 +91,28 @@ public class Grain : MonoBehaviour
     void OnAudioFilterRead(float[] data, int channels)
     {
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
-        for (int bufferIndex = 0; bufferIndex < data.Length; bufferIndex++)
-        {            
+        for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
+        {
             if (_IsPlaying)
-                data[bufferIndex] = GetNextSample() * _GrainData._Volume;
+            {
+                float sample = 0;
+
+                // Finish playing if playback index is larger than the grain sample length
+                if (_PlaybackIndex >= _GrainSamples.Length)
+                    _IsPlaying = false;
+                // otherwise get the next sample
+                else if (_PlaybackIndex >= 0 && _IsPlaying)
+                    sample = _GrainSamples[_PlaybackIndex];
+
+                data[dataIndex] = sample;
+
+                _PlaybackIndex++;
+            }
             else
-                data[bufferIndex] = 0;
+                data[dataIndex] = 0;          
         }
     }
     
-    //---------------------------------------------------------------------
-    // GET SAMPLE FROM AUDIO ARRAY TO POPULATE OTUPUT BUFFER
-    //---------------------------------------------------------------------
-    private float GetNextSample()
-    {
-        float returnSample = 0;
-
-        if (_PlaybackIndex >= _GrainSamples.Length)        
-            _IsPlaying = false;        
-
-        if (_PlaybackIndex >= 0 && _IsPlaying)
-            returnSample = _GrainSamples[_PlaybackIndex];
-
-        _PlaybackIndex++;
-
-        return returnSample;
-    }
-
     //---------------------------------------------------------------------
     private float Windowing(int currentSample, int grainLength)
     {
