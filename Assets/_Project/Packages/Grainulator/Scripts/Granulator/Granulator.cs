@@ -268,11 +268,6 @@ public class Granulator : MonoBehaviour
         {
             Grain playingGrain = _PlayingGrainList[i];
 
-            if(playingGrain._FrameCounter > 0)
-            {
-                playingGrain._AudioSource.volume = 1f -((float)playingGrain._FrameCounter / (float)(_FrameWait-1f));
-            }
-
             if (!playingGrain._IsPlaying && playingGrain._FrameCounter > _FrameWait)
             {
                 _PlayingGrainList.Remove(playingGrain);
@@ -302,11 +297,6 @@ public class Granulator : MonoBehaviour
         {
             Grain grain = _WarmingUpGrainList[i];
 
-            if (grain._FrameCounter > 0)
-            {
-                grain._AudioSource.volume = (float)grain._FrameCounter / (float)(_FrameWait - 1f);
-            }
-
             if (_WarmingUpGrainList[i]._FrameCounter > _FrameWait)
             {
                 _WarmingUpGrainList.Remove(grain);
@@ -321,8 +311,7 @@ public class Granulator : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        double frameSampleIndex = (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
-        print(AudioSettings.dspTime);
+        double frameSampleIndex = (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;      
         // Calculate random sample rate
         float randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
