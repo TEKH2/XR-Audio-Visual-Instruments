@@ -103,13 +103,15 @@ public class Grain : MonoBehaviour
                 // Otherwise, if grain is playing and has reached the offset, get the next sample
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];
-                // Ensure buffer is zeroed if grain is still counting through its offset
-                else
-                    sample = 0;
 
-                data[dataIndex] = sample;
+                // Fill buffer
+                for (int i = 0; i < channels; i++)
+                {
+                    data[dataIndex + i] = sample;
+                }
 
                 _PlaybackIndex++;
+
             }
             else
                 data[dataIndex] = 0;          
