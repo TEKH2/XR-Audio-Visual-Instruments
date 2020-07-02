@@ -20,7 +20,7 @@ public class Grain : MonoBehaviour
     
     private float[] _Window;
 
-    public int _FrameCounter = 0;
+    public int _FilterReadCounter = 0;
 
     //---------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ public class Grain : MonoBehaviour
         _GrainData = gd;
         _Samples = samples;
 
-        _FrameCounter = 0;
+        _FilterReadCounter = 0;
 
         int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);        
@@ -63,6 +63,7 @@ public class Grain : MonoBehaviour
     {
         // Grain array to pull samples into
         _GrainSamples = new float[duration];
+        var tempSamples = new float[duration];
 
         int sourceIndex;
 
@@ -81,13 +82,21 @@ public class Grain : MonoBehaviour
                 sourceIndex = Mathf.Max(sourceIndex, 0);
             }
 
-            _GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+            tempSamples[i] = _Samples[sourceIndex];
+
+             //_GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+        }
+
+        for (int i = 0; i < tempSamples.Length; i++)
+        {
+            int offesetIndex = _GrainData._SampleOffset % tempSamples.Length;
+            _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
         }
 
         // Debug.Log(String.Format("Grain sample - Grain samples: {0}       Grain length: {1}     Time started: {2} ", _GrainSamples.Length, _GrainSamples.Length / 44100f, Time.time));
 
         // Reset the playback index and ready the grain!
-        _PlaybackIndex = -_GrainData._SampleOffset;
+        _PlaybackIndex = 0;
         _IsPlaying = true;
     }
 
@@ -118,14 +127,14 @@ public class Grain : MonoBehaviour
             else
             {
                 data[dataIndex] = 0;
-                _FrameCounter++;
+                _FilterReadCounter++;
             }
         }
     }
 
     public void Activate(bool active)
     {
-        _FrameCounter = 0;
+        _FilterReadCounter = 0;
         gameObject.SetActive(active);        
     }
 
