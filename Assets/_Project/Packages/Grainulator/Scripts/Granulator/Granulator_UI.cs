@@ -8,6 +8,7 @@ public class Granulator_UI : MonoBehaviour
     public Slider _Cadence;
     public Slider _Durtion;
     public Slider _Pos;
+    public Slider _Pitch;
 
     public Granulator _Granulator;
 
@@ -17,5 +18,6 @@ public class Granulator_UI : MonoBehaviour
         _Cadence.onValueChanged.AddListener((float f) => _Granulator._TimeBetweenGrains = (int)f);
         _Durtion.onValueChanged.AddListener((float f) => _Granulator._EmitGrainProps.Duration = (int)f);
         _Pos.onValueChanged.AddListener((float f) => _Granulator._EmitGrainProps.Position = f);
+        _Pitch.onValueChanged.AddListener((float f) => _Granulator._EmitGrainProps.Pitch = f);
     }
 }
