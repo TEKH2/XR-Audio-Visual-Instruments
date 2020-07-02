@@ -186,7 +186,7 @@ public class Granulator : MonoBehaviour
 {
     // ------------------------------------ AUDIO VARS
     public AudioClipLibrary _AudioClipLibrary;
-    private int _SampleRate = AudioSettings.outputSampleRate;
+    private int _SampleRate;
 
     // ------------------------------------ GRAIN POOLING
     public GameObject _GrainPrefab;
@@ -200,8 +200,8 @@ public class Granulator : MonoBehaviour
 
     public GrainEmissionProps _EmitGrainProps;
 
-    float _PrevEmissionSampleIndex = 0;
-    List<float> _SpawnAtSampleTimes = new List<float>();
+    double _PrevEmissionSampleIndex = 0;
+    List<double> _SpawnAtSampleTimes = new List<double>();
 
     // Grains that are queued in between frames ready to fire at next update
     private List<GrainData> _QueuedGrainData;
@@ -218,6 +218,7 @@ public class Granulator : MonoBehaviour
 
     private void Start()
     {
+        _SampleRate = AudioSettings.outputSampleRate;
         _AudioClipLibrary.Initialize();
 
         _ActiveGrainList = new List<Grain>();
@@ -264,11 +265,11 @@ public class Granulator : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        float frameSampleIndex = (float)AudioSettings.dspTime;
+        double frameSampleIndex = AudioSettings.dspTime;
         // Calculate random sample rate
         float randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
-        float nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
+        double nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
 
         // fill the spawn sample time list while the next emit sample index 
         while(nextEmitSampleIndex <= frameSampleIndex)
@@ -287,7 +288,7 @@ public class Granulator : MonoBehaviour
         for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
         {
             // Calculate timing offset for grain
-            int offset = (int)frameSampleIndex - (int)_SpawnAtSampleTimes[i];
+            int offset = (int)(frameSampleIndex - _SpawnAtSampleTimes[i]);
 
             if (_InactiveGrainDataList.Count > 0)
             {
