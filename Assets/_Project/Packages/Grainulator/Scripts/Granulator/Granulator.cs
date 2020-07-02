@@ -186,7 +186,7 @@ public class Granulator : MonoBehaviour
 {
     // ------------------------------------ AUDIO VARS
     public AudioClipLibrary _AudioClipLibrary;
-    private const int _SampleRate = 44100;
+    private int _SampleRate = AudioSettings.outputSampleRate;
 
     // ------------------------------------ GRAIN POOLING
     public GameObject _GrainPrefab;
@@ -264,7 +264,7 @@ public class Granulator : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        float frameSampleIndex = Time.time * _SampleRate;
+        float frameSampleIndex = (float)AudioSettings.dspTime;
         // Calculate random sample rate
         float randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
