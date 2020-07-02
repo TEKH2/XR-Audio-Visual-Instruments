@@ -238,6 +238,7 @@ public class Granulator : MonoBehaviour
             _InactiveGrainList.Add(grain);
 
             _InactiveGrainDataList.Add(new GrainData());
+            grain.Activate(false);
         }
     }
 
@@ -256,6 +257,8 @@ public class Granulator : MonoBehaviour
 
                 _ActiveGrainDataList.Remove(playingGrain._GrainData);
                 _InactiveGrainDataList.Add(playingGrain._GrainData);
+
+                playingGrain.Activate(false);
             }
         }
 
@@ -344,6 +347,7 @@ public class Granulator : MonoBehaviour
             Debug.Log(String.Format("Frame: {0}  Offset: {1}", _DebugFrameCounter, grainData._SampleOffset));
         }
 
+        grain.Activate(true);
         // Init grain with data
         grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _DebugLog, Time.time * _SampleRate);        
     }

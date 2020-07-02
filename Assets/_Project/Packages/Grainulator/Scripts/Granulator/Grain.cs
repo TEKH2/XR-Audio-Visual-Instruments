@@ -12,8 +12,8 @@ public class Grain : MonoBehaviour
     public bool _IsPlaying = false;
 
     public int _Index;
-      
-    private AudioSource _AudioSource;
+
+    public AudioSource _AudioSource;
     private float[] _Samples;
     private float[] _GrainSamples;
     private int _PlaybackIndex = -1;
@@ -45,7 +45,7 @@ public class Grain : MonoBehaviour
         _Samples = samples;
 
         int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
-        int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);
+        int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);        
         _AudioSource.pitch = gd._Pitch;
 
        if(debugLog)
@@ -116,7 +116,13 @@ public class Grain : MonoBehaviour
                 data[dataIndex] = 0;          
         }
     }
-    
+
+    public void Activate(bool active)
+    {
+        //_AudioSource.mute = active;
+        gameObject.SetActive(active);
+    }
+
     //---------------------------------------------------------------------
     private float Windowing(int currentSample, int grainLength)
     {
