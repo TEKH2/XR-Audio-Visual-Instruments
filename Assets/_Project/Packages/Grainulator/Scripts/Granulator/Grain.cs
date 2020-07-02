@@ -10,6 +10,8 @@ public class Grain : MonoBehaviour
     public GrainData _GrainData;
 
     public bool _IsPlaying = false;
+
+    public int _Index;
       
     private AudioSource _AudioSource;
     private float[] _Samples;
@@ -37,7 +39,7 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void Initialise(GrainData gd, float[] samples, int freq)
+    public void Initialise(GrainData gd, float[] samples, int freq, bool debugLog = false, float startSample = 0)
     {
         _GrainData = gd;
         _Samples = samples;
@@ -46,7 +48,8 @@ public class Grain : MonoBehaviour
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);
         _AudioSource.pitch = gd._Pitch;
 
-       // Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3}", playheadSampleIndex, durationInSamples, gd._Pitch, Time.time));
+       if(debugLog)
+            Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3}       Index {4}", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time, _Index));
         
 
         BuildSampleArray(playheadSampleIndex, durationInSamples);
@@ -98,8 +101,8 @@ public class Grain : MonoBehaviour
                 float sample = 0;
 
                 // Finish playing if playback index is larger than the grain sample length
-                if (_PlaybackIndex >= _GrainSamples.Length)
-                    _IsPlaying = false;
+                if (_PlaybackIndex >= _GrainSamples.Length)                
+                    _IsPlaying = false;                
                 // Otherwise, if grain is playing and has reached the offset, get the next sample
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];

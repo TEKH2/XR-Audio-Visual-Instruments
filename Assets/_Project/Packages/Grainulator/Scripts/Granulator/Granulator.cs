@@ -231,6 +231,10 @@ public class Granulator : MonoBehaviour
             Grain grain = go.GetComponent<Grain>();
             grain.transform.parent = transform;
             grain.transform.localPosition = Vector3.zero;
+
+            int index = i;
+            grain._Index = index;
+
             _InactiveGrainList.Add(grain);
 
             _InactiveGrainDataList.Add(new GrainData());
@@ -305,7 +309,6 @@ public class Granulator : MonoBehaviour
         foreach (GrainData grainData in _QueuedGrainData)        
             EmitGrain(grainData);
 
-
         //------------------------------------------ CLEAN UP
         _QueuedGrainData.Clear();
         _SpawnAtSampleTimes.Clear();
@@ -341,9 +344,7 @@ public class Granulator : MonoBehaviour
             Debug.Log(String.Format("Frame: {0}  Offset: {1}", _DebugFrameCounter, grainData._SampleOffset));
         }
 
-
         // Init grain with data
-        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency);
-        
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _DebugLog, Time.time * _SampleRate);        
     }
 }
