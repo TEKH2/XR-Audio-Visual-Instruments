@@ -1261,12 +1261,22 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _TimeBetweenGrains
-      value: 20
+      value: 124
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._ClipIndex
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
+        type: 3}
+      propertyPath: _MaxGrains
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
+        type: 3}
+      propertyPath: _EmitGrainProps._Duration
+      value: 259
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
@@ -4577,7 +4587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1021502729408534, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4651155242276878, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4638,12 +4648,12 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _TimeBetweenGrains
-      value: 500
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._Duration
-      value: 500
+      value: 149
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
@@ -4663,7 +4673,7 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _MaxGrains
-      value: 80
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e87b0955ff3810346949f6cfd637e302, type: 3}
