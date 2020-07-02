@@ -90,8 +90,6 @@ public class Grain : MonoBehaviour
     //---------------------------------------------------------------------
     void OnAudioFilterRead(float[] data, int channels)
     {
-        print(channels);
-
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
