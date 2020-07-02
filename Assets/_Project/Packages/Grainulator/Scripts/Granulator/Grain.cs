@@ -103,7 +103,7 @@ public class Grain : MonoBehaviour
                 // Finish playing if playback index is larger than the grain sample length
                 if (_PlaybackIndex >= _GrainSamples.Length)
                     _IsPlaying = false;
-                // otherwise get the next sample
+                // Otherwise, if grain is playing and has reached the offset, get the next sample
                 else if (_PlaybackIndex >= 0 && _IsPlaying)
                     sample = _GrainSamples[_PlaybackIndex];
 
@@ -120,6 +120,7 @@ public class Grain : MonoBehaviour
 
 
                 _PlaybackIndex++;
+
             }
             else
                 data[dataIndex] = 0;          
