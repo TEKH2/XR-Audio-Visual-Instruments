@@ -125,9 +125,8 @@ public class Grain : MonoBehaviour
 
     public void Activate(bool active)
     {
-        //_AudioSource.mute = active;
-        gameObject.SetActive(active);
         _FrameCounter = 0;
+        gameObject.SetActive(active);        
     }
 
     //---------------------------------------------------------------------
