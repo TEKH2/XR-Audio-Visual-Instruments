@@ -214,7 +214,7 @@ public class Granulator : MonoBehaviour
     public int _NumberOfReadyGrains = 5;
     public int _FrameWait = 3;
 
-
+    double _StartDSPTime;
 
     private List<GrainData> _ActiveGrainDataList = new List<GrainData>();
     private List<GrainData> _InactiveGrainDataList = new List<GrainData>();
@@ -224,6 +224,8 @@ public class Granulator : MonoBehaviour
 
     private void Start()
     {
+        _StartDSPTime = AudioSettings.dspTime;
+
         _SampleRate = AudioSettings.outputSampleRate;
         _AudioClipLibrary.Initialize();
 
@@ -319,7 +321,8 @@ public class Granulator : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        double frameSampleIndex = AudioSettings.dspTime;
+        double frameSampleIndex = (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
+        print(AudioSettings.dspTime);
         // Calculate random sample rate
         float randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
