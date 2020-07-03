@@ -42,6 +42,7 @@ public class GrainData
     public float _Mass;
 
     public int _SampleOffset;
+
     // Optimum 10ms - 60ms
     public float _Duration;
     public float _PlayheadPos;
@@ -85,14 +86,14 @@ public class GrainEmissionProps
 {
     public int _ClipIndex = 0;
 
-    // Position
+    // Position (normalised)
     //---------------------------------------------------------------------
     [Range(0.0f, 1.0f)]
     [SerializeField]
-    float _PlayheadPos = 0;          // from 0 > 1   
-    [Range(0.0f, 1.0f)]
+    float _PlayheadPos = 0; 
+    [Range(0.0f, .1f)]
     [SerializeField]
-    public float _PositionRandom = 0;      // from 0 > 1
+    public float _PositionRandom = 0;
     public float Position
     {
         get
@@ -101,18 +102,18 @@ public class GrainEmissionProps
         }
         set
         {
-            _PlayheadPos = Mathf.Clamp(value, 0, 1);
+            _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
         }
     }
 
-    // Duration
+    // Duration (ms)
     //---------------------------------------------------------------------
     [Range(2.0f, 1000f)]
     [SerializeField]
-    int _Duration = 100;       // ms
-    [Range(0.0f, 1000f)]
+    int _Duration = 100;
+    [Range(0.0f, 500f)]
     [SerializeField]
-    int _DurationRandom = 0;     // ms
+    int _DurationRandom = 0;
     public float Duration
     {
         get
@@ -125,7 +126,7 @@ public class GrainEmissionProps
         }
     }
 
-    // Pitch
+    // Pitch ( 1 = original, 0.5 = half pitch, 2 = double pitch)
     //---------------------------------------------------------------------
     [Range(0.1f, 5f)]
     [SerializeField]
