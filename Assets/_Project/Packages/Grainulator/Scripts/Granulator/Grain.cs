@@ -70,27 +70,28 @@ public class Grain : MonoBehaviour
             // Ping-pong audio sample read
             sourceIndex = (int)Mathf.PingPong(sourceIndex, _Samples.Length - 1);
 
-            //if (sourceIndex > _Samples.Length)
-            //{
-            //    sourceIndex -= _Samples.Length;
-            //}
-
+            // Fill temp sample buffer
             tempSamples[i] = _Samples[sourceIndex];
-
-            //_GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
         }
 
         // Window samples
         for (int i = 0; i < tempSamples.Length; i++)
         {
-            int offesetIndex = _GrainData._SampleOffset % tempSamples.Length;
-            float norm = i / (tempSamples.Length - 1f);
+            // Set start index
+            int index = _GrainData._SampleOffset % tempSamples.Length;
+
+            // find the norm along the array
+            float norm = i / (tempSamples.Length - 1f);            
             float windowedVolume = windowCurve.Evaluate(norm);
 
-            if(traditionalWindowing)
-                _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+            float pitchedNorm = norm * _GrainData._Pitch;
+            float sample = GetValueFromNormPosInArray(tempSamples, pitchedNorm);
+            sample = sample * windowedVolume;
+
+            if (traditionalWindowing)
+                _GrainSamples[i] = sample * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
             else
-                _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * windowedVolume * _GrainData._Volume;          
+                _GrainSamples[i] = sample * windowedVolume * _GrainData._Volume;         
         }
 
         // Reset the playback index and ready the grain!
@@ -164,6 +165,7 @@ public class Grain : MonoBehaviour
 
     public static float GetValueFromNormPosInArray(float[] array, float norm)
     {
+        norm %= 1;
         float floatIndex = norm * (array.Length - 1);
 
         int lowerIndex = (int)Mathf.Floor(floatIndex);

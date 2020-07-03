@@ -251,8 +251,6 @@ public class Granulator : MonoBehaviour
 
     void Update()
     {
-        print(Grain.GetValueFromNormPosInArray(new float[] { 0, 1, 2, 3, 4, 5 }, _DebugNorm));
-
         //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED FOR LONGER THAN 3 FRAMES
         // Remove finished grains from Playing List and add them to incative list
         for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
