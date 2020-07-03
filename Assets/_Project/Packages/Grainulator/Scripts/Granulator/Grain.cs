@@ -103,6 +103,7 @@ public class Grain : MonoBehaviour
     //---------------------------------------------------------------------
     // AUDIO BUFFER CALLS
     //---------------------------------------------------------------------
+    float sample;
     void OnAudioFilterRead(float[] data, int channels)
     {
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
@@ -110,7 +111,7 @@ public class Grain : MonoBehaviour
         {
             if (_IsPlaying)
             {
-                float sample = 0;
+                sample = 0;
 
                 // Finish playing if playback index is larger than the grain sample length
                 if (_PlaybackIndex >= _GrainSamples.Length)
