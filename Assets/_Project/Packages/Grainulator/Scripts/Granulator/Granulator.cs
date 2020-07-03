@@ -200,7 +200,9 @@ public class Granulator : MonoBehaviour
     double _PrevEmissionSampleIndex = 0;
     List<double> _SpawnAtSampleTimes = new List<double>();
 
+    public float _Spacing = 0;
     public AnimationCurve _WindowingCurve;
+    public bool _DEBUG_TraditionalWindowing = false;
 
     // Grains that are queued in between frames ready to fire at next update
     private List<GrainData> _QueuedGrainData;
@@ -297,7 +299,7 @@ public class Granulator : MonoBehaviour
                 _ActiveGrainDataList.Add(tempGrainData);
 
                 // Create temporary grain data object and add it to the playback queue
-                tempGrainData.Initialize(transform.position + (Random.insideUnitSphere * .5f), Vector3.zero, 0,
+                tempGrainData.Initialize(transform.position + (Random.insideUnitSphere * _Spacing), Vector3.zero, 0,
                     _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _QueuedGrainData.Add(tempGrainData);
@@ -346,8 +348,8 @@ public class Granulator : MonoBehaviour
         grain.Activate(true);
 
         // Init grain with data
-        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate, _TraditionalWindowing);        
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate, _DEBUG_TraditionalWindowing);        
     }
 
-    public bool _TraditionalWindowing = false;
+   
 }
