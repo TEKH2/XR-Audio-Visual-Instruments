@@ -251,6 +251,10 @@ public class Granulator : MonoBehaviour
 
     void Update()
     {
+        // Limit audio clip selection to available clips
+        _EmitGrainProps._ClipIndex = Mathf.Clamp(_EmitGrainProps._ClipIndex, 0, _AudioClipLibrary._Clips.Length - 1);
+
+
         //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED FOR LONGER THAN 3 FRAMES
         // Remove finished grains from Playing List and add them to incative list
         for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
