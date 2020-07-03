@@ -203,6 +203,8 @@ public class Granulator : MonoBehaviour
     double _PrevEmissionSampleIndex = 0;
     List<double> _SpawnAtSampleTimes = new List<double>();
 
+    public AnimationCurve _WindowingCurve;
+
     // Grains that are queued in between frames ready to fire at next update
     private List<GrainData> _QueuedGrainData;
 
@@ -344,9 +346,9 @@ public class Granulator : MonoBehaviour
         _InactiveGrainList.Remove(grain);
         // Add grain to active list
         _ActiveGrainList.Add(grain);
-
         grain.Activate(true);
+
         // Init grain with data
-        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _DebugLog, Time.time * _SampleRate);        
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate);        
     }
 }

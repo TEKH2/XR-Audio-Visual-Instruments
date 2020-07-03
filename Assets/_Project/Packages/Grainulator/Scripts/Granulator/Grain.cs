@@ -40,7 +40,7 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void Initialise(GrainData gd, float[] samples, int freq, bool debugLog = false, float startSample = 0)
+    public void Initialise(GrainData gd, float[] samples, int freq, AnimationCurve windowCurve, bool debugLog = false, float startSample = 0)
     {
         _GrainData = gd;
         _Samples = samples;
@@ -51,24 +51,16 @@ public class Grain : MonoBehaviour
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);        
         _AudioSource.pitch = gd._Pitch;
 
-       if(debugLog)
-            Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3}       Index {4}", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time, _Index));
-        
 
-        BuildSampleArray(playheadSampleIndex, durationInSamples);
-    }
-
-    //---------------------------------------------------------------------
-    private void BuildSampleArray(int playheadSampleIndex, int duration)
-    {
+       // -----------------------------------------BUILD SAMPLE ARRAY
         // Grain array to pull samples into
-        _GrainSamples = new float[duration];
-        var tempSamples = new float[duration];
+        _GrainSamples = new float[durationInSamples];
+        var tempSamples = new float[durationInSamples];
 
         int sourceIndex;
 
         // Construct grain sample data
-        for (int i = 0; i < _GrainSamples.Length; i ++)
+        for (int i = 0; i < _GrainSamples.Length; i++)
         {
             // Offset to source audio sample position for grain
             sourceIndex = playheadSampleIndex + i;
@@ -84,24 +76,36 @@ public class Grain : MonoBehaviour
 
             tempSamples[i] = _Samples[sourceIndex];
 
-             //_GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+            //_GrainSamples[i] = _Samples[sourceIndex] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
         }
 
+        // Window samples
         for (int i = 0; i < tempSamples.Length; i++)
         {
             int offesetIndex = _GrainData._SampleOffset % tempSamples.Length;
-            _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+            float norm = i / (tempSamples.Length - 1f);
+            float windowedVolume = windowCurve.Evaluate(norm);
+            _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * windowedVolume * _GrainData._Volume;
+            //_GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
         }
-
-        // Debug.Log(String.Format("Grain sample - Grain samples: {0}       Grain length: {1}     Time started: {2} ", _GrainSamples.Length, _GrainSamples.Length / 44100f, Time.time));
 
         // Reset the playback index and ready the grain!
         _PlaybackIndex = 0;
         _IsPlaying = true;
+
+        if (debugLog)
+            Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3}       Index {4}", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time, _Index));
+
+
+        // Debug.Log(String.Format("Grain sample - Grain samples: {0}       Grain length: {1}     Time started: {2} ", _GrainSamples.Length, _GrainSamples.Length / 44100f, Time.time));
     }
 
     //---------------------------------------------------------------------
     // AUDIO BUFFER CALLS
+    // DSP Buffer size in audio settings
+    // Best performance - 46.43991
+    // Good latency - 23.21995
+    // Best latency - 11.60998
     //---------------------------------------------------------------------
     float sample;
     void OnAudioFilterRead(float[] data, int channels)
