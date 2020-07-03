@@ -4688,7 +4688,7 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._Duration
-      value: 40
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
@@ -4713,7 +4713,7 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _Cadence
-      value: 50
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}

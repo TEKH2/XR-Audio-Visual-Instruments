@@ -40,7 +40,7 @@ public class Grain : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void Initialise(GrainData gd, float[] samples, int freq, AnimationCurve windowCurve, bool debugLog = false, float startSample = 0)
+    public void Initialise(GrainData gd, float[] samples, int freq, AnimationCurve windowCurve, bool debugLog = false, float startSample = 0, bool traditionalWindowing = false)
     {
         _GrainData = gd;
         _Samples = samples;
@@ -85,8 +85,11 @@ public class Grain : MonoBehaviour
             int offesetIndex = _GrainData._SampleOffset % tempSamples.Length;
             float norm = i / (tempSamples.Length - 1f);
             float windowedVolume = windowCurve.Evaluate(norm);
-            _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * windowedVolume * _GrainData._Volume;
-            //_GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+
+            if(traditionalWindowing)
+                _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * _Window[(int)Map(i, 0, _GrainSamples.Length, 0, _Window.Length)] * _GrainData._Volume;
+            else
+                _GrainSamples[i] = tempSamples[(offesetIndex + i) % _GrainSamples.Length] * windowedVolume * _GrainData._Volume;          
         }
 
         // Reset the playback index and ready the grain!

@@ -346,6 +346,8 @@ public class Granulator : MonoBehaviour
         grain.Activate(true);
 
         // Init grain with data
-        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate);        
+        grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate, _TraditionalWindowing);        
     }
+
+    public bool _TraditionalWindowing = false;
 }
