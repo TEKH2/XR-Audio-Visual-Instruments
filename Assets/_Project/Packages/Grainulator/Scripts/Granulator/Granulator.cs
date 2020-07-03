@@ -38,7 +38,6 @@ public class AudioClipLibrary
 public class GrainData
 {
     public Vector3 _WorldPos;
-    public Transform _ParentTransform;
     public Vector3 _Velocity;
     public float _Mass;
 
@@ -51,11 +50,10 @@ public class GrainData
     public int _ClipIndex;
 
     public GrainData() { }
-    public GrainData(Vector3 position, Transform parent, Vector3 velocity, float mass, int grainAudioClipIndex,
+    public GrainData(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
         float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
     {
         _WorldPos = position;
-        _ParentTransform = parent;
         _Velocity = velocity;
         _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
@@ -66,11 +64,10 @@ public class GrainData
         _Volume = volume;
     }
 
-    public void Initialize(Vector3 position, Transform parent, Vector3 velocity, float mass, int grainAudioClipIndex,
+    public void Initialize(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
         float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
     {
         _WorldPos = position;
-        _ParentTransform = parent;
         _Velocity = velocity;
         _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
@@ -300,7 +297,7 @@ public class Granulator : MonoBehaviour
                 _ActiveGrainDataList.Add(tempGrainData);
 
                 // Create temporary grain data object and add it to the playback queue
-                tempGrainData.Initialize(transform.position, transform, Vector3.zero, 0,
+                tempGrainData.Initialize(transform.position + (Random.insideUnitSphere * .5f), Vector3.zero, 0,
                     _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
 
                 _QueuedGrainData.Add(tempGrainData);
