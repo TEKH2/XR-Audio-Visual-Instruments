@@ -69,14 +69,13 @@ public class Grain : MonoBehaviour
             // Offset to source audio sample position for grain
             sourceIndex = playheadSampleIndex + i;
 
-            // Loop to start if the grain is longer than source audio
-            // TO DO: Change this to something more sonically pleasing.
-            // Something like ping-pong/mirroring is better than flicking to the start
-            if (sourceIndex > _Samples.Length)
-            {
-                sourceIndex -= _Samples.Length;
-                sourceIndex = Mathf.Max(sourceIndex, 0);
-            }
+            // Ping-pong audio sample read
+            sourceIndex = (int)Mathf.PingPong(sourceIndex, _Samples.Length - 1);
+
+            //if (sourceIndex > _Samples.Length)
+            //{
+            //    sourceIndex -= _Samples.Length;
+            //}
 
             tempSamples[i] = _Samples[sourceIndex];
 
