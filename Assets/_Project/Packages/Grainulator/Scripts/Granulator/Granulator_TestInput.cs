@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Granulator_TestInput : MonoBehaviour
 {
-    public Granulator _Granulator;
+    //public Granulator _Granulator;
+    public Granulator_MultiData _Granulator;
 
     public Vector2 _PosXRange = new Vector2(-3, 3);
     public Vector2 _PosYRange = new Vector2(0, 3);
