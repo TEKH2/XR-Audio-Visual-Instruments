@@ -42,6 +42,7 @@ public class GrainData
     public float _Mass;
 
     public int _SampleOffset;
+    // Optimum 10ms - 60ms
     public float _Duration;
     public float _PlayheadPos;
     public float _Pitch;
@@ -219,6 +220,9 @@ public class Granulator : MonoBehaviour
     public bool _DebugLog = false;
     int _DebugFrameCounter = 0;
 
+    [Range(0f,1f)]
+    public float _DebugNorm = 0;
+
     private void Start()
     {
         _StartDSPTime = AudioSettings.dspTime;
@@ -246,7 +250,9 @@ public class Granulator : MonoBehaviour
     }
 
     void Update()
-    {       
+    {
+        print(Grain.GetValueFromNormPosInArray(new float[] { 0, 1, 2, 3, 4, 5 }, _DebugNorm));
+
         //------------------------------------------ CLEAN UP GRAINS THAT ARE FINISHED FOR LONGER THAN 3 FRAMES
         // Remove finished grains from Playing List and add them to incative list
         for (int i = _ActiveGrainList.Count - 1; i >= 0; i--)
@@ -355,6 +361,4 @@ public class Granulator : MonoBehaviour
         // Init grain with data
         grain.Initialise(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate, _DEBUG_TraditionalWindowing);        
     }
-
-   
 }

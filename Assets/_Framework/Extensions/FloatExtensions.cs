@@ -149,10 +149,10 @@ public static class FloatExtensions
 
     public static float GetValueFromNormPosInArray( float[] array, float norm )
     {
-        norm *= array.Length;
+        float floatIndex = norm * (array.Length - 1);
 
-        int lowerIndex = (int)Mathf.Floor(norm);
-        int upperIndex = Mathf.Clamp( lowerIndex + 1, lowerIndex, array.Length - 1);
+        int lowerIndex = (int)Mathf.Floor(floatIndex);
+        int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, array.Length - 1);
         float lerp = norm % 1;
 
         return Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);

@@ -52,9 +52,7 @@ public class Grain : MonoBehaviour
         _FilterReadCounter = 0;
 
         int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
-        int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);        
-        _AudioSource.pitch = gd._Pitch;
-
+        int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);      
 
        // -----------------------------------------BUILD SAMPLE ARRAY
         // Grain array to pull samples into
@@ -163,5 +161,16 @@ public class Grain : MonoBehaviour
     private float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
+    }
+
+    public static float GetValueFromNormPosInArray(float[] array, float norm)
+    {
+        float floatIndex = norm * (array.Length - 1);
+
+        int lowerIndex = (int)Mathf.Floor(floatIndex);
+        int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, array.Length - 1);
+        float lerp = norm % 1;
+
+        return Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
     }
 }
