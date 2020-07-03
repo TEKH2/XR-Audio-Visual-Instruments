@@ -141,7 +141,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Pitch = (int)Mathf.Clamp(value, 0.1f, 5f);
+            _Pitch = Mathf.Clamp(value, 0.1f, 5f);
         }
     }
 

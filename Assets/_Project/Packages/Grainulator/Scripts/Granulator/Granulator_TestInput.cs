@@ -9,6 +9,7 @@ public class Granulator_TestInput : MonoBehaviour
     public Vector2 _PosXRange = new Vector2(-3, 3);
     public Vector2 _PosYRange = new Vector2(0, 3);
 
+   
     public Vector2 _EmitCadence = new Vector2(500, 5);
     public Vector2 _SpeedRange = new Vector2(0f, 2f);
 
@@ -19,6 +20,10 @@ public class Granulator_TestInput : MonoBehaviour
 
     public float _PitchScalar = 1.5f;
 
+    public bool _UpdatePlayheadPos = true;
+    public bool _UpdatePitch = true;
+    public bool _UpdateCadence = true;
+
     void Start()
     {
         
@@ -28,9 +33,13 @@ public class Granulator_TestInput : MonoBehaviour
     void Update()
     {
         float pos = Mathf.InverseLerp(_PosXRange.x, _PosXRange.y, transform.position.x);
+        if (_UpdatePlayheadPos)
+            _Granulator._EmitGrainProps.Position = pos;
+
+
         float pitch = Mathf.InverseLerp(_PosYRange.x, _PosYRange.y, transform.position.y);
-        _Granulator._EmitGrainProps.Position = pos;
-        _Granulator._EmitGrainProps.Pitch = pitch * _PitchScalar;
+        if (_UpdatePitch)
+            _Granulator._EmitGrainProps.Pitch = pitch * _PitchScalar;
 
 
 
@@ -38,10 +47,8 @@ public class Granulator_TestInput : MonoBehaviour
         _Velocity = Vector3.Lerp(_Velocity, newVel, Time.deltaTime * _Smoothing);
         float speedNorm = Mathf.InverseLerp(_SpeedRange.x, _SpeedRange.y, _Velocity.magnitude);
         float emitCadence = Mathf.Lerp(_EmitCadence.x, _EmitCadence.y, speedNorm);
-        //_Granulator._TimeBetweenGrains = (int)emitCadence;
-
-
-        //print("Pos: " + pos + " Pitch: " + pitch * 2);
+        if(_UpdateCadence)
+            _Granulator._Cadence = (int)emitCadence;
 
         _PrevPos = transform.position;
     }
