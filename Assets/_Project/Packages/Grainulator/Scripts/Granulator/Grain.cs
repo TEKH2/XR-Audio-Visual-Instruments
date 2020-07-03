@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -14,7 +15,6 @@ public class Grain : MonoBehaviour
     public int _Index;
 
     public AudioSource _AudioSource;
-    private float[] _Samples;
     private float[] _GrainSamples;
     private int _PlaybackIndex = -1;
     
@@ -45,13 +45,12 @@ public class Grain : MonoBehaviour
     public void Initialise(GrainData gd, float[] samples, int freq, AnimationCurve windowCurve, bool debugLog = false, float startSample = 0, bool traditionalWindowing = false)
     {
         _GrainData = gd;
-        _Samples = samples;
 
         _Prewarmed = false;
 
         _FilterReadCounter = 0;
 
-        int playheadSampleIndex = (int)(_GrainData._PlayheadPos * _Samples.Length);
+        int playheadSampleIndex = (int)(_GrainData._PlayheadPos * samples.Length);
         int durationInSamples = (int)(freq / 1000 * _GrainData._Duration);      
 
        // -----------------------------------------BUILD SAMPLE ARRAY
@@ -68,10 +67,10 @@ public class Grain : MonoBehaviour
             sourceIndex = playheadSampleIndex + i;
 
             // Ping-pong audio sample read
-            sourceIndex = (int)Mathf.PingPong(sourceIndex, _Samples.Length - 1);
+            sourceIndex = (int)Mathf.PingPong(sourceIndex, samples.Length - 1);
 
             // Fill temp sample buffer
-            tempSamples[i] = _Samples[sourceIndex];
+            tempSamples[i] = samples[sourceIndex];
         }
 
         // Window samples
