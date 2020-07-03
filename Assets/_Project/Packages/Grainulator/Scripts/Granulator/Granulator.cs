@@ -253,6 +253,11 @@ public class Granulator : MonoBehaviour
         {
             Grain grain = _ActiveGrainList[i];
 
+            if(grain._IsPlaying && !grain._Prewarmed)
+            {
+                grain._Prewarmed = true;
+            }
+
             if (!grain._IsPlaying)// && grain._FrameCounter > _FrameWait)
             {
                 _ActiveGrainList.Remove(grain);

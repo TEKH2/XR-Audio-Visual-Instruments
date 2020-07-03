@@ -4688,17 +4688,17 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._Duration
-      value: 25
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._PlayheadPos
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _EmitGrainProps._ClipIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
@@ -4708,12 +4708,12 @@ PrefabInstance:
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _MaxGrains
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}
       propertyPath: _Cadence
-      value: 200
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5224249814433130337, guid: e87b0955ff3810346949f6cfd637e302,
         type: 3}

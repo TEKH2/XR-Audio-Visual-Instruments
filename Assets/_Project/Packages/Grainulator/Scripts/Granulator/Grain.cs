@@ -22,6 +22,8 @@ public class Grain : MonoBehaviour
 
     public int _FilterReadCounter = 0;
 
+    public bool _Prewarmed = false;
+
     //---------------------------------------------------------------------
 
     private void Awake()
@@ -44,6 +46,8 @@ public class Grain : MonoBehaviour
     {
         _GrainData = gd;
         _Samples = samples;
+
+        _Prewarmed = false;
 
         _FilterReadCounter = 0;
 
@@ -110,13 +114,15 @@ public class Grain : MonoBehaviour
     // Good latency - 23.21995
     // Best latency - 11.60998
     //---------------------------------------------------------------------
-    float sample;
+    
     void OnAudioFilterRead(float[] data, int channels)
     {
+        float sample = 0;
+
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
-            if (_IsPlaying)
+            if (_IsPlaying)// && _Prewarmed)
             {
                 sample = 0;
 
@@ -134,7 +140,7 @@ public class Grain : MonoBehaviour
             }
             else
             {
-                data[dataIndex] = 0;
+                data[dataIndex] = sample;
                 _FilterReadCounter++;
             }
         }
