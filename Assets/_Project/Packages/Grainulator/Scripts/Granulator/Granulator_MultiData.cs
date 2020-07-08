@@ -71,14 +71,16 @@ public class Granulator_MultiData : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        double frameSampleIndex = (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;      
+        double dspSampleIndexThisFrame = _Grain._CurrentDSPSampleIndex;// (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
+
+        //print("DSP Sample Index: " + dspSampleIndexThisFrame);
         // Calculate random sample rate
         double randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
         // Find sample that next grain is emitted at
         double nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
 
         // fill the spawn sample time list while the next emit sample index 
-        while(nextEmitSampleIndex <= frameSampleIndex)
+        while(nextEmitSampleIndex <= dspSampleIndexThisFrame)
         {
             // add to spawn sample list
             _SpawnAtSampleTimes.Add(nextEmitSampleIndex);
@@ -94,10 +96,13 @@ public class Granulator_MultiData : MonoBehaviour
         for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
         {
             // Calculate timing offset for grain
-            int offset = (int)(frameSampleIndex - _SpawnAtSampleTimes[i]);
+            int startDSPSampleIndex = (int)(dspSampleIndexThisFrame - _SpawnAtSampleTimes[i]);
 
             GrainData tempGrainData = new GrainData(transform.position + (Random.insideUnitSphere * _Spacing), Vector3.zero, 0,
-                _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+                _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, startDSPSampleIndex, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+
+            // TODO add to constructor if used
+            tempGrainData._StartDSPSampleIndex = (int)_SpawnAtSampleTimes[i];
 
             EmitGrain(tempGrainData);      
         }

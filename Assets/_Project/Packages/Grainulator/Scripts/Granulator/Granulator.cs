@@ -42,6 +42,7 @@ public class GrainData
     public float _Mass;
 
     public int _SampleOffset;
+    public int _StartDSPSampleIndex;
 
     // Optimum 10ms - 60ms
     public float _Duration;

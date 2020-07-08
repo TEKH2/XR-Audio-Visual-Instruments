@@ -10,6 +10,8 @@ public class GrainPlaybackData
     public float[] _GrainSamples;
     public int _PlaybackIndex = 0;
 
+    public int _StartSampleIndex;
+
     //public GrainPlaybackData(float[] grainSamples, int playbackIndex)
     //{
     //    _GrainSamples = grainSamples;
@@ -19,6 +21,8 @@ public class GrainPlaybackData
 
 public class Grain_MultiData : MonoBehaviour
 {
+    public int _CurrentDSPSampleIndex = 0;
+
     List<GrainPlaybackData> _GrainPlaybackData = new List<GrainPlaybackData>();
 
     public void Update()
@@ -42,6 +46,7 @@ public class Grain_MultiData : MonoBehaviour
         // -----------------------------------------BUILD SAMPLE ARRAY
         // Grain array to pull samples into
         grainPlaybackData._GrainSamples = new float[durationInSamples];
+        grainPlaybackData._StartSampleIndex = (int)startSample;
 
         var tempSamples = new float[durationInSamples];
         int sourceIndex;
@@ -104,15 +109,29 @@ public class Grain_MultiData : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (grainData._PlaybackIndex >= grainData._GrainSamples.Length)
-                    grainData._IsPlaying = false;
-                else
-                {                   
-                    data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
-                    grainData._PlaybackIndex++;
+                if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
+                {
+                    if (grainData._PlaybackIndex >= grainData._GrainSamples.Length)
+                        grainData._IsPlaying = false;
+                    else
+                    {
+                        //if (grainData._PlaybackIndex == 0)
+                           // print("Grain start sample index: " + grainData._StartSampleIndex + "   Current DSP Sample Index: " + _CurrentDSPSampleIndex);
+
+                        data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
+                        grainData._PlaybackIndex++;
+                    }
                 }
+
+                if (_CurrentDSPSampleIndex == grainData._StartSampleIndex)
+                    print("Starting grain at sample index: " + _CurrentDSPSampleIndex);
             }
+
+            _CurrentDSPSampleIndex++;
         }
+
+        int samples = data.Length / channels;
+       // print("Current sample index: " + _CurrentDSPSampleIndex + "   Samples per Audio filter read: " + samples);
     }
 
     public static float GetValueFromNormPosInArray(float[] array, float norm)
