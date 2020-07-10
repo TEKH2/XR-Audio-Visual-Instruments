@@ -97,9 +97,11 @@ public class Grain_MultiData : MonoBehaviour
 
     void OnAudioFilterRead(float[] data, int channels)
     {
+        int samples = 0;
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
+            samples++;
             for (int i = 0; i < _GrainPlaybackData.Count; i++)
             {
                 GrainPlaybackData grainData = _GrainPlaybackData[i];

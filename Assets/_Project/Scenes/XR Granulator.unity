@@ -797,7 +797,7 @@ MonoBehaviour:
     _PitchRandom: 0
     _Volume: 2
     _VolumeRandom: 0
-  _EmissionLatencyMS: 250
+  _EmissionLatencyMS: 40
   _Spacing: 0
   _WindowingCurve:
     serializedVersion: 2
