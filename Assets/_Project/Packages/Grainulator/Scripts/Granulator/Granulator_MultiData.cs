@@ -24,8 +24,9 @@ public class Granulator_MultiData : MonoBehaviour
 
     public GrainEmissionProps _EmitGrainProps;
 
-    double _PrevEmissionSampleIndex = 0;
-    List<double> _SpawnAtSampleTimes = new List<double>();
+    int _PrevGrainSampleIndex = 0;
+    public float _EmissionLatencyMS = 250;
+    int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
     public float _Spacing = 0;
     public AnimationCurve _WindowingCurve;
@@ -51,6 +52,9 @@ public class Granulator_MultiData : MonoBehaviour
         _StartDSPTime = AudioSettings.dspTime;
 
         _SampleRate = AudioSettings.outputSampleRate;
+
+        _PrevGrainSampleIndex = _SampleRate;
+
         _AudioClipLibrary.Initialize();
 
         _QueuedGrainData = new List<GrainData>();
@@ -71,57 +75,63 @@ public class Granulator_MultiData : MonoBehaviour
 
         //------------------------------------------ UPDATE GRAIN SPAWN LIST
         // Current sample we are up to in time
-        double dspSampleIndexThisFrame = _Grain._CurrentDSPSampleIndex;// (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
+        int dspSampleIndexThisFrame = _Grain._CurrentDSPSampleIndex;// (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
+        int sampleRangeMax = dspSampleIndexThisFrame + EmissionLatencyInSamples;
 
         //print("DSP Sample Index: " + dspSampleIndexThisFrame);
         // Calculate random sample rate
-        double randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
+        int randomSampleBetweenGrains = (int)(_SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f));
         // Find sample that next grain is emitted at
-        double nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
+        int nextEmitSampleIndex = _PrevGrainSampleIndex + randomSampleBetweenGrains;
+
+        int emitted = 0;
 
         // fill the spawn sample time list while the next emit sample index 
-        while(nextEmitSampleIndex <= dspSampleIndexThisFrame)
+        while(nextEmitSampleIndex <= sampleRangeMax)
         {
-            // add to spawn sample list
-            _SpawnAtSampleTimes.Add(nextEmitSampleIndex);
+            GrainData tempGrainData = new GrainData
+            (
+                transform.position + (Random.insideUnitSphere * _Spacing),
+                Vector3.zero,
+                0,
+                _EmitGrainProps._ClipIndex,
+                _EmitGrainProps.Duration,
+                _EmitGrainProps.Position,
+                _EmitGrainProps.Pitch,
+                _EmitGrainProps.Volume,
+                nextEmitSampleIndex
+            );
 
-            // recalculate random sample rate
-            _PrevEmissionSampleIndex = nextEmitSampleIndex;
-            randomSampleBetweenGrains = _SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f);
-            nextEmitSampleIndex = _PrevEmissionSampleIndex + randomSampleBetweenGrains;
+            EmitGrain(tempGrainData);
+
+            // Find next sample start time
+            _PrevGrainSampleIndex = nextEmitSampleIndex;
+            randomSampleBetweenGrains = (int)(_SampleRate * ((_Cadence + Random.Range(0, _CadenceRandom)) * .001f));
+            nextEmitSampleIndex = _PrevGrainSampleIndex + randomSampleBetweenGrains;
+
+            emitted++;
         }
 
-
-        //------------------------------------------ GENERATE GRAIN DATA      
-        for (int i = 0; i < _SpawnAtSampleTimes.Count; i++)
+        if (_DebugLog)
         {
-            // Calculate timing offset for grain
-            int startDSPSampleIndex = (int)(dspSampleIndexThisFrame - _SpawnAtSampleTimes[i]);
-
-            GrainData tempGrainData = new GrainData(transform.position + (Random.insideUnitSphere * _Spacing), Vector3.zero, 0,
-                _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, startDSPSampleIndex, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
-
-            // TODO add to constructor if used
-            tempGrainData._StartDSPSampleIndex = (int)_SpawnAtSampleTimes[i];
-
-            EmitGrain(tempGrainData);      
+            print("Prev: " + _PrevGrainSampleIndex + "   start frame:  " + dspSampleIndexThisFrame + "   max sample range: " + sampleRangeMax + "  Emitted: " + emitted);
         }
 
-        //------------------------------------------ CLEAN UP     
-        _SpawnAtSampleTimes.Clear();
+        if (_DebugLog)
+        {
+            //------------------------------------------ DEBUG
+            DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _Cadence);
+            DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
+            DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_Cadence * .001f));
+            DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
 
-        //------------------------------------------ DEBUG
-        DebugGUI.LogPersistent("Grains per second", "Grains per second: " + 1000 / _Cadence);
-        DebugGUI.LogPersistent("Samples per grain", "Samples per grain: " + _SampleRate * (_EmitGrainProps.Duration * .001f));
-        DebugGUI.LogPersistent("Samples bewteen grain", "Samples between grains: " + _SampleRate * (_Cadence * .001f));
-        DebugGUI.LogPersistent("CurrentSample", "Current Sample: " + Time.time * _SampleRate);
-
-        _DebugFrameCounter++;
+            _DebugFrameCounter++;
+        }
     }
 
     public void EmitGrain(GrainData grainData)
     {
         // Init grain with data
-        _Grain.AddGrainData(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, Time.time * _SampleRate, _DEBUG_TraditionalWindowing);        
+        _Grain.AddGrainData(grainData, _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex], _AudioClipLibrary._Clips[grainData._ClipIndex].frequency, _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);        
     }
 }

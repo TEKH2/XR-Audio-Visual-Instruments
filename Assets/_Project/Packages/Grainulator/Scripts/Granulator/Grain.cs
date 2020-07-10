@@ -77,7 +77,7 @@ public class Grain : MonoBehaviour
         for (int i = 0; i < tempSamples.Length; i++)
         {
             // Set start index
-            int index = _GrainData._SampleOffset % tempSamples.Length;
+            //int index = _GrainData._SampleOffset % tempSamples.Length;
 
             // find the norm along the array
             float norm = i / (tempSamples.Length - 1f);            

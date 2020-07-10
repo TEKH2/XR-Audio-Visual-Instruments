@@ -41,7 +41,6 @@ public class GrainData
     public Vector3 _Velocity;
     public float _Mass;
 
-    public int _SampleOffset;
     public int _StartDSPSampleIndex;
 
     // Optimum 10ms - 60ms
@@ -52,33 +51,35 @@ public class GrainData
 
     public int _ClipIndex;
 
+    public int _StartSampleIndex;
+
     public GrainData() { }
     public GrainData(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
+        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
         _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
-        _SampleOffset = grainOffsetInSamples;
         _Duration = durationInMS;
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _StartSampleIndex = startSampleIndex;
     }
 
     public void Initialize(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, int grainOffsetInSamples, float playheadPosition, float pitch, float volume)
+        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
         _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
-        _SampleOffset = grainOffsetInSamples;
         _Duration = durationInMS;
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _StartSampleIndex = startSampleIndex;
     }
 }
 
@@ -198,6 +199,9 @@ public class Granulator : MonoBehaviour
     [Range(0.0f, 1000f)]
     public int _CadenceRandom = 0;        // ms
 
+    public int _EmissionLatencyMS = 250;
+    int EmissionLatencyInSamples { get { return _EmissionLatencyMS * _SampleRate; } }
+
     public GrainEmissionProps _EmitGrainProps;
 
     double _PrevEmissionSampleIndex = 0;
@@ -315,7 +319,7 @@ public class Granulator : MonoBehaviour
 
                 // Create temporary grain data object and add it to the playback queue
                 tempGrainData.Initialize(transform.position + (Random.insideUnitSphere * _Spacing), Vector3.zero, 0,
-                    _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, offset, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume);
+                    _EmitGrainProps._ClipIndex, _EmitGrainProps.Duration, _EmitGrainProps.Position, _EmitGrainProps.Pitch, _EmitGrainProps.Volume, (int)_SpawnAtSampleTimes[i]);
 
                 _QueuedGrainData.Add(tempGrainData);
             }

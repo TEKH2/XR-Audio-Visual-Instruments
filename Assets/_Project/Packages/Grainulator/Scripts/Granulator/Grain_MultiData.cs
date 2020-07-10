@@ -36,7 +36,7 @@ public class Grain_MultiData : MonoBehaviour
     }
 
     //---------------------------------------------------------------------
-    public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, float startSample = 0, bool traditionalWindowing = false)
+    public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
         GrainPlaybackData grainPlaybackData = new GrainPlaybackData();
 
@@ -46,7 +46,6 @@ public class Grain_MultiData : MonoBehaviour
         // -----------------------------------------BUILD SAMPLE ARRAY
         // Grain array to pull samples into
         grainPlaybackData._GrainSamples = new float[durationInSamples];
-        grainPlaybackData._StartSampleIndex = (int)startSample;
 
         var tempSamples = new float[durationInSamples];
         int sourceIndex;
@@ -67,7 +66,7 @@ public class Grain_MultiData : MonoBehaviour
         for (int i = 0; i < tempSamples.Length; i++)
         {
             // Set start index
-            int index = gd._SampleOffset % tempSamples.Length;
+            //int index = gd._SampleOffset % tempSamples.Length;
 
             // find the norm along the array
             float norm = i / (tempSamples.Length - 1f);
@@ -80,11 +79,12 @@ public class Grain_MultiData : MonoBehaviour
         }
 
         grainPlaybackData._IsPlaying = true;
+        grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
         _GrainPlaybackData.Add(grainPlaybackData);
 
-        if (debugLog)
-            Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3} ", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time));
+        //if (debugLog)
+        //    Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3} ", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time));
     }
 
     //---------------------------------------------------------------------
@@ -97,8 +97,6 @@ public class Grain_MultiData : MonoBehaviour
 
     void OnAudioFilterRead(float[] data, int channels)
     {
-        float sample = 0;
-
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
@@ -123,15 +121,12 @@ public class Grain_MultiData : MonoBehaviour
                     }
                 }
 
-                if (_CurrentDSPSampleIndex == grainData._StartSampleIndex)
-                    print("Starting grain at sample index: " + _CurrentDSPSampleIndex);
+                //if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
+                //    print("Starting grain at sample index: " + _CurrentDSPSampleIndex + "    " + grainData._StartSampleIndex);
             }
 
             _CurrentDSPSampleIndex++;
         }
-
-        int samples = data.Length / channels;
-       // print("Current sample index: " + _CurrentDSPSampleIndex + "   Samples per Audio filter read: " + samples);
     }
 
     public static float GetValueFromNormPosInArray(float[] array, float norm)
