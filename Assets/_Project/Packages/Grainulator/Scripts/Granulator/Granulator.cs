@@ -128,25 +128,43 @@ public class GrainEmissionProps
         }
     }
 
-    // Pitch ( 1 = original, 0.5 = half pitch, 2 = double pitch)
+
+    // Transpose
     //---------------------------------------------------------------------
-    [Range(0.1f, 5f)]
+    [Range(-4f, 4f)]
     [SerializeField]
+    float _Transpose = 0;
+    [Range(0f, 1f)]
+    [SerializeField]
+    float _TransposeRandom = 0;
+
     float _Pitch = 1;
-    [Range(0.0f, 1f)]
-    [SerializeField]
-    float _PitchRandom = 0;
     public float Pitch
     {
         get
         {
-            return Mathf.Clamp(_Pitch + Random.Range(-_PitchRandom, _PitchRandom), 0.1f, 5f);
+            _Pitch = TransposeToPitch(Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -5f, 5f));
+            return Mathf.Clamp(_Pitch, 0.1f, 5f);
         }
         set
         {
             _Pitch = Mathf.Clamp(value, 0.1f, 5f);
         }
     }
+
+    // Converts the more human-readable value of transpose to pitch values for the grains
+    private float TransposeToPitch(float transpose)
+    {
+        float pitch = 1;
+
+        if (transpose < 0)
+            pitch = (1 / (1 + Mathf.Abs(transpose)));
+        else if (transpose > 0)
+            pitch = transpose + 1;
+
+        return pitch;
+    }
+
 
     // Volume
     //---------------------------------------------------------------------
@@ -178,7 +196,7 @@ public class GrainEmissionProps
 
         _PositionRandom = posRand;
         _DurationRandom = durationRand;
-        _PitchRandom = pitchRand;
+        //_PitchRandom = pitchRand;
         _VolumeRandom = volumeRand;
     }
 }
