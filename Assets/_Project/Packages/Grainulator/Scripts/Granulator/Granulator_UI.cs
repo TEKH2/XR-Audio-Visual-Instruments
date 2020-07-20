@@ -10,7 +10,7 @@ public class Granulator_UI : MonoBehaviour
     public Slider _Pos;
     public Slider _Pitch;
 
-    public Granulator _Granulator;
+    public Granulator_MultiData _Granulator;
 
     // Start is called before the first frame update
     void Start()
