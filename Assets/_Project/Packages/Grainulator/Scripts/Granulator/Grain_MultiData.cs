@@ -9,22 +9,45 @@ public class Grain_MultiData : MonoBehaviour
 {
     public int _CurrentDSPSampleIndex = 0;
 
-    List<GrainPlaybackData> _GrainPlaybackData = new List<GrainPlaybackData>();
+    List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
+    List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
 
     public void Update()
     {
-        for (int i = _GrainPlaybackData.Count - 1; i >= 0; i--)
+        // Remove grain playback data that have finished
+        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
         {
-            if (!_GrainPlaybackData[i]._IsPlaying)
-                _GrainPlaybackData.RemoveAt(i);
+            if (!_ActiveGrainPlaybackData[i]._IsPlaying)
+            {
+                // Add to pool
+                _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+                // Remove from active pist
+                _ActiveGrainPlaybackData.RemoveAt(i);
+            }
+        }
+    }
+
+    GrainPlaybackData GetGrainFromPool()
+    {
+        // If not enough grains in the pool, create a new one
+        if (_PooledGrainPlaybackData.Count == 0)
+        {
+            _PooledGrainPlaybackData.Add(new GrainPlaybackData());
         }
 
+        GrainPlaybackData grainPlaybackData = _PooledGrainPlaybackData[0];
+        _PooledGrainPlaybackData.Remove(grainPlaybackData);
+
+        return grainPlaybackData;
     }
 
     //---------------------------------------------------------------------
     public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
-        GrainPlaybackData grainPlaybackData = new GrainPlaybackData();
+        //print("Grain: Active: " + _ActiveGrainPlaybackData.Count + "    Pool: " + _PooledGrainPlaybackData.Count);
+
+        // Get a grainn from the pool
+        GrainPlaybackData grainPlaybackData = GetGrainFromPool();
 
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
@@ -65,9 +88,11 @@ public class Grain_MultiData : MonoBehaviour
         }
 
         grainPlaybackData._IsPlaying = true;
+        grainPlaybackData._PlaybackIndex = 0;
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
-        _GrainPlaybackData.Add(grainPlaybackData);
+
+        _ActiveGrainPlaybackData.Add(grainPlaybackData);
 
         //if (debugLog)
         //    Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3} ", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time));
@@ -88,9 +113,9 @@ public class Grain_MultiData : MonoBehaviour
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
             samples++;
-            for (int i = 0; i < _GrainPlaybackData.Count; i++)
+            for (int i = 0; i < _ActiveGrainPlaybackData.Count; i++)
             {
-                GrainPlaybackData grainData = _GrainPlaybackData[i];
+                GrainPlaybackData grainData = _ActiveGrainPlaybackData[i];
 
                 if (grainData == null)
                     continue;

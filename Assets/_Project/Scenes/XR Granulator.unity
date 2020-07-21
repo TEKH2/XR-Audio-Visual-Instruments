@@ -785,19 +785,19 @@ MonoBehaviour:
   _GrainPrefab: {fileID: 1058601950276710, guid: bcef41c955a087d4694f38d3ff97d611,
     type: 3}
   _MaxGrains: 50
-  _Cadence: 5
+  _Cadence: 20
   _CadenceRandom: 0
   _EmitGrainProps:
     _ClipIndex: 0
     _PlayheadPos: 0.288
     _PositionRandom: 0.005
-    _Duration: 50
+    _Duration: 30
     _DurationRandom: 0
-    _Pitch: 1
-    _PitchRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
-  _EmissionLatencyMS: 20
+  _EmissionLatencyMS: 100
   _Spacing: 0
   _WindowingCurve:
     serializedVersion: 2
@@ -1276,7 +1276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &417177533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4056,8 +4056,8 @@ MonoBehaviour:
     _PositionRandom: 0.005
     _Duration: 50
     _DurationRandom: 0
-    _Pitch: 1
-    _PitchRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
   _EmissionLatencyMS: 20
