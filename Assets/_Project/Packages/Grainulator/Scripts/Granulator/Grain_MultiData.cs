@@ -49,17 +49,14 @@ public class Grain_MultiData : MonoBehaviour
         // Get a grainn from the pool
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
 
+        //print(freq / 1000);
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
 
-        // -----------------------------------------BUILD SAMPLE ARRAY
-        // Grain array to pull samples into
-        grainPlaybackData._GrainSamples = new float[durationInSamples];
-
-        var tempSamples = new float[durationInSamples];
+        // -----------------------------------------BUILD SAMPLE ARRAY        
         int sourceIndex;
         // Construct grain sample data
-        for (int i = 0; i < grainPlaybackData._GrainSamples.Length; i++)
+        for (int i = 0; i < durationInSamples; i++)
         {
             // Offset to source audio sample position for grain
             sourceIndex = playheadSampleIndex + i;
@@ -68,29 +65,29 @@ public class Grain_MultiData : MonoBehaviour
             sourceIndex = (int)Mathf.PingPong(sourceIndex, clipSamples.Length - 1);
 
             // Fill temp sample buffer
-            tempSamples[i] = clipSamples[sourceIndex];
+            grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
         }
 
         // Window samples
-        for (int i = 0; i < tempSamples.Length; i++)
+        for (int i = 0; i < durationInSamples; i++)
         {
             // Set start index
             //int index = gd._SampleOffset % tempSamples.Length;
 
             // find the norm along the array
-            float norm = i / (tempSamples.Length - 1f);
+            float norm = i / (durationInSamples - 1f);
             float windowedVolume = windowCurve.Evaluate(norm);
 
             float pitchedNorm = norm * gd._Pitch;
-            float sample = GetValueFromNormPosInArray(tempSamples, pitchedNorm);
+            float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples);
 
             grainPlaybackData._GrainSamples[i] = sample * windowedVolume * gd._Volume;
         }
 
         grainPlaybackData._IsPlaying = true;
         grainPlaybackData._PlaybackIndex = 0;
+        grainPlaybackData._PlaybackSampleCount = durationInSamples;
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
-
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
 
@@ -122,7 +119,7 @@ public class Grain_MultiData : MonoBehaviour
 
                 if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
                 {
-                    if (grainData._PlaybackIndex >= grainData._GrainSamples.Length)
+                    if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                         grainData._IsPlaying = false;
                     else
                     {
@@ -142,13 +139,13 @@ public class Grain_MultiData : MonoBehaviour
         }
     }
 
-    public static float GetValueFromNormPosInArray(float[] array, float norm)
+    public static float GetValueFromNormPosInArray(float[] array, float norm, int length)
     {
         norm %= 1;
-        float floatIndex = norm * (array.Length - 1);
+        float floatIndex = norm * (length - 1);
 
         int lowerIndex = (int)Mathf.Floor(floatIndex);
-        int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, array.Length - 1);
+        int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, length - 1);
         float lerp = norm % 1;
 
         return Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
@@ -355,8 +352,17 @@ public class GrainPlaybackData
 {
     public bool _IsPlaying = true;
     public float[] _GrainSamples;
+    public float[] _TempSampleBuffer;
     public int _PlaybackIndex = 0;
+    public int _PlaybackSampleCount;
 
     // The DSP sample that the grain starts at
     public int _StartSampleIndex;
+
+    public GrainPlaybackData()
+    {
+        // instantiate the grain samples at the max length of a grain of 1 second worth of samples
+        _GrainSamples = new float[44 * 1000];
+        _TempSampleBuffer = new float[44 * 1000];
+    }
 }
