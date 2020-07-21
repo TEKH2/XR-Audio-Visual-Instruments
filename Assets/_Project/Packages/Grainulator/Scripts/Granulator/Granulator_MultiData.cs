@@ -24,8 +24,8 @@ public class Granulator_MultiData : MonoBehaviour
 
     public GrainEmissionProps _EmitGrainProps;
 
-    int _PrevGrainSampleIndex = 0;
-    public float _EmissionLatencyMS = 250;
+    int _PrevGrainSampleIndex = 0;      
+    public float _EmissionLatencyMS = 80;
     int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
     public float _Spacing = 0;

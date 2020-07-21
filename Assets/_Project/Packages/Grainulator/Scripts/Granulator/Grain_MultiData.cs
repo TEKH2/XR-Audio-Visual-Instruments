@@ -4,20 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-public class GrainPlaybackData
-{
-    public bool _IsPlaying = true;
-    public float[] _GrainSamples;
-    public int _PlaybackIndex = 0;
-
-    public int _StartSampleIndex;
-
-    //public GrainPlaybackData(float[] grainSamples, int playbackIndex)
-    //{
-    //    _GrainSamples = grainSamples;
-    //    _PlaybackIndex = playbackIndex;
-    //}
-}
 
 public class Grain_MultiData : MonoBehaviour
 {
@@ -337,4 +323,15 @@ public class AudioClipLibrary
             Debug.Log(String.Format("Clip {0}      Samples: {1}        Time length: {2} ", _Clips[i].name, _ClipsDataArray[i].Length, _ClipsDataArray[i].Length / (float)_Clips[i].frequency));
         }
     }
+}
+
+
+public class GrainPlaybackData
+{
+    public bool _IsPlaying = true;
+    public float[] _GrainSamples;
+    public int _PlaybackIndex = 0;
+
+    // The DSP sample that the grain starts at
+    public int _StartSampleIndex;
 }
