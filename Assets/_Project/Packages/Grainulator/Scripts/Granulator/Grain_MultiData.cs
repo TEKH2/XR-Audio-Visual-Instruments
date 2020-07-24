@@ -7,10 +7,13 @@ using UnityEngine.Profiling;
 
 public class Grain_MultiData : MonoBehaviour
 {
-    public int _CurrentDSPSampleIndex = 0;
+    public int _CurrentSampleIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
+
+
+    private FilterSignal _FilterSignal = new FilterSignal();
 
     public void Update()
     {
@@ -44,12 +47,12 @@ public class Grain_MultiData : MonoBehaviour
     //---------------------------------------------------------------------
     public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
-        //print("Grain: Active: " + _ActiveGrainPlaybackData.Count + "    Pool: " + _PooledGrainPlaybackData.Count);
-
         // Get a grainn from the pool
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
 
-        //print(freq / 1000);
+        _FilterSignal.fc = gd._Coefficients;
+        float filteredSample;
+
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
 
@@ -64,17 +67,17 @@ public class Grain_MultiData : MonoBehaviour
             // Ping-pong audio sample read
             sourceIndex = (int)Mathf.PingPong(sourceIndex, clipSamples.Length - 1);
 
+            filteredSample = _FilterSignal.Apply(clipSamples[sourceIndex]);
+
             // Fill temp sample buffer
-            grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
+            //grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
+            grainPlaybackData._TempSampleBuffer[i] = filteredSample;
         }
 
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
         {
-            // Set start index
-            //int index = gd._SampleOffset % tempSamples.Length;
-
-            // find the norm along the array
+            // Find the norm along the array
             float norm = i / (durationInSamples - 1f);
             float windowedVolume = windowCurve.Evaluate(norm);
 
@@ -90,9 +93,6 @@ public class Grain_MultiData : MonoBehaviour
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
-
-        //if (debugLog)
-        //    Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3} ", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time));
     }
 
     //---------------------------------------------------------------------
@@ -117,25 +117,19 @@ public class Grain_MultiData : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
+                if (_CurrentSampleIndex >= grainData._StartSampleIndex)
                 {
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                         grainData._IsPlaying = false;
                     else
                     {
-                        //if (grainData._PlaybackIndex == 0)
-                           // print("Grain start sample index: " + grainData._StartSampleIndex + "   Current DSP Sample Index: " + _CurrentDSPSampleIndex);
-
                         data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
                         grainData._PlaybackIndex++;
                     }
                 }
-
-                //if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
-                //    print("Starting grain at sample index: " + _CurrentDSPSampleIndex + "    " + grainData._StartSampleIndex);
             }
 
-            _CurrentDSPSampleIndex++;
+            _CurrentSampleIndex++;
         }
     }
 
@@ -166,6 +160,7 @@ public class GrainData
     public float _PlayheadPos;
     public float _Pitch;
     public float _Volume;
+    public FilterCoefficients _Coefficients;
 
     public int _ClipIndex;
 
@@ -173,7 +168,7 @@ public class GrainData
 
     public GrainData() { }
     public GrainData(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
@@ -183,11 +178,12 @@ public class GrainData
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _Coefficients = fc;
         _StartSampleIndex = startSampleIndex;
     }
 
     public void Initialize(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
@@ -197,6 +193,7 @@ public class GrainData
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _Coefficients = fc;
         _StartSampleIndex = startSampleIndex;
     }
 }
