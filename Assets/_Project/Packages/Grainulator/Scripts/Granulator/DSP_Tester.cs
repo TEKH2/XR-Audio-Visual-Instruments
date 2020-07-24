@@ -36,8 +36,8 @@ public class DSP_Tester : MonoBehaviour
         {
             outputSample = _FilterSignal.Apply(data[dataIndex]);
 
-            data[dataIndex]     = outputSample;
-            data[dataIndex + 1] = 0;
+            data[dataIndex] = outputSample;
+            data[dataIndex + 1] = outputSample;
         }
     }
 }

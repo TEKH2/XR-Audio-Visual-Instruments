@@ -89,6 +89,11 @@ public class FilterSignal
 
     public FilterCoefficients fc = new FilterCoefficients();
 
+    public void SetCoefficients()
+    {
+
+    }
+
     public void Reset()
     {
         previousX1 = 0;
@@ -101,11 +106,11 @@ public class FilterSignal
     public float Apply(float input)
     {
         // Apply coefficients to input singal and history data
-        filteredSignal = input * fc.a0 +
+        filteredSignal = ( input * fc.a0 +
                          previousX1 * fc.a1 +
-                         previousX2 * fc.a2 +
-                         previousY1 * fc.b1 +
-                         previousY2 * fc.b2;
+                         previousX2 * fc.a2 ) -
+                         ( previousY1 * fc.b1 +
+                         previousY2 * fc.b2 );
 
         // Set history states for signal data
         previousX2 = previousX1;

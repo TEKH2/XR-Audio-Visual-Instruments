@@ -5431,7 +5431,7 @@ MonoBehaviour:
     Type: 0
     _Cutoff: 1000
     _Gain: 1
-    _Q: 1
+    _Q: 0.5
 --- !u!4 &1676454508
 Transform:
   m_ObjectHideFlags: 0
