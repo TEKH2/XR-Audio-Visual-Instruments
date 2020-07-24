@@ -36,7 +36,7 @@ public class PipeMoveSystemV2 : JobComponentSystem
 
 
         // Change the command buffer to concurrent so it can be used in the job
-        EntityCommandBuffer.Concurrent entityCommandBufferConCurrent = entityCommandBuffer.ToConcurrent();
+        EntityCommandBuffer.ParallelWriter entityCommandBufferConCurrent = entityCommandBuffer.AsParallelWriter();
         // Create and archetype for our event entity
         EntityArchetype EventEntityArchetype = EntityManager.CreateArchetype(typeof(EventComponent));
 
