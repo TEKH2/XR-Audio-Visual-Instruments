@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 
@@ -12,7 +14,6 @@ public class FilterProperties
 
     const float _LowLimit = 20f;
     const float _HighLimit = 20000f;
-
 
     [Range(_LowLimit, _HighLimit)]
     [SerializeField]
@@ -68,6 +69,12 @@ public class FilterCoefficients
     public float a2;
     public float b1;
     public float b2;
+
+    public void PrintFC()
+    {
+        Debug.Log(string.Format("Filter Coefficients: {0} {1} {2} {3} {4}",
+            a0, a1, a2, b1, b2));
+    }
 }
 
 // Instantiated within each grain to maintain a very short history of the audio signal

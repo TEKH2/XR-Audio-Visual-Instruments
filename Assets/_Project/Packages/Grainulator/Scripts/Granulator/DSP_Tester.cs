@@ -24,6 +24,8 @@ public class DSP_Tester : MonoBehaviour
     {
         _FilterCoefficients = DSP_Filter.CreateCoefficents(_FilterProperties);
         _FilterSignal.fc = _FilterCoefficients;
+
+        _FilterCoefficients.PrintFC();
     }
 
     private void OnAudioFilterRead(float[] data, int channels)
