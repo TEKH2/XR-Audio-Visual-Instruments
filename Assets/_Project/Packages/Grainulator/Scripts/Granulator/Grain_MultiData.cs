@@ -7,7 +7,7 @@ using UnityEngine.Profiling;
 
 public class Grain_MultiData : MonoBehaviour
 {
-    public int _CurrentDSPSampleIndex = 0;
+    public int _CurrentSampleIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
@@ -44,12 +44,9 @@ public class Grain_MultiData : MonoBehaviour
     //---------------------------------------------------------------------
     public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
-        //print("Grain: Active: " + _ActiveGrainPlaybackData.Count + "    Pool: " + _PooledGrainPlaybackData.Count);
-
         // Get a grainn from the pool
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
 
-        //print(freq / 1000);
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
 
@@ -71,10 +68,7 @@ public class Grain_MultiData : MonoBehaviour
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
         {
-            // Set start index
-            //int index = gd._SampleOffset % tempSamples.Length;
-
-            // find the norm along the array
+            // Find the norm along the array
             float norm = i / (durationInSamples - 1f);
             float windowedVolume = windowCurve.Evaluate(norm);
 
@@ -90,9 +84,6 @@ public class Grain_MultiData : MonoBehaviour
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
-
-        //if (debugLog)
-        //    Debug.Log(String.Format("Playhead pos {0}    Duration {1}   Pitch {2}    Time  {3} ", playheadSampleIndex + (int)startSample, durationInSamples, gd._Pitch, Time.time));
     }
 
     //---------------------------------------------------------------------
@@ -117,25 +108,19 @@ public class Grain_MultiData : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
+                if (_CurrentSampleIndex >= grainData._StartSampleIndex)
                 {
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                         grainData._IsPlaying = false;
                     else
                     {
-                        //if (grainData._PlaybackIndex == 0)
-                           // print("Grain start sample index: " + grainData._StartSampleIndex + "   Current DSP Sample Index: " + _CurrentDSPSampleIndex);
-
                         data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
                         grainData._PlaybackIndex++;
                     }
                 }
-
-                //if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
-                //    print("Starting grain at sample index: " + _CurrentDSPSampleIndex + "    " + grainData._StartSampleIndex);
             }
 
-            _CurrentDSPSampleIndex++;
+            _CurrentSampleIndex++;
         }
     }
 
