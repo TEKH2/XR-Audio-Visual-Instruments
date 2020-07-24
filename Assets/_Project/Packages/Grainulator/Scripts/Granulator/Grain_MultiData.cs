@@ -12,6 +12,9 @@ public class Grain_MultiData : MonoBehaviour
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
 
+
+    private FilterSignal _FilterSignal = new FilterSignal();
+
     public void Update()
     {
         // Remove grain playback data that have finished
@@ -47,6 +50,9 @@ public class Grain_MultiData : MonoBehaviour
         // Get a grainn from the pool
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
 
+        _FilterSignal.fc = gd._Coefficients;
+        float filteredSample;
+
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
 
@@ -61,8 +67,11 @@ public class Grain_MultiData : MonoBehaviour
             // Ping-pong audio sample read
             sourceIndex = (int)Mathf.PingPong(sourceIndex, clipSamples.Length - 1);
 
+            filteredSample = _FilterSignal.Apply(clipSamples[sourceIndex]);
+
             // Fill temp sample buffer
-            grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
+            //grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
+            grainPlaybackData._TempSampleBuffer[i] = filteredSample;
         }
 
         // Window samples
@@ -151,6 +160,7 @@ public class GrainData
     public float _PlayheadPos;
     public float _Pitch;
     public float _Volume;
+    public FilterCoefficients _Coefficients;
 
     public int _ClipIndex;
 
@@ -158,7 +168,7 @@ public class GrainData
 
     public GrainData() { }
     public GrainData(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
@@ -168,11 +178,12 @@ public class GrainData
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _Coefficients = fc;
         _StartSampleIndex = startSampleIndex;
     }
 
     public void Initialize(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
         _WorldPos = position;
         _Velocity = velocity;
@@ -182,6 +193,7 @@ public class GrainData
         _PlayheadPos = playheadPosition;
         _Pitch = pitch;
         _Volume = volume;
+        _Coefficients = fc;
         _StartSampleIndex = startSampleIndex;
     }
 }

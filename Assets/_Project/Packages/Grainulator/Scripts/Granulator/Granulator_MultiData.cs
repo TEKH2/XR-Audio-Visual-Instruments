@@ -22,7 +22,10 @@ public class Granulator_MultiData : MonoBehaviour
     [Range(0.002f, 1000f)]
     public int _CadenceRandom = 0;        // ms
 
+    public FilterProperties _FilterProperties;
+    private FilterCoefficients _FilterCoefficients;
     public GrainEmissionProps _EmitGrainProps;
+    
 
     int _SampleIndexPrevGrain = 0;      
     public float _EmissionLatencyMS = 80;
@@ -44,6 +47,8 @@ public class Granulator_MultiData : MonoBehaviour
     {
         _SampleRate = AudioSettings.outputSampleRate;
 
+        _FilterCoefficients = new FilterCoefficients();
+
         // Why is this set to _SampleRate?!
         _SampleIndexPrevGrain = _SampleRate;
 
@@ -57,6 +62,11 @@ public class Granulator_MultiData : MonoBehaviour
 
     void Update()
     {
+        // Currently generating coefficents each frame from the GUI filter props
+        // Will want to move this over to a per-grain method in the near future
+        // And restrict updates to OnChange for efficency
+        _FilterCoefficients = DSP_Filter.CreateCoefficents(_FilterProperties);
+
         // Limit audio clip selection to available clips
         _EmitGrainProps._ClipIndex = Mathf.Clamp(_EmitGrainProps._ClipIndex, 0, _AudioClipLibrary._Clips.Length - 1);
 
@@ -84,6 +94,7 @@ public class Granulator_MultiData : MonoBehaviour
                 _EmitGrainProps.Position,
                 _EmitGrainProps.Pitch,
                 _EmitGrainProps.Volume,
+                _FilterCoefficients,
                 sampleIndexNextGrainStart
             );
 
