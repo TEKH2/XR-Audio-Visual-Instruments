@@ -17,7 +17,7 @@ public class Granulator_MultiData : MonoBehaviour
     public int _MaxGrains = 100;
 
     // ------------------------------------ GRAIN EMISSION
-    [Range(1.0f, 1000f)]
+    [Range(2.0f, 1000f)]
     public int _Cadence = 20;             // ms
     [Range(0.002f, 1000f)]
     public int _CadenceRandom = 0;        // ms
@@ -89,7 +89,7 @@ public class Granulator_MultiData : MonoBehaviour
 
         int emitted = 0;
 
-        //Profiler.BeginSample("Mem test");
+        Profiler.BeginSample("Mem test");
         // Emit grain if it starts within the sample range
         while(sampleIndexNextGrainStart <= sampleIndexMax)
         {
@@ -114,7 +114,7 @@ public class Granulator_MultiData : MonoBehaviour
 
             emitted++;
         }
-        //Profiler.EndSample();
+        Profiler.EndSample();
 
         if (_DebugLog)
         {
@@ -133,14 +133,18 @@ public class Granulator_MultiData : MonoBehaviour
         }
     }
 
+    int grainIncrement = 0;
     public void EmitGrain(GrainData grainData)
     {
-        int grainIndex = Mathf.FloorToInt(Random.value * _NumberOfAudioSourcesToUse);
-       
+        grainIncrement++;
+        grainIncrement %= _NumberOfAudioSourcesToUse;
+
+        Profiler.BeginSample("Emit");
         // Init grain with data
-        _Grains[grainIndex].AddGrainData(grainData,
+        _Grains[grainIncrement].AddGrainData(grainData,
             _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
             _AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
-            _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);        
+            _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);
+        Profiler.EndSample();
     }
 }

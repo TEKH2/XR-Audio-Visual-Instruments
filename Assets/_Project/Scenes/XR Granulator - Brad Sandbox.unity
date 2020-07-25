@@ -5968,7 +5968,7 @@ PrefabInstance:
     - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
         type: 3}
       propertyPath: _Cadence
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
         type: 3}
@@ -5983,7 +5983,7 @@ PrefabInstance:
     - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
         type: 3}
       propertyPath: _EmitGrainProps._Duration
-      value: 30
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
         type: 3}
@@ -6004,6 +6004,21 @@ PrefabInstance:
         type: 3}
       propertyPath: _FilterProperties.Type
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
+        type: 3}
+      propertyPath: _NumberOfAudioSources
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
+        type: 3}
+      propertyPath: _NumberOfAudioSourcesToUse
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5847464111467217524, guid: 58cf57104e03f714385e3a9a0fef75a7,
+        type: 3}
+      propertyPath: _EmitGrainProps._PlayheadPos
+      value: 0.44
       objectReference: {fileID: 0}
     - target: {fileID: 5852106193054177912, guid: 58cf57104e03f714385e3a9a0fef75a7,
         type: 3}
