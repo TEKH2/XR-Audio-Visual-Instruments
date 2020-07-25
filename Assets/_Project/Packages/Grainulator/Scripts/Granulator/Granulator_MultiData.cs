@@ -36,7 +36,7 @@ public class Granulator_MultiData : MonoBehaviour
     public bool _DEBUG_TraditionalWindowing = false;
 
     Grain_MultiData[] _Grains;
-    int _NumberOfAudioSources = 20;
+    public int _NumberOfAudioSources = 2;
 
     public bool _DebugLog = false;
     int _DebugFrameCounter = 0;
