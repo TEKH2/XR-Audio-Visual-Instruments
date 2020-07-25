@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
-
+using UnityEngine.Rendering;
 
 public class Grain_MultiData : MonoBehaviour
 {
@@ -67,11 +67,15 @@ public class Grain_MultiData : MonoBehaviour
             // Ping-pong audio sample read
             sourceIndex = (int)Mathf.PingPong(sourceIndex, clipSamples.Length - 1);
 
-            filteredSample = _FilterSignal.Apply(clipSamples[sourceIndex]);
+            if (_FilterSignal._Type != DSP_Filter.FilterType.None)
+            {
+                filteredSample = _FilterSignal.Apply(clipSamples[sourceIndex]);
 
-            // Fill temp sample buffer
-            //grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
-            grainPlaybackData._TempSampleBuffer[i] = filteredSample;
+                // Fill temp sample buffer
+                grainPlaybackData._TempSampleBuffer[i] = filteredSample;
+            }
+            else
+                grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
         }
 
         // Window samples

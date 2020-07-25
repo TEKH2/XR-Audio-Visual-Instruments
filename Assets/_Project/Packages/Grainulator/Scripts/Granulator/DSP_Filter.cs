@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -80,6 +81,8 @@ public class FilterCoefficients
 // Instantiated within each grain to maintain a very short history of the audio signal
 public class FilterSignal
 {
+    public DSP_Filter.FilterType _Type = DSP_Filter.FilterType.None;
+
     public float previousX1 = 0;
     public float previousX2 = 0;
     public float previousY1 = 0;
@@ -133,7 +136,8 @@ public class DSP_Filter
         LowPass,
         HiPass,
         BandPass,
-        PeakNotch
+        PeakNotch,
+        None
     }
 
     // This function is called to construct FilterData from FilterProperties based on the type
