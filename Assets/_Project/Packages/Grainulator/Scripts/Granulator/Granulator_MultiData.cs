@@ -35,7 +35,8 @@ public class Granulator_MultiData : MonoBehaviour
     public AnimationCurve _WindowingCurve;
     public bool _DEBUG_TraditionalWindowing = false;
 
-    Grain_MultiData _Grain;
+    Grain_MultiData[] _Grains;
+    int _NumberOfAudioSources = 20;
 
     public bool _DebugLog = false;
     int _DebugFrameCounter = 0;
@@ -54,14 +55,19 @@ public class Granulator_MultiData : MonoBehaviour
 
         _AudioClipLibrary.Initialize();
 
-        GameObject go = Instantiate(_GrainPrefab);
-        _Grain = go.GetComponent<Grain_MultiData>();
-        _Grain.transform.parent = transform;
-        _Grain.transform.localPosition = Vector3.zero;
+        _Grains = new Grain_MultiData[_NumberOfAudioSources];
+        for (int i = 0; i < _NumberOfAudioSources; i++)
+        {
+            GameObject go = Instantiate(_GrainPrefab);
+            _Grains[i] = go.GetComponent<Grain_MultiData>();
+            _Grains[i].transform.parent = transform;
+            _Grains[i].transform.localPosition = Random.onUnitSphere * 1.5f;
+        }       
     }
 
     void Update()
     {
+
         // Currently generating coefficents each frame from the GUI filter props
         // Will want to move this over to a per-grain method in the near future
         // And restrict updates to OnChange for efficency
@@ -70,9 +76,9 @@ public class Granulator_MultiData : MonoBehaviour
         // Limit audio clip selection to available clips
         _EmitGrainProps._ClipIndex = Mathf.Clamp(_EmitGrainProps._ClipIndex, 0, _AudioClipLibrary._Clips.Length - 1);
 
-        //------------------------------------------ UPDATE GRAIN SPAWN LIST
+        //------------------------------------------ UPDATE GRAIN SPAWN LIST       
         // Current sample we are up to in time
-        int sampleIndexFrameStart = _Grain._CurrentSampleIndex;// (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
+        int sampleIndexFrameStart = _Grains[0]._CurrentSampleIndex;// (AudioSettings.dspTime - _StartDSPTime) * _SampleRate;
         int sampleIndexMax = sampleIndexFrameStart + EmissionLatencyInSamples;
 
         // Calculate random sample rate
@@ -82,6 +88,7 @@ public class Granulator_MultiData : MonoBehaviour
 
         int emitted = 0;
 
+        //Profiler.BeginSample("Mem test");
         // Emit grain if it starts within the sample range
         while(sampleIndexNextGrainStart <= sampleIndexMax)
         {
@@ -106,6 +113,7 @@ public class Granulator_MultiData : MonoBehaviour
 
             emitted++;
         }
+        //Profiler.EndSample();
 
         if (_DebugLog)
         {
@@ -126,8 +134,10 @@ public class Granulator_MultiData : MonoBehaviour
 
     public void EmitGrain(GrainData grainData)
     {
+        int grainIndex = Mathf.FloorToInt(Random.value * _Grains.Length);
+       
         // Init grain with data
-        _Grain.AddGrainData(grainData,
+        _Grains[grainIndex].AddGrainData(grainData,
             _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
             _AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
             _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);        
