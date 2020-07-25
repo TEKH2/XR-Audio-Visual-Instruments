@@ -37,6 +37,7 @@ public class Granulator_MultiData : MonoBehaviour
 
     Grain_MultiData[] _Grains;
     public int _NumberOfAudioSources = 2;
+    public int _NumberOfAudioSourcesToUse = 2;
 
     public bool _DebugLog = false;
     int _DebugFrameCounter = 0;
@@ -134,7 +135,7 @@ public class Granulator_MultiData : MonoBehaviour
 
     public void EmitGrain(GrainData grainData)
     {
-        int grainIndex = Mathf.FloorToInt(Random.value * _Grains.Length);
+        int grainIndex = Mathf.FloorToInt(Random.value * _NumberOfAudioSourcesToUse);
        
         // Init grain with data
         _Grains[grainIndex].AddGrainData(grainData,
