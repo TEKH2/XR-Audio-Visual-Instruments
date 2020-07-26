@@ -35,7 +35,7 @@ public class Granulator_MultiData : MonoBehaviour
     public AnimationCurve _WindowingCurve;
     public bool _DEBUG_TraditionalWindowing = false;
 
-    Grain_MultiData[] _Grains;
+    GrainManager[] _Grains;
     public int _NumberOfAudioSources = 2;
     public int _NumberOfAudioSourcesToUse = 2;
 
@@ -56,11 +56,11 @@ public class Granulator_MultiData : MonoBehaviour
 
         _AudioClipLibrary.Initialize();
 
-        _Grains = new Grain_MultiData[_NumberOfAudioSources];
+        _Grains = new GrainManager[_NumberOfAudioSources];
         for (int i = 0; i < _NumberOfAudioSources; i++)
         {
             GameObject go = Instantiate(_GrainPrefab);
-            _Grains[i] = go.GetComponent<Grain_MultiData>();
+            _Grains[i] = go.GetComponent<GrainManager>();
             _Grains[i].transform.parent = transform;
             _Grains[i].transform.localPosition = Random.onUnitSphere * 1.5f;
         }       

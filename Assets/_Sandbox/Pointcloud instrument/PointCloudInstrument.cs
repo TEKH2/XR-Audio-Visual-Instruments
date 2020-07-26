@@ -7,7 +7,7 @@ public class PointCloudInstrument : MonoBehaviour
 {
     public Granulator_MultiData _Granulator;
 
-    GrainDataObject[] _AllGrainDataObjects;
+    GrainEmitter[] _AllGrainDataObjects;
 
     public float _Radius = .3f;
 
@@ -17,7 +17,7 @@ public class PointCloudInstrument : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _AllGrainDataObjects = FindObjectsOfType<GrainDataObject>();
+        _AllGrainDataObjects = FindObjectsOfType<GrainEmitter>();
     }
 
     // Update is called once per frame

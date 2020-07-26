@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrainDataObject : MonoBehaviour
+public class GrainEmitter : MonoBehaviour
 {
     public GrainEmissionProps _GrainEmissionProps;
 

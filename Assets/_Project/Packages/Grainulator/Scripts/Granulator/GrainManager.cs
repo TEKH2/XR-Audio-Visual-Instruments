@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
-public class Grain_MultiData : MonoBehaviour
+public class GrainManager : MonoBehaviour
 {
     public int _CurrentSampleIndex = 0;
 
