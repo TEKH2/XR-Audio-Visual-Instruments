@@ -7,7 +7,13 @@ public class GrainEmitter : MonoBehaviour
     public GrainEmissionProps _GrainEmissionProps;
     public FilterCoefficients _FilterCoefficients;
     int _LastGrainSampleIndex = 0;
-    int _AudioSourceIndex = 0;
+    public GrainAudioSource _AudioSource;
+
+    public void Init(int currentDSPIndex, GrainAudioSource audioSource)
+    {
+        _LastGrainSampleIndex = currentDSPIndex;
+        _AudioSource = audioSource;
+    }
 
     public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
     {
@@ -35,7 +41,7 @@ public class GrainEmitter : MonoBehaviour
             );
 
             // EMit grain from manager
-            manager.EmitGrain(tempGrainData, _AudioSourceIndex);
+            manager.EmitGrain(tempGrainData, _AudioSource);
 
             // Set last grain index
             _LastGrainSampleIndex = sampleIndexNextGrainStart;
@@ -50,12 +56,17 @@ public class GrainEmitter : MonoBehaviour
         if (GranulatorManager.Instance != null)
         {
             GranulatorManager.Instance.AddGrainEmitter(this);
-            _LastGrainSampleIndex = GranulatorManager.Instance._CurrentDSPSample;
         }
     }
 
     private void OnDisable()
     {
         GranulatorManager.Instance.RemoveGrainEmitter(this);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(Application.isPlaying)
+            Gizmos.DrawLine(transform.position, _AudioSource.transform.position);
     }
 }

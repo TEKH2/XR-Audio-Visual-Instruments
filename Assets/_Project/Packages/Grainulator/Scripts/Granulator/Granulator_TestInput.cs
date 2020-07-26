@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Granulator_TestInput : MonoBehaviour
 {
+    /*
     //public Granulator _Granulator;
     public GranulatorManager _Granulator;
 
@@ -54,4 +55,5 @@ public class Granulator_TestInput : MonoBehaviour
 
         _PrevPos = transform.position;
     }
+    */
 }

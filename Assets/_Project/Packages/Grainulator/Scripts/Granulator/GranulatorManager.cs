@@ -6,6 +6,7 @@ using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
 using System.Linq;
 
+[RequireComponent(typeof(AudioSource))]
 public class GranulatorManager : MonoBehaviour
 {
     public static GranulatorManager Instance;
@@ -13,77 +14,63 @@ public class GranulatorManager : MonoBehaviour
     // ------------------------------------ AUDIO VARS
     public AudioClipLibrary _AudioClipLibrary;
     private int _SampleRate;
+    //public FilterProperties _FilterProperties;
+    //private FilterCoefficients _FilterCoefficients;
 
-    // ------------------------------------ GRAIN POOLING
-    public GameObject _GrainPrefab;
-    public int _MaxGrains = 100;
+    // ------------------------------------ GRAIN AUDIO SOURCES
+    public GrainAudioSource _GrainAudioSourcePrefab;
+    List<GrainAudioSource> _ActiveGrainAudioSources = new List<GrainAudioSource>();
+    List<GrainAudioSource> _IdleGrainAudioSources = new List<GrainAudioSource>();
+    public int _Debug_NumberOfAudioSourcesToUse = 2;
 
-    // ------------------------------------ GRAIN EMISSION  
-
-    public FilterProperties _FilterProperties;
-    private FilterCoefficients _FilterCoefficients;
-    public GrainEmissionProps _EmitGrainProps;
-
+    // ------------------------------------ GRAIN EMITTER PROPS  
     List<GrainEmitter> _GrainEmitters = new List<GrainEmitter>();
-
-    public int _CurrentDSPSample = 0;
-
-    int _SampleIndexPrevGrain = 0;      
+    int _CurrentDSPSample = 0;
     public float _EmissionLatencyMS = 80;
     int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
-    public float _Spacing = 0;
+    public float _EmitterToSourceMaxDist = 0;
+
+
+
     public AnimationCurve _WindowingCurve;
     public bool _DEBUG_TraditionalWindowing = false;
 
-    GrainAudioSource[] _Grains;
-    public int _NumberOfAudioSources = 2;
-    public int _NumberOfAudioSourcesToUse = 2;
+
 
     public bool _DebugLog = false;
 
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float _DebugNorm = 0;
 
     private void Awake()
     {
         Instance = this;
-    }
 
-    private void Start()
-    {
         // Sample rate from teh audio settings
         _SampleRate = AudioSettings.outputSampleRate;
-
-        // Generate filter coefficients
-        _FilterCoefficients = new FilterCoefficients();
-
-        // Why is this set to _SampleRate?!
-        _SampleIndexPrevGrain = _SampleRate;
 
         // Init clip library
         _AudioClipLibrary.Initialize();
 
-        _Grains = new GrainAudioSource[_NumberOfAudioSources];
-        for (int i = 0; i < _NumberOfAudioSources; i++)
+        for (int i = 0; i < 5; i++)
         {
-            GameObject go = Instantiate(_GrainPrefab);
-            _Grains[i] = go.GetComponent<GrainAudioSource>();
-            _Grains[i].transform.parent = transform;
-            _Grains[i].transform.localPosition = Random.onUnitSphere * 1.5f;
+            GrainAudioSource grainSource = Instantiate(_GrainAudioSourcePrefab, transform);
+            grainSource.transform.position = Random.insideUnitSphere * 3;
+            grainSource.gameObject.SetActive(false);
+            _IdleGrainAudioSources.Add(grainSource);
         }
 
-        print("Granualtor Manager initialized. Grains created: " + _Grains.Length);
+        print("Granualtor Manager initialized. Grains created: " + _IdleGrainAudioSources.Count);
 
         _GrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
     }
 
     void Update()
     {
-        // Current sample we are up to in time
-        _CurrentDSPSample = _Grains[0]._CurrentDSPSampleIndex;
         // Max sample index to spawn before
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
+
         // Update all emitters
         for (int i = 0; i < _GrainEmitters.Count; i++)
         {
@@ -93,24 +80,82 @@ public class GranulatorManager : MonoBehaviour
 
     public void AddGrainEmitter(GrainEmitter emitter)
     {
-        _GrainEmitters.Add(emitter);
+        GrainAudioSource audioSource;
+        bool sourceFound = false;
+        // try find a source close to the emitter
+        for (int i = 0; i < _ActiveGrainAudioSources.Count; i++)
+        {
+            if (Vector3.Distance(emitter.transform.position, _ActiveGrainAudioSources[i].transform.position) < _EmitterToSourceMaxDist)
+            {
+                audioSource = _ActiveGrainAudioSources[i];
+                sourceFound = true;
+                print("Found audio source in active list");
+            }
+        }
 
-        // Manager audiosources here
+        //  if no audio source is close enough try find an idle source
+        if (!sourceFound && _IdleGrainAudioSources.Count > 0)
+        {
+            audioSource = _IdleGrainAudioSources[0];
+            audioSource.transform.position = emitter.transform.position;
+            audioSource.gameObject.SetActive(true);
+            audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+
+            _IdleGrainAudioSources.RemoveAt(0);
+            _ActiveGrainAudioSources.Add(audioSource);
+
+            print("Found audio source in inactive list");
+        }
+        // ... else add new audio source
+        else
+        {
+            audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+            audioSource.transform.position = emitter.transform.position;
+            audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+            _ActiveGrainAudioSources.Add(audioSource);
+            print("Made new audio source");
+        }        
+
+        emitter.Init(_CurrentDSPSample, audioSource);
+        _GrainEmitters.Add(emitter);
     }
 
     public void RemoveGrainEmitter(GrainEmitter emitter)
     {
         _GrainEmitters.Remove(emitter);
+
+        bool stillInUse = false;
+
+        for (int i = 0; i < _GrainEmitters.Count; i++)
+        {
+            if (_GrainEmitters[i]._AudioSource == emitter._AudioSource)
+                stillInUse = true;
+        }
+
+        if(!stillInUse)
+        {
+            _ActiveGrainAudioSources.Remove(emitter._AudioSource);
+            _IdleGrainAudioSources.Add(emitter._AudioSource);
+            emitter._AudioSource.gameObject.SetActive(false);
+        }
     }
-   
-    public void EmitGrain(GrainData grainData, int audioSourceIndex)
+
+    public void EmitGrain(GrainData grainData, GrainAudioSource audioSource)
     {
         Profiler.BeginSample("Emit");
         // Init grain with data
-        _Grains[audioSourceIndex].AddGrainData(grainData,
+        audioSource.AddGrainData(grainData,
             _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
             _AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
             _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);
         Profiler.EndSample();
+    }
+
+    void OnAudioFilterRead(float[] data, int channels)
+    {
+        for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
+        {
+            _CurrentDSPSample++;
+        }
     }
 }
