@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4664960390748941028}
   - component: {fileID: -3690036044928456836}
   m_Layer: 0
-  m_Name: Grain Multi
+  m_Name: Granulator Audio Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,9 +160,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1058601950276710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 343d005c701ca604393d7a39a19c8ec9, type: 3}
+  m_Script: {fileID: 11500000, guid: ea96974fa799366469ed705f9a27b114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _CurrentDSPSampleIndex: 0
 --- !u!1 &5433507750315278579
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +220,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -243,6 +245,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!135 &749242053488476480
 SphereCollider:
   m_ObjectHideFlags: 0

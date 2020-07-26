@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
-public class GrainManager : MonoBehaviour
+public class GrainAudioSource : MonoBehaviour
 {
-    public int _CurrentSampleIndex = 0;
+    public int _CurrentDSPSampleIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-
 
     private FilterSignal _FilterSignal = new FilterSignal();
 
@@ -121,7 +121,7 @@ public class GrainManager : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_CurrentSampleIndex >= grainData._StartSampleIndex)
+                if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
                 {
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                         grainData._IsPlaying = false;
@@ -133,7 +133,7 @@ public class GrainManager : MonoBehaviour
                 }
             }
 
-            _CurrentSampleIndex++;
+            _CurrentDSPSampleIndex++;
         }
     }
 
@@ -205,8 +205,9 @@ public class GrainData
 [System.Serializable]
 public class GrainEmissionProps
 {
+    [Header("Source")]
     public int _ClipIndex = 0;
-
+    
     // Position (normalised)
     //---------------------------------------------------------------------
     [Range(0.0f, 1.0f)]
@@ -226,6 +227,25 @@ public class GrainEmissionProps
             _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
         }
     }
+
+    [Header("Timing")]
+    [Range(2.0f, 1000f)]
+    public int _Cadence = 20;             // ms
+    [Range(0.002f, 1000f)]
+    public int _CadenceRandom = 0;        // ms
+    public float Cadence
+    {
+        get
+        {
+            return Mathf.Clamp(_Cadence + UnityEngine.Random.Range(0, _CadenceRandom), 2f, 1000f);
+        }
+        set
+        {
+            _Cadence = (int)Mathf.Clamp(value, 2f, 1000f);
+        }
+    }
+
+  
 
     // Duration (ms)
     //---------------------------------------------------------------------
@@ -247,7 +267,7 @@ public class GrainEmissionProps
         }
     }
 
-
+    [Header("Effects")]
     // Transpose
     //---------------------------------------------------------------------
     [Range(-4f, 4f)]
@@ -329,7 +349,11 @@ public class AudioClipLibrary
 
     public void Initialize()
     {
-        Debug.Log("Initializing clip library.");
+        if (_Clips.Length == 0)
+            Debug.LogError("No clips in clip library");
+        else
+            Debug.Log("Initializing clip library.");
+
         for (int i = 0; i < _Clips.Length; i++)
         {
             AudioClip audioClip = _Clips[i];
@@ -345,6 +369,8 @@ public class AudioClipLibrary
 
             Debug.Log(String.Format("Clip {0}      Samples: {1}        Time length: {2} ", _Clips[i].name, _ClipsDataArray[i].Length, _ClipsDataArray[i].Length / (float)_Clips[i].frequency));
         }
+
+       
     }
 }
 

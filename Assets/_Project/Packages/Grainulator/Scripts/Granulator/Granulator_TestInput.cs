@@ -5,7 +5,7 @@ using UnityEngine;
 public class Granulator_TestInput : MonoBehaviour
 {
     //public Granulator _Granulator;
-    public Granulator_MultiData _Granulator;
+    public GranulatorManager _Granulator;
 
     public Vector2 _PosXRange = new Vector2(-3, 3);
     public Vector2 _PosYRange = new Vector2(0, 3);
@@ -48,8 +48,9 @@ public class Granulator_TestInput : MonoBehaviour
         _Velocity = Vector3.Lerp(_Velocity, newVel, Time.deltaTime * _Smoothing);
         float speedNorm = Mathf.InverseLerp(_SpeedRange.x, _SpeedRange.y, _Velocity.magnitude);
         float emitCadence = Mathf.Lerp(_EmitCadence.x, _EmitCadence.y, speedNorm);
-        if(_UpdateCadence)
-            _Granulator._Cadence = (int)emitCadence;
+
+        //if(_UpdateCadence)
+        //    _Granulator._Cadence = (int)emitCadence;
 
         _PrevPos = transform.position;
     }
