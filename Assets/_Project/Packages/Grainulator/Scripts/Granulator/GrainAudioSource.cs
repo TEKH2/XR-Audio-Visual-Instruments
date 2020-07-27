@@ -17,17 +17,17 @@ public class GrainAudioSource : MonoBehaviour
 
     public void Update()
     {
-        // Remove grain playback data that have finished
-        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
-        {
-            if (!_ActiveGrainPlaybackData[i]._IsPlaying)
-            {
-                // Add to pool
-                _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
-                // Remove from active pist
-                _ActiveGrainPlaybackData.RemoveAt(i);
-            }
-        }
+        //// Remove grain playback data that have finished
+        //for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
+        //{
+        //    if (!_ActiveGrainPlaybackData[i]._IsPlaying)
+        //    {
+        //        // Add to pool
+        //        _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+        //        // Remove from active pist
+        //        _ActiveGrainPlaybackData.RemoveAt(i);
+        //    }
+        //}
     }
 
     GrainPlaybackData GetGrainFromPool()
@@ -106,6 +106,7 @@ public class GrainAudioSource : MonoBehaviour
     // Good latency - 23.21995
     // Best latency - 11.60998
     //---------------------------------------------------------------------
+    bool _Locked = false;
 
     void OnAudioFilterRead(float[] data, int channels)
     {
@@ -134,6 +135,17 @@ public class GrainAudioSource : MonoBehaviour
             }
 
             _CurrentDSPSampleIndex++;
+        }
+
+        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
+        {
+            if (!_ActiveGrainPlaybackData[i]._IsPlaying)
+            {
+                // Add to pool
+                _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+                // Remove from active pist
+                _ActiveGrainPlaybackData.RemoveAt(i);
+            }
         }
     }
 
