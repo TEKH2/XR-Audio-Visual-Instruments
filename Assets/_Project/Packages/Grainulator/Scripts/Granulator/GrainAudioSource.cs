@@ -12,22 +12,18 @@ public class GrainAudioSource : MonoBehaviour
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
+    List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
     private FilterSignal _FilterSignal = new FilterSignal();
 
-    public void Update()
+    public void Deactivate()
     {
-        //// Remove grain playback data that have finished
-        //for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
-        //{
-        //    if (!_ActiveGrainPlaybackData[i]._IsPlaying)
-        //    {
-        //        // Add to pool
-        //        _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
-        //        // Remove from active pist
-        //        _ActiveGrainPlaybackData.RemoveAt(i);
-        //    }
-        //}
+
+    }
+
+    public void AddGrainEmitter(GrainEmitter emitter)
+    {
+        _AttachedGrainEmitters.Add(emitter);
     }
 
     GrainPlaybackData GetGrainFromPool()
@@ -105,9 +101,7 @@ public class GrainAudioSource : MonoBehaviour
     // Best performance - 46.43991
     // Good latency - 23.21995
     // Best latency - 11.60998
-    //---------------------------------------------------------------------
-    bool _Locked = false;
-
+    //---------------------------------------------------------------------    
     void OnAudioFilterRead(float[] data, int channels)
     {
         int samples = 0;

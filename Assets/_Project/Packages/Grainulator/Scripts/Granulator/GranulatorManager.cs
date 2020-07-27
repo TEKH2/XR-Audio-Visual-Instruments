@@ -29,19 +29,22 @@ public class GranulatorManager : MonoBehaviour
     public float _EmissionLatencyMS = 80;
     int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
-    public float _EmitterToSourceMaxDist = 0;
-
-
+    // maximum distance an emitter can be from an audio source
+    public float _MaxDistBetweenEmitterAndSource = 1;
+    // Maximum allowed audio sources
+    public int _MaxAudioSources = 10;
+    int TotalAudioSources { get { return _IdleGrainAudioSources.Count + _ActiveGrainAudioSources.Count;} }
 
     public AnimationCurve _WindowingCurve;
     public bool _DEBUG_TraditionalWindowing = false;
-
-
 
     public bool _DebugLog = false;
 
     [Range(0f, 1f)]
     public float _DebugNorm = 0;
+
+    public Transform _DebugTransform;
+    public float _DeactivateDistance = 5;
 
     private void Awake()
     {
@@ -73,17 +76,28 @@ public class GranulatorManager : MonoBehaviour
         {
             _GrainEmitters[i].ManualUpdate(this, sampleIndexMax, _SampleRate);
         }
+
+
+        // Check to see if you are far enough away from audio sources, if so disable
+        for (int i = _ActiveGrainAudioSources.Count - 1; i >= 0; i--)
+        {
+            float dist = Vector3.Distance(Camera.main.transform.position, _ActiveGrainAudioSources[i].transform.position);
+            if(dist > _DeactivateDistance)
+            {
+                //_ActiveGrainAudioSources[i]
+            }
+        }        
     }
 
-    public void AddGrainEmitter(GrainEmitter emitter)
+    public void AssignEmitterToSource(GrainEmitter emitter)
     {
         // had to initialize it to something TODO fix pattern
         GrainAudioSource audioSource = _GrainAudioSourcePrefab;
         bool sourceFound = false;
 
         print("------------------------------   Looking for grain audio source....");
-        float closestDist = _EmitterToSourceMaxDist;
-        // try find a source close to the emitter
+        float closestDist = _MaxDistBetweenEmitterAndSource;
+        // FIND CLOSE ACTIVE SOUCRE
         for (int i = 0; i < _ActiveGrainAudioSources.Count; i++)
         {
             float dist = Vector3.Distance(emitter.transform.position, _ActiveGrainAudioSources[i].transform.position);
@@ -105,9 +119,10 @@ public class GranulatorManager : MonoBehaviour
         else
             print("None in range");
 
-        //  if no audio source is close enough try find an idle source
+        
         if (!sourceFound)
         {
+            // FIND IDLE SOURCE
             if (_IdleGrainAudioSources.Count > 0)
             {
                 audioSource = _IdleGrainAudioSources[0];
@@ -120,19 +135,25 @@ public class GranulatorManager : MonoBehaviour
 
                 print("Found audio source in inactive list");
             }
-            // ... else add new audio source
+            // CREATE NEW SOURCE
             else
             {
-                audioSource = InstantiateNewAudioSource(emitter.transform.position);
-                print("Made new audio source");
+                audioSource = InstantiateNewAudioSource(emitter.transform.position);              
             }
-            emitter.Init(_CurrentDSPSample, audioSource);
-            _GrainEmitters.Add(emitter);
+
+            if (audioSource != null)
+            {
+                emitter.Init(_CurrentDSPSample, audioSource);
+                _GrainEmitters.Add(emitter);
+            }
         }
     }
 
     GrainAudioSource InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
     {
+        if (TotalAudioSources == _MaxAudioSources)
+            return null;
+
         GrainAudioSource audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
         audioSource.transform.position = pos;
         audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
@@ -147,6 +168,8 @@ public class GranulatorManager : MonoBehaviour
             _IdleGrainAudioSources.Add(audioSource);
             audioSource.gameObject.SetActive(false);
         }
+
+        print("New grain audio source added - Total: " + TotalAudioSources + " / " + _MaxAudioSources);
 
         return audioSource;
     }
