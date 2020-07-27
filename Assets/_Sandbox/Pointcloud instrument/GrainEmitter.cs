@@ -9,6 +9,8 @@ public class GrainEmitter : MonoBehaviour
     int _LastGrainSampleIndex = 0;
     public GrainAudioSource _AudioSource;
 
+    bool _Initialized = false;
+
     public void Init(int currentDSPIndex, GrainAudioSource audioSource)
     {
         _LastGrainSampleIndex = currentDSPIndex;
@@ -17,6 +19,9 @@ public class GrainEmitter : MonoBehaviour
 
     public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
     {
+        if (!_Initialized)
+            OnEnable();
+
         // Calculate random sample rate
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
@@ -56,7 +61,8 @@ public class GrainEmitter : MonoBehaviour
         if (GranulatorManager.Instance != null)
         {
             GranulatorManager.Instance.AddGrainEmitter(this);
-        }
+            _Initialized = true;
+        }      
     }
 
     private void OnDisable()
@@ -66,7 +72,9 @@ public class GrainEmitter : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(Application.isPlaying)
+        if (Application.isPlaying)
+        {
             Gizmos.DrawLine(transform.position, _AudioSource.transform.position);
+        }
     }
 }
