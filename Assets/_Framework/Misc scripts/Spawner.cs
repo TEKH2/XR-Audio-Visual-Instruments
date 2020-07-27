@@ -17,6 +17,8 @@ namespace EXPToolkit
         List<GameObject> m_ActiveObjects = new List<GameObject>();
         List<GameObject> m_InctiveObjects = new List<GameObject>();
 
+        public bool _SpawnOnStart = false;
+
         void Start()
         {
             for (int i = 0; i < m_NumberToPool; i++)
@@ -28,33 +30,40 @@ namespace EXPToolkit
                 // Add object to the list
                 m_InctiveObjects.Add(newGo);
             }
+
+            if(_SpawnOnStart)
+            {
+                for (int i = 0; i < m_NumberToPool; i++)
+                {
+                    Spawn();
+                }
+            }
         }
 
         void Update()
         {
-            // Remove any inactive items
-            m_ActiveObjects.RemoveAll(item => item == null);
+            //// Remove any inactive items
+            //m_ActiveObjects.RemoveAll(item => item == null);
 
+            //List<GameObject> inactives = new List<GameObject>();
+            //// Find inactive objects in the active list
+            //for (int i = 0; i < m_ActiveObjects.Count; i++)
+            //{
+            //    if (!m_ActiveObjects[i].activeSelf)
+            //        inactives.Add(m_ActiveObjects[i]);
+            //}
 
-            List<GameObject> inactives = new List<GameObject>();
-            // Find inactive objects in the active list
-            for (int i = 0; i < m_ActiveObjects.Count; i++)
-            {
-                if (!m_ActiveObjects[i].activeSelf)
-                    inactives.Add(m_ActiveObjects[i]);
-            }
+            //// Remove any inactive items
+            //m_ActiveObjects.RemoveAll(item => !item.activeSelf);
 
-            // Remove any inactive items
-            m_ActiveObjects.RemoveAll(item => !item.activeSelf);
+            //// Add to inactive list
+            //for (int i = 0; i < inactives.Count; i++)
+            //{
+            //    m_InctiveObjects.Add(inactives[i]);
+            //}
 
-            // Add to inactive list
-            for (int i = 0; i < inactives.Count; i++)
-            {
-                m_InctiveObjects.Add(inactives[i]);
-            }
-
-            if (Input.GetKeyDown(KeyCode.A))
-                Spawn();
+            //if (Input.GetKeyDown(KeyCode.A))
+            //    Spawn();
         }
 
         void Spawn()

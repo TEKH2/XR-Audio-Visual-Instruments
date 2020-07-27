@@ -21,7 +21,7 @@ public class GranulatorManager : MonoBehaviour
     public GrainAudioSource _GrainAudioSourcePrefab;
     List<GrainAudioSource> _ActiveGrainAudioSources = new List<GrainAudioSource>();
     List<GrainAudioSource> _IdleGrainAudioSources = new List<GrainAudioSource>();
-    public int _Debug_NumberOfAudioSourcesToUse = 2;
+    //public int _Debug_NumberOfAudioSourcesToUse = 2;
 
     // ------------------------------------ GRAIN EMITTER PROPS  
     List<GrainEmitter> _GrainEmitters = new List<GrainEmitter>();
@@ -53,12 +53,9 @@ public class GranulatorManager : MonoBehaviour
         // Init clip library
         _AudioClipLibrary.Initialize();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
-            GrainAudioSource grainSource = Instantiate(_GrainAudioSourcePrefab, transform);
-            grainSource.transform.position = Random.insideUnitSphere * 3;
-            grainSource.gameObject.SetActive(false);
-            _IdleGrainAudioSources.Add(grainSource);
+            InstantiateNewAudioSource(Vector3.zero, false);
         }
 
         print("Granualtor Manager initialized. Grains created: " + _IdleGrainAudioSources.Count);
@@ -80,44 +77,78 @@ public class GranulatorManager : MonoBehaviour
 
     public void AddGrainEmitter(GrainEmitter emitter)
     {
-        GrainAudioSource audioSource;
+        // had to initialize it to something TODO fix pattern
+        GrainAudioSource audioSource = _GrainAudioSourcePrefab;
         bool sourceFound = false;
+
+        print("------------------------------   Looking for grain audio source....");
+        float closestDist = _EmitterToSourceMaxDist;
         // try find a source close to the emitter
         for (int i = 0; i < _ActiveGrainAudioSources.Count; i++)
         {
-            if (Vector3.Distance(emitter.transform.position, _ActiveGrainAudioSources[i].transform.position) < _EmitterToSourceMaxDist)
+            float dist = Vector3.Distance(emitter.transform.position, _ActiveGrainAudioSources[i].transform.position);
+            if (dist <= closestDist)
             {
+                closestDist = dist;
                 audioSource = _ActiveGrainAudioSources[i];
                 sourceFound = true;
                 print("Found audio source in active list");
             }
         }
 
-        //  if no audio source is close enough try find an idle source
-        if (!sourceFound && _IdleGrainAudioSources.Count > 0)
+        if (sourceFound)
         {
-            audioSource = _IdleGrainAudioSources[0];
-            audioSource.transform.position = emitter.transform.position;
-            audioSource.gameObject.SetActive(true);
-            audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
-
-            _IdleGrainAudioSources.RemoveAt(0);
-            _ActiveGrainAudioSources.Add(audioSource);
-
-            print("Found audio source in inactive list");
+            print("Found withing range : " + sourceFound + "   Closest found: " + closestDist);
+            emitter.Init(_CurrentDSPSample, audioSource);
+            _GrainEmitters.Add(emitter);
         }
-        // ... else add new audio source
+        else
+            print("None in range");
+
+        //  if no audio source is close enough try find an idle source
+        if (!sourceFound)
+        {
+            if (_IdleGrainAudioSources.Count > 0)
+            {
+                audioSource = _IdleGrainAudioSources[0];
+                audioSource.transform.position = emitter.transform.position;
+                audioSource.gameObject.SetActive(true);
+                audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+
+                _IdleGrainAudioSources.RemoveAt(0);
+                _ActiveGrainAudioSources.Add(audioSource);
+
+                print("Found audio source in inactive list");
+            }
+            // ... else add new audio source
+            else
+            {
+                audioSource = InstantiateNewAudioSource(emitter.transform.position);
+                print("Made new audio source");
+            }
+            emitter.Init(_CurrentDSPSample, audioSource);
+            _GrainEmitters.Add(emitter);
+        }
+    }
+
+    GrainAudioSource InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
+    {
+        GrainAudioSource audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+        audioSource.transform.position = pos;
+        audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+
+        if (addToActiveList)
+        {
+            _ActiveGrainAudioSources.Add(audioSource);
+            audioSource.gameObject.SetActive(true);
+        }
         else
         {
-            audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
-            audioSource.transform.position = emitter.transform.position;
-            audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
-            _ActiveGrainAudioSources.Add(audioSource);
-            print("Made new audio source");
-        }        
+            _IdleGrainAudioSources.Add(audioSource);
+            audioSource.gameObject.SetActive(false);
+        }
 
-        emitter.Init(_CurrentDSPSample, audioSource);
-        _GrainEmitters.Add(emitter);
+        return audioSource;
     }
 
     public void RemoveGrainEmitter(GrainEmitter emitter)
