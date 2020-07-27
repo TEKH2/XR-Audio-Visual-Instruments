@@ -11,14 +11,19 @@ public class GrainEmitter : MonoBehaviour
 
     int _RandomSampleOffset;
 
+    public bool _RandomizedPlaybackPos = false;
+
     bool _Initialized = false;
 
     public void Init(int currentDSPIndex, GrainAudioSource audioSource)
     {
         // random offset so not all emitters play at the exact same time
-        _RandomSampleOffset = Random.Range(0, 50);
+        _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;
         _AudioSource = audioSource;
+
+        if (_RandomizedPlaybackPos)
+            _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
     public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
