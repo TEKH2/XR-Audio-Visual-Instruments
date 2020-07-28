@@ -3421,8 +3421,8 @@ MonoBehaviour:
     _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
-  _AudioSource: {fileID: 0}
   _RandomizedPlaybackPos: 0
+  _Active: 0
 --- !u!23 &890891116
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8361,7 +8361,12 @@ PrefabInstance:
     - target: {fileID: 1244338074411448928, guid: a13d7ca3013f6454d8baa14bda3c705f,
         type: 3}
       propertyPath: _MaxAudioSources
-      value: 2
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244338074411448928, guid: a13d7ca3013f6454d8baa14bda3c705f,
+        type: 3}
+      propertyPath: _AudioOutputDeactivationDistance
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1245078102122130036, guid: a13d7ca3013f6454d8baa14bda3c705f,
         type: 3}

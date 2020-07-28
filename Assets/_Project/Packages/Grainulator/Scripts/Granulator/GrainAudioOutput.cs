@@ -29,8 +29,6 @@ public class GrainAudioOutput : MonoBehaviour
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
     {
-        // Check emitters out of range
-
         // Update emitters
         foreach(GrainEmitter emitter in _AttachedGrainEmitters)
         {
@@ -47,7 +45,7 @@ public class GrainAudioOutput : MonoBehaviour
             _GranulatorManager._WindowingCurve, _GranulatorManager._DebugLog, _GranulatorManager._DEBUG_TraditionalWindowing);
     }
 
-    public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
+    void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
         // Get a grain from the pool if there are any spare
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
@@ -125,6 +123,7 @@ public class GrainAudioOutput : MonoBehaviour
 
     public void AttachEmitter(GrainEmitter emitter)
     {
+        gameObject.SetActive(true);
         emitter.Init(_CurrentDSPSampleIndex);
         _AttachedGrainEmitters.Add(emitter);
     }

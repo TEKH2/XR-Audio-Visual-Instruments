@@ -27,8 +27,7 @@ public class GranulatorManager : MonoBehaviour
     public List<GrainAudioOutput> _InactiveOutputs = new List<GrainAudioOutput>();
 
     // ------------------------------------ GRAIN EMITTER PROPS  
-    public List<GrainEmitter> _ActiveGrainEmitters = new List<GrainEmitter>();
-    public List<GrainEmitter> _InactiveGrainEmitters = new List<GrainEmitter>();
+    public List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
 
     int _CurrentDSPSample = 0;
     public float _EmissionLatencyMS = 80;
@@ -71,44 +70,45 @@ public class GranulatorManager : MonoBehaviour
 
         print("Granualtor Manager initialized. Grains created: " + _InactiveOutputs.Count);
 
-        _InactiveGrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
+        _AllGrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
     }
 
     void Update()
     {
-        // UPDATE ACTIVE OUTPUTS
+        // UPDATE ACTIVE OUTPUTS AND CHECK IF OUT OF RANGE
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
         for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
         {
-            _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
-        }
-
-        // CHECK IF INACTIVE SOURCES ARE IN RANGE
-        // Order by distance
-        _InactiveGrainEmitters = _InactiveGrainEmitters.OrderBy(x => Vector3.SqrMagnitude(_AudioListener.transform.position - x.transform.position)).ToList();
-        for (int i = 0; i < _InactiveGrainEmitters.Count; i++)
-        {
-            float dist = Vector3.Distance(_AudioListener.transform.position, _InactiveGrainEmitters[i].transform.position);
-
-            if (dist < _AudioOutputDeactivationDistance)
-            {
-                TryAssignEmitterToSource(_InactiveGrainEmitters[i]);
-            }
-        }
-
-        // CHECK IF ACTIVE SOURCES ARE OUT OF RANGE
-        for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
-        {
             float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
+
+            // If out of range remove from the active output list
             if (dist > _AudioOutputDeactivationDistance)
             {
                 GrainAudioOutput output = _ActiveOutputs[i];
                 output.Deactivate();
-               
                 _ActiveOutputs.Remove(output);
                 _InactiveOutputs.Add(output);
+            }
+            //  else update the output
+            else
+            {
+                _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
+            }
+        }
 
-                print(Time.time + " removing output " + i);
+        // CHECK IF INACTIVE SOURCES ARE IN RANGE
+        // Order by distance
+        _AllGrainEmitters = _AllGrainEmitters.OrderBy(x => Vector3.SqrMagnitude(_AudioListener.transform.position - x.transform.position)).ToList();
+        for (int i = 0; i < _AllGrainEmitters.Count; i++)
+        {
+            if (_AllGrainEmitters[i]._Active)
+                continue;
+
+            float dist = Vector3.Distance(_AudioListener.transform.position, _AllGrainEmitters[i].transform.position);
+
+            if (dist < _AudioOutputDeactivationDistance)
+            {
+                TryAssignEmitterToSource(_AllGrainEmitters[i]);
             }
         }
     }
@@ -146,8 +146,6 @@ public class GranulatorManager : MonoBehaviour
                 _ActiveOutputs.Add(audioSource);
 
                 sourceFound = true;
-
-                print("Found audio source in inactive list");
             }
             // ------------------------------  CREATE NEW SOURCE
             else
@@ -162,8 +160,6 @@ public class GranulatorManager : MonoBehaviour
         if(sourceFound)
         {
             audioSource.AttachEmitter(emitter);
-            _ActiveGrainEmitters.Add(emitter);
-            _InactiveGrainEmitters.Remove(emitter);
         }
     }
 

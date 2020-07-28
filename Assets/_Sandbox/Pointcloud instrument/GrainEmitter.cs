@@ -13,7 +13,7 @@ public class GrainEmitter : MonoBehaviour
     int _RandomSampleOffset;
     public bool _RandomizedPlaybackPos = false;
     bool _Initialized = false;
-    bool _Active = false;
+    public bool _Active = false;
 
     #endregion
 
