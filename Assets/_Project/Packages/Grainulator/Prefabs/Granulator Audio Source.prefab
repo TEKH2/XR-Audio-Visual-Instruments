@@ -56,9 +56,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0.5
-  MaxDistance: 20
+  MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
   gain: 0
   useInvSqr: 1
   near: 0.5
-  far: 20
+  far: 100
   volumetricRadius: 0
   reverbSend: 0
   enableRfl: 0
@@ -200,6 +200,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CurrentDSPSampleIndex: 0
+  _AttachedGrainEmitters: []
+  _MaxGrainDataCount: 20
 --- !u!1 &5433507750315278579
 GameObject:
   m_ObjectHideFlags: 0

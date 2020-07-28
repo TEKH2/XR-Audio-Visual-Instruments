@@ -8,21 +8,33 @@ public class GrainEmitter : MonoBehaviour
     public GrainEmissionProps _GrainEmissionProps;
     public FilterCoefficients _FilterCoefficients;
     int _LastGrainSampleIndex = 0;
-    public GrainAudioSource _AudioSource;
+    public GrainAudioOutput _AudioSource;
 
     int _RandomSampleOffset;
 
     public bool _RandomizedPlaybackPos = false;
 
     bool _Initialized = false;
+    bool _Active = false;
 
-    public void Init(int currentDSPIndex, GrainAudioSource audioSource)
+    private void Awake()
+    {
+        if (GranulatorManager.Instance != null)
+        {
+            GranulatorManager.Instance.AssignEmitterToSource(this);
+            _Initialized = true;
+        }
+    }
+
+    public void Init(int currentDSPIndex, GrainAudioOutput audioSource)
     {
         // random offset so not all emitters play at the exact same time
         _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;
         _AudioSource = audioSource;
-        audioSource.AddGrainEmitter(this);
+        audioSource.AttachGrainEmitter(this);
+
+        _Active = true;
 
         if (_RandomizedPlaybackPos)
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
@@ -31,7 +43,10 @@ public class GrainEmitter : MonoBehaviour
     public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
     {
         if (!_Initialized)
-            OnEnable();
+            Awake();
+
+        if (!_Active)
+            return;
 
         // Calculate random sample rate
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
@@ -45,8 +60,6 @@ public class GrainEmitter : MonoBehaviour
         {
             GrainData tempGrainData = new GrainData
             (
-                transform.position,
-                Vector3.zero, 0,
                 _GrainEmissionProps._ClipIndex,
                 _GrainEmissionProps.Duration,
                 _GrainEmissionProps.Position,
@@ -67,17 +80,9 @@ public class GrainEmitter : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    public void Deactivate()
     {
-        if (GranulatorManager.Instance != null)
-        {
-            GranulatorManager.Instance.AssignEmitterToSource(this);
-            _Initialized = true;
-        }      
-    }
-
-    private void OnDisable()
-    {
+        _Active = false;
         GranulatorManager.Instance.RemoveGrainEmitter(this);
     }
 
@@ -85,7 +90,17 @@ public class GrainEmitter : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            Gizmos.DrawLine(transform.position, _AudioSource.transform.position);
+            if (_Active)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(transform.position, .2f);
+                Gizmos.DrawLine(transform.position, _AudioSource.transform.position);
+            }
+            else
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawSphere(transform.position, .2f);
+            }
         }
     }
 }

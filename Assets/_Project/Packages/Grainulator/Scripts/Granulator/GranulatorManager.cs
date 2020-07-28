@@ -9,7 +9,9 @@ using System.Linq;
 [RequireComponent(typeof(AudioSource))]
 public class GranulatorManager : MonoBehaviour
 {
+    #region VARIABLES
     public static GranulatorManager Instance;
+    AudioListener _AudioListener;
 
     // ------------------------------------ AUDIO VARS
     public AudioClipLibrary _AudioClipLibrary;
@@ -18,13 +20,15 @@ public class GranulatorManager : MonoBehaviour
     //private FilterCoefficients _FilterCoefficients;
 
     // ------------------------------------ GRAIN AUDIO SOURCES
+
     public GrainAudioOutput _GrainAudioSourcePrefab;
-    List<GrainAudioOutput> _ActiveGrainAudioSources = new List<GrainAudioOutput>();
-    List<GrainAudioOutput> _IdleGrainAudioSources = new List<GrainAudioOutput>();
-    //public int _Debug_NumberOfAudioSourcesToUse = 2;
+
+    List<GrainAudioOutput> _ActiveOutputs = new List<GrainAudioOutput>();
+    List<GrainAudioOutput> _InactiveOutputs = new List<GrainAudioOutput>();
 
     // ------------------------------------ GRAIN EMITTER PROPS  
     List<GrainEmitter> _GrainEmitters = new List<GrainEmitter>();
+
     int _CurrentDSPSample = 0;
     public float _EmissionLatencyMS = 80;
     int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
@@ -33,7 +37,7 @@ public class GranulatorManager : MonoBehaviour
     public float _MaxDistBetweenEmitterAndSource = 1;
     // Maximum allowed audio sources
     public int _MaxAudioSources = 10;
-    int TotalAudioSources { get { return _IdleGrainAudioSources.Count + _ActiveGrainAudioSources.Count;} }
+    int TotalAudioSources { get { return _InactiveOutputs.Count + _ActiveOutputs.Count;} }
 
     public AnimationCurve _WindowingCurve;
     public bool _DEBUG_TraditionalWindowing = false;
@@ -44,11 +48,14 @@ public class GranulatorManager : MonoBehaviour
     public float _DebugNorm = 0;
 
     public Transform _DebugTransform;
-    public float _DeactivateDistance = 5;
+    public float _AudioOutputDeactivationDistance = 5;
+    #endregion
 
     private void Awake()
     {
         Instance = this;
+
+        _AudioListener = FindObjectOfType<AudioListener>();
 
         // Sample rate from teh audio settings
         _SampleRate = AudioSettings.outputSampleRate;
@@ -61,33 +68,38 @@ public class GranulatorManager : MonoBehaviour
             InstantiateNewAudioSource(Vector3.zero, false);
         }
 
-        print("Granualtor Manager initialized. Grains created: " + _IdleGrainAudioSources.Count);
+        print("Granualtor Manager initialized. Grains created: " + _InactiveOutputs.Count);
 
         _GrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
     }
 
     void Update()
     {
-        // Max sample index to spawn before
-        int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
+        // CHECK IF SOURCES ARE IN RANGE
+        for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
+        {
+            float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
+            if (dist > _AudioOutputDeactivationDistance)
+            {
+                GrainAudioOutput output = _ActiveOutputs[i];
+                output.Deactivate();
+               
+                _ActiveOutputs.RemoveAt(i);
+                _InactiveOutputs.Add(output);
+            }
+        }
 
+
+
+        // UPDATE EMITTERS
+        int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
         // Update all emitters
         for (int i = 0; i < _GrainEmitters.Count; i++)
         {
             _GrainEmitters[i].ManualUpdate(this, sampleIndexMax, _SampleRate);
         }
-
-
-        //// Check to see if you are far enough away from audio sources, if so disable
-        //for (int i = _ActiveGrainAudioSources.Count - 1; i >= 0; i--)
-        //{
-        //    float dist = Vector3.Distance(Camera.main.transform.position, _ActiveGrainAudioSources[i].transform.position);
-        //    if(dist > _DeactivateDistance)
-        //    {
-        //        //_ActiveGrainAudioSources[i]
-        //    }
-        //}        
     }
+
 
     public void AssignEmitterToSource(GrainEmitter emitter)
     {
@@ -98,13 +110,13 @@ public class GranulatorManager : MonoBehaviour
         print("------------------------------   Looking for grain audio source....");
         float closestDist = _MaxDistBetweenEmitterAndSource;
         // FIND CLOSE ACTIVE SOUCRE
-        for (int i = 0; i < _ActiveGrainAudioSources.Count; i++)
+        for (int i = 0; i < _ActiveOutputs.Count; i++)
         {
-            float dist = Vector3.Distance(emitter.transform.position, _ActiveGrainAudioSources[i].transform.position);
+            float dist = Vector3.Distance(emitter.transform.position, _ActiveOutputs[i].transform.position);
             if (dist <= closestDist)
             {
                 closestDist = dist;
-                audioSource = _ActiveGrainAudioSources[i];
+                audioSource = _ActiveOutputs[i];
                 sourceFound = true;
                 print("Found audio source in active list");
             }
@@ -123,15 +135,15 @@ public class GranulatorManager : MonoBehaviour
         if (!sourceFound)
         {
             // FIND IDLE SOURCE
-            if (_IdleGrainAudioSources.Count > 0)
+            if (_InactiveOutputs.Count > 0)
             {
-                audioSource = _IdleGrainAudioSources[0];
+                audioSource = _InactiveOutputs[0];
                 audioSource.transform.position = emitter.transform.position;
                 audioSource.gameObject.SetActive(true);
                 audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
 
-                _IdleGrainAudioSources.RemoveAt(0);
-                _ActiveGrainAudioSources.Add(audioSource);
+                _InactiveOutputs.RemoveAt(0);
+                _ActiveOutputs.Add(audioSource);
 
                 print("Found audio source in inactive list");
             }
@@ -149,31 +161,6 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 
-    GrainAudioOutput InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
-    {
-        if (TotalAudioSources == _MaxAudioSources)
-            return null;
-
-        GrainAudioOutput audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
-        audioSource.transform.position = pos;
-        audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
-
-        if (addToActiveList)
-        {
-            _ActiveGrainAudioSources.Add(audioSource);
-            audioSource.gameObject.SetActive(true);
-        }
-        else
-        {
-            _IdleGrainAudioSources.Add(audioSource);
-            audioSource.gameObject.SetActive(false);
-        }
-
-        print("New grain audio source added - Total: " + TotalAudioSources + " / " + _MaxAudioSources);
-
-        return audioSource;
-    }
-
     public void RemoveGrainEmitter(GrainEmitter emitter)
     {
         _GrainEmitters.Remove(emitter);
@@ -186,13 +173,39 @@ public class GranulatorManager : MonoBehaviour
                 stillInUse = true;
         }
 
-        if(!stillInUse)
+        if (!stillInUse)
         {
-            _ActiveGrainAudioSources.Remove(emitter._AudioSource);
-            _IdleGrainAudioSources.Add(emitter._AudioSource);
+            _ActiveOutputs.Remove(emitter._AudioSource);
+            _InactiveOutputs.Add(emitter._AudioSource);
             emitter._AudioSource.gameObject.SetActive(false);
         }
     }
+
+    GrainAudioOutput InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
+    {
+        if (TotalAudioSources == _MaxAudioSources)
+            return null;
+
+        GrainAudioOutput audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+        audioSource.transform.position = pos;
+        audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+
+        if (addToActiveList)
+        {
+            _ActiveOutputs.Add(audioSource);
+            audioSource.gameObject.SetActive(true);
+        }
+        else
+        {
+            _InactiveOutputs.Add(audioSource);
+            audioSource.gameObject.SetActive(false);
+        }
+
+        print("New grain audio source added - Total: " + TotalAudioSources + " / " + _MaxAudioSources);
+
+        return audioSource;
+    }
+
 
     public void EmitGrain(GrainData grainData, GrainAudioOutput audioSource)
     {
@@ -205,11 +218,31 @@ public class GranulatorManager : MonoBehaviour
         Profiler.EndSample();
     }
 
+
     void OnAudioFilterRead(float[] data, int channels)
     {
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {
             _CurrentDSPSample++;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(_AudioListener.transform.position, _AudioOutputDeactivationDistance);
+
+            for (int i = 0; i < _ActiveOutputs.Count; i++)
+            {
+                Gizmos.DrawLine(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
+            }
+
+            for (int i = 0; i < _GrainEmitters.Count; i++)
+            {
+                Gizmos.DrawLine(_AudioListener.transform.position, _GrainEmitters[i].transform.position);
+            }
         }
     }
 }

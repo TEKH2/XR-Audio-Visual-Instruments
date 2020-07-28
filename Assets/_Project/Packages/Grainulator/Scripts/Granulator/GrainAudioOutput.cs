@@ -8,43 +8,52 @@ using UnityEngine.Rendering;
 
 public class GrainAudioOutput : MonoBehaviour
 {
+    #region VARIABLES
     public int _CurrentDSPSampleIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-    List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
+
+    public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
     private FilterSignal _FilterSignal = new FilterSignal();
 
+    int _MaxGrainDataCount = 30; 
+    int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
+    #endregion
+
     public void Deactivate()
     {
+        // Deactivate and clear all the emitters
+        for (int j = 0; j < _AttachedGrainEmitters.Count; j++)
+        {
+            _AttachedGrainEmitters[j].Deactivate();
+        }
+        _AttachedGrainEmitters.Clear();
 
+        // Move all active grain playback data to the pool
+        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
+        {
+            _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+        }
+
+        _ActiveGrainPlaybackData.Clear();
+
+        gameObject.SetActive(false);
     }
 
-    public void AddGrainEmitter(GrainEmitter emitter)
+    public void AttachGrainEmitter(GrainEmitter emitter)
     {
         _AttachedGrainEmitters.Add(emitter);
     }
 
-    GrainPlaybackData GetGrainFromPool()
-    {
-        // If not enough grains in the pool, create a new one
-        if (_PooledGrainPlaybackData.Count == 0)
-        {
-            _PooledGrainPlaybackData.Add(new GrainPlaybackData());
-        }
-
-        GrainPlaybackData grainPlaybackData = _PooledGrainPlaybackData[0];
-        _PooledGrainPlaybackData.Remove(grainPlaybackData);
-
-        return grainPlaybackData;
-    }
-
-    //---------------------------------------------------------------------
     public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
-        // Get a grainn from the pool
+        // Get a grain from the pool if there are any spare
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
+        // ... otherwise return
+        if (grainPlaybackData == null)
+            return;
 
         _FilterSignal.fc = gd._Coefficients;
         float filteredSample;
@@ -95,13 +104,33 @@ public class GrainAudioOutput : MonoBehaviour
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
     }
 
-    //---------------------------------------------------------------------
+    GrainPlaybackData GetGrainFromPool()
+    {
+        if (_PooledGrainPlaybackData.Count >= 1)
+        {
+            GrainPlaybackData grainPlaybackData = _PooledGrainPlaybackData[0];
+            _PooledGrainPlaybackData.Remove(grainPlaybackData);
+
+            return grainPlaybackData;
+        }
+        else if(GrainDataCount < _MaxGrainDataCount)
+        {
+            GrainPlaybackData grainPlaybackData = new GrainPlaybackData();
+            return grainPlaybackData;
+        }
+        else
+        {
+            print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainDataCount);
+            print(name + "Active / Pooled: - " + _ActiveGrainPlaybackData.Count + " / " + _PooledGrainPlaybackData.Count);
+            return null;
+        }      
+    }
+
     // AUDIO BUFFER CALLS
     // DSP Buffer size in audio settings
     // Best performance - 46.43991
     // Good latency - 23.21995
     // Best latency - 11.60998
-    //---------------------------------------------------------------------    
     void OnAudioFilterRead(float[] data, int channels)
     {
         int samples = 0;
@@ -156,13 +185,9 @@ public class GrainAudioOutput : MonoBehaviour
     }
 }
 
-
+#region Grain data classes
 public class GrainData
 {
-    public Vector3 _WorldPos;
-    public Vector3 _Velocity;
-    public float _Mass;
-
     public int _StartDSPSampleIndex;
 
     // Optimum 10ms - 60ms
@@ -177,12 +202,9 @@ public class GrainData
     public int _StartSampleIndex;
 
     public GrainData() { }
-    public GrainData(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
+    public GrainData(int grainAudioClipIndex,
         float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
-        _WorldPos = position;
-        _Velocity = velocity;
-        _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
         _PlayheadPos = playheadPosition;
@@ -192,12 +214,9 @@ public class GrainData
         _StartSampleIndex = startSampleIndex;
     }
 
-    public void Initialize(Vector3 position, Vector3 velocity, float mass, int grainAudioClipIndex,
+    public void Initialize(int grainAudioClipIndex,
         float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
     {
-        _WorldPos = position;
-        _Velocity = velocity;
-        _Mass = mass;
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
         _PlayheadPos = playheadPosition;
@@ -380,7 +399,6 @@ public class AudioClipLibrary
     }
 }
 
-
 public class GrainPlaybackData
 {
     public bool _IsPlaying = true;
@@ -399,3 +417,4 @@ public class GrainPlaybackData
         _TempSampleBuffer = new float[44 * 1000];
     }
 }
+#endregion
