@@ -78,15 +78,15 @@ public class GranulatorManager : MonoBehaviour
         }
 
 
-        // Check to see if you are far enough away from audio sources, if so disable
-        for (int i = _ActiveGrainAudioSources.Count - 1; i >= 0; i--)
-        {
-            float dist = Vector3.Distance(Camera.main.transform.position, _ActiveGrainAudioSources[i].transform.position);
-            if(dist > _DeactivateDistance)
-            {
-                //_ActiveGrainAudioSources[i]
-            }
-        }        
+        //// Check to see if you are far enough away from audio sources, if so disable
+        //for (int i = _ActiveGrainAudioSources.Count - 1; i >= 0; i--)
+        //{
+        //    float dist = Vector3.Distance(Camera.main.transform.position, _ActiveGrainAudioSources[i].transform.position);
+        //    if(dist > _DeactivateDistance)
+        //    {
+        //        //_ActiveGrainAudioSources[i]
+        //    }
+        //}        
     }
 
     public void AssignEmitterToSource(GrainEmitter emitter)
