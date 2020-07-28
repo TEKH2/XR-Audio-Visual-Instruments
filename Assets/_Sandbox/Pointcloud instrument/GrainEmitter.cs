@@ -17,11 +17,11 @@ public class GrainEmitter : MonoBehaviour
     bool _Initialized = false;
     bool _Active = false;
 
-    private void Awake()
+    private void Start()
     {
         if (GranulatorManager.Instance != null)
         {
-            GranulatorManager.Instance.AssignEmitterToSource(this);
+            GranulatorManager.Instance.TryAssignEmitterToSource(this);
             _Initialized = true;
         }
     }
@@ -43,7 +43,7 @@ public class GrainEmitter : MonoBehaviour
     public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
     {
         if (!_Initialized)
-            Awake();
+            Start();
 
         if (!_Active)
             return;
@@ -83,7 +83,7 @@ public class GrainEmitter : MonoBehaviour
     public void Deactivate()
     {
         _Active = false;
-        GranulatorManager.Instance.RemoveGrainEmitter(this);
+        GranulatorManager.Instance.RemoveActiveGrainEmitter(this);
     }
 
     private void OnDrawGizmos()
