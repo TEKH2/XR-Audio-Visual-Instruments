@@ -12,15 +12,16 @@ public class GrainEmitter : MonoBehaviour
     int _LastGrainSampleIndex = 0;
     int _RandomSampleOffset;
     public bool _RandomizedPlaybackPos = false;
-    bool _Initialized = false;
     public bool _Active = false;
-
     #endregion
+
+    private void Start()
+    {
+        GranulatorManager.Instance.AddNewEmitter(this);
+    }
 
     public void Init(int currentDSPIndex)
     {
-        _Initialized = true;
-
         // random offset so not all emitters play at the exact same time
         _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;

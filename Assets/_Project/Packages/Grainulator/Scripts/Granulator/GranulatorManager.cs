@@ -189,6 +189,12 @@ public class GranulatorManager : MonoBehaviour
         return audioSource;
     }
 
+    public void AddNewEmitter(GrainEmitter emitter)
+    {
+        if (!_AllGrainEmitters.Contains(emitter))
+            _AllGrainEmitters.Add(emitter);
+    }
+
     void OnAudioFilterRead(float[] data, int channels)
     {
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)

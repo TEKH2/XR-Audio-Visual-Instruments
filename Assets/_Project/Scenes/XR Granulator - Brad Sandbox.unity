@@ -851,6 +851,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
 --- !u!1001 &183868710
@@ -934,6 +939,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
@@ -1792,6 +1802,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
@@ -2945,6 +2960,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
@@ -4451,6 +4471,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
 --- !u!1 &1201200598
@@ -5795,7 +5820,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1411629661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5808,12 +5833,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb6f375d26ad994eb0aab6077418701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Volume: {x: 4, y: 1.5, z: 0}
+  m_Volume: {x: 8, y: 1.5, z: 0}
   m_RotationRange: {x: 0, y: 0, z: 0}
   m_ScaleRange: {x: 0.1, y: 0.1}
   m_ObjectsToSpawn:
   - {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
-  m_NumberToPool: 1
+  m_NumberToPool: 15
   _SpawnOnStart: 1
 --- !u!4 &1411629662
 Transform:
@@ -6024,6 +6049,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
@@ -6694,6 +6724,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}

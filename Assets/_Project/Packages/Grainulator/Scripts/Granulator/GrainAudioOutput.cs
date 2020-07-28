@@ -16,7 +16,7 @@ public class GrainAudioOutput : MonoBehaviour
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-    int _MaxGrainDataCount = 30; 
+    int _MaxGrainDataCount = 50; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
@@ -144,8 +144,8 @@ public class GrainAudioOutput : MonoBehaviour
         }
         else
         {
-            print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainDataCount);
-            print(name + "Active / Pooled: - " + _ActiveGrainPlaybackData.Count + " / " + _PooledGrainPlaybackData.Count);
+            //print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainDataCount);
+            //print(name + "Active / Pooled: - " + _ActiveGrainPlaybackData.Count + " / " + _PooledGrainPlaybackData.Count);
             return null;
         }      
     }
