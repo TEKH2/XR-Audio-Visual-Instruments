@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
-public class GrainAudioSource : MonoBehaviour
+public class GrainAudioOutput : MonoBehaviour
 {
     public int _CurrentDSPSampleIndex = 0;
 

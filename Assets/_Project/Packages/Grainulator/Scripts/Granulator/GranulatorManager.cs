@@ -18,9 +18,9 @@ public class GranulatorManager : MonoBehaviour
     //private FilterCoefficients _FilterCoefficients;
 
     // ------------------------------------ GRAIN AUDIO SOURCES
-    public GrainAudioSource _GrainAudioSourcePrefab;
-    List<GrainAudioSource> _ActiveGrainAudioSources = new List<GrainAudioSource>();
-    List<GrainAudioSource> _IdleGrainAudioSources = new List<GrainAudioSource>();
+    public GrainAudioOutput _GrainAudioSourcePrefab;
+    List<GrainAudioOutput> _ActiveGrainAudioSources = new List<GrainAudioOutput>();
+    List<GrainAudioOutput> _IdleGrainAudioSources = new List<GrainAudioOutput>();
     //public int _Debug_NumberOfAudioSourcesToUse = 2;
 
     // ------------------------------------ GRAIN EMITTER PROPS  
@@ -92,7 +92,7 @@ public class GranulatorManager : MonoBehaviour
     public void AssignEmitterToSource(GrainEmitter emitter)
     {
         // had to initialize it to something TODO fix pattern
-        GrainAudioSource audioSource = _GrainAudioSourcePrefab;
+        GrainAudioOutput audioSource = _GrainAudioSourcePrefab;
         bool sourceFound = false;
 
         print("------------------------------   Looking for grain audio source....");
@@ -149,12 +149,12 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 
-    GrainAudioSource InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
+    GrainAudioOutput InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
     {
         if (TotalAudioSources == _MaxAudioSources)
             return null;
 
-        GrainAudioSource audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+        GrainAudioOutput audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
         audioSource.transform.position = pos;
         audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
 
@@ -194,7 +194,7 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 
-    public void EmitGrain(GrainData grainData, GrainAudioSource audioSource)
+    public void EmitGrain(GrainData grainData, GrainAudioOutput audioSource)
     {
         Profiler.BeginSample("Emit");
         // Init grain with data
