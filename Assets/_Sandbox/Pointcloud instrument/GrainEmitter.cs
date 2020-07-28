@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Generates grains that are fed into a grain audio source to be played back
 public class GrainEmitter : MonoBehaviour
 {
     public GrainEmissionProps _GrainEmissionProps;
@@ -21,6 +22,7 @@ public class GrainEmitter : MonoBehaviour
         _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;
         _AudioSource = audioSource;
+        audioSource.AddGrainEmitter(this);
 
         if (_RandomizedPlaybackPos)
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
@@ -69,7 +71,7 @@ public class GrainEmitter : MonoBehaviour
     {
         if (GranulatorManager.Instance != null)
         {
-            GranulatorManager.Instance.AddGrainEmitter(this);
+            GranulatorManager.Instance.AssignEmitterToSource(this);
             _Initialized = true;
         }      
     }
