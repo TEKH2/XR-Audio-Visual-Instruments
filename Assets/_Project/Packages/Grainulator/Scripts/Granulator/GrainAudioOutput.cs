@@ -9,42 +9,42 @@ using UnityEngine.Rendering;
 public class GrainAudioOutput : MonoBehaviour
 {
     #region VARIABLES
+    GranulatorManager _GranulatorManager;
+    public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
+
     public int _CurrentDSPSampleIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-
-    public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
-
-    private FilterSignal _FilterSignal = new FilterSignal();
-
     int _MaxGrainDataCount = 30; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
+
+    private FilterSignal _FilterSignal = new FilterSignal();
     #endregion
 
-    public void Deactivate()
+    private void Start()
     {
-        // Deactivate and clear all the emitters
-        for (int j = 0; j < _AttachedGrainEmitters.Count; j++)
-        {
-            _AttachedGrainEmitters[j].Deactivate();
-        }
-        _AttachedGrainEmitters.Clear();
-
-        // Move all active grain playback data to the pool
-        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
-        {
-            _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
-        }
-
-        _ActiveGrainPlaybackData.Clear();
-
-        gameObject.SetActive(false);
+        _GranulatorManager = GranulatorManager.Instance;
     }
 
-    public void AttachGrainEmitter(GrainEmitter emitter)
+    public void ManualUpdate(int maxDSPIndex, int sampleRate)
     {
-        _AttachedGrainEmitters.Add(emitter);
+        // Check emitters out of range
+
+        // Update emitters
+        foreach(GrainEmitter emitter in _AttachedGrainEmitters)
+        {
+            emitter.ManualUpdate(this, maxDSPIndex, sampleRate);
+        }
+    }
+
+    public void EmitGrain(GrainData grainData)
+    {
+        // Init grain with data
+        AddGrainData(grainData,
+            _GranulatorManager._AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
+            _GranulatorManager._AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
+            _GranulatorManager._WindowingCurve, _GranulatorManager._DebugLog, _GranulatorManager._DEBUG_TraditionalWindowing);
     }
 
     public void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
@@ -102,6 +102,31 @@ public class GrainAudioOutput : MonoBehaviour
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
+    }
+
+    public void Deactivate()
+    {
+        // Deactivate and clear all the emitters
+        for (int j = 0; j < _AttachedGrainEmitters.Count; j++)
+        {
+            _AttachedGrainEmitters[j].Deactivate();
+        }
+        _AttachedGrainEmitters.Clear();
+
+        // Move all active grain playback data to the pool
+        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
+        {
+            _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+        }
+        _ActiveGrainPlaybackData.Clear();
+
+        gameObject.SetActive(false);
+    }
+
+    public void AttachEmitter(GrainEmitter emitter)
+    {
+        emitter.Init(_CurrentDSPSampleIndex);
+        _AttachedGrainEmitters.Add(emitter);
     }
 
     GrainPlaybackData GetGrainFromPool()
@@ -182,6 +207,18 @@ public class GrainAudioOutput : MonoBehaviour
         float lerp = norm % 1;
 
         return Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.yellow;
+            for (int i = 0; i < _AttachedGrainEmitters.Count; i++)
+            {
+                Gizmos.DrawLine(_AttachedGrainEmitters[i].transform.position, transform.position);
+            }
+        }
     }
 }
 

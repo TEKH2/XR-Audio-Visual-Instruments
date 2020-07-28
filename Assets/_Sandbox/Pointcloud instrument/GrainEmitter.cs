@@ -5,34 +5,25 @@ using UnityEngine;
 // Generates grains that are fed into a grain audio source to be played back
 public class GrainEmitter : MonoBehaviour
 {
+    #region VARIABLES
+
     public GrainEmissionProps _GrainEmissionProps;
     public FilterCoefficients _FilterCoefficients;
     int _LastGrainSampleIndex = 0;
-    public GrainAudioOutput _AudioSource;
-
     int _RandomSampleOffset;
-
     public bool _RandomizedPlaybackPos = false;
-
     bool _Initialized = false;
     bool _Active = false;
 
-    private void Start()
-    {
-        if (GranulatorManager.Instance != null)
-        {
-            GranulatorManager.Instance.TryAssignEmitterToSource(this);
-            _Initialized = true;
-        }
-    }
+    #endregion
 
-    public void Init(int currentDSPIndex, GrainAudioOutput audioSource)
+    public void Init(int currentDSPIndex)
     {
+        _Initialized = true;
+
         // random offset so not all emitters play at the exact same time
         _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;
-        _AudioSource = audioSource;
-        audioSource.AttachGrainEmitter(this);
 
         _Active = true;
 
@@ -40,11 +31,8 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
-    public void ManualUpdate(GranulatorManager manager, int maxDSPIndex, int sampleRate)
+    public void ManualUpdate(GrainAudioOutput output, int maxDSPIndex, int sampleRate)
     {
-        if (!_Initialized)
-            Start();
-
         if (!_Active)
             return;
 
@@ -52,9 +40,6 @@ public class GrainEmitter : MonoBehaviour
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
-
-        // Clamp audio clip selection to available clips
-        _GrainEmissionProps._ClipIndex = Mathf.Clamp(_GrainEmissionProps._ClipIndex, 0, manager._AudioClipLibrary._Clips.Length - 1);
 
         while (sampleIndexNextGrainStart <= maxDSPIndex)
         {
@@ -70,7 +55,7 @@ public class GrainEmitter : MonoBehaviour
             );
 
             // EMit grain from manager
-            manager.EmitGrain(tempGrainData, _AudioSource);
+            output.EmitGrain(tempGrainData);
 
             // Set last grain index
             _LastGrainSampleIndex = sampleIndexNextGrainStart;
@@ -83,7 +68,6 @@ public class GrainEmitter : MonoBehaviour
     public void Deactivate()
     {
         _Active = false;
-        GranulatorManager.Instance.RemoveActiveGrainEmitter(this);
     }
 
     private void OnDrawGizmos()
@@ -94,7 +78,6 @@ public class GrainEmitter : MonoBehaviour
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere(transform.position, .2f);
-                Gizmos.DrawLine(transform.position, _AudioSource.transform.position);
             }
             else
             {

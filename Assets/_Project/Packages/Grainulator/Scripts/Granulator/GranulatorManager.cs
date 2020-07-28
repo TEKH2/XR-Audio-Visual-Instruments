@@ -76,7 +76,16 @@ public class GranulatorManager : MonoBehaviour
 
     void Update()
     {
+        // UPDATE ACTIVE OUTPUTS
+        int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
+        for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
+        {
+            _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
+        }
+
         // CHECK IF INACTIVE SOURCES ARE IN RANGE
+        // Order by distance
+        _InactiveGrainEmitters = _InactiveGrainEmitters.OrderBy(x => Vector3.SqrMagnitude(_AudioListener.transform.position - x.transform.position)).ToList();
         for (int i = 0; i < _InactiveGrainEmitters.Count; i++)
         {
             float dist = Vector3.Distance(_AudioListener.transform.position, _InactiveGrainEmitters[i].transform.position);
@@ -98,20 +107,13 @@ public class GranulatorManager : MonoBehaviour
                
                 _ActiveOutputs.Remove(output);
                 _InactiveOutputs.Add(output);
-            }
-        }
 
-        // UPDATE EMITTERS
-        int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
-        // Update all emitters
-        for (int i = 0; i < _ActiveGrainEmitters.Count; i++)
-        {
-            _ActiveGrainEmitters[i].ManualUpdate(this, sampleIndexMax, _SampleRate);
+                print(Time.time + " removing output " + i);
+            }
         }
     }
 
-
-    public void TryAssignEmitterToSource(GrainEmitter emitter)
+    void TryAssignEmitterToSource(GrainEmitter emitter)
     {
         // had to initialize it to something TODO fix pattern
         GrainAudioOutput audioSource = _GrainAudioSourcePrefab;
@@ -159,30 +161,9 @@ public class GranulatorManager : MonoBehaviour
 
         if(sourceFound)
         {
-            emitter.Init(_CurrentDSPSample, audioSource);
+            audioSource.AttachEmitter(emitter);
             _ActiveGrainEmitters.Add(emitter);
             _InactiveGrainEmitters.Remove(emitter);
-        }
-    }
-
-    public void RemoveActiveGrainEmitter(GrainEmitter emitter)
-    {
-        _ActiveGrainEmitters.Remove(emitter);
-        _InactiveGrainEmitters.Add(emitter);
-
-        bool stillInUse = false;
-
-        for (int i = 0; i < _ActiveGrainEmitters.Count; i++)
-        {
-            if (_ActiveGrainEmitters[i]._AudioSource == emitter._AudioSource)
-                stillInUse = true;
-        }
-
-        if (!stillInUse)
-        {
-            _ActiveOutputs.Remove(emitter._AudioSource);
-            _InactiveOutputs.Add(emitter._AudioSource);
-            emitter._AudioSource.gameObject.SetActive(false);
         }
     }
 
@@ -212,19 +193,6 @@ public class GranulatorManager : MonoBehaviour
         return audioSource;
     }
 
-
-    public void EmitGrain(GrainData grainData, GrainAudioOutput audioSource)
-    {
-        Profiler.BeginSample("Emit");
-        // Init grain with data
-        audioSource.AddGrainData(grainData,
-            _AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
-            _AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
-            _WindowingCurve, _DebugLog, _DEBUG_TraditionalWindowing);
-        Profiler.EndSample();
-    }
-
-
     void OnAudioFilterRead(float[] data, int channels)
     {
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
@@ -233,21 +201,16 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    void OnDrawGizmos()
     {
         if (Application.isPlaying)
         {
-            Gizmos.color = Color.cyan;
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(_AudioListener.transform.position, _AudioOutputDeactivationDistance);
 
             for (int i = 0; i < _ActiveOutputs.Count; i++)
             {
                 Gizmos.DrawLine(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
-            }
-
-            for (int i = 0; i < _ActiveGrainEmitters.Count; i++)
-            {
-                Gizmos.DrawLine(_AudioListener.transform.position, _ActiveGrainEmitters[i].transform.position);
             }
         }
     }
