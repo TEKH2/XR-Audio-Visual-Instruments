@@ -49,6 +49,8 @@ public class GranulatorManager : MonoBehaviour
 
     public Transform _DebugTransform;
     public float _AudioOutputDeactivationDistance = 5;
+
+    float _LayeredSamples;
     #endregion
 
     private void Awake()
@@ -75,6 +77,8 @@ public class GranulatorManager : MonoBehaviour
 
     void Update()
     {
+        float layeredSamplesThisFrame = 0;
+
         // UPDATE ACTIVE OUTPUTS AND CHECK IF OUT OF RANGE
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
         for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
@@ -93,8 +97,15 @@ public class GranulatorManager : MonoBehaviour
             else
             {
                 _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
+                layeredSamplesThisFrame += _ActiveOutputs[i]._LayeredSamples;
             }
         }
+
+        _LayeredSamples = Mathf.Lerp(_LayeredSamples, layeredSamplesThisFrame, Time.deltaTime * 4);
+
+        if (_DebugLog)
+            print("Active outputs: " + _ActiveOutputs.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples/(float)_ActiveOutputs.Count);
+
 
         // CHECK IF INACTIVE SOURCES ARE IN RANGE
         // Order by distance

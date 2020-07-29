@@ -20,6 +20,16 @@ public class GrainAudioOutput : MonoBehaviour
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
+
+   
+    float _GrainsPerSecond = 0;
+    float _GrainsThisFrame = 0;
+
+    float _SamplesEmittedPerSecond = 0;
+    float _SamplesThisFrame = 0;
+    public bool _DebugLog = false;
+
+    public float _LayeredSamples { get; private set; }
     #endregion
 
     private void Start()
@@ -29,11 +39,21 @@ public class GrainAudioOutput : MonoBehaviour
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
     {
+        _GrainsThisFrame = 0;
+        _SamplesThisFrame = 0;
         // Update emitters
         foreach(GrainEmitter emitter in _AttachedGrainEmitters)
         {
             emitter.ManualUpdate(this, maxDSPIndex, sampleRate);
         }
+
+      
+        _GrainsPerSecond = Mathf.Lerp(_GrainsPerSecond, _GrainsThisFrame / Time.deltaTime, Time.deltaTime * 4);
+        _SamplesEmittedPerSecond = Mathf.Lerp(_SamplesEmittedPerSecond, _SamplesThisFrame / Time.deltaTime, Time.deltaTime * 4);
+        _LayeredSamples = _SamplesEmittedPerSecond / AudioSettings.outputSampleRate;
+        
+        if (_DebugLog)
+            print(name + " grains p/s:   " + _GrainsPerSecond + "   samples p/s: " + _SamplesEmittedPerSecond + "   layered samples per read: " + _LayeredSamples);
     }
 
     public void EmitGrain(GrainData grainData)
@@ -47,6 +67,8 @@ public class GrainAudioOutput : MonoBehaviour
 
     void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
+        _GrainsThisFrame++;
+
         // Get a grain from the pool if there are any spare
         GrainPlaybackData grainPlaybackData = GetGrainFromPool();
         // ... otherwise return
@@ -58,6 +80,7 @@ public class GrainAudioOutput : MonoBehaviour
 
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
+        _SamplesThisFrame += durationInSamples;
 
         // -----------------------------------------BUILD SAMPLE ARRAY        
         int sourceIndex;
@@ -400,7 +423,6 @@ public class GrainEmissionProps
         _VolumeRandom = volumeRand;
     }
 }
-
 
 [System.Serializable]
 public class AudioClipLibrary
