@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
-
+using UnityEngine.UIElements;
 
 public class Grain_MultiData : MonoBehaviour
 {
@@ -215,13 +215,40 @@ public class GrainEmissionProps
     {
         get
         {
-            return Mathf.Clamp(_PlayheadPos + UnityEngine.Random.Range(0, _PositionRandom), 0f, 1f);
+            float startPos = _PlayheadPos + UnityEngine.Random.Range(0f, _PositionRandom);
+
+            if (_StartPositionOvershoot == WrapMode.Fold)
+            {
+                while (startPos > 1f)
+                    startPos -= 1f;
+
+                while (startPos < 0f)
+                    startPos += 1f;
+            }
+            else if (_StartPositionOvershoot == WrapMode.Fold)
+                startPos = Mathf.PingPong(startPos, 1f);
+            else
+                startPos = Mathf.Clamp(startPos, 0f, 1f);
+
+            return startPos;
         }
         set
         {
             _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
         }
     }
+
+    public enum WrapMode
+    {
+        Clip,
+        Fold,
+        PingPong
+    }
+    // Using modes such as folding or pingpong will prevent grains that end up with start positions of
+    // less than 0 or more than 1 from sounding like they're "stuck" when the same start position is played
+    // over and over.
+    public WrapMode _StartPositionOvershoot = WrapMode.Fold;
+
 
     // Duration (ms)
     //---------------------------------------------------------------------
