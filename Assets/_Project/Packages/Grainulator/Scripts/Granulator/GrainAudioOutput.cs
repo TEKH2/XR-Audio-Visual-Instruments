@@ -41,6 +41,8 @@ public class GrainAudioOutput : MonoBehaviour
     {
         _GrainsThisFrame = 0;
         _SamplesThisFrame = 0;
+
+      
         // Update emitters
         foreach(GrainEmitter emitter in _AttachedGrainEmitters)
         {
@@ -67,6 +69,7 @@ public class GrainAudioOutput : MonoBehaviour
 
     void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
+        Profiler.BeginSample("Add Grains 1");
         _GrainsThisFrame++;
 
         // Get a grain from the pool if there are any spare
@@ -81,6 +84,9 @@ public class GrainAudioOutput : MonoBehaviour
         int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
+
+        Profiler.EndSample();
+        Profiler.BeginSample("Add Grains 2");
 
         // -----------------------------------------BUILD SAMPLE ARRAY        
         int sourceIndex;
@@ -104,6 +110,9 @@ public class GrainAudioOutput : MonoBehaviour
                 grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
         }
 
+        Profiler.EndSample();
+        Profiler.BeginSample("Add Grains 3");
+
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
         {
@@ -123,6 +132,8 @@ public class GrainAudioOutput : MonoBehaviour
         grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
+
+        Profiler.EndSample();
     }
 
     public void Deactivate()
@@ -209,6 +220,9 @@ public class GrainAudioOutput : MonoBehaviour
 
         for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
         {
+            if (_ActiveGrainPlaybackData[i] == null)
+                continue;
+
             if (!_ActiveGrainPlaybackData[i]._IsPlaying)
             {
                 // Add to pool
@@ -221,14 +235,18 @@ public class GrainAudioOutput : MonoBehaviour
 
     public static float GetValueFromNormPosInArray(float[] array, float norm, int length)
     {
+        Profiler.BeginSample("Pitching");
         norm %= 1;
         float floatIndex = norm * (length - 1);
 
         int lowerIndex = (int)Mathf.Floor(floatIndex);
         int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, length - 1);
         float lerp = norm % 1;
+        float output = Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
 
-        return Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
+        Profiler.EndSample();
+
+        return output;       
     }
 
     private void OnDrawGizmos()
