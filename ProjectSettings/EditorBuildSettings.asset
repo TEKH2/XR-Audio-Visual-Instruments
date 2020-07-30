@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/_Sandbox/Wobble string/Wobble string.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
   - enabled: 0
-    path: Assets/_Project/Packages/Grainulator/Scenes/Granulator example scene.unity
+    path: Assets/_Project/Packages/Granulator/Scenes/Granulator example scene.unity
     guid: 06500776a180d394595db2c1c5b8c61c
   - enabled: 1
     path: Assets/_Project/Scenes/XR Granulator.unity
