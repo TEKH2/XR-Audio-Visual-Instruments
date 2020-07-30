@@ -100,7 +100,7 @@ MonoBehaviour:
     _PositionRandom: 0
     _Cadence: 5
     _CadenceRandom: 0
-    _Duration: 100
+    _Duration: 200
     _DurationRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
