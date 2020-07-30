@@ -281,7 +281,7 @@ public class DebugGUI : MonoBehaviour
     void InitializeGUIStyles()
     {
         minMaxTextStyle = new GUIStyle();
-        minMaxTextStyle.fontSize = 20;
+        minMaxTextStyle.fontSize = 10;
         minMaxTextStyle.fontStyle = FontStyle.Bold;
 
         Color[] pix = new Color[4];

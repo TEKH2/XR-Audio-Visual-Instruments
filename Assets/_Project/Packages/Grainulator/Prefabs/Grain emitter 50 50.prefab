@@ -106,6 +106,5 @@ MonoBehaviour:
     _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
-  _RandomizedPlaybackPos: 1
+  _RandomizedPlaybackPos: 0
   _Active: 0
-  _SampleEmittedThisFrame: 0

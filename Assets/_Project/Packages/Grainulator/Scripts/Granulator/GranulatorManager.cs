@@ -40,9 +40,11 @@ public class GranulatorManager : MonoBehaviour
     int TotalAudioSourceCount { get { return _InactiveOutputs.Count + _ActiveOutputs.Count;} }
 
     public AnimationCurve _WindowingCurve;
-    public bool _DEBUG_TraditionalWindowing = false;
 
+    [Header("DEBUG")]
     public bool _DebugLog = false;
+
+    public bool _DEBUG_TraditionalWindowing = false;
 
     [Range(0f, 1f)]
     public float _DebugNorm = 0;
@@ -50,7 +52,9 @@ public class GranulatorManager : MonoBehaviour
     public Transform _DebugTransform;
     public float _AudioOutputDeactivationDistance = 5;
 
-    float _LayeredSamples;
+    public float _LayeredSamples;
+    public float _AvLayeredSamples;
+    public int _ActiveEmitters;
     #endregion
 
     private void Awake()
@@ -77,10 +81,12 @@ public class GranulatorManager : MonoBehaviour
 
     void Update()
     {
+        _ActiveEmitters = 0;
         float layeredSamplesThisFrame = 0;
 
         // UPDATE ACTIVE OUTPUTS AND CHECK IF OUT OF RANGE
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
+       
         for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
         {
             float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
@@ -98,10 +104,16 @@ public class GranulatorManager : MonoBehaviour
             {
                 _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
                 layeredSamplesThisFrame += _ActiveOutputs[i]._LayeredSamples;
+                _ActiveEmitters += _ActiveOutputs[i]._AttachedGrainEmitters.Count;
             }
         }
 
+        // Performance metrics
         _LayeredSamples = Mathf.Lerp(_LayeredSamples, layeredSamplesThisFrame, Time.deltaTime * 4);
+        if (_ActiveOutputs.Count == 0)
+            _AvLayeredSamples = 0;
+        else
+            _AvLayeredSamples = _LayeredSamples / (float)_ActiveOutputs.Count;
 
         if (_DebugLog)
             print("Active outputs: " + _ActiveOutputs.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples/(float)_ActiveOutputs.Count);

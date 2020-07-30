@@ -13,8 +13,6 @@ public class GrainEmitter : MonoBehaviour
     int _RandomSampleOffset;
     public bool _RandomizedPlaybackPos = false;
     public bool _Active = false;
-
-    public int _SampleEmittedThisFrame = 0;
     #endregion
 
     private void Start()
@@ -39,9 +37,6 @@ public class GrainEmitter : MonoBehaviour
         if (!_Active)
             return;
 
-        // accumulate the amount of samples emitted per second so we can limit
-        _SampleEmittedThisFrame = 0;
-
         // Calculate random sample rate
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
@@ -59,8 +54,6 @@ public class GrainEmitter : MonoBehaviour
                 _FilterCoefficients,
                 sampleIndexNextGrainStart + _RandomSampleOffset
             );
-
-            _SampleEmittedThisFrame += (int)(_GrainEmissionProps.Duration * sampleRate);
 
             // EMit grain from manager
             output.EmitGrain(tempGrainData);

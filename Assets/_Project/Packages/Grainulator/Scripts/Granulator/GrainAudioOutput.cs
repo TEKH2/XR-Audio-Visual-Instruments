@@ -121,7 +121,7 @@ public class GrainAudioOutput : MonoBehaviour
             float windowedVolume = windowCurve.Evaluate(norm);
 
             float pitchedNorm = norm * gd._Pitch;
-            float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples);
+            float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
 
             grainPlaybackData._GrainSamples[i] = sample * windowedVolume * gd._Volume;
         }
@@ -233,13 +233,20 @@ public class GrainAudioOutput : MonoBehaviour
         }
     }
 
-    public static float GetValueFromNormPosInArray(float[] array, float norm, int length)
+    public bool _DEBUG_LerpPitching = true;
+    public static float GetValueFromNormPosInArray(float[] array, float norm, int length, bool lerpResult = true)
     {
         Profiler.BeginSample("Pitching");
         norm %= 1;
         float floatIndex = norm * (length - 1);
-
         int lowerIndex = (int)Mathf.Floor(floatIndex);
+
+        if (!lerpResult)
+        {
+            Profiler.EndSample();
+            return array[lowerIndex];
+        }
+
         int upperIndex = Mathf.Clamp(lowerIndex + 1, lowerIndex, length - 1);
         float lerp = norm % 1;
         float output = Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
