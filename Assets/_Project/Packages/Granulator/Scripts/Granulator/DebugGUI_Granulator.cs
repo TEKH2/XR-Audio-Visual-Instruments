@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DebugGUI_Granulator : MonoBehaviour
 {
-   GranulatorManager _Granulator;
+   GrainManager _Granulator;
 
     void Awake()
     {
@@ -18,7 +18,7 @@ public class DebugGUI_Granulator : MonoBehaviour
 
     private void Start()
     {
-        _Granulator = GranulatorManager.Instance;
+        _Granulator = GrainManager.Instance;
     }
 
     void Update()

@@ -40,69 +40,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 1245078102122130036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f51bbd1d112811439fa706734b5cc6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 82f40ed166221a440bae22bdcda6705c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _AudioClipLibrary:
-    _Clips: []
-  _GrainPrefab: {fileID: 1058601950276710, guid: bcef41c955a087d4694f38d3ff97d611,
-    type: 3}
-  _MaxGrains: 100
-  _FilterProperties:
-    Type: 0
-    _Cutoff: 1000
-    _Gain: 1
-    _Q: 1
-  _EmitGrainProps:
-    _ClipIndex: 0
-    _Cadence: 0
-    _CadenceRandom: 0
-    _PlayheadPos: 0
-    _PositionRandom: 0
-    _Duration: 0
-    _DurationRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0
-    _Volume: 0
-    _VolumeRandom: 0
-  _CurrentDSPSample: 0
+    _Clips:
+    - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
+    - {fileID: 8300000, guid: 40644eeab2cbac44582d1712922c83ac, type: 3}
+  _GrainAudioSourcePrefab: {fileID: 0}
+  _ActiveOutputs: []
+  _InactiveOutputs: []
+  _AllGrainEmitters: []
   _EmissionLatencyMS: 80
-  _Spacing: 0
+  _MaxDistBetweenEmitterAndSource: 1
+  _MaxAudioSources: 10
   _WindowingCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: -0.06395143
-      outSlope: -0.06395143
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.08010825
-    - serializedVersion: 3
-      time: 0.505
-      value: 1.0021012
-      inSlope: -0.020437717
-      outSlope: -0.020437717
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: -0.00038984418
-      inSlope: 0.068153195
-      outSlope: 0.068153195
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.06513222
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _DEBUG_TraditionalWindowing: 0
-  _NumberOfAudioSources: 5
-  _NumberOfAudioSourcesToUse: 1
   _DebugLog: 0
+  _DEBUG_TraditionalWindowing: 0
   _DebugNorm: 0
+  _DebugTransform: {fileID: 0}
+  _AudioOutputDeactivationDistance: 5
+  _LayeredSamples: 0
+  _AvLayeredSamples: 0
+  _ActiveEmitters: 0

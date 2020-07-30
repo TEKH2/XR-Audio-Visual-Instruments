@@ -5,7 +5,7 @@ using UnityEngine;
 // Reference: https://twitter.com/dmvrg/status/1259662191097024512
 public class PointCloudInstrument : MonoBehaviour
 {
-    public GranulatorManager _Granulator;
+    public GrainManager _Granulator;
 
     GrainEmitter[] _AllGrainDataObjects;
 

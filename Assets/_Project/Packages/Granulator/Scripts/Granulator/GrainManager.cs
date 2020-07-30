@@ -7,10 +7,10 @@ using Random = UnityEngine.Random;
 using System.Linq;
 
 [RequireComponent(typeof(AudioSource))]
-public class GranulatorManager : MonoBehaviour
+public class GrainManager : MonoBehaviour
 {
     #region VARIABLES
-    public static GranulatorManager Instance;
+    public static GrainManager Instance;
     AudioListener _AudioListener;
 
     // ------------------------------------ AUDIO VARS
@@ -21,10 +21,10 @@ public class GranulatorManager : MonoBehaviour
 
     // ------------------------------------ GRAIN AUDIO SOURCES
 
-    public GrainAudioOutput _GrainAudioSourcePrefab;
+    public GrainSpeaker _GrainAudioSourcePrefab;
 
-    public List<GrainAudioOutput> _ActiveOutputs = new List<GrainAudioOutput>();
-    public List<GrainAudioOutput> _InactiveOutputs = new List<GrainAudioOutput>();
+    public List<GrainSpeaker> _ActiveOutputs = new List<GrainSpeaker>();
+    public List<GrainSpeaker> _InactiveOutputs = new List<GrainSpeaker>();
 
     // ------------------------------------ GRAIN EMITTER PROPS  
     public List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
@@ -94,7 +94,7 @@ public class GranulatorManager : MonoBehaviour
             // If out of range remove from the active output list
             if (dist > _AudioOutputDeactivationDistance)
             {
-                GrainAudioOutput output = _ActiveOutputs[i];
+                GrainSpeaker output = _ActiveOutputs[i];
                 output.Deactivate();
                 _ActiveOutputs.Remove(output);
                 _InactiveOutputs.Add(output);
@@ -139,7 +139,7 @@ public class GranulatorManager : MonoBehaviour
     void TryAssignEmitterToSource(GrainEmitter emitter)
     {
         // had to initialize it to something TODO fix pattern
-        GrainAudioOutput audioSource = _GrainAudioSourcePrefab;
+        GrainSpeaker audioSource = _GrainAudioSourcePrefab;
         bool sourceFound = false;
 
         // ------------------------------  FIND CLOSE ACTIVE SOURCE
@@ -186,12 +186,12 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 
-    GrainAudioOutput InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
+    GrainSpeaker InstantiateNewAudioSource(Vector3 pos, bool addToActiveList = true)
     {
         if (TotalAudioSourceCount == _MaxAudioSources)
             return null;
 
-        GrainAudioOutput audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+        GrainSpeaker audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
         audioSource.name = "Grain audio source " + TotalAudioSourceCount;
         audioSource.transform.position = pos;
         audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
@@ -240,3 +240,237 @@ public class GranulatorManager : MonoBehaviour
         }
     }
 }
+
+
+#region Grain data classes
+public class GrainData
+{
+    public int _StartDSPSampleIndex;
+
+    // Optimum 10ms - 60ms
+    public float _Duration;
+    public float _PlayheadPos;
+    public float _Pitch;
+    public float _Volume;
+    public FilterCoefficients _Coefficients;
+
+    public int _ClipIndex;
+
+    public int _StartSampleIndex;
+
+    public GrainData() { }
+    public GrainData(int grainAudioClipIndex,
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
+    {
+        _ClipIndex = grainAudioClipIndex;
+        _Duration = durationInMS;
+        _PlayheadPos = playheadPosition;
+        _Pitch = pitch;
+        _Volume = volume;
+        _Coefficients = fc;
+        _StartSampleIndex = startSampleIndex;
+    }
+
+    public void Initialize(int grainAudioClipIndex,
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
+    {
+        _ClipIndex = grainAudioClipIndex;
+        _Duration = durationInMS;
+        _PlayheadPos = playheadPosition;
+        _Pitch = pitch;
+        _Volume = volume;
+        _Coefficients = fc;
+        _StartSampleIndex = startSampleIndex;
+    }
+}
+
+[System.Serializable]
+public class GrainEmissionProps
+{
+    [Header("Source")]
+    public int _ClipIndex = 0;
+
+    // Position (normalised)
+    //---------------------------------------------------------------------
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    float _PlayheadPos = 0;
+    [Range(0.0f, .1f)]
+    [SerializeField]
+    public float _PositionRandom = 0;
+    public float Position
+    {
+        get
+        {
+            return Mathf.Clamp(_PlayheadPos + UnityEngine.Random.Range(0, _PositionRandom), 0f, 1f);
+        }
+        set
+        {
+            _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
+        }
+    }
+
+    [Header("Timing")]
+    [Range(2.0f, 1000f)]
+    public int _Cadence = 20;             // ms
+    [Range(0.002f, 1000f)]
+    public int _CadenceRandom = 0;        // ms
+    public float Cadence
+    {
+        get
+        {
+            return Mathf.Clamp(_Cadence + UnityEngine.Random.Range(0, _CadenceRandom), 2f, 1000f);
+        }
+        set
+        {
+            _Cadence = (int)Mathf.Clamp(value, 2f, 1000f);
+        }
+    }
+
+
+
+    // Duration (ms)
+    //---------------------------------------------------------------------
+    [Range(2.0f, 1000f)]
+    [SerializeField]
+    int _Duration = 100;
+    [Range(0.0f, 500f)]
+    [SerializeField]
+    int _DurationRandom = 0;
+    public float Duration
+    {
+        get
+        {
+            return Mathf.Clamp(_Duration + UnityEngine.Random.Range(0, _DurationRandom), 2, 1000);
+        }
+        set
+        {
+            _Duration = (int)Mathf.Clamp(value, 2, 1000);
+        }
+    }
+
+    [Header("Effects")]
+    // Transpose
+    //---------------------------------------------------------------------
+    [Range(-4f, 4f)]
+    [SerializeField]
+    float _Transpose = 0;
+    [Range(0f, 1f)]
+    [SerializeField]
+    float _TransposeRandom = 0;
+
+    float _Pitch = 1;
+    public float Pitch
+    {
+        get
+        {
+            _Pitch = TransposeToPitch(Mathf.Clamp(_Transpose + UnityEngine.Random.Range(-_TransposeRandom, _TransposeRandom), -5f, 5f));
+            return Mathf.Clamp(_Pitch, 0.1f, 5f);
+        }
+        set
+        {
+            _Pitch = Mathf.Clamp(value, 0.1f, 5f);
+        }
+    }
+
+    // Converts the more human-readable value of transpose to pitch values for the grains
+    private float TransposeToPitch(float transpose)
+    {
+        float pitch = 1;
+
+        if (transpose < 0)
+            pitch = (1 / (1 + Mathf.Abs(transpose)));
+        else if (transpose > 0)
+            pitch = transpose + 1;
+
+        return pitch;
+    }
+
+
+    // Volume
+    //---------------------------------------------------------------------
+    [Range(0.0f, 2.0f)]
+    [SerializeField]
+    float _Volume = 1;          // from 0 > 1
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    float _VolumeRandom = 0;      // from 0 > 1
+    public float Volume
+    {
+        get
+        {
+            return Mathf.Clamp(_Volume + UnityEngine.Random.Range(-_VolumeRandom, _VolumeRandom), 0f, 3f);
+        }
+        set
+        {
+            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
+        }
+    }
+
+    public GrainEmissionProps(float pos, int duration, float pitch, float volume,
+        float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
+    {
+        _PlayheadPos = pos;
+        _Duration = duration;
+        _Pitch = pitch;
+        _Volume = volume;
+
+        _PositionRandom = posRand;
+        _DurationRandom = durationRand;
+        //_PitchRandom = pitchRand;
+        _VolumeRandom = volumeRand;
+    }
+}
+
+[System.Serializable]
+public class AudioClipLibrary
+{
+    public AudioClip[] _Clips;
+    public List<float[]> _ClipsDataArray = new List<float[]>();
+
+    public void Initialize()
+    {
+        if (_Clips.Length == 0)
+            Debug.LogError("No clips in clip library");
+        else
+            Debug.Log("Initializing clip library.");
+
+        for (int i = 0; i < _Clips.Length; i++)
+        {
+            AudioClip audioClip = _Clips[i];
+
+            if (audioClip.channels > 1)
+            {
+                Debug.LogError("Audio clip not mono");
+            }
+
+            float[] samples = new float[audioClip.samples];
+            _Clips[i].GetData(samples, 0);
+            _ClipsDataArray.Add(samples);
+
+            Debug.Log(String.Format("Clip {0}      Samples: {1}        Time length: {2} ", _Clips[i].name, _ClipsDataArray[i].Length, _ClipsDataArray[i].Length / (float)_Clips[i].frequency));
+        }
+
+
+    }
+}
+
+public class GrainPlaybackData
+{
+    public bool _IsPlaying = true;
+    public float[] _GrainSamples;
+    public float[] _TempSampleBuffer;
+    public int _PlaybackIndex = 0;
+    public int _PlaybackSampleCount;
+
+    // The DSP sample that the grain starts at
+    public int _StartSampleIndex;
+
+    public GrainPlaybackData()
+    {
+        // instantiate the grain samples at the max length of a grain of 1 second worth of samples
+        _GrainSamples = new float[44 * 1000];
+        _TempSampleBuffer = new float[44 * 1000];
+    }
+}
+#endregion

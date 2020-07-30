@@ -17,7 +17,7 @@ public class GrainEmitter : MonoBehaviour
 
     private void Start()
     {
-        GranulatorManager.Instance.AddNewEmitter(this);
+        GrainManager.Instance.AddNewEmitter(this);
     }
 
     public void Init(int currentDSPIndex)
@@ -32,7 +32,7 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
-    public void ManualUpdate(GrainAudioOutput output, int maxDSPIndex, int sampleRate)
+    public void ManualUpdate(GrainSpeaker output, int maxDSPIndex, int sampleRate)
     {
         if (!_Active)
             return;
