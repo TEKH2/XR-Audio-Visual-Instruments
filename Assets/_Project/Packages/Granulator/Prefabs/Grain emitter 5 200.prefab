@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3222682554955237524}
   - component: {fileID: 8996200946907528258}
   m_Layer: 0
-  m_Name: Grain emitter 10 150
+  m_Name: Grain emitter 5 200
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
     _PositionRandom: 0
     _Cadence: 5
     _CadenceRandom: 0
-    _Duration: 200
+    _Duration: 100
     _DurationRandom: 0
     _Transpose: 0
     _TransposeRandom: 0

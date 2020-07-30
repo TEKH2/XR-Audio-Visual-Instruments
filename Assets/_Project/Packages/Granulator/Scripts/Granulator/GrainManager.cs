@@ -31,7 +31,7 @@ public class GrainManager : MonoBehaviour
     // ------------------------------------ GRAIN EMITTER PROPS  
     List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
 
-    int _CurrentDSPSample = 0; // TODO see if this is any different to calcing from the DSP time * sample rate
+    public int _CurrentDSPSample = 0; // TODO see if this is any different to calcing from the DSP time * sample rate
 
     [Range(0,100)]
     public float _EmissionLatencyMS = 80;
@@ -70,8 +70,7 @@ public class GrainManager : MonoBehaviour
         _AudioListener = FindObjectOfType<AudioListener>();
 
         // Sample rate from teh audio settings
-        _SampleRate = AudioSettings.outputSampleRate;
-
+        _SampleRate = AudioSettings.outputSampleRate;       
         // Init clip library
         _AudioClipLibrary.Initialize();
                
@@ -87,7 +86,9 @@ public class GrainManager : MonoBehaviour
         _ActiveEmitters = 0;
         float layeredSamplesThisFrame = 0;
 
-        // UPDATE ACTIVE SPEAKERS AND CHECKS IF THE LISTENER IS OUT OF RANGE
+        Profiler.BeginSample("Updating active speakers");
+        #region UPDATE ACTIVE SPEAKERS AND CHECKS IF THE LISTENER IS OUT OF RANGE
+        
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
        
         for (int i = _ActiveSpeakers.Count - 1; i >= 0; i--)
@@ -111,19 +112,12 @@ public class GrainManager : MonoBehaviour
             }
         }
 
-        // Performance metrics
-        _LayeredSamples = Mathf.Lerp(_LayeredSamples, layeredSamplesThisFrame, Time.deltaTime * 4);
-        if (_ActiveSpeakers.Count == 0)
-            _AvLayeredSamples = 0;
-        else
-            _AvLayeredSamples = _LayeredSamples / (float)_ActiveSpeakers.Count;
+        #endregion
+        Profiler.EndSample();
 
-        if (_DebugLog)
-            print("Active outputs: " + _ActiveSpeakers.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples/(float)_ActiveSpeakers.Count);
-
-
-        // CHECK IF LISTENER IS IN RANGE OF INACTIVE EMITTERS
-        // Order by distance
+        Profiler.BeginSample("Speaker range test");
+        #region CHECK IF LISTENER IS IN RANGE OF INACTIVE EMITTERS
+        // Order by distance  // TODO this is the cause of allocation
         _AllGrainEmitters = _AllGrainEmitters.OrderBy(x => Vector3.SqrMagnitude(_AudioListener.transform.position - x.transform.position)).ToList();
         for (int i = 0; i < _AllGrainEmitters.Count; i++)
         {
@@ -184,6 +178,20 @@ public class GrainManager : MonoBehaviour
                 }
             }
         }
+        #endregion
+        Profiler.EndSample();
+
+        #region PERFORMANCE METRICS
+        // Performance metrics
+        _LayeredSamples = Mathf.Lerp(_LayeredSamples, layeredSamplesThisFrame, Time.deltaTime * 4);
+        if (_ActiveSpeakers.Count == 0)
+            _AvLayeredSamples = 0;
+        else
+            _AvLayeredSamples = _LayeredSamples / (float)_ActiveSpeakers.Count;
+
+        if (_DebugLog)
+            print("Active outputs: " + _ActiveSpeakers.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples / (float)_ActiveSpeakers.Count);
+        #endregion
     }
 
     GrainSpeaker InstantiateGrainSpeaker(Vector3 pos, bool addToActiveList = true)

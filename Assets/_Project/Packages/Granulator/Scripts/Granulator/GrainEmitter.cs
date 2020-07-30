@@ -10,7 +10,6 @@ public class GrainEmitter : MonoBehaviour
     public FilterCoefficients _FilterCoefficients; //TODO reimpliment
     
     int _LastGrainSampleIndex = 0;
-    int _RandomSampleOffset;
 
     public bool _RandomizedPlaybackPos = false;
     public bool _Active = false;
@@ -23,8 +22,6 @@ public class GrainEmitter : MonoBehaviour
 
     public void Init(int currentDSPIndex)
     {
-        // random offset so not all emitters play at the exact same time
-        _RandomSampleOffset = Random.Range(0, 150);
         _LastGrainSampleIndex = currentDSPIndex;
 
         _Active = true;
@@ -53,7 +50,7 @@ public class GrainEmitter : MonoBehaviour
                 _GrainEmissionProps.Pitch,
                 _GrainEmissionProps.Volume,
                 _FilterCoefficients,
-                sampleIndexNextGrainStart + _RandomSampleOffset
+                sampleIndexNextGrainStart
             );
 
             // EMit grain from manager

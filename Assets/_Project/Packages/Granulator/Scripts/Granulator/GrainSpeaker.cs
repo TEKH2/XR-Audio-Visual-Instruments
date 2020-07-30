@@ -42,32 +42,29 @@ public class GrainSpeaker : MonoBehaviour
     {
         _GrainsThisFrame = 0;
         _SamplesThisFrame = 0;
-      
+
+        // Profiling notes: Most time spent here but not more allocation 5 200  4-15ms   60-72 fps
+        Profiler.BeginSample("Emitter");
         // Update emitters
         foreach(GrainEmitter emitter in _AttachedGrainEmitters)
         {
             emitter.ManualUpdate(this, maxDSPIndex, sampleRate);
         }
-      
+        Profiler.EndSample();
+
         _GrainsPerSecond = Mathf.Lerp(_GrainsPerSecond, _GrainsThisFrame / Time.deltaTime, Time.deltaTime * 4);
         _SamplesEmittedPerSecond = Mathf.Lerp(_SamplesEmittedPerSecond, _SamplesThisFrame / Time.deltaTime, Time.deltaTime * 4);
         _LayeredSamples = _SamplesEmittedPerSecond / AudioSettings.outputSampleRate;
-        
+
         if (_DebugLog)
+        {
             print(name + " grains p/s:   " + _GrainsPerSecond + "   samples p/s: " + _SamplesEmittedPerSecond + "   layered samples per read: " + _LayeredSamples);
+            print(_CurrentDSPSampleIndex + "   " + GrainManager.Instance._CurrentDSPSample + "     " + (_CurrentDSPSampleIndex - GrainManager.Instance._CurrentDSPSample));
+        }
     }
 
     // TODO make single method
-    public void AddGrainData(GrainData grainData)
-    {
-        // Init grain with data
-        AddGrainData(grainData,
-            _GranulatorManager._AudioClipLibrary._ClipsDataArray[grainData._ClipIndex],
-            _GranulatorManager._AudioClipLibrary._Clips[grainData._ClipIndex].frequency,
-            _GranulatorManager._WindowingCurve, _GranulatorManager._DebugLog, _GranulatorManager._DEBUG_TraditionalWindowing);
-    }
-
-    void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
+    public void AddGrainData(GrainData gd)
     {
         //Profiler.BeginSample("Add Grains 1");
         _GrainsThisFrame++;
@@ -81,8 +78,10 @@ public class GrainSpeaker : MonoBehaviour
         _FilterSignal.fc = gd._Coefficients;
         float filteredSample;
 
-        int playheadSampleIndex = (int)(gd._PlayheadPos * clipSamples.Length);
-        int durationInSamples = (int)(freq / 1000 * gd._Duration);
+        int sampleLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
+
+        int playheadSampleIndex = (int)(gd._PlayheadPos * sampleLength);
+        int durationInSamples = (int)(_GranulatorManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
 
         //Profiler.EndSample();
@@ -97,17 +96,17 @@ public class GrainSpeaker : MonoBehaviour
             sourceIndex = playheadSampleIndex + i;
 
             // Ping-pong audio sample read
-            sourceIndex = (int)Mathf.PingPong(sourceIndex, clipSamples.Length - 1);
+            sourceIndex = (int)Mathf.PingPong(sourceIndex, sampleLength - 1);
 
             if (_FilterSignal._Type != DSP_Filter.FilterType.None)
             {
-                filteredSample = _FilterSignal.Apply(clipSamples[sourceIndex]);
+                filteredSample = _FilterSignal.Apply(_GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex]);
 
                 // Fill temp sample buffer
                 grainPlaybackData._TempSampleBuffer[i] = filteredSample;
             }
             else
-                grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
+                grainPlaybackData._TempSampleBuffer[i] = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex];
         }
 
         //Profiler.EndSample();
@@ -118,7 +117,7 @@ public class GrainSpeaker : MonoBehaviour
         {
             // Find the norm along the array
             float norm = i / (durationInSamples - 1f);
-            float windowedVolume = windowCurve.Evaluate(norm);
+            float windowedVolume = _GranulatorManager._WindowingCurve.Evaluate(norm);
 
             float pitchedNorm = norm * gd._Pitch;
             float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
