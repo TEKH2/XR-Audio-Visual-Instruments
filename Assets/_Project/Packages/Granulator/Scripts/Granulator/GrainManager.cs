@@ -20,24 +20,25 @@ public class GrainManager : MonoBehaviour
     //private FilterCoefficients _FilterCoefficients;
 
     // ------------------------------------ GRAIN AUDIO SOURCES
+    public GrainSpeaker _GrainSpeakerPrefab;
 
-    public GrainSpeaker _GrainAudioSourcePrefab;
-
-    public List<GrainSpeaker> _ActiveOutputs = new List<GrainSpeaker>();
-    public List<GrainSpeaker> _InactiveOutputs = new List<GrainSpeaker>();
+    List<GrainSpeaker> _ActiveSpeakers = new List<GrainSpeaker>();
+    public List<GrainSpeaker> ActiveSpeakers { get { return _ActiveSpeakers; }  }
+    List<GrainSpeaker> _InactiveSpeakers = new List<GrainSpeaker>();
 
     // ------------------------------------ GRAIN EMITTER PROPS  
-    public List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
+    List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
 
     int _CurrentDSPSample = 0;
+    [Range(0,100)]
     public float _EmissionLatencyMS = 80;
     int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
     // maximum distance an emitter can be from an audio source
-    public float _MaxDistBetweenEmitterAndSource = 1;
+    public float _MaxDistBetweenEmitterAndSpeaker = 1;
     // Maximum allowed audio sources
     public int _MaxAudioSources = 10;
-    int TotalAudioSourceCount { get { return _InactiveOutputs.Count + _ActiveOutputs.Count;} }
+    int TotalAudioSourceCount { get { return _InactiveSpeakers.Count + _ActiveSpeakers.Count;} }
 
     public AnimationCurve _WindowingCurve;
 
@@ -74,7 +75,7 @@ public class GrainManager : MonoBehaviour
             InstantiateNewAudioSource(Vector3.zero, false);
         }
 
-        print("Granualtor Manager initialized. Grains created: " + _InactiveOutputs.Count);
+        print("Granualtor Manager initialized. Grains created: " + _InactiveSpeakers.Count);
 
         _AllGrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
     }
@@ -87,36 +88,36 @@ public class GrainManager : MonoBehaviour
         // UPDATE ACTIVE OUTPUTS AND CHECK IF OUT OF RANGE
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
        
-        for (int i = _ActiveOutputs.Count - 1; i >= 0; i--)
+        for (int i = _ActiveSpeakers.Count - 1; i >= 0; i--)
         {
-            float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
+            float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveSpeakers[i].transform.position);
 
             // If out of range remove from the active output list
             if (dist > _AudioOutputDeactivationDistance)
             {
-                GrainSpeaker output = _ActiveOutputs[i];
+                GrainSpeaker output = _ActiveSpeakers[i];
                 output.Deactivate();
-                _ActiveOutputs.Remove(output);
-                _InactiveOutputs.Add(output);
+                _ActiveSpeakers.Remove(output);
+                _InactiveSpeakers.Add(output);
             }
             //  else update the output
             else
             {
-                _ActiveOutputs[i].ManualUpdate(sampleIndexMax, _SampleRate);
-                layeredSamplesThisFrame += _ActiveOutputs[i]._LayeredSamples;
-                _ActiveEmitters += _ActiveOutputs[i]._AttachedGrainEmitters.Count;
+                _ActiveSpeakers[i].ManualUpdate(sampleIndexMax, _SampleRate);
+                layeredSamplesThisFrame += _ActiveSpeakers[i]._LayeredSamples;
+                _ActiveEmitters += _ActiveSpeakers[i]._AttachedGrainEmitters.Count;
             }
         }
 
         // Performance metrics
         _LayeredSamples = Mathf.Lerp(_LayeredSamples, layeredSamplesThisFrame, Time.deltaTime * 4);
-        if (_ActiveOutputs.Count == 0)
+        if (_ActiveSpeakers.Count == 0)
             _AvLayeredSamples = 0;
         else
-            _AvLayeredSamples = _LayeredSamples / (float)_ActiveOutputs.Count;
+            _AvLayeredSamples = _LayeredSamples / (float)_ActiveSpeakers.Count;
 
         if (_DebugLog)
-            print("Active outputs: " + _ActiveOutputs.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples/(float)_ActiveOutputs.Count);
+            print("Active outputs: " + _ActiveSpeakers.Count + "   Layered Samples: " + _LayeredSamples + "   Av layered Samples: " + _LayeredSamples/(float)_ActiveSpeakers.Count);
 
 
         // CHECK IF INACTIVE SOURCES ARE IN RANGE
@@ -127,62 +128,61 @@ public class GrainManager : MonoBehaviour
             if (_AllGrainEmitters[i]._Active)
                 continue;
 
+           
+
             float dist = Vector3.Distance(_AudioListener.transform.position, _AllGrainEmitters[i].transform.position);
 
             if (dist < _AudioOutputDeactivationDistance)
             {
-                TryAssignEmitterToSource(_AllGrainEmitters[i]);
+                GrainEmitter emitter = _AllGrainEmitters[i];
+
+                // had to initialize it to something TODO fix pattern
+                GrainSpeaker audioSource = _GrainSpeakerPrefab;
+                bool sourceFound = false;
+
+                // ------------------------------  FIND CLOSE ACTIVE SOURCE
+                float closestDist = _MaxDistBetweenEmitterAndSpeaker;
+                for (int j = 0; j < _ActiveSpeakers.Count; j++)
+                {
+                    float speakerDist = Vector3.Distance(emitter.transform.position, _ActiveSpeakers[j].transform.position);
+                    if (speakerDist <= closestDist)
+                    {
+                        closestDist = speakerDist;
+                        audioSource = _ActiveSpeakers[j];
+                        sourceFound = true;
+                    }
+                }
+
+                if (!sourceFound)
+                {
+                    // ------------------------------  FIND INACTIVE SOURCE
+                    if (_InactiveSpeakers.Count > 0)
+                    {
+                        audioSource = _InactiveSpeakers[0];
+                        audioSource.transform.position = emitter.transform.position;
+                        audioSource.gameObject.SetActive(true);
+                        audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
+
+                        _InactiveSpeakers.RemoveAt(0);
+                        _ActiveSpeakers.Add(audioSource);
+
+                        sourceFound = true;
+                    }
+                    // ------------------------------  CREATE NEW SOURCE
+                    else
+                    {
+                        audioSource = InstantiateNewAudioSource(emitter.transform.position);
+
+                        if (audioSource != null)
+                            sourceFound = true;
+                    }
+                }
+
+                if (sourceFound)
+                {
+                    audioSource.AttachEmitter(emitter);
+                }
             }
-        }
-    }
-
-    void TryAssignEmitterToSource(GrainEmitter emitter)
-    {
-        // had to initialize it to something TODO fix pattern
-        GrainSpeaker audioSource = _GrainAudioSourcePrefab;
-        bool sourceFound = false;
-
-        // ------------------------------  FIND CLOSE ACTIVE SOURCE
-        float closestDist = _MaxDistBetweenEmitterAndSource;      
-        for (int i = 0; i < _ActiveOutputs.Count; i++)
-        {
-            float dist = Vector3.Distance(emitter.transform.position, _ActiveOutputs[i].transform.position);
-            if (dist <= closestDist)
-            {
-                closestDist = dist;
-                audioSource = _ActiveOutputs[i];
-                sourceFound = true;
-            }
-        }
-        
-        if (!sourceFound)
-        {
-            // ------------------------------  FIND INACTIVE SOURCE
-            if (_InactiveOutputs.Count > 0)
-            {
-                audioSource = _InactiveOutputs[0];
-                audioSource.transform.position = emitter.transform.position;
-                audioSource.gameObject.SetActive(true);
-                audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
-
-                _InactiveOutputs.RemoveAt(0);
-                _ActiveOutputs.Add(audioSource);
-
-                sourceFound = true;
-            }
-            // ------------------------------  CREATE NEW SOURCE
-            else
-            {
-                audioSource = InstantiateNewAudioSource(emitter.transform.position);
-
-                if (audioSource != null)
-                    sourceFound = true;
-            }
-        }
-
-        if(sourceFound)
-        {
-            audioSource.AttachEmitter(emitter);
         }
     }
 
@@ -191,19 +191,19 @@ public class GrainManager : MonoBehaviour
         if (TotalAudioSourceCount == _MaxAudioSources)
             return null;
 
-        GrainSpeaker audioSource = Instantiate(_GrainAudioSourcePrefab, transform);
+        GrainSpeaker audioSource = Instantiate(_GrainSpeakerPrefab, transform);
         audioSource.name = "Grain audio source " + TotalAudioSourceCount;
         audioSource.transform.position = pos;
         audioSource._CurrentDSPSampleIndex = _CurrentDSPSample;
 
         if (addToActiveList)
         {
-            _ActiveOutputs.Add(audioSource);
+            _ActiveSpeakers.Add(audioSource);
             audioSource.gameObject.SetActive(true);
         }
         else
         {
-            _InactiveOutputs.Add(audioSource);
+            _InactiveSpeakers.Add(audioSource);
             audioSource.gameObject.SetActive(false);
         }
 
@@ -233,9 +233,9 @@ public class GrainManager : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(_AudioListener.transform.position, _AudioOutputDeactivationDistance);
 
-            for (int i = 0; i < _ActiveOutputs.Count; i++)
+            for (int i = 0; i < _ActiveSpeakers.Count; i++)
             {
-                Gizmos.DrawLine(_AudioListener.transform.position, _ActiveOutputs[i].transform.position);
+                Gizmos.DrawLine(_AudioListener.transform.position, _ActiveSpeakers[i].transform.position);
             }
         }
     }

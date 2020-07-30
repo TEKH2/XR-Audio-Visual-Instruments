@@ -12,7 +12,8 @@ public class GrainSpeaker : MonoBehaviour
     GrainManager _GranulatorManager;
     public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
-    public int _CurrentDSPSampleIndex = 0;
+    [HideInInspector]
+    public int _CurrentDSPSampleIndex = 0; //TODO read from manager
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();

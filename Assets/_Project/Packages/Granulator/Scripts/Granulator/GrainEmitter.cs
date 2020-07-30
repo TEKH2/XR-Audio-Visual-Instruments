@@ -11,6 +11,7 @@ public class GrainEmitter : MonoBehaviour
     public FilterCoefficients _FilterCoefficients;
     int _LastGrainSampleIndex = 0;
     int _RandomSampleOffset;
+
     public bool _RandomizedPlaybackPos = false;
     public bool _Active = false;
     #endregion

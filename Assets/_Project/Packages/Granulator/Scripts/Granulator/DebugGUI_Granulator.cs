@@ -33,7 +33,7 @@ public class DebugGUI_Granulator : MonoBehaviour
         DebugGUI.Graph("avLayering", _Granulator._AvLayeredSamples);
 
         DebugGUI.Graph("activeEmitters", _Granulator._ActiveEmitters);
-        DebugGUI.Graph("activeAudioOutputs", _Granulator._ActiveOutputs.Count);
+        DebugGUI.Graph("activeAudioOutputs", _Granulator.ActiveSpeakers.Count);
     }
 
     void OnDestroy()
