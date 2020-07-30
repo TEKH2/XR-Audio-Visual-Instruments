@@ -6,9 +6,9 @@ using UnityEngine;
 public class GrainEmitter : MonoBehaviour
 {
     #region VARIABLES
-
     public GrainEmissionProps _GrainEmissionProps;
-    public FilterCoefficients _FilterCoefficients;
+    public FilterCoefficients _FilterCoefficients; //TODO reimpliment
+    
     int _LastGrainSampleIndex = 0;
     int _RandomSampleOffset;
 
@@ -18,7 +18,7 @@ public class GrainEmitter : MonoBehaviour
 
     private void Start()
     {
-        GrainManager.Instance.AddNewEmitter(this);
+        GrainManager.Instance.AddGrainEmitterToList(this);
     }
 
     public void Init(int currentDSPIndex)
@@ -33,7 +33,7 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
-    public void ManualUpdate(GrainSpeaker output, int maxDSPIndex, int sampleRate)
+    public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
     {
         if (!_Active)
             return;
@@ -57,7 +57,7 @@ public class GrainEmitter : MonoBehaviour
             );
 
             // EMit grain from manager
-            output.EmitGrain(tempGrainData);
+            speaker.AddGrainData(tempGrainData);
 
             // Set last grain index
             _LastGrainSampleIndex = sampleIndexNextGrainStart;

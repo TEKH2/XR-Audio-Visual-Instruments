@@ -57,7 +57,8 @@ public class GrainSpeaker : MonoBehaviour
             print(name + " grains p/s:   " + _GrainsPerSecond + "   samples p/s: " + _SamplesEmittedPerSecond + "   layered samples per read: " + _LayeredSamples);
     }
 
-    public void EmitGrain(GrainData grainData)
+    // TODO make single method
+    public void AddGrainData(GrainData grainData)
     {
         // Init grain with data
         AddGrainData(grainData,
@@ -68,7 +69,7 @@ public class GrainSpeaker : MonoBehaviour
 
     void AddGrainData(GrainData gd, float[] clipSamples, int freq, AnimationCurve windowCurve, bool debugLog = false, bool traditionalWindowing = false)
     {
-        Profiler.BeginSample("Add Grains 1");
+        //Profiler.BeginSample("Add Grains 1");
         _GrainsThisFrame++;
 
         // Get a grain from the pool if there are any spare
@@ -84,8 +85,8 @@ public class GrainSpeaker : MonoBehaviour
         int durationInSamples = (int)(freq / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
 
-        Profiler.EndSample();
-        Profiler.BeginSample("Add Grains 2");
+        //Profiler.EndSample();
+        //Profiler.BeginSample("Add Grains 2");
 
         // -----------------------------------------BUILD SAMPLE ARRAY        
         int sourceIndex;
@@ -109,8 +110,8 @@ public class GrainSpeaker : MonoBehaviour
                 grainPlaybackData._TempSampleBuffer[i] = clipSamples[sourceIndex];
         }
 
-        Profiler.EndSample();
-        Profiler.BeginSample("Add Grains 3");
+        //Profiler.EndSample();
+        //Profiler.BeginSample("Add Grains 3");
 
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
@@ -132,7 +133,7 @@ public class GrainSpeaker : MonoBehaviour
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
 
-        Profiler.EndSample();
+        //Profiler.EndSample();
     }
 
     public void Deactivate()
@@ -235,7 +236,7 @@ public class GrainSpeaker : MonoBehaviour
     public bool _DEBUG_LerpPitching = true;
     public static float GetValueFromNormPosInArray(float[] array, float norm, int length, bool lerpResult = true)
     {
-        Profiler.BeginSample("Pitching");
+        //Profiler.BeginSample("Pitching");
         norm %= 1;
         float floatIndex = norm * (length - 1);
         int lowerIndex = (int)Mathf.Floor(floatIndex);
@@ -250,7 +251,7 @@ public class GrainSpeaker : MonoBehaviour
         float lerp = norm % 1;
         float output = Mathf.Lerp(array[lowerIndex], array[upperIndex], lerp);
 
-        Profiler.EndSample();
+        //Profiler.EndSample();
 
         return output;       
     }

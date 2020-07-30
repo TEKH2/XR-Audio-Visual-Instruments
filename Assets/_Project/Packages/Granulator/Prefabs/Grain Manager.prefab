@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1244338074411448928}
   - component: {fileID: 117573266}
   m_Layer: 0
-  m_Name: Granulator Manager
+  m_Name: Grain Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,17 +48,41 @@ MonoBehaviour:
     _Clips:
     - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
     - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
-  _GrainAudioSourcePrefab: {fileID: -3690036044928456836, guid: bcef41c955a087d4694f38d3ff97d611,
+  _GrainSpeakerPrefab: {fileID: -3690036044928456836, guid: bcef41c955a087d4694f38d3ff97d611,
     type: 3}
-  _ActiveOutputs: []
-  _InactiveOutputs: []
-  _AllGrainEmitters: []
   _EmissionLatencyMS: 80
-  _MaxDistBetweenEmitterAndSource: 1
-  _MaxAudioSources: 1
+  _MaxDistBetweenEmitterAndSpeaker: 1
+  _MaxGrainSpeakers: 10
   _WindowingCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0.06395143
+      outSlope: -0.06395143
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.08010825
+    - serializedVersion: 3
+      time: 0.505
+      value: 1.0021012
+      inSlope: -0.020437717
+      outSlope: -0.020437717
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: -0.00038984418
+      inSlope: 0.068153195
+      outSlope: 0.068153195
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06513222
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
