@@ -104,7 +104,7 @@ MonoBehaviour:
     _DurationRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-    _Volume: 2
+    _Volume: 1
     _VolumeRandom: 0
   _RandomizedPlaybackPos: 0
   _Active: 0

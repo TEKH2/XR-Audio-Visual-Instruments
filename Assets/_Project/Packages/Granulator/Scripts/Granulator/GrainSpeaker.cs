@@ -39,7 +39,9 @@ public class GrainSpeaker : MonoBehaviour
 
         _Window = new float[512];
         for (int i = 0; i < _Window.Length; i++)        
-            _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));        
+            _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
+
+        _FilterSignal._Type = DSP_Filter.FilterType.None;
     }
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
@@ -70,7 +72,6 @@ public class GrainSpeaker : MonoBehaviour
     // TODO make single method
     public void AddGrainData(GrainData gd)
     {
-        //Profiler.BeginSample("Add Grains 1");
         _GrainsThisFrame++;
 
         // Get a grain from the pool if there are any spare
@@ -82,15 +83,12 @@ public class GrainSpeaker : MonoBehaviour
         _FilterSignal.fc = gd._Coefficients;
         float filteredSample;
 
-        int sampleLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
-
-        int playheadSampleIndex = (int)(gd._PlayheadPos * sampleLength);
+        int audioClipLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
+        int playheadSampleIndex = (int)(gd._PlayheadPos * audioClipLength);
         int durationInSamples = (int)(_GranulatorManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
 
-        //Profiler.EndSample();
         Profiler.BeginSample("Add Grains 2");
-
         // -----------------------------------------BUILD SAMPLE ARRAY        
         int sourceIndex;
         // Construct grain sample data
@@ -100,7 +98,7 @@ public class GrainSpeaker : MonoBehaviour
             sourceIndex = playheadSampleIndex + i;
 
             // Ping-pong audio sample read
-            sourceIndex = (int)Mathf.PingPong(sourceIndex, sampleLength - 1);
+            // sourceIndex = (int)Mathf.PingPong(sourceIndex, audioClipLength - 1);
 
             if (_FilterSignal._Type != DSP_Filter.FilterType.None)
             {
@@ -119,17 +117,8 @@ public class GrainSpeaker : MonoBehaviour
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
         {
-            if (_TraditionalWindowing)
-                grainPlaybackData._GrainSamples[i] *= _Window[(int)Map(i, 0, durationInSamples, 0, _Window.Length)];
-            else
-            {
-                // Find the norm along the array
-                float norm = i / (durationInSamples - 1f);
-                float windowedVolume = _GranulatorManager._WindowingCurve.Evaluate(norm);
-                grainPlaybackData._GrainSamples[i] *= windowedVolume * gd._Volume;
-            }           
+            grainPlaybackData._GrainSamples[i] *= _Window[(int)Map(i, 0, durationInSamples, 0, _Window.Length)];
         }
-
         Profiler.EndSample();
 
         Profiler.BeginSample("Pitching");
@@ -139,9 +128,12 @@ public class GrainSpeaker : MonoBehaviour
             // Find the norm along the array
             float norm = i / (durationInSamples - 1f);
             float pitchedNorm = norm * gd._Pitch;
-            float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
 
-            grainPlaybackData._GrainSamples[i] = sample;
+            // TODO this is the slow part of the process
+            //float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
+            //grainPlaybackData._GrainSamples[i] = sample;
+
+            grainPlaybackData._GrainSamples[i] = grainPlaybackData._TempSampleBuffer[i];
         }
         Profiler.EndSample();
 
@@ -152,8 +144,6 @@ public class GrainSpeaker : MonoBehaviour
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
     }
-
-    public bool _TraditionalWindowing = false;
 
     public void Deactivate()
     {
