@@ -102,9 +102,7 @@ public class GrainSpeaker : MonoBehaviour
         // Construct grain sample data
         for (int i = 0; i < durationInSamples; i++)
         {
-            // Offset to source audio sample position for grain
-            //sourceIndex = playheadStartSample + i;
-
+            // Replacement pingpong function
             if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
             {
                 increment = increment * -1f;
@@ -115,20 +113,16 @@ public class GrainSpeaker : MonoBehaviour
 
             sourceIndexRemainder = sourceIndex % 1;
 
-            sourceValue = Mathf.Lerp(
-                _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex],
-                _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex + 1],
-                sourceIndexRemainder);
+            // Interpolate sample if not integer
+            if (sourceIndexRemainder != 0)
+                sourceValue = Mathf.Lerp(
+                    _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex],
+                    _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex + 1],
+                    sourceIndexRemainder);
+            else
+                sourceValue = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex];
 
-            //sourceValue = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex];
-
-            grainPlaybackData._TempSampleBuffer[i] = sourceValue;
-
-
-            // Ping-pong audio sample read
-            // sourceIndex = (int)Mathf.PingPong(sourceIndex, audioClipLength - 1);
-
-            //grainPlaybackData._TempSampleBuffer[i] = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex];
+            grainPlaybackData._GrainSamples[i] = sourceValue;
         }
         Profiler.EndSample();
 
@@ -137,25 +131,8 @@ public class GrainSpeaker : MonoBehaviour
         if (_FilterSignal._Type != DSP_Filter.FilterType.None)
             for (int i = 0; i < durationInSamples; i++)
             {
-                grainPlaybackData._TempSampleBuffer[i] = _FilterSignal.Apply(grainPlaybackData._TempSampleBuffer[i]);
+                grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
             }
-
-
-        Profiler.BeginSample("Pitching");
-        // Pitching samples
-        for (int i = 0; i < durationInSamples; i++)
-        {
-            // Find the norm along the array
-            float norm = i / (durationInSamples - 1f);
-            float pitchedNorm = norm * gd._Pitch;
-
-            // TODO this is the slow part of the process
-            //float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
-            //grainPlaybackData._GrainSamples[i] = sample;
-
-            grainPlaybackData._GrainSamples[i] = grainPlaybackData._TempSampleBuffer[i];
-        }
-        Profiler.EndSample();
 
 
         Profiler.BeginSample("Windowing");
