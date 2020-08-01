@@ -37,6 +37,7 @@ public class GrainSpeaker : MonoBehaviour
     {
         _GranulatorManager = GrainManager.Instance;         
 
+        // Build windowing lookup table: Hanning function
         _Window = new float[512];
         for (int i = 0; i < _Window.Length; i++)        
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
@@ -84,42 +85,59 @@ public class GrainSpeaker : MonoBehaviour
         float filteredSample;
 
         int audioClipLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
-        int playheadSampleIndex = (int)(gd._PlayheadPos * audioClipLength);
+        int playheadStartSample = (int)(gd._PlayheadPos * audioClipLength);
         int durationInSamples = (int)(_GranulatorManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
 
+
+
         Profiler.BeginSample("Add Grains 2");
         // -----------------------------------------BUILD SAMPLE ARRAY        
-        int sourceIndex;
+        //int sourceIndex = playheadStartSample;
+
+        float incrementAmount = gd._Pitch;
+        bool reverse = false;
+        float sourceValue = 0f;
+        float sourceIndexTemp = playheadStartSample;
+        float sourceIndexRemainder = 0f;
+
         // Construct grain sample data
         for (int i = 0; i < durationInSamples; i++)
         {
             // Offset to source audio sample position for grain
-            sourceIndex = playheadSampleIndex + i;
+            //sourceIndex = playheadStartSample + i;
+
+
+            if (reverse)
+                sourceIndexTemp += incrementAmount;
+            else
+                sourceIndexTemp -= incrementAmount;
+
+            sourceIndexRemainder = sourceIndexTemp % 1;
+
+            sourceValue = Mathf.Lerp(
+                _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndexTemp],
+                _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndexTemp+1],
+                sourceIndexRemainder);
+
+            grainPlaybackData._TempSampleBuffer[i] = sourceValue;
+
 
             // Ping-pong audio sample read
             // sourceIndex = (int)Mathf.PingPong(sourceIndex, audioClipLength - 1);
 
-            if (_FilterSignal._Type != DSP_Filter.FilterType.None)
+            //grainPlaybackData._TempSampleBuffer[i] = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex];
+        }
+        Profiler.EndSample();
+
+
+        // Apply DSP filter
+        if (_FilterSignal._Type != DSP_Filter.FilterType.None)
+            for (int i = 0; i < durationInSamples; i++)
             {
-                filteredSample = _FilterSignal.Apply(_GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex]);
-
-                // Fill temp sample buffer
-                grainPlaybackData._TempSampleBuffer[i] = filteredSample;
+                grainPlaybackData._TempSampleBuffer[i] = _FilterSignal.Apply(grainPlaybackData._TempSampleBuffer[i]);
             }
-            else
-                grainPlaybackData._TempSampleBuffer[i] = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex];
-        }
 
-        Profiler.EndSample();
-
-        Profiler.BeginSample("Windowing");
-        // Window samples
-        for (int i = 0; i < durationInSamples; i++)
-        {
-            grainPlaybackData._GrainSamples[i] *= _Window[(int)Map(i, 0, durationInSamples, 0, _Window.Length)];
-        }
-        Profiler.EndSample();
 
         Profiler.BeginSample("Pitching");
         // Pitching samples
@@ -136,6 +154,16 @@ public class GrainSpeaker : MonoBehaviour
             grainPlaybackData._GrainSamples[i] = grainPlaybackData._TempSampleBuffer[i];
         }
         Profiler.EndSample();
+
+
+        Profiler.BeginSample("Windowing");
+        // Window samples
+        for (int i = 0; i < durationInSamples; i++)
+        {
+            grainPlaybackData._GrainSamples[i] *= _Window[(int)Map(i, 0, durationInSamples, 0, _Window.Length)];
+        }
+        Profiler.EndSample();
+
 
         grainPlaybackData._IsPlaying = true;
         grainPlaybackData._PlaybackIndex = 0;

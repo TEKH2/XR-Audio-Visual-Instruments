@@ -371,7 +371,7 @@ public class GrainEmissionProps
     {
         get
         {
-            _Pitch = TransposeToPitch(Mathf.Clamp(_Transpose + UnityEngine.Random.Range(-_TransposeRandom, _TransposeRandom), -5f, 5f));
+            _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -5f, 5f));
             return Mathf.Clamp(_Pitch, 0.1f, 5f);
         }
         set
