@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 public class GrainSpeaker : MonoBehaviour
 {
     #region VARIABLES
-    GrainManager _GranulatorManager;
+    GrainManager _GrainManager;
     public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
     [HideInInspector]
@@ -35,14 +35,14 @@ public class GrainSpeaker : MonoBehaviour
 
     private void Start()
     {
-        _GranulatorManager = GrainManager.Instance;         
+        _GrainManager = GrainManager.Instance;         
 
         // Build windowing lookup table: Hanning function
         _Window = new float[512];
         for (int i = 0; i < _Window.Length; i++)        
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
 
-        _FilterSignal._Type = DSP_Filter.FilterType.None;
+        //_FilterSignal._Type = DSP_Filter.FilterType.None;
     }
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
@@ -83,9 +83,9 @@ public class GrainSpeaker : MonoBehaviour
 
         _FilterSignal.fc = gd._Coefficients;
 
-        int audioClipLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
+        int audioClipLength = _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
         int playheadStartSample = (int)(gd._PlayheadPos * audioClipLength);
-        int durationInSamples = (int)(_GranulatorManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
+        int durationInSamples = (int)(_GrainManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
 
 
@@ -116,11 +116,11 @@ public class GrainSpeaker : MonoBehaviour
             // Interpolate sample if not integer
             if (sourceIndexRemainder != 0)
                 sourceValue = Mathf.Lerp(
-                    _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex],
-                    _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex + 1],
+                    _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex],
+                    _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex + 1],
                     sourceIndexRemainder);
             else
-                sourceValue = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex];
+                sourceValue = _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex];
 
             grainPlaybackData._GrainSamples[i] = sourceValue;
         }

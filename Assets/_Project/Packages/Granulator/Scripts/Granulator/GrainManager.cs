@@ -78,7 +78,7 @@ public class GrainManager : MonoBehaviour
 
         _AllGrainEmitters = FindObjectsOfType<GrainEmitter>().ToList();
 
-        print("Granualtor Manager initialized. Grains created: " + _InactiveSpeakers.Count);
+        print("Grain Manager initialized. Grains created: " + _InactiveSpeakers.Count);
     }
 
     void Update()
@@ -357,6 +357,46 @@ public class GrainEmissionProps
     }
 
     [Header("Effects")]
+    // Volume
+    //---------------------------------------------------------------------
+    [Range(0.0f, 2.0f)]
+    [SerializeField]
+    float _Volume = 1;          // from 0 > 1
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    float _VolumeRandom = 0;      // from 0 > 1
+    public float Volume
+    {
+        get
+        {
+            return Mathf.Clamp(_Volume + UnityEngine.Random.Range(-_VolumeRandom, _VolumeRandom), 0f, 3f);
+        }
+        set
+        {
+            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
+        }
+    }
+
+    // Filter
+    //---------------------------------------------------------------------
+    [Range(0f, 1f)]
+    [SerializeField]
+    float _CutoffNormalised = 0;
+    float _CutoffFrequency = 1000;
+
+    public float CutoffFrequency
+    {
+        get
+        {
+            return AudioUtils.FreqToNorm(_CutoffFrequency);
+        }
+        set
+        {
+            _CutoffFrequency = AudioUtils.NormToFreq(value);
+        }
+    }
+
+
     // Transpose
     //---------------------------------------------------------------------
     [Range(-4f, 4f)]
@@ -380,39 +420,8 @@ public class GrainEmissionProps
         }
     }
 
-    // Converts the more human-readable value of transpose to pitch values for the grains
-    private float TransposeToPitch(float transpose)
-    {
-        float pitch = 1;
-
-        if (transpose < 0)
-            pitch = (1 / (1 + Mathf.Abs(transpose)));
-        else if (transpose > 0)
-            pitch = transpose + 1;
-
-        return pitch;
-    }
 
 
-    // Volume
-    //---------------------------------------------------------------------
-    [Range(0.0f, 2.0f)]
-    [SerializeField]
-    float _Volume = 1;          // from 0 > 1
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    float _VolumeRandom = 0;      // from 0 > 1
-    public float Volume
-    {
-        get
-        {
-            return Mathf.Clamp(_Volume + UnityEngine.Random.Range(-_VolumeRandom, _VolumeRandom), 0f, 3f);
-        }
-        set
-        {
-            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
-        }
-    }
 
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,
         float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
