@@ -3172,8 +3172,9 @@ Transform:
   m_Children:
   - {fileID: 704073971}
   - {fileID: 563525127}
+  - {fileID: 1621965813}
   m_Father: {fileID: 1526626358}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &639621249
 GameObject:
@@ -4211,10 +4212,15 @@ MonoBehaviour:
     _CadenceRandom: 0
     _Duration: 20
     _DurationRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
+    _FilterProperties:
+      Type: 0
+      _CutoffNormalised: 0.5
+      _Gain: 1
+      _Q: 1
   _RandomizedPlaybackPos: 0
   _Active: 0
 --- !u!23 &890891116
@@ -7073,7 +7079,6 @@ Transform:
   - {fileID: 1193177330}
   - {fileID: 1819057326}
   - {fileID: 1883394105}
-  - {fileID: 1621965813}
   - {fileID: 600794045}
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -7785,14 +7790,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1621965812}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1679825302}
   - {fileID: 1732338761}
-  m_Father: {fileID: 1526626358}
-  m_RootOrder: 9
+  m_Father: {fileID: 600794045}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1639877264
 GameObject:

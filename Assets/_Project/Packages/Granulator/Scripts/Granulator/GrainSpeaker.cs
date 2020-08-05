@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 public class GrainSpeaker : MonoBehaviour
 {
     #region VARIABLES
-    GrainManager _GranulatorManager;
+    GrainManager _GrainManager;
     public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
     [HideInInspector]
@@ -35,13 +35,14 @@ public class GrainSpeaker : MonoBehaviour
 
     private void Start()
     {
-        _GranulatorManager = GrainManager.Instance;         
+        _GrainManager = GrainManager.Instance;         
 
+        // Build windowing lookup table: Hanning function
         _Window = new float[512];
         for (int i = 0; i < _Window.Length; i++)        
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
 
-        _FilterSignal._Type = DSP_Filter.FilterType.None;
+        //_FilterSignal._Type = DSP_Filter.FilterType.None;
     }
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
@@ -81,37 +82,57 @@ public class GrainSpeaker : MonoBehaviour
             return;
 
         _FilterSignal.fc = gd._Coefficients;
-        float filteredSample;
 
-        int audioClipLength = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
-        int playheadSampleIndex = (int)(gd._PlayheadPos * audioClipLength);
-        int durationInSamples = (int)(_GranulatorManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
+        int audioClipLength = _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
+        int playheadStartSample = (int)(gd._PlayheadPos * audioClipLength);
+        int durationInSamples = (int)(_GrainManager._AudioClipLibrary._Clips[gd._ClipIndex].frequency / 1000 * gd._Duration);
         _SamplesThisFrame += durationInSamples;
+
+
 
         Profiler.BeginSample("Add Grains 2");
         // -----------------------------------------BUILD SAMPLE ARRAY        
-        int sourceIndex;
+        //int sourceIndex = playheadStartSample;
+
+        float increment = gd._Pitch;
+        float sourceValue = 0f;
+        float sourceIndex = playheadStartSample;
+        float sourceIndexRemainder = 0f;
+
         // Construct grain sample data
         for (int i = 0; i < durationInSamples; i++)
         {
-            // Offset to source audio sample position for grain
-            sourceIndex = playheadSampleIndex + i;
-
-            // Ping-pong audio sample read
-            // sourceIndex = (int)Mathf.PingPong(sourceIndex, audioClipLength - 1);
-
-            if (_FilterSignal._Type != DSP_Filter.FilterType.None)
+            // Replacement pingpong function
+            if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
             {
-                filteredSample = _FilterSignal.Apply(_GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex]);
-
-                // Fill temp sample buffer
-                grainPlaybackData._TempSampleBuffer[i] = filteredSample;
+                increment = increment * -1f;
+                sourceIndex -= 1;
             }
+
+            sourceIndex += increment;
+            sourceIndexRemainder = sourceIndex % 1;
+
+            // Interpolate sample if not integer
+            if (sourceIndexRemainder != 0)
+                sourceValue = Mathf.Lerp(
+                    _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex],
+                    _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex + 1],
+                    sourceIndexRemainder);
             else
-                grainPlaybackData._TempSampleBuffer[i] = _GranulatorManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][sourceIndex];
+                sourceValue = _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex][(int)sourceIndex];
+
+            grainPlaybackData._GrainSamples[i] = sourceValue;
+        }
+        Profiler.EndSample();
+
+
+        // Apply DSP filter
+        //if (_FilterSignal._Type != DSP_Filter.FilterType.None)
+        for (int i = 0; i < durationInSamples; i++)
+        {
+            grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
         }
 
-        Profiler.EndSample();
 
         Profiler.BeginSample("Windowing");
         // Window samples
@@ -121,21 +142,6 @@ public class GrainSpeaker : MonoBehaviour
         }
         Profiler.EndSample();
 
-        Profiler.BeginSample("Pitching");
-        // Pitching samples
-        for (int i = 0; i < durationInSamples; i++)
-        {
-            // Find the norm along the array
-            float norm = i / (durationInSamples - 1f);
-            float pitchedNorm = norm * gd._Pitch;
-
-            // TODO this is the slow part of the process
-            //float sample = GetValueFromNormPosInArray(grainPlaybackData._TempSampleBuffer, pitchedNorm, durationInSamples, _DEBUG_LerpPitching);
-            //grainPlaybackData._GrainSamples[i] = sample;
-
-            grainPlaybackData._GrainSamples[i] = grainPlaybackData._TempSampleBuffer[i];
-        }
-        Profiler.EndSample();
 
         grainPlaybackData._IsPlaying = true;
         grainPlaybackData._PlaybackIndex = 0;

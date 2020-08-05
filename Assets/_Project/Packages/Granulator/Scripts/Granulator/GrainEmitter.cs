@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Generates grains that are fed into a grain audio source to be played back
+// Generates grains that are fed into a grain speaker to be played back
 public class GrainEmitter : MonoBehaviour
 {
     #region VARIABLES
     public GrainEmissionProps _GrainEmissionProps;
-    public FilterCoefficients _FilterCoefficients; //TODO reimpliment
+    private FilterCoefficients _FilterCoefficients; //TODO reimpliment
     
     int _LastGrainSampleIndex = 0;
 
@@ -40,6 +40,9 @@ public class GrainEmitter : MonoBehaviour
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
+
+        _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
+
         while (sampleIndexNextGrainStart <= maxDSPIndex)
         {
             GrainData tempGrainData = new GrainData
@@ -53,7 +56,7 @@ public class GrainEmitter : MonoBehaviour
                 sampleIndexNextGrainStart
             );
 
-            // EMit grain from manager
+            // Emit grain from manager
             speaker.AddGrainData(tempGrainData);
 
             // Set last grain index
