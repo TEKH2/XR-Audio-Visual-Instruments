@@ -16,33 +16,38 @@ public class FilterProperties
     const float _LowLimit = 20f;
     const float _HighLimit = 20000f;
 
-    [Range(_LowLimit, _HighLimit)]
+
+    // Filter
+    //---------------------------------------------------------------------
+    [Range(0f, 1f)]
     [SerializeField]
-    float _Cutoff = 1000;
-    public float Cutoff
+    float _CutoffNormalised = 0.5f;
+    float _CutoffFrequency = 2000;
+
+    public float CutoffFrequency
     {
         get
         {
-            return Mathf.Clamp(_Cutoff, _LowLimit, _HighLimit);
+            return AudioUtils.NormToFreq(_CutoffNormalised);
         }
         set
         {
-            _Cutoff = (int)Mathf.Clamp(value, _LowLimit, _HighLimit);
+            _CutoffFrequency = AudioUtils.NormToFreq(value);
         }
     }
 
-    [Range(0, 1)]
+    [Range(0.05f, 1)]
     [SerializeField]
     float _Gain = 1;
     public float Gain
     {
         get
         {
-            return Mathf.Clamp(_Gain, 0f, 1f);
+            return Mathf.Clamp(_Gain, 0.5f, 1f);
         }
         set
         {
-            _Gain = (int)Mathf.Clamp(value, 0f, 1f);
+            _Gain = (int)Mathf.Clamp(value, 0.5f, 1f);
         }
     }
 
@@ -163,7 +168,7 @@ public class DSP_Filter
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.Cutoff * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
@@ -186,7 +191,7 @@ public class DSP_Filter
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.Cutoff * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
@@ -206,7 +211,7 @@ public class DSP_Filter
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.Cutoff * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
@@ -226,7 +231,7 @@ public class DSP_Filter
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.Cutoff * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
@@ -249,7 +254,7 @@ public class DSP_Filter
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.Cutoff * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 

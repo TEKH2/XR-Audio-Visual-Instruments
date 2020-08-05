@@ -35,7 +35,7 @@ public class AudioUtils
 
     public static float NormToFreq(float norm)
     {
-        float freq = 700 * (Mathf.Pow(10, norm / 2595) - 1) * 3800;
+        float freq = 700 * (Mathf.Pow(10, ( norm * 3800 ) / 2595) - 1);
         return Mathf.Clamp(freq, 20, 20000);
     }
 
