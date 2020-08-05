@@ -48,7 +48,7 @@
     },
     "com.unity.collections": {
       "version": "0.11.0-preview.17",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework.performance": "2.0.8-preview",
@@ -58,7 +58,7 @@
     },
     "com.unity.entities": {
       "version": "0.13.0-preview.24",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.3.2",
@@ -106,7 +106,7 @@
     },
     "com.unity.jobs": {
       "version": "0.4.0-preview.18",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.collections": "0.11.0-preview.17",
@@ -147,7 +147,7 @@
     },
     "com.unity.platforms": {
       "version": "0.6.0-preview.1",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.properties": "1.3.1-preview",
@@ -169,7 +169,7 @@
     },
     "com.unity.properties": {
       "version": "1.3.1-preview",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "nuget.mono-cecil": "0.1.5-preview",
@@ -179,7 +179,7 @@
     },
     "com.unity.properties.ui": {
       "version": "1.3.1-preview",
-      "depth": 2,
+      "depth": 3,
       "source": "registry",
       "dependencies": {
         "com.unity.properties": "1.3.1-preview",
@@ -245,7 +245,7 @@
     },
     "com.unity.serialization": {
       "version": "1.3.1-preview",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.collections": "0.8.0-preview.5",
