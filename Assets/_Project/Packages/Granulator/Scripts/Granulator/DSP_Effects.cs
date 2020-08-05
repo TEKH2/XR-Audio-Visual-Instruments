@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Threading;
 using UnityEngine;
 
 
 // Front-end filter properties (shouldn't be passed to grains)
 [System.Serializable]
-public class FilterProperties
+public class DSP_Properties
 {
-    public DSP_Filter.FilterType Type;
+    public DSP_Effects.FilterType Type;
 
     const float _LowLimit = 20f;
     const float _HighLimit = 20000f;
@@ -21,48 +22,65 @@ public class FilterProperties
     //---------------------------------------------------------------------
     [Range(0f, 1f)]
     [SerializeField]
-    float _CutoffNormalised = 0.5f;
-    float _CutoffFrequency = 2000;
+    float _FilterCutoffNorm = 0.5f;
+    float _FilterCutoffFreq = 2000;
 
-    public float CutoffFrequency
+    public float FilterCutoff
     {
         get
         {
-            return AudioUtils.NormToFreq(_CutoffNormalised);
+            return AudioUtils.NormToFreq(_FilterCutoffNorm);
         }
         set
         {
-            _CutoffFrequency = AudioUtils.NormToFreq(value);
+            _FilterCutoffFreq = AudioUtils.NormToFreq(value);
         }
     }
 
     [Range(0.05f, 1)]
     [SerializeField]
-    float _Gain = 1;
-    public float Gain
+    float _FilterGain = 1;
+    public float FilterGain
     {
         get
         {
-            return Mathf.Clamp(_Gain, 0.5f, 1f);
+            return Mathf.Clamp(_FilterGain, 0.5f, 1f);
         }
         set
         {
-            _Gain = (int)Mathf.Clamp(value, 0.5f, 1f);
+            _FilterGain = (int)Mathf.Clamp(value, 0.5f, 1f);
         }
     }
 
     [Range(0.1f, 5)]
     [SerializeField]
-    float _Q = 1;
-    public float Q
+    float _FilterQ = 1;
+    public float FilterQ
     {
         get
         {
-            return Mathf.Clamp(_Q, 0.1f, 5f);
+            return Mathf.Clamp(_FilterQ, 0.1f, 5f);
         }
         set
         {
-            _Q = (int)Mathf.Clamp(value, 0.1f, 5f);
+            _FilterQ = (int)Mathf.Clamp(value, 0.1f, 5f);
+        }
+    }
+
+    // Filter
+    //---------------------------------------------------------------------
+    [Range(0, 50f)]
+    [SerializeField]
+    float _BitcrushAmount = 1;
+    public float BitcrushAmount
+    {
+        get
+        {
+            return Mathf.Clamp(_BitcrushAmount, 0.1f, 5f);
+        }
+        set
+        {
+            _BitcrushAmount = (int)Mathf.Clamp(value, 0.1f, 5f);
         }
     }
 }
@@ -86,7 +104,7 @@ public class FilterCoefficients
 // Instantiated within each grain to maintain a very short history of the audio signal
 public class FilterSignal
 {
-    public DSP_Filter.FilterType _Type = DSP_Filter.FilterType.None;
+    public DSP_Effects.FilterType _Type = DSP_Effects.FilterType.None;
 
     public float previousX1 = 0;
     public float previousX2 = 0;
@@ -131,8 +149,31 @@ public class FilterSignal
     }
 }
 
+public class BitcrushSignal
+{
+    public float downsampleFactor = 0;
+    private float previousValue = 0;
+    private int count = 0;
 
-public class DSP_Filter
+    public float Apply(float sampleIn)
+    {
+        float sampleOut;
+
+        if (count >= downsampleFactor)
+        {
+            sampleOut = sampleIn;
+            previousValue = sampleOut;
+            count = 0;
+        }
+        else
+            sampleOut = previousValue;
+
+        return sampleOut;
+    }
+}
+
+
+public class DSP_Effects
 {
     static float _SampleRate = AudioSettings.outputSampleRate;
 
@@ -146,7 +187,7 @@ public class DSP_Filter
     }
 
     // This function is called to construct FilterData from FilterProperties based on the type
-    public static FilterCoefficients CreateCoefficents(FilterProperties fp)
+    public static FilterCoefficients CreateCoefficents(DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients;
 
@@ -164,16 +205,16 @@ public class DSP_Filter
         return newFilterCoefficients;
     }
 
-    private static FilterCoefficients LowPass (FilterProperties fp)
+    private static FilterCoefficients LowPass (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.FilterCutoff * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
-        float igain = 1.0f / fp.Gain;
-        float one_over_Q = 1.0f / fp.Q;
+        float igain = 1.0f / fp.FilterGain;
+        float one_over_Q = 1.0f / fp.FilterQ;
         float alpha = sn * 0.5f * one_over_Q;
 
         float b0 = 1.0f / (1.0f + alpha);
@@ -187,15 +228,15 @@ public class DSP_Filter
         return newFilterCoefficients;
     }
 
-    private static FilterCoefficients HiPass (FilterProperties fp)
+    private static FilterCoefficients HiPass (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.FilterCutoff * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
-        float alpha = sn * 0.5f / fp.Q;
+        float alpha = sn * 0.5f / fp.FilterQ;
 
         float b0 = 1.0f / (1.0f + alpha);
         newFilterCoefficients.a2 = ((1.0f + cs) * 0.5f) * b0;
@@ -207,15 +248,15 @@ public class DSP_Filter
         return newFilterCoefficients;
     }
 
-    private static FilterCoefficients BandPass (FilterProperties fp)
+    private static FilterCoefficients BandPass (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.FilterCutoff * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
-        float alpha = sn * 0.5f / fp.Q;
+        float alpha = sn * 0.5f / fp.FilterQ;
 
         float b0 = 1.0f / (1.0f + alpha);
         newFilterCoefficients.a0 = alpha * b0;
@@ -227,17 +268,17 @@ public class DSP_Filter
         return newFilterCoefficients;
     }
 
-    private static FilterCoefficients PeakNotch (FilterProperties fp)
+    private static FilterCoefficients PeakNotch (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.FilterCutoff * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
-        float alpha = sn * 0.5f / fp.Q;
+        float alpha = sn * 0.5f / fp.FilterQ;
 
-        float A = Mathf.Sqrt(fp.Gain);
+        float A = Mathf.Sqrt(fp.FilterGain);
         float one_over_A = 1.0f / A;
         float b0 = 1.0f / (1.0f + alpha * one_over_A);
 
@@ -250,15 +291,15 @@ public class DSP_Filter
         return newFilterCoefficients;
     }
 
-    private static FilterCoefficients AllPass (FilterProperties fp)
+    private static FilterCoefficients AllPass (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();
 
-        float omega = fp.CutoffFrequency * 2 * Mathf.PI / _SampleRate;
+        float omega = fp.FilterCutoff * 2 * Mathf.PI / _SampleRate;
         float sn = Mathf.Sin(omega);
         float cs = Mathf.Cos(omega);
 
-        float alpha = sn * 0.5f / fp.Q;
+        float alpha = sn * 0.5f / fp.FilterQ;
 
         float b0 = 1.0f / (1.0f + alpha);
         newFilterCoefficients.b1 = (-2.0f * cs) * b0;

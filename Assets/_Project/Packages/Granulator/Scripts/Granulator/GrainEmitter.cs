@@ -41,7 +41,7 @@ public class GrainEmitter : MonoBehaviour
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
 
-        _FilterCoefficients = DSP_Filter.CreateCoefficents(_GrainEmissionProps._FilterProperties);
+        _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
 
         while (sampleIndexNextGrainStart <= maxDSPIndex)
         {
