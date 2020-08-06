@@ -44,7 +44,7 @@ public class GrainSpeaker : MonoBehaviour
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
     }
 
-    public void ManualUpdate(int maxDSPIndex, int sampleRate)
+    public void ManualUpdate(int maxDSPIndex, int sampleRate, Vector3 listenerPos)
     {
         _GrainsThisFrame = 0;
         _SamplesThisFrame = 0;
@@ -54,7 +54,7 @@ public class GrainSpeaker : MonoBehaviour
         // Update emitters
         foreach(GrainEmitter emitter in _AttachedGrainEmitters)
         {
-            emitter.ManualUpdate(this, maxDSPIndex, sampleRate);
+            emitter.ManualUpdate(this, maxDSPIndex, sampleRate, listenerPos);
         }
         Profiler.EndSample();
 

@@ -10,7 +10,7 @@ public class GrainEmitter : MonoBehaviour
     private FilterCoefficients _FilterCoefficients; //TODO reimpliment
     private BitcrushSignal _Bitcrush;
 
-    
+    int _SamplesPerMeter;
     int _LastGrainSampleIndex = 0;
 
     public bool _RandomizedPlaybackPos = false;
@@ -29,10 +29,10 @@ public class GrainEmitter : MonoBehaviour
         _Active = true;
 
         if (_RandomizedPlaybackPos)
-            _GrainEmissionProps.Position = Random.Range(.1f, .9f);
+            _GrainEmissionProps.PlaybackPos = Random.Range(.1f, .9f);
     }
 
-    public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
+    public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate, Vector3 listenerPos)
     {
         if (!_Active)
             return;
@@ -42,6 +42,8 @@ public class GrainEmitter : MonoBehaviour
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
+        _SamplesPerMeter = 1 / 343 * sampleRate;
+        int distanceDelay = (int)(Vector3.Distance(listenerPos, this.transform.position) * _SamplesPerMeter);
 
         _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._DSP_Properties);
         _Bitcrush = new BitcrushSignal();
@@ -53,11 +55,12 @@ public class GrainEmitter : MonoBehaviour
             (
                 _GrainEmissionProps._ClipIndex,
                 _GrainEmissionProps.Duration,
-                _GrainEmissionProps.Position,
+                _GrainEmissionProps.PlaybackPos,
                 _GrainEmissionProps.Pitch,
                 _GrainEmissionProps.Volume,
                 _FilterCoefficients,
                 _Bitcrush,
+                distanceDelay,
                 sampleIndexNextGrainStart
             );
 

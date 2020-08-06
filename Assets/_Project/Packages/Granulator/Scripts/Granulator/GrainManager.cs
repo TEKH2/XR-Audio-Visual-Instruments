@@ -93,20 +93,20 @@ public class GrainManager : MonoBehaviour
        
         for (int i = _ActiveSpeakers.Count - 1; i >= 0; i--)
         {
-            float dist = Vector3.Distance(_AudioListener.transform.position, _ActiveSpeakers[i].transform.position);
+            float speakerDist = Vector3.Distance(_AudioListener.transform.position, _ActiveSpeakers[i].transform.position);
 
             // If out of range remove from the active output list
-            if (dist > _GrainSpeakerDeactivationDistance)
+            if (speakerDist > _GrainSpeakerDeactivationDistance)
             {
-                GrainSpeaker output = _ActiveSpeakers[i];
-                output.Deactivate();
-                _ActiveSpeakers.Remove(output);
-                _InactiveSpeakers.Add(output);
+                GrainSpeaker speaker = _ActiveSpeakers[i];
+                speaker.Deactivate();
+                _ActiveSpeakers.Remove(speaker);
+                _InactiveSpeakers.Add(speaker);
             }
             //  else update the output
             else
             {
-                _ActiveSpeakers[i].ManualUpdate(sampleIndexMax, _SampleRate);
+                _ActiveSpeakers[i].ManualUpdate(sampleIndexMax, _SampleRate, _AudioListener.transform.position);
                 layeredSamplesThisFrame += _ActiveSpeakers[i]._LayeredSamples;
                 _ActiveEmitters += _ActiveSpeakers[i]._AttachedGrainEmitters.Count;
             }
@@ -252,23 +252,20 @@ public class GrainManager : MonoBehaviour
 #region Grain data classes
 public class GrainData
 {
-    public int _StartDSPSampleIndex;
-
-    // Optimum 10ms - 60ms
+    public int _ClipIndex;
     public float _Duration;
     public float _PlayheadPos;
     public float _Pitch;
     public float _Volume;
     public FilterCoefficients _Coefficients;
     public BitcrushSignal _Bitcrush;
-
-    public int _ClipIndex;
+    public int _DistanceDelay;
 
     public int _StartSampleIndex;
 
     public GrainData() { }
     public GrainData(int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int distanceDelay, int startSampleIndex)
     {
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
@@ -277,11 +274,12 @@ public class GrainData
         _Volume = volume;
         _Coefficients = fc;
         _Bitcrush = bc;
+        _DistanceDelay = distanceDelay;
         _StartSampleIndex = startSampleIndex;
     }
 
     public void Initialize(int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int distanceDelay, int startSampleIndex)
     {
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
@@ -290,6 +288,7 @@ public class GrainData
         _Volume = volume;
         _Coefficients = fc;
         _Bitcrush = bc;
+        _DistanceDelay = distanceDelay;
         _StartSampleIndex = startSampleIndex;
     }
 }
@@ -308,7 +307,7 @@ public class GrainEmissionProps
     [Range(0.0f, .1f)]
     [SerializeField]
     public float _PositionRandom = 0;
-    public float Position
+    public float PlaybackPos
     {
         get
         {
@@ -470,7 +469,6 @@ public class GrainPlaybackData
     {
         // instantiate the grain samples at the max length of a grain of 1 second worth of samples
         _GrainSamples = new float[44 * 1000];
-        _TempSampleBuffer = new float[44 * 1000];
     }
 }
 #endregion
