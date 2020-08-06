@@ -19,7 +19,7 @@ public class GrainSpeaker : MonoBehaviour
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-    int _MaxGrainDataCount = 200; 
+    int _MaxGrainDataCount = 500; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
@@ -157,7 +157,7 @@ public class GrainSpeaker : MonoBehaviour
     {
         _ActiveGrainPlaybackData.Add(playbackData);
 
-        //print("Active playback data: " + _ActiveGrainPlaybackData.Count);
+        //print("Active playback data: " + _ActiveGrainPlaybackData.Count + "    duration: " + playbackData._PlaybackSampleCount);
     }
 
     public void Deactivate()
@@ -213,13 +213,14 @@ public class GrainSpeaker : MonoBehaviour
     // Best performance - 46.43991
     // Good latency - 23.21995
     // Best latency - 11.60998
+
+    float _SamplesPerRead= 0;
     void OnAudioFilterRead(float[] data, int channels)
     {
-        int samples = 0;
+        _SamplesPerRead = 0;
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
-        {
-            samples++;
+        {            
             for (int i = 0; i < _ActiveGrainPlaybackData.Count; i++)
             {
                 GrainPlaybackData grainData = _ActiveGrainPlaybackData[i];
@@ -229,12 +230,16 @@ public class GrainSpeaker : MonoBehaviour
 
                 if (_CurrentDSPSampleIndex >= grainData._DSPStartIndex)
                 {
+                    //print("here");
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                     {
+                        //print("here2");
                         grainData._IsPlaying = false;
                     }
                     else
                     {
+                        _SamplesPerRead++;
+                        //print("here3..    "  + grainData._GrainSamples[grainData._PlaybackIndex]);
                         data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
                         grainData._PlaybackIndex++;
                     }
@@ -255,8 +260,12 @@ public class GrainSpeaker : MonoBehaviour
                 _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
                 // Remove from active pist
                 _ActiveGrainPlaybackData.RemoveAt(i);
+
+                //print("here 4");
             }
         }
+
+        print(_SamplesPerRead);
     }
 
     public bool _DEBUG_LerpPitching = true;

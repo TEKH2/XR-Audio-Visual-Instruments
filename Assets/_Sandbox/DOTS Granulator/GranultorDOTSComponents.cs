@@ -4,6 +4,7 @@ public struct EmitterComponent : IComponentData
 {
     public float _Timer;
     public float _Cadence;
+    public int _DurationInSamples;
 }
 
 public struct AudioClipDataComponent :IComponentData
@@ -17,14 +18,18 @@ public struct AudioClipDataComponent :IComponentData
 
 public struct GrainProcessor : IComponentData
 {
-    public int _SampleStartIndex;
-    public int _PlaybackStartIndex;
-    public int _LengthInSamples;
-    public bool _Populated;
-    public int _SpeakerIndex;
     public AudioClipDataComponent _AudioClipDataComponent;
 
-    //public BlobAssetReference<FloatBlobAsset> _ClipDataBlobAsset;
+    public float _PlaybackHeadSamplePos;
+    public int _DurationInSamples;
+
+    public float _Pitch;
+    public float _Volume;
+
+    public int _SpeakerIndex;
+   
+
+    public bool _Populated;
 }
 
 

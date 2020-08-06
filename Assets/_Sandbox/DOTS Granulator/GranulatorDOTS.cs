@@ -22,6 +22,10 @@ public class GranulatorDOTS :  MonoBehaviour
 
     List<Entity> _GrainEntities = new List<Entity>();
 
+    public float _Cadence = .1f;
+    public float _DurationInSeconds = .1f;
+
+    public int _NumEmitters = 1;
 
     public void Start()
     {
@@ -57,8 +61,11 @@ public class GranulatorDOTS :  MonoBehaviour
         }
 
         // -------------------------------------------------   CREATE EMITTER
-        Entity emitterEntity = _EntityManager.CreateEntity();
-        _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = .5f });
+        for (int i = 0; i < _NumEmitters; i++)
+        {
+            Entity emitterEntity = _EntityManager.CreateEntity();
+            _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = _Cadence, _DurationInSamples = (int)(_DurationInSeconds * 44100) });
+        }
     }
 
 
@@ -76,6 +83,10 @@ public class GranulatorDOTS :  MonoBehaviour
             if(grainProcessor._Populated)
             {
                 GrainPlaybackData playbackData = _GrainManager._AllSpeakers[0].GetGrainPlaybackDataFromPool();
+
+                if (playbackData == null)
+                    break;
+
                 NativeArray<float> samples = _EntityManager.GetBuffer<FloatBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
                 playbackData._IsPlaying = true;
@@ -91,6 +102,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 _GrainManager._AllSpeakers[0].AddGrainPlaybackData(playbackData);
 
                 //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
+                //print(".....Copying sample data over: " + samples[1500] + "     " + playbackData._GrainSamples[1500]);
             }
         }
 
@@ -138,10 +150,15 @@ public class GranulatorSystem : SystemBase
                     entityCommandBuffer.AddComponent(entityInQueryIndex, e, new GrainProcessor
                     {
                         _AudioClipDataComponent = audioClipData[0],
-                        _SampleStartIndex = 1000,
-                        _LengthInSamples = 30000,
-                        _Populated = false,
-                        _SpeakerIndex = 0
+
+                        _PlaybackHeadSamplePos = .1f,
+                        _DurationInSamples = emitter._DurationInSamples,
+
+                        _Pitch = -1.535f,
+                        _Volume = 2,
+
+                        _SpeakerIndex = 0,
+                        _Populated = false                     
                     });
 
                     entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, e);
@@ -156,9 +173,35 @@ public class GranulatorSystem : SystemBase
           {
               if (!grain._Populated)
               {
-                  for (int i = 0; i < grain._LengthInSamples; i++)
+                  float sourceIndex = grain._PlaybackHeadSamplePos;
+                  float increment = grain._Pitch;
+
+                  for (int i = 0; i < grain._DurationInSamples; i++)
                   {
-                      sampleOutputBuffer.Add(new FloatBufferElement { Value = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[grain._SampleStartIndex + i] });
+                      // PING PONG
+                      if (sourceIndex + increment < 0 || sourceIndex + increment > grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length - 1)
+                      {
+                          increment = increment * -1f;
+                          sourceIndex -= 1;
+                      }
+
+                      // PITCHING - Interpolate sample if not integer to create 
+                      sourceIndex += increment;
+                      float sourceIndexRemainder = sourceIndex % 1;
+                      float sourceValue;
+                      if (sourceIndexRemainder != 0)
+                      {
+                          sourceValue = math.lerp(
+                              grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex],
+                              grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex + 1],
+                              sourceIndexRemainder);
+                      }
+                      else
+                      {
+                          sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
+                      }
+
+                      sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue });
                   }
 
                   grain._Populated = true;

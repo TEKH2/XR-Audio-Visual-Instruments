@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3222682554955237524}
   - component: {fileID: 8996200946907528258}
   m_Layer: 0
-  m_Name: Grain emitter 20 50
+  m_Name: Grain emitter 100 100
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,9 +98,9 @@ MonoBehaviour:
     _ClipIndex: 0
     _PlayheadPos: 0.1
     _PositionRandom: 0
-    _Cadence: 20
+    _Cadence: 100
     _CadenceRandom: 0
-    _Duration: 50
+    _Duration: 100
     _DurationRandom: 0
     _Volume: 2
     _VolumeRandom: 0
@@ -112,5 +112,5 @@ MonoBehaviour:
       _FilterGain: 1
       _FilterQ: 1
       _BitcrushAmount: 1
-  _RandomizedPlaybackPos: 1
+  _RandomizedPlaybackPos: 0
   _Active: 0
