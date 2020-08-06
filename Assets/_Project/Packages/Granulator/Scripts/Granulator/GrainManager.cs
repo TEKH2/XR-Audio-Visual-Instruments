@@ -27,6 +27,7 @@ public class GrainManager : MonoBehaviour
     List<GrainSpeaker> _ActiveSpeakers = new List<GrainSpeaker>();
     public List<GrainSpeaker> ActiveSpeakers { get { return _ActiveSpeakers; }  }
     List<GrainSpeaker> _InactiveSpeakers = new List<GrainSpeaker>();
+    public List<GrainSpeaker> _AllSpeakers = new List<GrainSpeaker>();
 
     // ------------------------------------ GRAIN EMITTER PROPS  
     List<GrainEmitter> _AllGrainEmitters = new List<GrainEmitter>();
@@ -203,6 +204,7 @@ public class GrainManager : MonoBehaviour
         speaker.name = "Grain speaker " + TotalSpeakerCount;
         speaker.transform.position = pos;
         speaker._CurrentDSPSampleIndex = _CurrentDSPSample;
+        speaker._SpeakerIndex = _AllSpeakers.Count;
 
         if (addToActiveList)
         {
@@ -214,6 +216,8 @@ public class GrainManager : MonoBehaviour
             _InactiveSpeakers.Add(speaker);
             speaker.gameObject.SetActive(false);
         }
+
+        _AllSpeakers.Add(speaker);
 
         print("New grain speaker added - Total: " + TotalSpeakerCount + " / " + _MaxGrainSpeakers);
 

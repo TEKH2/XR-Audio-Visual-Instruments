@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 // Generates grains that are fed into a grain speaker to be played back
 public class GrainEmitter : MonoBehaviour
@@ -38,6 +40,8 @@ public class GrainEmitter : MonoBehaviour
         if (!_Active)
             return;
 
+        Profiler.BeginSample("Emitter Update");
+
         // Calculate random sample rate
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
@@ -45,7 +49,10 @@ public class GrainEmitter : MonoBehaviour
 
         _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
 
-        while (sampleIndexNextGrainStart <= maxDSPIndex)
+        int max = 10;
+        int count = 0;
+
+        while (sampleIndexNextGrainStart <= maxDSPIndex && count < max)
         {
             GrainData tempGrainData = new GrainData
             (
@@ -60,7 +67,7 @@ public class GrainEmitter : MonoBehaviour
 
            
             if(_UsedDOTS)
-                _GranDOTS.ProcessGrainSample(tempGrainData);
+                _GranDOTS.ProcessGrainSample(tempGrainData, speaker._SpeakerIndex);
             else
                 // Emit grain from manager TODO commented out to test DOTS
                 speaker.AddGrainData(tempGrainData);
@@ -70,7 +77,11 @@ public class GrainEmitter : MonoBehaviour
 
             currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
             sampleIndexNextGrainStart = sampleIndexNextGrainStart + currentCadence;
+
+            count++;
         }
+
+        Profiler.EndSample();
     }
 
     public void Deactivate()

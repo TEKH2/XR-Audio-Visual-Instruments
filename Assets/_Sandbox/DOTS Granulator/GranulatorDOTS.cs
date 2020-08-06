@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine.Profiling;
 
 public class GranulatorDOTS :  MonoBehaviour
 {
@@ -59,8 +60,9 @@ public class GranulatorDOTS :  MonoBehaviour
         }
     }
 
-    public void ProcessGrainSample(GrainData grainData)
+    public void ProcessGrainSample(GrainData grainData, int speakerIndex)
     {
+        Profiler.BeginSample("Process grain");
         Entity grainEntity = _EntityManager.CreateEntity();
 
         _GrainEntities.Add(grainEntity);
@@ -78,21 +80,17 @@ public class GranulatorDOTS :  MonoBehaviour
 
                 _Populated = false,
                 _ReadBack = false,
-                _ClipDataEntity = _AudioClipEntities[grainData._ClipIndex]
+                _ClipDataEntity = _AudioClipEntities[grainData._ClipIndex],
+                _SpeakerIndex = speakerIndex
             });
+
+        Profiler.EndSample();
 
         _EntityManager.AddBuffer<ClipDataBufferElement>(grainEntity);
     }
 
-    GrainSpeaker _GrainSpeaker;
     private void Update()
-    {
-        if (_GrainSpeaker == null)
-        {
-            _GrainSpeaker = FindObjectOfType<GrainSpeaker>();
-            return;
-        }
-
+    {      
         for (int i = _GrainEntities.Count - 1; i > 0; i--)
         {
             GrainProcessor processedGrain = _EntityManager.GetComponentData<GrainProcessor>(_GrainEntities[i]);
@@ -100,7 +98,7 @@ public class GranulatorDOTS :  MonoBehaviour
             {
                 DynamicBuffer<ClipDataBufferElement> sampleBuffer = _EntityManager.GetBuffer<ClipDataBufferElement>(_GrainEntities[i]);
                 NativeArray<float> sampleBufferFloats = sampleBuffer.Reinterpret<float>().ToNativeArray(Allocator.Temp);
-                GrainPlaybackData playbackData = _GrainSpeaker.GetGrainPlaybackDataFromPool();
+                GrainPlaybackData playbackData = _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].GetGrainPlaybackDataFromPool();
 
                 playbackData._IsPlaying = true;
                 playbackData._PlaybackIndex = 0;
@@ -108,7 +106,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 playbackData._StartSampleIndex = processedGrain._StartSampleIndex;
                 playbackData._GrainSamples = sampleBufferFloats.ToArray();
 
-                _GrainSpeaker.AddGrainPlaybackData(playbackData);
+                _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].AddGrainPlaybackData(playbackData);
 
                 _EntityManager.DestroyEntity(_GrainEntities[i]);
                 _GrainEntities.RemoveAt(i);
@@ -130,6 +128,7 @@ public class GranulatorSystem : SystemBase
         _CommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
+    bool _UseBurst = false;
     protected override void OnUpdate()
     {
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
@@ -138,55 +137,109 @@ public class GranulatorSystem : SystemBase
         // Get the buffer that holds the references to the entitys containing the audio clip data
         //DynamicBuffer<EntityBufferElement> audioClipLibBuffer = GetBufferFromEntity<EntityBufferElement>(true)[GetSingletonEntity<AudioClipLibraryComponent>()];       
 
-        // Example not using burst
-        Entities.WithoutBurst().ForEach((Entity entity, ref GrainProcessor grain) =>
+        if (!_UseBurst)
         {
-            if (!grain._Populated)
+           
+            Entities.WithoutBurst().ForEach((Entity entity, ref GrainProcessor grain) =>
             {
-                float increment = grain._Pitch;
-                float sourceIndex = grain._StartSampleIndex;
-
-                DynamicBuffer <ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
-                NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
-
-                DynamicBuffer < ClipDataBufferElement > sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
-
-                int audioClipLength = audioClipData.Length;
-
-                float sourceValue = 0f;
-                float sourceIndexRemainder = 0f;
-
-                for (int i = 0; i < grain._LengthInSamples; i++)
+                if (!grain._Populated)
                 {
-                    // Replacement pingpong function
-                    if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
+                    float increment = grain._Pitch;
+                    float sourceIndex = grain._StartSampleIndex;
+
+                    DynamicBuffer<ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
+                    NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
+
+                    DynamicBuffer<ClipDataBufferElement> sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
+
+                    int audioClipLength = audioClipData.Length;
+
+                    float sourceValue = 0f;
+                    float sourceIndexRemainder = 0f;
+
+                    for (int i = 0; i < grain._LengthInSamples; i++)
                     {
-                        increment = increment * -1f;
-                        sourceIndex -= 1;
+                        // Replacement pingpong function
+                        if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
+                        {
+                            increment = increment * -1f;
+                            sourceIndex -= 1;
+                        }
+
+                        sourceIndex += increment;
+                        sourceIndexRemainder = sourceIndex % 1;
+
+                        // PITCHING - Interpolate sample if not integer to create 
+                        if (sourceIndexRemainder != 0)
+                            sourceValue = math.lerp(
+                                audioClipDataArray[(int)sourceIndex],
+                                audioClipDataArray[(int)sourceIndex + 1],
+                                sourceIndexRemainder);
+                        else
+                            sourceValue = audioClipDataArray[(int)sourceIndex];
+
+                        sourceValue = 1;
+                        sampleBuffer.Add(new ClipDataBufferElement { Value = sourceValue });
                     }
 
-                    sourceIndex += increment;
-                    sourceIndexRemainder = sourceIndex % 1;
+                    audioClipDataArray.Dispose();
+                    grain._Populated = true;
+                }
+            }).Run();                                       
+        }
+        else
+        {
+            // Example using burst
+            Entities.ForEach((Entity entity, ref GrainProcessor grain) =>
+            {
+                if (!grain._Populated)
+                {
+                    float increment = grain._Pitch;
+                    float sourceIndex = grain._StartSampleIndex;
 
-                    // PITCHING - Interpolate sample if not integer to create 
-                    if (sourceIndexRemainder != 0)
-                        sourceValue = math.lerp(
-                            audioClipDataArray[(int)sourceIndex],
-                            audioClipDataArray[(int)sourceIndex + 1],
-                            sourceIndexRemainder);
-                    else
-                        sourceValue = audioClipDataArray[(int)sourceIndex];
+                    DynamicBuffer<ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
+                    NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
 
-                    sampleBuffer.Add( new ClipDataBufferElement { Value = sourceValue } );
+                    DynamicBuffer<ClipDataBufferElement> sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
+
+                    int audioClipLength = audioClipData.Length;
+
+                    float sourceValue = 0f;
+                    float sourceIndexRemainder = 0f;
+
+                    for (int i = 0; i < grain._LengthInSamples; i++)
+                    {
+                        // Replacement pingpong function
+                        if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
+                        {
+                            increment = increment * -1f;
+                            sourceIndex -= 1;
+                        }
+
+                        sourceIndex += increment;
+                        sourceIndexRemainder = sourceIndex % 1;
+
+                        // PITCHING - Interpolate sample if not integer to create 
+                        if (sourceIndexRemainder != 0)
+                            sourceValue = math.lerp(
+                                audioClipDataArray[(int)sourceIndex],
+                                audioClipDataArray[(int)sourceIndex + 1],
+                                sourceIndexRemainder);
+                        else
+                            sourceValue = audioClipDataArray[(int)sourceIndex];
+
+                        sampleBuffer.Add(new ClipDataBufferElement { Value = sourceValue });
+                    }
+
+                    audioClipDataArray.Dispose();
+                    grain._Populated = true;
                 }
 
-                audioClipDataArray.Dispose();
-                grain._Populated = true;
-            }
-
-        }).Run();
+            }).ScheduleParallel();
+        }
     }
 }
+
 
 public struct GrainProcessor : IComponentData
 {
@@ -201,6 +254,8 @@ public struct GrainProcessor : IComponentData
 
     public bool _Populated;
     public bool _ReadBack;
+
+    public int _SpeakerIndex;
 
     public Entity _ClipDataEntity;
 }

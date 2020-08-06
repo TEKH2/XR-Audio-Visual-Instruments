@@ -9,6 +9,8 @@ using UnityEngine.Rendering;
 public class GrainSpeaker : MonoBehaviour
 {
     #region VARIABLES
+    public int _SpeakerIndex = 0;
+
     GrainManager _GrainManager;
     public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
