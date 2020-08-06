@@ -252,8 +252,6 @@ public class GrainManager : MonoBehaviour
 #region Grain data classes
 public class GrainData
 {
-    public int _StartDSPSampleIndex;
-
     // Optimum 10ms - 60ms
     public float _Duration;
     public float _PlayheadPos;

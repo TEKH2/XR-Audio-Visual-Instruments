@@ -15,8 +15,10 @@ public class GrainEmitter : MonoBehaviour
     public bool _Active = false;
     #endregion
 
+    GranulatorDOTS _GranDOTS;
     private void Start()
     {
+        _GranDOTS = FindObjectOfType<GranulatorDOTS>();
         GrainManager.Instance.AddGrainEmitterToList(this);
     }
 
@@ -30,6 +32,7 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
+    bool _UsedDOTS = true;
     public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
     {
         if (!_Active)
@@ -39,7 +42,6 @@ public class GrainEmitter : MonoBehaviour
         int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
-
 
         _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
 
@@ -56,8 +58,12 @@ public class GrainEmitter : MonoBehaviour
                 sampleIndexNextGrainStart
             );
 
-            // Emit grain from manager
-            speaker.AddGrainData(tempGrainData);
+           
+            if(_UsedDOTS)
+                _GranDOTS.ProcessGrainSample(tempGrainData);
+            else
+                // Emit grain from manager TODO commented out to test DOTS
+                speaker.AddGrainData(tempGrainData);
 
             // Set last grain index
             _LastGrainSampleIndex = sampleIndexNextGrainStart;

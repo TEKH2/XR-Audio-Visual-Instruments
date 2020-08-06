@@ -102,9 +102,15 @@ MonoBehaviour:
     _CadenceRandom: 0
     _Duration: 200
     _DurationRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0
     _Volume: 2
     _VolumeRandom: 0
+    _Transpose: -1.82
+    _TransposeRandom: 0
+    _FilterProperties:
+      Type: 0
+      _FilterCutoffNorm: 0.5
+      _FilterGain: 1
+      _FilterQ: 1
+      _BitcrushAmount: 1
   _RandomizedPlaybackPos: 0
   _Active: 0

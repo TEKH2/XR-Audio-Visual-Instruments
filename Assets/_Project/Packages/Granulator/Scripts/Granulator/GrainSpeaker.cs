@@ -17,7 +17,7 @@ public class GrainSpeaker : MonoBehaviour
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-    int _MaxGrainDataCount = 50; 
+    int _MaxGrainDataCount = 200; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
@@ -76,7 +76,7 @@ public class GrainSpeaker : MonoBehaviour
         _GrainsThisFrame++;
 
         // Get a grain from the pool if there are any spare
-        GrainPlaybackData grainPlaybackData = GetGrainFromPool();
+        GrainPlaybackData grainPlaybackData = GetGrainPlaybackDataFromPool();
         // ... otherwise return
         if (grainPlaybackData == null)
             return;
@@ -151,6 +151,11 @@ public class GrainSpeaker : MonoBehaviour
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
     }
 
+    public void AddGrainPlaybackData(GrainPlaybackData playbackData)
+    {
+        _ActiveGrainPlaybackData.Add(playbackData);
+    }
+
     public void Deactivate()
     {
         // Deactivate and clear all the emitters
@@ -177,7 +182,7 @@ public class GrainSpeaker : MonoBehaviour
         _AttachedGrainEmitters.Add(emitter);
     }
 
-    GrainPlaybackData GetGrainFromPool()
+    public GrainPlaybackData GetGrainPlaybackDataFromPool()
     {
         if (_PooledGrainPlaybackData.Count >= 1)
         {
