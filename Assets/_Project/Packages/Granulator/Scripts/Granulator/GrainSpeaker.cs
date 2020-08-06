@@ -21,6 +21,7 @@ public class GrainSpeaker : MonoBehaviour
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
+    private BitcrushSignal _Bitcrush;
     private float[] _Window;
 
     float _GrainsPerSecond = 0;
@@ -41,8 +42,6 @@ public class GrainSpeaker : MonoBehaviour
         _Window = new float[512];
         for (int i = 0; i < _Window.Length; i++)        
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
-
-        //_FilterSignal._Type = DSP_Filter.FilterType.None;
     }
 
     public void ManualUpdate(int maxDSPIndex, int sampleRate)
@@ -82,6 +81,7 @@ public class GrainSpeaker : MonoBehaviour
             return;
 
         _FilterSignal.fc = gd._Coefficients;
+        _Bitcrush = gd._Bitcrush;
 
         int audioClipLength = _GrainManager._AudioClipLibrary._ClipsDataArray[gd._ClipIndex].Length;
         int playheadStartSample = (int)(gd._PlayheadPos * audioClipLength);
@@ -131,6 +131,7 @@ public class GrainSpeaker : MonoBehaviour
         for (int i = 0; i < durationInSamples; i++)
         {
             grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
+            grainPlaybackData._GrainSamples[i] = _Bitcrush.Apply(grainPlaybackData._GrainSamples[i]);
         }
 
 

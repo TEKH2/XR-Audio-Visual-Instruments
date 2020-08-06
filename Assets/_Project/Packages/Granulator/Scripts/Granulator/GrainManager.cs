@@ -260,6 +260,7 @@ public class GrainData
     public float _Pitch;
     public float _Volume;
     public FilterCoefficients _Coefficients;
+    public BitcrushSignal _Bitcrush;
 
     public int _ClipIndex;
 
@@ -267,7 +268,7 @@ public class GrainData
 
     public GrainData() { }
     public GrainData(int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int startSampleIndex)
     {
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
@@ -275,11 +276,12 @@ public class GrainData
         _Pitch = pitch;
         _Volume = volume;
         _Coefficients = fc;
+        _Bitcrush = bc;
         _StartSampleIndex = startSampleIndex;
     }
 
     public void Initialize(int grainAudioClipIndex,
-        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, int startSampleIndex)
+        float durationInMS, float playheadPosition, float pitch, float volume, FilterCoefficients fc, BitcrushSignal bc, int startSampleIndex)
     {
         _ClipIndex = grainAudioClipIndex;
         _Duration = durationInMS;
@@ -287,6 +289,7 @@ public class GrainData
         _Pitch = pitch;
         _Volume = volume;
         _Coefficients = fc;
+        _Bitcrush = bc;
         _StartSampleIndex = startSampleIndex;
     }
 }
@@ -401,7 +404,7 @@ public class GrainEmissionProps
         }
     }
 
-    public DSP_Properties _FilterProperties;
+    public DSP_Properties _DSP_Properties;
 
 
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,

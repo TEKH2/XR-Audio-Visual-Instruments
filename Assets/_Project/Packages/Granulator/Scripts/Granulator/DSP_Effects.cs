@@ -12,7 +12,7 @@ using UnityEngine;
 [System.Serializable]
 public class DSP_Properties
 {
-    public DSP_Effects.FilterType Type;
+    public DSP_Effects.FilterType _FilterType;
 
     const float _LowLimit = 20f;
     const float _HighLimit = 20000f;
@@ -67,7 +67,7 @@ public class DSP_Properties
         }
     }
 
-    // Filter
+    // Bitcrush
     //---------------------------------------------------------------------
     [Range(0, 50f)]
     [SerializeField]
@@ -76,11 +76,11 @@ public class DSP_Properties
     {
         get
         {
-            return Mathf.Clamp(_BitcrushAmount, 0.1f, 5f);
+            return Mathf.Clamp(_BitcrushAmount, 0f, 50f);
         }
         set
         {
-            _BitcrushAmount = (int)Mathf.Clamp(value, 0.1f, 5f);
+            _BitcrushAmount = (int)Mathf.Clamp(value, 0f, 50f);
         }
     }
 }
@@ -168,6 +168,8 @@ public class BitcrushSignal
         else
             sampleOut = previousValue;
 
+        count++;
+
         return sampleOut;
     }
 }
@@ -187,20 +189,20 @@ public class DSP_Effects
     }
 
     // This function is called to construct FilterData from FilterProperties based on the type
-    public static FilterCoefficients CreateCoefficents(DSP_Properties fp)
+    public static FilterCoefficients CreateCoefficents(DSP_Properties dspProps)
     {
         FilterCoefficients newFilterCoefficients;
 
-        if (fp.Type == FilterType.LowPass)
-            newFilterCoefficients = LowPass(fp);
-        else if (fp.Type == FilterType.HiPass)
-            newFilterCoefficients = HiPass(fp);
-        else if (fp.Type == FilterType.BandPass)
-            newFilterCoefficients = BandPass(fp);
-        else if (fp.Type == FilterType.PeakNotch)
-            newFilterCoefficients = PeakNotch(fp);
+        if (dspProps._FilterType == FilterType.LowPass)
+            newFilterCoefficients = LowPass(dspProps);
+        else if (dspProps._FilterType == FilterType.HiPass)
+            newFilterCoefficients = HiPass(dspProps);
+        else if (dspProps._FilterType == FilterType.BandPass)
+            newFilterCoefficients = BandPass(dspProps);
+        else if (dspProps._FilterType == FilterType.PeakNotch)
+            newFilterCoefficients = PeakNotch(dspProps);
         else
-            newFilterCoefficients = AllPass(fp);
+            newFilterCoefficients = AllPass(dspProps);
 
         return newFilterCoefficients;
     }

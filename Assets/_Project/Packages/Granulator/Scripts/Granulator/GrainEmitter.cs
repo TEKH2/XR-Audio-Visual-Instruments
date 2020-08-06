@@ -8,6 +8,8 @@ public class GrainEmitter : MonoBehaviour
     #region VARIABLES
     public GrainEmissionProps _GrainEmissionProps;
     private FilterCoefficients _FilterCoefficients; //TODO reimpliment
+    private BitcrushSignal _Bitcrush;
+
     
     int _LastGrainSampleIndex = 0;
 
@@ -41,7 +43,9 @@ public class GrainEmitter : MonoBehaviour
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
 
-        _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
+        _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._DSP_Properties);
+        _Bitcrush = new BitcrushSignal();
+        _Bitcrush.downsampleFactor = _GrainEmissionProps._DSP_Properties.BitcrushAmount;
 
         while (sampleIndexNextGrainStart <= maxDSPIndex)
         {
@@ -53,6 +57,7 @@ public class GrainEmitter : MonoBehaviour
                 _GrainEmissionProps.Pitch,
                 _GrainEmissionProps.Volume,
                 _FilterCoefficients,
+                _Bitcrush,
                 sampleIndexNextGrainStart
             );
 

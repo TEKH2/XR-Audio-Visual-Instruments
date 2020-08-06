@@ -106,11 +106,11 @@ MonoBehaviour:
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-    _FilterProperties:
-      Type: 0
-      _Cutoff: 3834
-      _CutoffNormalised: 0.428
-      _Gain: 0.397
-      _Q: 1
+    _DSP_Properties:
+      _FilterType: 0
+      _FilterCutoffNorm: 0.5
+      _FilterGain: 1
+      _FilterQ: 1
+      _BitcrushAmount: 34.6
   _RandomizedPlaybackPos: 1
   _Active: 0
