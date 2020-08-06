@@ -8,10 +8,13 @@ using Unity.Transforms;
 using UnityEngine;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.Profiling;
+using System;
 
 public class GranulatorDOTS :  MonoBehaviour
 {
     EntityManager _EntityManager;
+    EntityQuery _GrainQuery;
+
     GrainManager _GrainManager;
 
     public AudioClip[] _AudioClips;
@@ -20,99 +23,78 @@ public class GranulatorDOTS :  MonoBehaviour
     List<Entity> _GrainEntities = new List<Entity>();
 
 
-
     public void Start()
     {
         _GrainManager = GrainManager.Instance;
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        _AudioClipEntities = new Entity[_AudioClips.Length];        
-        // Create audio clip entities
+        _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
+
+
+        // -------------------------------------------------   CREATE AUDIO SOURCE BLOB ASSETS AND ASSIGN TO AudioClipDataComponent ENTITIES
         for (int i = 0; i < _AudioClips.Length; i++)
         {
-            // Create entity
-            Entity clipEntity = _EntityManager.CreateEntity();
+            Entity audioClipDataEntity = _EntityManager.CreateEntity();
 
-            // Add it to local array to it can be added to the library buffer later
-            _AudioClipEntities[i] = clipEntity;
+            float[] clipData = new float[_AudioClips[i].samples];
+            _AudioClips[i].GetData(clipData, 0);
 
-            // Assign a dynamic buffer to hold all the clip samples
-            DynamicBuffer<ClipDataBufferElement> buffer = _EntityManager.AddBuffer<ClipDataBufferElement>(clipEntity);
-            float[] samples = new float[_AudioClips[i].samples];
-            _AudioClips[i].GetData(samples, 0);
-            for (int s = 0; s < samples.Length; s++)
+            using (BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp))
             {
-                buffer.Add( new ClipDataBufferElement { Value = samples[s] });
+                // ---------------------------------- CREATE BLOB
+                ref FloatBlobAsset audioclipBlobAsset = ref blobBuilder.ConstructRoot<FloatBlobAsset>();
+                BlobBuilderArray<float> audioclipArray = blobBuilder.Allocate(ref audioclipBlobAsset.array, clipData.Length);
+
+                for (int s = 0; s < clipData.Length; s++)
+                {
+                    audioclipArray[s] = clipData[s];
+                }
+
+                // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY
+                BlobAssetReference<FloatBlobAsset> audioClipBlobAssetRef = blobBuilder.CreateBlobAssetReference<FloatBlobAsset>(Allocator.Persistent);
+                _EntityManager.AddComponentData(audioClipDataEntity, new AudioClipDataComponent { _ClipDataBlobAsset = audioClipBlobAssetRef, _ClipIndex = i });
             }
         }
 
-        // Create entity
-        Entity clipLibraryEntity = _EntityManager.CreateEntity();
-
-        // Add AudioClipLibraryComponent component so we can look it up in the system
-        _EntityManager.AddComponentData(clipLibraryEntity, new AudioClipLibraryComponent());
-
-        // Add a buffer that holds referecnes to all the entities with audio clip data
-        DynamicBuffer<EntityBufferElement> libraryBuffer = _EntityManager.AddBuffer<EntityBufferElement>(clipLibraryEntity);
-        for (int i = 0; i < _AudioClipEntities.Length; i++)
-        {
-            libraryBuffer.Add(new EntityBufferElement { Value = _AudioClipEntities[i] });
-        }
+        // -------------------------------------------------   CREATE EMITTER
+        Entity emitterEntity = _EntityManager.CreateEntity();
+        _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = .5f });
     }
 
-    public void ProcessGrainSample(GrainData grainData, int speakerIndex)
-    {
-        Profiler.BeginSample("Process grain");
-        Entity grainEntity = _EntityManager.CreateEntity();
 
-        _GrainEntities.Add(grainEntity);
-
-        _EntityManager.AddComponentData(grainEntity,
-            new GrainProcessor()
-            {
-                _AudioClipIndex = grainData._ClipIndex,
-                _LengthInSamples = (int)(_GrainManager._AudioClipLibrary._Clips[grainData._ClipIndex].frequency / 1000 * grainData._Duration),
-                _StartSampleIndex = (int)((_GrainManager._AudioClipLibrary._Clips[grainData._ClipIndex].frequency / 1000 * grainData._Duration) *  grainData._PlayheadPos),
-                _Pitch = grainData._Pitch,
-                _Volume = grainData._Volume,
-
-                _DSPStartSampleIndex = grainData._StartSampleIndex,
-
-                _Populated = false,
-                _ReadBack = false,
-                _ClipDataEntity = _AudioClipEntities[grainData._ClipIndex],
-                _SpeakerIndex = speakerIndex
-            });
-
-        Profiler.EndSample();
-
-        _EntityManager.AddBuffer<ClipDataBufferElement>(grainEntity);
-    }
 
     private void Update()
-    {      
-        for (int i = _GrainEntities.Count - 1; i > 0; i--)
+    {
+        //_EntityManager.GetComponentData<GrainProcessor>()
+
+        NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
+
+        for (int i = grainEntities.Length-1; i > 0; i--)
         {
-            GrainProcessor processedGrain = _EntityManager.GetComponentData<GrainProcessor>(_GrainEntities[i]);
-            if (processedGrain._Populated)
+            GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
+
+            if(grainProcessor._Populated)
             {
-                DynamicBuffer<ClipDataBufferElement> sampleBuffer = _EntityManager.GetBuffer<ClipDataBufferElement>(_GrainEntities[i]);
-                NativeArray<float> sampleBufferFloats = sampleBuffer.Reinterpret<float>().ToNativeArray(Allocator.Temp);
-                GrainPlaybackData playbackData = _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].GetGrainPlaybackDataFromPool();
+                GrainPlaybackData playbackData = _GrainManager._AllSpeakers[0].GetGrainPlaybackDataFromPool();
+                NativeArray<float> samples = _EntityManager.GetBuffer<FloatBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
                 playbackData._IsPlaying = true;
                 playbackData._PlaybackIndex = 0;
-                playbackData._PlaybackSampleCount = processedGrain._LengthInSamples;
-                playbackData._StartSampleIndex = processedGrain._StartSampleIndex;
-                playbackData._GrainSamples = sampleBufferFloats.ToArray();
+                playbackData._PlaybackSampleCount = samples.Length;
+                playbackData._DSPStartIndex = _GrainManager._CurrentDSPSample + 100;
 
-                _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].AddGrainPlaybackData(playbackData);
+                Array.ConstrainedCopy(samples.ToArray(), 0, playbackData._GrainSamples, 0, samples.Length);
 
-                _EntityManager.DestroyEntity(_GrainEntities[i]);
-                _GrainEntities.RemoveAt(i);
+                // Destroy entity once we have sapped it of it's samply goodness
+                _EntityManager.DestroyEntity(grainEntities[i]);
+
+                _GrainManager._AllSpeakers[0].AddGrainPlaybackData(playbackData);
+
+                //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
             }
-            
         }
+
+        grainEntities.Dispose();
     }
 }
 
@@ -134,142 +116,200 @@ public class GranulatorSystem : SystemBase
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-        // Get the buffer that holds the references to the entitys containing the audio clip data
-        //DynamicBuffer<EntityBufferElement> audioClipLibBuffer = GetBufferFromEntity<EntityBufferElement>(true)[GetSingletonEntity<AudioClipLibraryComponent>()];       
+        // Get all audio clip data componenets
+        NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
 
-        if (!_UseBurst)
-        {
-           
-            Entities.WithoutBurst().ForEach((Entity entity, ref GrainProcessor grain) =>
+        float dt = Time.DeltaTime;
+
+        Entities.ForEach
+        (
+            (int entityInQueryIndex, ref EmitterComponent emitter) =>
             {
-                if (!grain._Populated)
+                emitter._Timer += dt;
+                // If timer is up
+                if (emitter._Timer >= emitter._Cadence)
                 {
-                    float increment = grain._Pitch;
-                    float sourceIndex = grain._StartSampleIndex;
+                    // Emit grain
+                    emitter._Timer -= emitter._Cadence;
 
-                    DynamicBuffer<ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
-                    NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
+                    // Create a new grain processor entity
+                    Entity e = entityCommandBuffer.CreateEntity(entityInQueryIndex);
 
-                    DynamicBuffer<ClipDataBufferElement> sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
-
-                    int audioClipLength = audioClipData.Length;
-
-                    float sourceValue = 0f;
-                    float sourceIndexRemainder = 0f;
-
-                    for (int i = 0; i < grain._LengthInSamples; i++)
+                    entityCommandBuffer.AddComponent(entityInQueryIndex, e, new GrainProcessor
                     {
-                        // Replacement pingpong function
-                        if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
-                        {
-                            increment = increment * -1f;
-                            sourceIndex -= 1;
-                        }
+                        _AudioClipDataComponent = audioClipData[0],
+                        _SampleStartIndex = 1000,
+                        _LengthInSamples = 30000,
+                        _Populated = false,
+                        _SpeakerIndex = 0
+                    });
 
-                        sourceIndex += increment;
-                        sourceIndexRemainder = sourceIndex % 1;
-
-                        // PITCHING - Interpolate sample if not integer to create 
-                        if (sourceIndexRemainder != 0)
-                            sourceValue = math.lerp(
-                                audioClipDataArray[(int)sourceIndex],
-                                audioClipDataArray[(int)sourceIndex + 1],
-                                sourceIndexRemainder);
-                        else
-                            sourceValue = audioClipDataArray[(int)sourceIndex];
-
-                        sourceValue = 1;
-                        sampleBuffer.Add(new ClipDataBufferElement { Value = sourceValue });
-                    }
-
-                    audioClipDataArray.Dispose();
-                    grain._Populated = true;
+                    entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, e);
                 }
-            }).Run();                                       
-        }
-        else
-        {
-            // Example using burst
-            Entities.ForEach((Entity entity, ref GrainProcessor grain) =>
-            {
-                if (!grain._Populated)
-                {
-                    float increment = grain._Pitch;
-                    float sourceIndex = grain._StartSampleIndex;
+            }
+        ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
 
-                    DynamicBuffer<ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
-                    NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
 
-                    DynamicBuffer<ClipDataBufferElement> sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
+        Entities.ForEach
+        (
+          (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+          {
+              if (!grain._Populated)
+              {
+                  for (int i = 0; i < grain._LengthInSamples; i++)
+                  {
+                      sampleOutputBuffer.Add(new FloatBufferElement { Value = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[grain._SampleStartIndex + i] });
+                  }
 
-                    int audioClipLength = audioClipData.Length;
+                  grain._Populated = true;
+              }
+          }
+        ).ScheduleParallel();
 
-                    float sourceValue = 0f;
-                    float sourceIndexRemainder = 0f;
-
-                    for (int i = 0; i < grain._LengthInSamples; i++)
-                    {
-                        // Replacement pingpong function
-                        if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
-                        {
-                            increment = increment * -1f;
-                            sourceIndex -= 1;
-                        }
-
-                        sourceIndex += increment;
-                        sourceIndexRemainder = sourceIndex % 1;
-
-                        // PITCHING - Interpolate sample if not integer to create 
-                        if (sourceIndexRemainder != 0)
-                            sourceValue = math.lerp(
-                                audioClipDataArray[(int)sourceIndex],
-                                audioClipDataArray[(int)sourceIndex + 1],
-                                sourceIndexRemainder);
-                        else
-                            sourceValue = audioClipDataArray[(int)sourceIndex];
-
-                        sampleBuffer.Add(new ClipDataBufferElement { Value = sourceValue });
-                    }
-
-                    audioClipDataArray.Dispose();
-                    grain._Populated = true;
-                }
-
-            }).ScheduleParallel();
-        }
+        // Make sure that the ECB system knows about our job
+        _CommandBufferSystem.AddJobHandleForProducer(Dependency);
     }
 }
 
 
-public struct GrainProcessor : IComponentData
-{
-    public int _AudioClipIndex;
-    public int _StartSampleIndex;
-    public int _LengthInSamples;
 
-    public float _Pitch;
-    public float _Volume;
 
-    public int _DSPStartSampleIndex;
+//float increment = grain._Pitch;
+//            float sourceIndex = grain._StartSampleIndex;
 
-    public bool _Populated;
-    public bool _ReadBack;
+//            DynamicBuffer<ClipDataBufferElement> audioClipData = GetBufferFromEntity<ClipDataBufferElement>(true)[grain._ClipDataEntity];
+//            NativeArray<float> audioClipDataArray = audioClipData.Reinterpret<float>().ToNativeArray(Allocator.TempJob);
 
-    public int _SpeakerIndex;
+//            DynamicBuffer<ClipDataBufferElement> sampleBuffer = GetBufferFromEntity<ClipDataBufferElement>(false)[entity];
 
-    public Entity _ClipDataEntity;
-}
+//            int audioClipLength = audioClipData.Length;
 
-public struct AudioClipLibraryComponent : IComponentData
-{
-}
+//            float sourceValue = 0f;
+//            float sourceIndexRemainder = 0f;
 
-public struct ClipDataBufferElement : IBufferElementData
-{
-    public float Value;
-}
+//            for (int i = 0; i < grain._LengthInSamples; i++)
+//            {
+//                // Replacement pingpong function
+//                if (sourceIndex + increment < 0 || sourceIndex + increment > audioClipLength - 1)
+//                {
+//                    increment = increment * -1f;
+//                    sourceIndex -= 1;
+//                }
 
-public struct EntityBufferElement : IBufferElementData
-{
-    public Entity Value;
-}
+//                sourceIndex += increment;
+//                sourceIndexRemainder = sourceIndex % 1;
+
+//                // PITCHING - Interpolate sample if not integer to create 
+//                if (sourceIndexRemainder != 0)
+//                    sourceValue = math.lerp(
+//                        audioClipDataArray[(int)sourceIndex],
+//                        audioClipDataArray[(int)sourceIndex + 1],
+//                        sourceIndexRemainder);
+//                else
+//                    sourceValue = audioClipDataArray[(int)sourceIndex];
+
+//                sampleBuffer.Add(new ClipDataBufferElement { Value = sourceValue });
+//            }
+
+//            audioClipDataArray.Dispose();
+//            grain._Populated = true;
+
+
+
+
+
+
+//    _AudioClipEntities = new Entity[_AudioClips.Length];        
+//    // Create audio clip entities
+//    for (int i = 0; i < _AudioClips.Length; i++)
+//    {
+//        // Create entity
+//        Entity clipEntity = _EntityManager.CreateEntity();
+
+//        // Add it to local array to it can be added to the library buffer later
+//        _AudioClipEntities[i] = clipEntity;
+
+//        // Assign a dynamic buffer to hold all the clip samples
+//        DynamicBuffer<ClipDataBufferElement> buffer = _EntityManager.AddBuffer<ClipDataBufferElement>(clipEntity);
+//        float[] samples = new float[_AudioClips[i].samples];
+//        _AudioClips[i].GetData(samples, 0);
+//        for (int s = 0; s < samples.Length; s++)
+//        {
+//            buffer.Add( new ClipDataBufferElement { Value = samples[s] });
+//        }
+//    }
+
+//    // Create entity
+//    Entity clipLibraryEntity = _EntityManager.CreateEntity();
+
+//    // Add AudioClipLibraryComponent component so we can look it up in the system
+//    _EntityManager.AddComponentData(clipLibraryEntity, new AudioClipLibraryComponent());
+
+//    // Add a buffer that holds referecnes to all the entities with audio clip data
+//    DynamicBuffer<EntityBufferElement> libraryBuffer = _EntityManager.AddBuffer<EntityBufferElement>(clipLibraryEntity);
+//    for (int i = 0; i < _AudioClipEntities.Length; i++)
+//    {
+//        libraryBuffer.Add(new EntityBufferElement { Value = _AudioClipEntities[i] });
+//    }
+//}
+
+//int _GrainIndex = 0;
+//public void ProcessGrainSample(GrainData grainData, int speakerIndex)
+//{
+//    _GrainIndex++;
+//    Entity grainEntity = _EntityManager.CreateEntity();
+//    _EntityManager.AddComponentData(grainEntity,
+//        new GrainProcessor2()
+//        {
+//            _ClipDataEntity = grainEntity,
+//            _DSPStartSampleIndex = grainData._StartSampleIndex,
+//            _Populated = false,
+//            _SpeakerIndex = speakerIndex
+//        });
+
+
+//    int lengthInSamples = (int)(_GrainManager._AudioClipLibrary._Clips[grainData._ClipIndex].frequency / 1000 * grainData._Duration);
+
+//    // Create sample processors
+//    for (int i = 0; i < lengthInSamples; i++)
+//    {
+//        Entity sampleProcessorEntity = _EntityManager.CreateEntity();
+
+//        _EntityManager.AddComponentData(sampleProcessorEntity, new SampleProcessor()
+//        {
+//            _GrainEntity = grainEntity,
+//            _SampleOutputArrayIndex = grainData._StartSampleIndex,
+//            _ClipDataEntity = _AudioClipEntities[grainData._ClipIndex],
+//            _Pitch = grainData._Pitch,
+//            _Volume = grainData._Volume
+//        });
+//    }
+
+//    _EntityManager.AddBuffer<ClipDataBufferElement>(grainEntity);
+//}
+
+//private void Update()
+//{      
+//    for (int i = _GrainEntities.Count - 1; i > 0; i--)
+//    {
+//        GrainProcessor processedGrain = _EntityManager.GetComponentData<GrainProcessor>(_GrainEntities[i]);
+//        if (processedGrain._Populated)
+//        {
+//            DynamicBuffer<ClipDataBufferElement> sampleBuffer = _EntityManager.GetBuffer<ClipDataBufferElement>(_GrainEntities[i]);
+//            NativeArray<float> sampleBufferFloats = sampleBuffer.Reinterpret<float>().ToNativeArray(Allocator.Temp);
+//            GrainPlaybackData playbackData = _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].GetGrainPlaybackDataFromPool();
+
+//            playbackData._IsPlaying = true;
+//            playbackData._PlaybackIndex = 0;
+//            playbackData._PlaybackSampleCount = processedGrain._LengthInSamples;
+//            playbackData._StartSampleIndex = processedGrain._StartSampleIndex;
+//            playbackData._GrainSamples = sampleBufferFloats.ToArray();
+
+//            _GrainManager._AllSpeakers[processedGrain._SpeakerIndex].AddGrainPlaybackData(playbackData);
+
+//            _EntityManager.DestroyEntity(_GrainEntities[i]);
+//            _GrainEntities.RemoveAt(i);
+//        }
+
+//    }
+//}

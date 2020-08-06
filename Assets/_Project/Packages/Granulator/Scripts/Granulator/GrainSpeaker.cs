@@ -148,7 +148,7 @@ public class GrainSpeaker : MonoBehaviour
         grainPlaybackData._IsPlaying = true;
         grainPlaybackData._PlaybackIndex = 0;
         grainPlaybackData._PlaybackSampleCount = durationInSamples;
-        grainPlaybackData._StartSampleIndex = gd._StartSampleIndex;
+        grainPlaybackData._DSPStartIndex = gd._StartSampleIndex;
 
         _ActiveGrainPlaybackData.Add(grainPlaybackData);
     }
@@ -156,6 +156,8 @@ public class GrainSpeaker : MonoBehaviour
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)
     {
         _ActiveGrainPlaybackData.Add(playbackData);
+
+        //print("Active playback data: " + _ActiveGrainPlaybackData.Count);
     }
 
     public void Deactivate()
@@ -225,10 +227,12 @@ public class GrainSpeaker : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_CurrentDSPSampleIndex >= grainData._StartSampleIndex)
+                if (_CurrentDSPSampleIndex >= grainData._DSPStartIndex)
                 {
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
+                    {
                         grainData._IsPlaying = false;
+                    }
                     else
                     {
                         data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];

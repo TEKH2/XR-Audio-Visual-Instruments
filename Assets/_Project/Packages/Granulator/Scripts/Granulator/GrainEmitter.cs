@@ -34,7 +34,7 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
-    bool _UsedDOTS = true;
+    bool _UsedDOTS = false;
     public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
     {
         if (!_Active)
@@ -66,9 +66,9 @@ public class GrainEmitter : MonoBehaviour
             );
 
            
-            if(_UsedDOTS)
-                _GranDOTS.ProcessGrainSample(tempGrainData, speaker._SpeakerIndex);
-            else
+            //if(_UsedDOTS)
+            //    _GranDOTS.ProcessGrainSample(tempGrainData, speaker._SpeakerIndex);
+            //else
                 // Emit grain from manager TODO commented out to test DOTS
                 speaker.AddGrainData(tempGrainData);
 

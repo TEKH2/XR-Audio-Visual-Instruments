@@ -62,6 +62,8 @@ public class GrainManager : MonoBehaviour
     public float _LayeredSamples;
     public float _AvLayeredSamples;
     public int _ActiveEmitters;
+
+    public bool _UpdateActiveSpeakers = false;
     #endregion
 
     private void Awake()
@@ -463,7 +465,7 @@ public class GrainPlaybackData
     public int _PlaybackSampleCount;
 
     // The DSP sample that the grain starts at
-    public int _StartSampleIndex;
+    public int _DSPStartIndex;
 
     public GrainPlaybackData()
     {
