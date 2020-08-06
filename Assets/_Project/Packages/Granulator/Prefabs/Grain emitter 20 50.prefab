@@ -108,9 +108,9 @@ MonoBehaviour:
     _TransposeRandom: 0
     _DSP_Properties:
       _FilterType: 0
-      _FilterCutoffNorm: 0.5
+      _FilterCutoffNorm: 1
       _FilterGain: 1
       _FilterQ: 1
-      _BitcrushAmount: 34.6
+      _BitcrushAmount: 50
   _RandomizedPlaybackPos: 1
   _Active: 0

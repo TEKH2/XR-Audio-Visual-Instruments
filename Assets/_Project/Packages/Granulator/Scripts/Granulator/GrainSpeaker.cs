@@ -130,8 +130,8 @@ public class GrainSpeaker : MonoBehaviour
         //if (_FilterSignal._Type != DSP_Filter.FilterType.None)
         for (int i = 0; i < durationInSamples; i++)
         {
-            grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
             grainPlaybackData._GrainSamples[i] = _Bitcrush.Apply(grainPlaybackData._GrainSamples[i]);
+            grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
         }
 
 
