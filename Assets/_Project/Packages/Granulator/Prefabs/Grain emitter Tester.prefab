@@ -98,9 +98,9 @@ MonoBehaviour:
     _ClipIndex: 0
     _PlayheadPos: 0.25
     _PositionRandom: 0
-    _Cadence: 10
+    _Cadence: 5
     _CadenceRandom: 0
-    _Duration: 10
+    _Duration: 200
     _DurationRandom: 0
     _Volume: 1
     _VolumeRandom: 0

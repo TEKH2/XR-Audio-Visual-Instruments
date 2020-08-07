@@ -104,7 +104,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 playbackData._PlaybackSampleCount = samples.Length;
                 playbackData._DSPStartIndex = grainProcessor._DSPSamplePlaybackStart;
 
-                print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
+                //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 
                 Array.ConstrainedCopy(samples.ToArray(), 0, playbackData._GrainSamples, 0, samples.Length);
 
@@ -168,7 +168,7 @@ public class GranulatorSystem : SystemBase
                         _PlaybackHeadSamplePos = .1f,
                         _DurationInSamples = emitter._DurationInSamples,
 
-                        _Pitch = -1.535f,
+                        _Pitch = -3.1f,
                         _Volume = 2,
 
                         _SpeakerIndex = 0,
