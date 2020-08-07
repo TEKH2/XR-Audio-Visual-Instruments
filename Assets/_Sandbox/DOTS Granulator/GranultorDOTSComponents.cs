@@ -5,6 +5,9 @@ public struct EmitterComponent : IComponentData
     public float _Timer;
     public float _Cadence;
     public int _DurationInSamples;
+    public int _PreviousEmissionDSPSampleIndex;
+
+    public int _SampleIndexMax;
 }
 
 public struct AudioClipDataComponent :IComponentData
@@ -12,9 +15,6 @@ public struct AudioClipDataComponent :IComponentData
     public BlobAssetReference<FloatBlobAsset> _ClipDataBlobAsset;
     public int _ClipIndex;
 }
-
-
-
 
 public struct GrainProcessor : IComponentData
 {
@@ -27,41 +27,20 @@ public struct GrainProcessor : IComponentData
     public float _Volume;
 
     public int _SpeakerIndex;
-   
 
+    public int _DSPSamplePlaybackStart;
     public bool _Populated;
 }
 
-
-
-public struct SampleProcessor : IComponentData
+public struct DSPTimerComponent : IComponentData
 {
-    // The index of the sample
-    public int _SampleOutputArrayIndex;
-
-    public Entity _ClipDataEntity;
-    public Entity _GrainEntity;
-
-    // Processing vars
-    public float _Pitch;
-    public float _Volume;
-}
-
-public struct AudioClipLibraryComponent : IComponentData
-{
+    public int _CurrentDSPSample;
 }
 
 public struct FloatBufferElement : IBufferElementData
 {
     public float Value;
 }
-
-public struct EntityBufferElement : IBufferElementData
-{
-    public Entity Value;
-}
-
-
 
 // Blob asset
 public struct FloatBlobAsset

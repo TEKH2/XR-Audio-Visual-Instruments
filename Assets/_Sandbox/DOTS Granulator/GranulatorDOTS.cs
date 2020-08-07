@@ -15,6 +15,8 @@ public class GranulatorDOTS :  MonoBehaviour
     EntityManager _EntityManager;
     EntityQuery _GrainQuery;
 
+    Entity _DSPTimerEntity;
+
     GrainManager _GrainManager;
 
     public AudioClip[] _AudioClips;
@@ -22,15 +24,19 @@ public class GranulatorDOTS :  MonoBehaviour
 
     List<Entity> _GrainEntities = new List<Entity>();
 
-    public float _Cadence = .1f;
-    public float _DurationInSeconds = .1f;
-
     public int _NumEmitters = 1;
+    public float _CadenceInMS = 5f;
+    public float _DurationInMS = 200f;
+
+  
 
     public void Start()
     {
         _GrainManager = GrainManager.Instance;
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+        _DSPTimerEntity = _EntityManager.CreateEntity();
+        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample });
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
 
@@ -64,7 +70,7 @@ public class GranulatorDOTS :  MonoBehaviour
         for (int i = 0; i < _NumEmitters; i++)
         {
             Entity emitterEntity = _EntityManager.CreateEntity();
-            _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = _Cadence, _DurationInSamples = (int)(_DurationInSeconds * 44100) });
+            _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = _CadenceInMS * .001f, _DurationInSamples = (int)(_DurationInMS * .001f * 44100) });
         }
     }
 
@@ -72,9 +78,13 @@ public class GranulatorDOTS :  MonoBehaviour
 
     private void Update()
     {
-        //_EntityManager.GetComponentData<GrainProcessor>()
+        // Update DSP sample
+        DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
+        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample });
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
+
+        if (!_GrainManager._AllSpeakers[0].gameObject.activeSelf) _GrainManager._AllSpeakers[0].gameObject.SetActive(true);
 
         for (int i = grainEntities.Length-1; i > 0; i--)
         {
@@ -92,7 +102,9 @@ public class GranulatorDOTS :  MonoBehaviour
                 playbackData._IsPlaying = true;
                 playbackData._PlaybackIndex = 0;
                 playbackData._PlaybackSampleCount = samples.Length;
-                playbackData._DSPStartIndex = _GrainManager._CurrentDSPSample + 100;
+                playbackData._DSPStartIndex = grainProcessor._DSPSamplePlaybackStart;
+
+                print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 
                 Array.ConstrainedCopy(samples.ToArray(), 0, playbackData._GrainSamples, 0, samples.Length);
 
@@ -131,6 +143,8 @@ public class GranulatorSystem : SystemBase
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
 
+        DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
+
         float dt = Time.DeltaTime;
 
         Entities.ForEach
@@ -158,6 +172,7 @@ public class GranulatorSystem : SystemBase
                         _Volume = 2,
 
                         _SpeakerIndex = 0,
+                        _DSPSamplePlaybackStart = dspTimer._CurrentDSPSample + 100,
                         _Populated = false                     
                     });
 

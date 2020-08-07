@@ -19,7 +19,7 @@ public class GrainSpeaker : MonoBehaviour
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
-    int _MaxGrainDataCount = 500; 
+    int _MaxGrainDataCount = 1000; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
     private FilterSignal _FilterSignal = new FilterSignal();
@@ -215,6 +215,8 @@ public class GrainSpeaker : MonoBehaviour
     // Best latency - 11.60998
 
     float _SamplesPerRead= 0;
+    float _SamplesPerSecond = 0;
+    float prevTime = 0;
     void OnAudioFilterRead(float[] data, int channels)
     {
         _SamplesPerRead = 0;
@@ -265,7 +267,14 @@ public class GrainSpeaker : MonoBehaviour
             }
         }
 
-        print(_SamplesPerRead);
+
+        // ----------------------DEBUG
+        float dt = (float)AudioSettings.dspTime - prevTime;
+        prevTime = (float)AudioSettings.dspTime;
+        float newSamplesPerSecond = _SamplesPerRead * (1f / dt);
+        float concurrentSamples = newSamplesPerSecond / 44100;
+        _SamplesPerSecond = newSamplesPerSecond;// Mathf.Lerp(_SamplesPerSecond, newSamplesPerSecond, .3f ); // lerping threw a NAN??
+                print("Filter read dt: " + dt + "  Samples p/s: " + _SamplesPerSecond + "   Concurrent grains: " + Mathf.Round(concurrentSamples));
     }
 
     public bool _DEBUG_LerpPitching = true;
