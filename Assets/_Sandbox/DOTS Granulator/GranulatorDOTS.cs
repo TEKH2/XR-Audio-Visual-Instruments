@@ -169,14 +169,14 @@ public class GranulatorSystem : SystemBase
                     {
                         _AudioClipDataComponent = audioClipData[0],
 
-                        _PlaybackHeadSamplePos = .1f,
+                        _PlaybackHeadNormPos = emitter._PlayheadPosNormalized,
                         _DurationInSamples = emitter._DurationInSamples,
 
-                        _Pitch = -3.1f,
-                        _Volume = 2,
+                        _Pitch = emitter._Pitch,
+                        _Volume = emitter._Volume,
 
                         _SpeakerIndex = 0,
-                        _DSPSamplePlaybackStart = dspTimer._CurrentDSPSample + 100,
+                        _DSPSamplePlaybackStart = sampleIndexNextGrainStart + emitter._RandomOffsetInSamples,
                         _Populated = false                     
                     });
 
@@ -199,7 +199,7 @@ public class GranulatorSystem : SystemBase
           {
               if (!grain._Populated)
               {
-                  float sourceIndex = grain._PlaybackHeadSamplePos;
+                  float sourceIndex = grain._PlaybackHeadNormPos * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                   float increment = grain._Pitch;
 
                   for (int i = 0; i < grain._DurationInSamples; i++)
@@ -227,7 +227,7 @@ public class GranulatorSystem : SystemBase
                           sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
                       }
 
-                      sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue });
+                      sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue * grain._Volume });
                   }
 
                   grain._Populated = true;

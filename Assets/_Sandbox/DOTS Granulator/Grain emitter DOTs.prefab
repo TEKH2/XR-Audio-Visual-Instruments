@@ -95,8 +95,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _CadenceInMS: 20
-  _DurationInMS: 100
+  _EmissionProps:
+    _ClipIndex: 0
+    _PlayheadPos: 0.2
+    _PositionRandom: 0
+    _Cadence: 5
+    _CadenceRandom: 0
+    _Duration: 100
+    _DurationRandom: 0
+    _Volume: 2
+    _VolumeRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
+    _FilterProperties:
+      Type: 0
+      _FilterCutoffNorm: 0.5
+      _FilterGain: 1
+      _FilterQ: 1
+      _BitcrushAmount: 1
 --- !u!114 &3080604852309000471
 MonoBehaviour:
   m_ObjectHideFlags: 0
