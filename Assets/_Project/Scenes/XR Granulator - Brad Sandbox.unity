@@ -171,7 +171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &14944327
 Transform:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_RotationRange: {x: 0, y: 0, z: 0}
   m_ScaleRange: {x: 0.1, y: 0.1}
   m_ObjectsToSpawn:
-  - {fileID: 6829181057595103310, guid: 055ff4af90d589146bbf91dc051f2935, type: 3}
+  - {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9, type: 3}
   m_NumberToPool: 5
   _SpawnOnStart: 1
 --- !u!1 &22081846
@@ -9303,7 +9303,7 @@ PrefabInstance:
     - target: {fileID: 1248694266063708780, guid: a13d7ca3013f6454d8baa14bda3c705f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1248694266063708780, guid: a13d7ca3013f6454d8baa14bda3c705f,
         type: 3}
@@ -9459,7 +9459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1878083882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9476,9 +9476,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: baaf3eb83fa6d364c926f2d1dc31fe11, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
-  _Cadence: 0.005
-  _DurationInSeconds: 0.1
-  _NumEmitters: 5
+  _NumEmitters: 0
+  _CadenceInMS: 200
+  _DurationInMS: 200
+  _LatencyInMS: 50
 --- !u!4 &1878083883
 Transform:
   m_ObjectHideFlags: 0

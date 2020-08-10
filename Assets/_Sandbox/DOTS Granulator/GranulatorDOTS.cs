@@ -27,7 +27,7 @@ public class GranulatorDOTS :  MonoBehaviour
     public int _NumEmitters = 1;
     public float _CadenceInMS = 5f;
     public float _DurationInMS = 200f;
-
+    public float _LatencyInMS = 50;
   
 
     public void Start()
@@ -36,7 +36,7 @@ public class GranulatorDOTS :  MonoBehaviour
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
-        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample });
+        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
 
@@ -70,7 +70,11 @@ public class GranulatorDOTS :  MonoBehaviour
         for (int i = 0; i < _NumEmitters; i++)
         {
             Entity emitterEntity = _EntityManager.CreateEntity();
-            _EntityManager.AddComponentData(emitterEntity, new EmitterComponent { _Timer = 0, _Cadence = _CadenceInMS * .001f, _DurationInSamples = (int)(_DurationInMS * .001f * 44100) });
+            _EntityManager.AddComponentData(emitterEntity, new EmitterComponent
+            { 
+                _CadenceInSamples = (int)(AudioSettings.outputSampleRate * _CadenceInMS * .001f),
+                _DurationInSamples = (int)(_DurationInMS * .001f * 44100) 
+            });
         }
     }
 
@@ -80,7 +84,7 @@ public class GranulatorDOTS :  MonoBehaviour
     {
         // Update DSP sample
         DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
-        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample });
+        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS * .001f) });
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
@@ -151,13 +155,13 @@ public class GranulatorSystem : SystemBase
         (
             (int entityInQueryIndex, ref EmitterComponent emitter) =>
             {
-                emitter._Timer += dt;
-                // If timer is up
-                if (emitter._Timer >= emitter._Cadence)
-                {
-                    // Emit grain
-                    emitter._Timer -= emitter._Cadence;
+                // Max grains to stop it getting stuck in a while loop
+                int maxGrains = 20;
+                int grainCount = 0;
 
+                int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
+                while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._EmissionLatencyInSamples && grainCount < maxGrains)
+                {
                     // Create a new grain processor entity
                     Entity e = entityCommandBuffer.CreateEntity(entityInQueryIndex);
 
@@ -175,6 +179,13 @@ public class GranulatorSystem : SystemBase
                         _DSPSamplePlaybackStart = dspTimer._CurrentDSPSample + 100,
                         _Populated = false                     
                     });
+
+                    // Set last grain emitted index
+                    emitter._LastGrainEmissionDSPIndex = sampleIndexNextGrainStart;
+                    // Increment emission Index
+                    sampleIndexNextGrainStart += emitter._CadenceInSamples;
+
+                    grainCount++;
 
                     entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, e);
                 }

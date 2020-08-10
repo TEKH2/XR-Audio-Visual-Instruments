@@ -1,15 +1,5 @@
 ﻿using Unity.Entities;
 
-public struct EmitterComponent : IComponentData
-{
-    public float _Timer;
-    public float _Cadence;
-    public int _DurationInSamples;
-    public int _PreviousEmissionDSPSampleIndex;
-
-    public int _SampleIndexMax;
-}
-
 public struct AudioClipDataComponent :IComponentData
 {
     public BlobAssetReference<FloatBlobAsset> _ClipDataBlobAsset;
@@ -35,6 +25,7 @@ public struct GrainProcessor : IComponentData
 public struct DSPTimerComponent : IComponentData
 {
     public int _CurrentDSPSample;
+    public int _EmissionLatencyInSamples;
 }
 
 public struct FloatBufferElement : IBufferElementData
@@ -46,4 +37,12 @@ public struct FloatBufferElement : IBufferElementData
 public struct FloatBlobAsset
 {
     public BlobArray<float> array;
+}
+
+
+public struct EmitterComponent : IComponentData
+{
+    public int _CadenceInSamples;
+    public int _DurationInSamples;
+    public int _LastGrainEmissionDSPIndex;
 }

@@ -274,7 +274,7 @@ public class GrainSpeaker : MonoBehaviour
         float newSamplesPerSecond = _SamplesPerRead * (1f / dt);
         float concurrentSamples = newSamplesPerSecond / 44100;
         _SamplesPerSecond = newSamplesPerSecond;// Mathf.Lerp(_SamplesPerSecond, newSamplesPerSecond, .3f ); // lerping threw a NAN??
-        print("Filter read dt: " + dt + "  Samples p/s: " + _SamplesPerSecond + "   Concurrent grains: " + Mathf.Round(concurrentSamples));
+        //print("Filter read dt: " + dt + "  Samples p/s: " + _SamplesPerSecond + "   Concurrent grains: " + Mathf.Round(concurrentSamples));
     }
 
     public bool _DEBUG_LerpPitching = true;
