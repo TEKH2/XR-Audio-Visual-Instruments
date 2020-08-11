@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 13993059}
   m_Layer: 0
-  m_Name: DOTS - 1 sources 1 emitters 20 50
+  m_Name: DOTS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5946,7 +5946,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1199299395}
   m_Layer: 0
-  m_Name: NORMAL - 1 sources 1 emitters 20 50
+  m_Name: NORMAL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

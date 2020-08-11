@@ -11,6 +11,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     Entity _Entity;
     EntityManager _EntityManager;
 
+    bool _Initialized = false;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _Entity = entity;
@@ -25,6 +27,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position
         });
+
+        _Initialized = true;
     }
 
     void Start()
@@ -34,16 +38,19 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     void Update()
     {
-        //EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_Entity);
-        //_EntityManager.SetComponentData(_Entity, new EmitterComponent
-        //{
-        //    _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
-        //    _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-        //    _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,
-        //    _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
-        //    _Pitch = _EmissionProps.Pitch,
-        //    _Volume = _EmissionProps.Volume,
-        //    _PlayheadPosNormalized = _EmissionProps.Position
-        //});
+        if (!_Initialized)
+            return;
+
+        EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_Entity);
+        _EntityManager.SetComponentData(_Entity, new EmitterComponent
+        {
+            _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
+            _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
+            _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,
+            _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
+            _Pitch = _EmissionProps.Pitch,
+            _Volume = _EmissionProps.Volume,
+            _PlayheadPosNormalized = _EmissionProps.Position
+        });
     }
 }

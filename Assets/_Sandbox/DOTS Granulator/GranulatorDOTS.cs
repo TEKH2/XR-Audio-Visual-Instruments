@@ -66,6 +66,22 @@ public class GranulatorDOTS :  MonoBehaviour
             }
         }
 
+        // -------------------------------------------------- CREATE WINDOWING BLOB ASSET
+        Entity windowingBlobEntity = _EntityManager.CreateEntity();
+        using (BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp))
+        {
+            // ---------------------------------- CREATE BLOB
+            ref FloatBlobAsset windowingBlobAsset = ref blobBuilder.ConstructRoot<FloatBlobAsset>();
+            BlobBuilderArray<float> windowArray = blobBuilder.Allocate(ref windowingBlobAsset.array, 512);
+
+            for (int i = 0; i < windowArray.Length; i++)
+                windowArray[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / windowArray.Length));
+
+            // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY
+            BlobAssetReference<FloatBlobAsset> windowingBlobAssetRef = blobBuilder.CreateBlobAssetReference<FloatBlobAsset>(Allocator.Persistent);
+            _EntityManager.AddComponentData(windowingBlobEntity, new WindowingDataComponent { _WindowingArray = windowingBlobAssetRef });
+        }
+
         // -------------------------------------------------   CREATE EMITTER
         for (int i = 0; i < _NumEmitters; i++)
         {
@@ -147,6 +163,8 @@ public class GranulatorSystem : SystemBase
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
 
+        WindowingDataComponent windowingData = GetSingleton<WindowingDataComponent>();
+
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
 
         float dt = Time.DeltaTime;
@@ -195,48 +213,60 @@ public class GranulatorSystem : SystemBase
 
         Entities.ForEach
         (
-          (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
-          {
-              if (!grain._Populated)
-              {
-                  float sourceIndex = grain._PlaybackHeadNormPos * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
-                  float increment = grain._Pitch;
+            (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+            {
+                if (!grain._Populated)
+                {
+                    float sourceIndex = grain._PlaybackHeadNormPos * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
+                    float increment = grain._Pitch;
 
-                  for (int i = 0; i < grain._DurationInSamples; i++)
-                  {
-                      // PING PONG
-                      if (sourceIndex + increment < 0 || sourceIndex + increment > grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length - 1)
-                      {
-                          increment = increment * -1f;
-                          sourceIndex -= 1;
-                      }
+                    for (int i = 0; i < grain._DurationInSamples; i++)
+                    {
+                        // PING PONG
+                        if (sourceIndex + increment < 0 || sourceIndex + increment > grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length - 1)
+                        {
+                            increment = increment * -1f;
+                            sourceIndex -= 1;
+                        }
 
-                      // PITCHING - Interpolate sample if not integer to create 
-                      sourceIndex += increment;
-                      float sourceIndexRemainder = sourceIndex % 1;
-                      float sourceValue;
-                      if (sourceIndexRemainder != 0)
-                      {
-                          sourceValue = math.lerp(
-                              grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex],
-                              grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex + 1],
-                              sourceIndexRemainder);
-                      }
-                      else
-                      {
-                          sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
-                      }
+                        // PITCHING - Interpolate sample if not integer to create 
+                        sourceIndex += increment;
+                        float sourceIndexRemainder = sourceIndex % 1;
+                        float sourceValue;
 
-                      sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue * grain._Volume });
-                  }
+                        if (sourceIndexRemainder != 0)
+                        {
+                            sourceValue = math.lerp(
+                                grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex],
+                                grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex + 1],
+                                sourceIndexRemainder);
+                        }
+                        else
+                        {
+                            sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
+                        }
 
-                  grain._Populated = true;
-              }
-          }
+                        // Adjusted for volume and windowing
+                        sourceValue *= grain._Volume;
+                       
+                        // Map doesn't work inside a job TODO investigate how to use methods in a job
+                        sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._DurationInSamples, 0, windowingData._WindowingArray.Value.array.Length)];
+                        
+                        sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue });
+                    }
+
+                    grain._Populated = true;
+                }
+            }
         ).ScheduleParallel();
 
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(Dependency);
+    }
+
+    public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
+    {
+        return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
     }
 }
 

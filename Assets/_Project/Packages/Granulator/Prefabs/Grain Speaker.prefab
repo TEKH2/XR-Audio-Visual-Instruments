@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4664960390748941028}
   - component: {fileID: -3690036044928456836}
   m_Layer: 0
-  m_Name: Granulator Audio Source
+  m_Name: Grain Speaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,8 +55,8 @@ AudioSource:
   SpatializePostEffects: 1
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 0.5
-  MaxDistance: 100
+  MinDistance: 0.2
+  MaxDistance: 200
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -182,8 +182,8 @@ MonoBehaviour:
   enableSpatialization: 1
   gain: 0
   useInvSqr: 1
-  near: 0.5
-  far: 100
+  near: 0.2
+  far: 200
   volumetricRadius: 0
   reverbSend: 0
   enableRfl: 0
@@ -199,9 +199,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea96974fa799366469ed705f9a27b114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _CurrentDSPSampleIndex: 0
+  _SpeakerIndex: 0
   _AttachedGrainEmitters: []
-  _MaxGrainDataCount: 20
+  _CurrentDSPSampleIndex: 0
+  _DebugLog: 0
+  _DEBUG_LerpPitching: 1
 --- !u!1 &5433507750315278579
 GameObject:
   m_ObjectHideFlags: 0

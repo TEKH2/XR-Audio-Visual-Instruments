@@ -6,6 +6,11 @@ public struct AudioClipDataComponent :IComponentData
     public int _ClipIndex;
 }
 
+public struct WindowingDataComponent : IComponentData
+{
+    public BlobAssetReference<FloatBlobAsset> _WindowingArray;   
+}
+
 public struct GrainProcessor : IComponentData
 {
     public AudioClipDataComponent _AudioClipDataComponent;
