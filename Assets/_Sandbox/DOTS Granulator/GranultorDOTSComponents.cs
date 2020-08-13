@@ -24,7 +24,7 @@ public struct GrainProcessor : IComponentData
     public int _SpeakerIndex;
 
     public int _DSPSamplePlaybackStart;
-    public bool _Populated;
+    public bool _SamplePopulated;
 }
 
 public struct DSPTimerComponent : IComponentData
@@ -57,8 +57,8 @@ public struct EmitterComponent : IComponentData
     public float _PlayheadPosNormalized;
 }
 
-// ---------- DSPS
-public struct DSP_VolumeScalar : IComponentData
+// ---------- DSP
+public struct DSP_BitCrush : IComponentData
 {
-    public float _VolumeScalar;
+    public float downsampleFactor;
 }

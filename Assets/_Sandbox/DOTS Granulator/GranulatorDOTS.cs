@@ -89,6 +89,7 @@ public class GranulatorDOTS :  MonoBehaviour
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
+
         if (!_GrainManager._AllSpeakers[0].gameObject.activeSelf)
         {
             _GrainManager._AllSpeakers[0].gameObject.SetActive(true);
@@ -99,7 +100,7 @@ public class GranulatorDOTS :  MonoBehaviour
         {
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
 
-            if(grainProcessor._Populated)
+            if(grainProcessor._SamplePopulated)
             {
                 GrainPlaybackData playbackData = _GrainManager._AllSpeakers[0].GetGrainPlaybackDataFromPool();
 
@@ -190,7 +191,7 @@ public class GranulatorSystem : SystemBase
 
                         _SpeakerIndex = 0,
                         _DSPSamplePlaybackStart = sampleIndexNextGrainStart,// + emitter._RandomOffsetInSamples,
-                        _Populated = false                     
+                        _SamplePopulated = false
                     });
 
                     // Set last grain emitted index
@@ -201,6 +202,9 @@ public class GranulatorSystem : SystemBase
                     grainCount++;
 
                     entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, grainProcessorEntity);
+
+                    // DSP Test - Adding bitcrush
+                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush { downsampleFactor = 20 });
                 }
             }
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
@@ -210,7 +214,7 @@ public class GranulatorSystem : SystemBase
         (
             (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
             {
-                if (!grain._Populated)
+                if (!grain._SamplePopulated)
                 {
                     float sourceIndex = grain._PlaybackHeadNormPos * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                     float increment = grain._Pitch;
@@ -250,7 +254,7 @@ public class GranulatorSystem : SystemBase
                         sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue });
                     }
 
-                    grain._Populated = true;
+                    grain._SamplePopulated = true;
                 }
             }
         ).ScheduleParallel();
@@ -273,27 +277,35 @@ public class GranulatorSystem : SystemBase
 [UpdateAfter(typeof(GranulatorSystem))]
 public class DSPSystem : SystemBase
 {
-    // Command buffer for removing tween componants once they are completed
-    private EndSimulationEntityCommandBufferSystem _CommandBufferSystem;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        _CommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-    }
-
     protected override void OnUpdate()
-    {
-        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
-        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-
+    {       
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer <FloatBufferElement> sampleOutputBuffer, in GrainProcessor grain, in DSP_VolumeScalar dspVol) =>
+           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_BitCrush dsp, in GrainProcessor grain) =>
            {
-               for (int i = 0; i < sampleOutputBuffer.Length; i++)
+               if (grain._SamplePopulated)
                {
-                   sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOutputBuffer[i].Value * dspVol._VolumeScalar };
+                   float prevValue = 0;
+                   float count = 0;
+
+                   for (int i = 0; i < sampleOutputBuffer.Length; i++)
+                   {
+                       float sampleOut = 0;
+                       float sampleIn = sampleOutputBuffer[i].Value;
+
+                       if (count >= dsp.downsampleFactor)
+                       {
+                           sampleOut = sampleIn;
+                           prevValue = sampleOut;
+                           count = 0;
+                       }
+                       else
+                           sampleOut = prevValue;
+
+                       count++;
+
+                       sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOut };
+                   }
                }
            }
         ).ScheduleParallel();
