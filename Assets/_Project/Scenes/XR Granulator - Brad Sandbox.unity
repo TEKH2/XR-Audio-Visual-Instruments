@@ -6227,8 +6227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b09f551c08e7ed408ff01c5a2f8b2d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TestType: 1
-  _EmitterCount: 5
+  _TestType: 0
+  _EmitterCount: 2
   _LatencyInMS: 20
   _EmissionProps:
     _ClipIndex: 0
