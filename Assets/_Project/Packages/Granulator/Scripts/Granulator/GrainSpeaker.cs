@@ -41,6 +41,8 @@ public class GrainSpeaker : MonoBehaviour
         for (int i = 0; i < _Window.Length; i++)        
             _Window[i] = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * i / _Window.Length));
 
+        _DebugGUI = FindObjectOfType<DebugGUI_Granulator>();
+
         //_FilterSignal._Type = DSP_Filter.FilterType.None;
     }
 
@@ -148,6 +150,7 @@ public class GrainSpeaker : MonoBehaviour
         AddGrainPlaybackData(grainPlaybackData);
     }
 
+    DebugGUI_Granulator _DebugGUI;
     int prevStartSample = 0;
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)
     {
@@ -170,7 +173,9 @@ public class GrainSpeaker : MonoBehaviour
             );
         }
 
-        if (DSPMSDiff < 3)
+        _DebugGUI.LogLatency(DSPMSDiff);
+
+        if (DSPMSDiff < 3 && Time.timeSinceLevelLoad > 10)
             Debug.LogWarning("Grain close too current - DSP m/s diff: " + DSPMSDiff);
 
         prevStartSample = playbackData._DSPStartIndex;

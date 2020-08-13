@@ -8,7 +8,7 @@ using UnityEngine.Profiling;
 public class GrainEmitter : MonoBehaviour
 {
     #region VARIABLES
-    public GrainEmissionProps _GrainEmissionProps;
+    public GrainEmissionProps _EmissionProps;
     private FilterCoefficients _FilterCoefficients; //TODO reimpliment
     
     int _LastGrainSampleIndex = 0;
@@ -31,7 +31,7 @@ public class GrainEmitter : MonoBehaviour
         _Active = true;
 
         if (_RandomizedPlaybackPos)
-            _GrainEmissionProps.Position = Random.Range(.1f, .9f);
+            _EmissionProps.Position = Random.Range(.1f, .9f);
     }
 
     public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
@@ -42,11 +42,11 @@ public class GrainEmitter : MonoBehaviour
         Profiler.BeginSample("Emitter Update");
 
         // Calculate random sample rate
-        int currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
+        int currentCadence = (int)(sampleRate * _EmissionProps.Cadence * .001f);
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
-        _FilterCoefficients = DSP_Effects.CreateCoefficents(_GrainEmissionProps._FilterProperties);
+        _FilterCoefficients = DSP_Effects.CreateCoefficents(_EmissionProps._FilterProperties);
 
         int max = 10;
         int count = 0;
@@ -55,11 +55,11 @@ public class GrainEmitter : MonoBehaviour
         {
             GrainData tempGrainData = new GrainData
             (
-                _GrainEmissionProps._ClipIndex,
-                _GrainEmissionProps.Duration,
-                _GrainEmissionProps.Position,
-                _GrainEmissionProps.Pitch,
-                _GrainEmissionProps.Volume,
+                _EmissionProps._ClipIndex,
+                _EmissionProps.Duration,
+                _EmissionProps.Position,
+                _EmissionProps.Pitch,
+                _EmissionProps.Volume,
                 _FilterCoefficients,
                 sampleIndexNextGrainStart
             );
@@ -74,7 +74,7 @@ public class GrainEmitter : MonoBehaviour
             // Set last grain index
             _LastGrainSampleIndex = sampleIndexNextGrainStart;
 
-            currentCadence = (int)(sampleRate * _GrainEmissionProps.Cadence * .001f);
+            currentCadence = (int)(sampleRate * _EmissionProps.Cadence * .001f);
             sampleIndexNextGrainStart = sampleIndexNextGrainStart + currentCadence;
 
             count++;

@@ -10,8 +10,8 @@ AudioManager:
   Default Speaker Mode: 2
   m_SampleRate: 44100
   m_DSPBufferSize: 256
-  m_VirtualVoiceCount: 100
-  m_RealVoiceCount: 100
+  m_VirtualVoiceCount: 512
+  m_RealVoiceCount: 32
   m_SpatializerPlugin: OculusSpatializer
   m_AmbisonicDecoderPlugin: 
   m_DisableAudio: 0
