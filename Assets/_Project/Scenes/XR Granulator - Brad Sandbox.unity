@@ -6254,6 +6254,15 @@ MonoBehaviour:
       _FilterGain: 1
       _FilterQ: 1
       _BitcrushAmount: 1
+  _AutomationSpeed: 1
+  _AutomatePlayhead: 0
+  _AutomatePlayheadRange: {x: 0, y: 0}
+  _AutomateCadence: 0
+  _AutomateCadenceRange: {x: 2, y: 200}
+  _AutomateDuration: 0
+  _AutomateDurationRange: {x: 0, y: 0}
+  _AutomatePitch: 0
+  _AutomatePitchRange: {x: -1, y: 1}
   _EmitterPrefabDOTs: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
     type: 3}
   _EmitterPrefab: {fileID: 8996200946907528258, guid: 80dbce1aa77d06a40b48788bc09972e7,

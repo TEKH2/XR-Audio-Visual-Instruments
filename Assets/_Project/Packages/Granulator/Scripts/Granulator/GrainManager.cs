@@ -382,7 +382,7 @@ public class GrainEmissionProps
 
     // Transpose
     //---------------------------------------------------------------------
-    [Range(-4f, 4f)]
+    [Range(-3f, 3f)]
     [SerializeField]
     float _Transpose = 0;
     [Range(0f, 1f)]
@@ -394,12 +394,12 @@ public class GrainEmissionProps
     {
         get
         {
-            _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -5f, 5f));
-            return Mathf.Clamp(_Pitch, 0.1f, 5f);
+            _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -4f, 4f));
+            return Mathf.Clamp(_Pitch, 0.06f, 16f);
         }
         set
         {
-            _Pitch = Mathf.Clamp(value, 0.1f, 5f);
+            _Transpose = Mathf.Clamp(value,-3, 3f);
         }
     }
 

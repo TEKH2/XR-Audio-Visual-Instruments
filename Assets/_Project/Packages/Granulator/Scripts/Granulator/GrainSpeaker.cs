@@ -175,8 +175,8 @@ public class GrainSpeaker : MonoBehaviour
 
         _DebugGUI.LogLatency(DSPMSDiff);
 
-        if (DSPMSDiff < 3 && Time.timeSinceLevelLoad > 10)
-            Debug.LogWarning("Grain close too current - DSP m/s diff: " + DSPMSDiff);
+        //if (DSPMSDiff < 3 && Time.timeSinceLevelLoad > 10)
+        //    Debug.LogWarning("Grain close too current - DSP m/s diff: " + DSPMSDiff);
 
         prevStartSample = playbackData._DSPStartIndex;
     }

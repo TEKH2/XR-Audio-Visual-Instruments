@@ -115,8 +115,14 @@ public class GranulatorDOTS :  MonoBehaviour
 
                 //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 
-                for (int s = 0; s < samples.Length; s++)                
-                    playbackData._GrainSamples[s] = samples[s];                
+                int sampleLength = samples.Length;
+                for (int s = 0; s < playbackData._GrainSamples.Length; s++)
+                {
+                    if(s<sampleLength)
+                        playbackData._GrainSamples[s] = samples[s];
+                    else
+                        playbackData._GrainSamples[s] = 0;
+                }
 
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
