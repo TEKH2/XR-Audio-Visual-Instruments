@@ -19,6 +19,8 @@ namespace EXPToolkit
 
         public bool _SpawnOnStart = false;
 
+        public Transform _Parent;
+
         void Start()
         {
             for (int i = 0; i < m_NumberToPool; i++)
@@ -87,6 +89,9 @@ namespace EXPToolkit
             newGo.transform.localScale = scale * Vector3.one;
 
             m_InctiveObjects.Remove(newGo);
+
+            if (_Parent != null)
+                newGo.transform.SetParent(_Parent);
 
             newGo.SetActive(true);
 

@@ -31,7 +31,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _PlayheadPosNormalized = _EmissionProps.Position
         });
 
-        _EntityManager.SetComponentData(_Entity, new Translation { Value = transform.position });
+        //_EntityManager.AddComponentData(_Entity, new Translation { Value = transform.position });
     }
 
     void Update()

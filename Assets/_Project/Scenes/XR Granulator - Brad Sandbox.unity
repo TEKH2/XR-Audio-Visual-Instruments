@@ -205,6 +205,7 @@ MonoBehaviour:
   - {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &22081846
 GameObject:
   m_ObjectHideFlags: 0
@@ -2220,6 +2221,7 @@ MonoBehaviour:
   - {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 993538536}
 --- !u!1 &422937823
 GameObject:
   m_ObjectHideFlags: 0
@@ -2345,6 +2347,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 30
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &485398151
 GameObject:
   m_ObjectHideFlags: 0
@@ -3879,6 +3882,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 80dbce1aa77d06a40b48788bc09972e7, type: 3}
   m_NumberToPool: 15
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &711329593
 GameObject:
   m_ObjectHideFlags: 0
@@ -4590,6 +4594,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 20
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &890891113
 GameObject:
   m_ObjectHideFlags: 0
@@ -4754,6 +4759,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 055ff4af90d589146bbf91dc051f2935, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &917375178
 GameObject:
   m_ObjectHideFlags: 0
@@ -5867,6 +5873,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 80dbce1aa77d06a40b48788bc09972e7, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1170476735
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,6 +5924,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 80dbce1aa77d06a40b48788bc09972e7, type: 3}
   m_NumberToPool: 15
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1193177329
 GameObject:
   m_ObjectHideFlags: 0
@@ -6215,7 +6223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TestType: 0
-  _EmitterCount: 1
+  _EmitterCount: 5
   _LatencyInMS: 20
   _EmissionProps:
     _ClipIndex: 0
@@ -7052,6 +7060,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 30
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1278969489
 GameObject:
   m_ObjectHideFlags: 0
@@ -7719,6 +7728,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
   m_NumberToPool: 20
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!4 &1411629662
 Transform:
   m_ObjectHideFlags: 0
@@ -7783,6 +7793,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 10
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1421333065
 GameObject:
   m_ObjectHideFlags: 0
@@ -8010,6 +8021,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1526626357
 GameObject:
   m_ObjectHideFlags: 0
@@ -9042,6 +9054,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: ae31246c0d0b29c409cb86b4f224377d, type: 3}
   m_NumberToPool: 30
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1667809431
 GameObject:
   m_ObjectHideFlags: 0
@@ -9128,6 +9141,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 80dbce1aa77d06a40b48788bc09972e7, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &1687882022
 GameObject:
   m_ObjectHideFlags: 0
@@ -11561,6 +11575,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: 816285de2fb10d149b55aa80f0dc7d49, type: 3}
   m_NumberToPool: 20
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &2084750906
 GameObject:
   m_ObjectHideFlags: 0
@@ -11863,6 +11878,7 @@ MonoBehaviour:
   - {fileID: 6829181057595103310, guid: b6d7ff424cc502746b6dca0fdb414011, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
+  _Parent: {fileID: 0}
 --- !u!1 &2137680370
 GameObject:
   m_ObjectHideFlags: 0

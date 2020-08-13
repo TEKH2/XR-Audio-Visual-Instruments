@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &793884346762676951
 Transform:
   m_ObjectHideFlags: 0
@@ -97,11 +97,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _EmissionProps:
     _ClipIndex: 0
-    _PlayheadPos: 0.27
+    _PlayheadPos: 0.25
     _PositionRandom: 0
     _Cadence: 20
     _CadenceRandom: 0
-    _Duration: 20
+    _Duration: 100
     _DurationRandom: 0
     _Volume: 2
     _VolumeRandom: 0
