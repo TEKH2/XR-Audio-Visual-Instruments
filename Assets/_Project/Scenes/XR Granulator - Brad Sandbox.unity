@@ -6233,16 +6233,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b09f551c08e7ed408ff01c5a2f8b2d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TestType: 0
+  _TestType: 1
   _EmitterCount: 1
   _LatencyInMS: 100
   _EmissionProps:
     _ClipIndex: 0
-    _PlayheadPos: 0.495
+    _PlayheadPos: 0.115
     _PositionRandom: 0
-    _Cadence: 5
+    _Cadence: 32
     _CadenceRandom: 0
-    _Duration: 100
+    _Duration: 80
     _DurationRandom: 0
     _Volume: 1
     _VolumeRandom: 0

@@ -56,3 +56,9 @@ public struct EmitterComponent : IComponentData
 
     public float _PlayheadPosNormalized;
 }
+
+// ---------- DSPS
+public struct DSP_VolumeScalar : IComponentData
+{
+    public float _VolumeScalar;
+}

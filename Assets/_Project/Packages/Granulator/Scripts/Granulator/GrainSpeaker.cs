@@ -90,7 +90,6 @@ public class GrainSpeaker : MonoBehaviour
 
 
 
-        Profiler.BeginSample("Add Grains 2");
         // -----------------------------------------BUILD SAMPLE ARRAY        
         //int sourceIndex = playheadStartSample;
 
@@ -123,7 +122,6 @@ public class GrainSpeaker : MonoBehaviour
 
             grainPlaybackData._GrainSamples[i] = sourceValue;
         }
-        Profiler.EndSample();
 
 
         // Apply DSP filter
@@ -133,13 +131,13 @@ public class GrainSpeaker : MonoBehaviour
         //    grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
         //}
 
-        Profiler.BeginSample("Windowing");
+       
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
         {
             grainPlaybackData._GrainSamples[i] *= _Window[(int)Map(i, 0, durationInSamples, 0, _Window.Length)];
+            grainPlaybackData._GrainSamples[i] *= gd._Volume;
         }
-        Profiler.EndSample();
 
 
         grainPlaybackData._IsPlaying = true;

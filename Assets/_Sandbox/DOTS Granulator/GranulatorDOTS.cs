@@ -9,7 +9,7 @@ using UnityEngine;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.Profiling;
 using System;
-
+using System.Linq;
 
 public class GranulatorDOTS :  MonoBehaviour
 {
@@ -262,5 +262,40 @@ public class GranulatorSystem : SystemBase
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
+    }
+}
+
+
+
+
+
+
+[UpdateAfter(typeof(GranulatorSystem))]
+public class DSPSystem : SystemBase
+{
+    // Command buffer for removing tween componants once they are completed
+    private EndSimulationEntityCommandBufferSystem _CommandBufferSystem;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _CommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+    }
+
+    protected override void OnUpdate()
+    {
+        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
+        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+
+        Entities.ForEach
+        (
+           (int entityInQueryIndex, DynamicBuffer <FloatBufferElement> sampleOutputBuffer, in GrainProcessor grain, in DSP_VolumeScalar dspVol) =>
+           {
+               for (int i = 0; i < sampleOutputBuffer.Length; i++)
+               {
+                   sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOutputBuffer[i].Value * dspVol._VolumeScalar };
+               }
+           }
+        ).ScheduleParallel();
     }
 }
