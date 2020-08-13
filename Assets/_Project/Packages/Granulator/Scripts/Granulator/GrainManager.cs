@@ -36,7 +36,7 @@ public class GrainManager : MonoBehaviour
 
     [Range(0,100)]
     public float _EmissionLatencyMS = 80;
-    int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
+    public int EmissionLatencyInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
 
     // maximum distance an emitter can be from a speaker
     public float _MaxDistBetweenEmitterAndSpeaker = 1;

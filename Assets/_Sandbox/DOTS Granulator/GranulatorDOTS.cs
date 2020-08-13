@@ -85,7 +85,7 @@ public class GranulatorDOTS :  MonoBehaviour
     {
         // Update DSP sample
         DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
-        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS * .001f) });
+        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _GrainManager._CurrentDSPSample, _EmissionLatencyInSamples = _GrainManager.EmissionLatencyInSamples });
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
