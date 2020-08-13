@@ -89,7 +89,11 @@ public class GranulatorDOTS :  MonoBehaviour
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
-        if (!_GrainManager._AllSpeakers[0].gameObject.activeSelf) _GrainManager._AllSpeakers[0].gameObject.SetActive(true);
+        if (!_GrainManager._AllSpeakers[0].gameObject.activeSelf)
+        {
+            _GrainManager._AllSpeakers[0].gameObject.SetActive(true);
+            _GrainManager._AllSpeakers[0].transform.position = transform.position;
+        }
 
         for (int i = grainEntities.Length-1; i > 0; i--)
         {

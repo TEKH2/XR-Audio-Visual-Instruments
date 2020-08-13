@@ -4351,7 +4351,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 844739178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.833, z: 1.229}
+  m_LocalPosition: {x: 0, y: 1, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1211885925}
@@ -4938,6 +4938,11 @@ PrefabInstance:
       propertyPath: _AudioClipLibrary._Clips.Array.data[0]
       value: 
       objectReference: {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
+    - target: {fileID: 1244338074411448928, guid: a13d7ca3013f6454d8baa14bda3c705f,
+        type: 3}
+      propertyPath: _MaxGrainSpeakers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1245078102122130036, guid: a13d7ca3013f6454d8baa14bda3c705f,
         type: 3}
       propertyPath: m_Name
@@ -6222,7 +6227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b09f551c08e7ed408ff01c5a2f8b2d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TestType: 0
+  _TestType: 1
   _EmitterCount: 5
   _LatencyInMS: 20
   _EmissionProps:
