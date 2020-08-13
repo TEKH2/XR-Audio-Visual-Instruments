@@ -62,3 +62,8 @@ public struct DSP_BitCrush : IComponentData
 {
     public float downsampleFactor;
 }
+
+public struct DSP_Filter : IComponentData
+{
+    public float coefficeint;
+}

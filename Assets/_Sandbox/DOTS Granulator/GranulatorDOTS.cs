@@ -205,6 +205,7 @@ public class GranulatorSystem : SystemBase
 
                     // DSP Test - Adding bitcrush
                     entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush { downsampleFactor = 20 });
+                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Rando { downsampleFactor = 2 });
                 }
             }
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
@@ -306,6 +307,17 @@ public class DSPSystem : SystemBase
 
                        sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOut };
                    }
+               }
+           }
+        ).ScheduleParallel();
+
+        Entities.ForEach
+        (
+           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Rando dsp, in GrainProcessor grain) =>
+           {
+               if (grain._SamplePopulated)
+               {
+                   
                }
            }
         ).ScheduleParallel();
