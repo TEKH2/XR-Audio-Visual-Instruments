@@ -170,6 +170,9 @@ public class GrainSpeaker : MonoBehaviour
             );
         }
 
+        if (DSPMSDiff < 3)
+            Debug.LogWarning("Grain close too current - DSP m/s diff: " + DSPMSDiff);
+
         prevStartSample = playbackData._DSPStartIndex;
     }
 

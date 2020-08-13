@@ -6228,7 +6228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TestType: 0
-  _EmitterCount: 2
+  _EmitterCount: 5
   _LatencyInMS: 30
   _EmissionProps:
     _ClipIndex: 0
