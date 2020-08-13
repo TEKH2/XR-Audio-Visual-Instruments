@@ -6229,7 +6229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TestType: 0
   _EmitterCount: 2
-  _LatencyInMS: 20
+  _LatencyInMS: 30
   _EmissionProps:
     _ClipIndex: 0
     _PlayheadPos: 0.25
@@ -9163,7 +9163,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1687882023
 MonoBehaviour:
   m_ObjectHideFlags: 0

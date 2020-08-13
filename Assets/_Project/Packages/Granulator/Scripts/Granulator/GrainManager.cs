@@ -91,6 +91,8 @@ public class GrainManager : MonoBehaviour
         #region UPDATE ACTIVE SPEAKERS AND CHECKS IF THE LISTENER IS OUT OF RANGE
         
         int sampleIndexMax = _CurrentDSPSample + EmissionLatencyInSamples;
+
+        //print(EmissionLatencyInSamples);
        
         for (int i = _ActiveSpeakers.Count - 1; i >= 0; i--)
         {

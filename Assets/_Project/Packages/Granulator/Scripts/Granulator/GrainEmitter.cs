@@ -34,7 +34,6 @@ public class GrainEmitter : MonoBehaviour
             _GrainEmissionProps.Position = Random.Range(.1f, .9f);
     }
 
-    bool _UsedDOTS = false;
     public void ManualUpdate(GrainSpeaker speaker, int maxDSPIndex, int sampleRate)
     {
         if (!_Active)

@@ -201,8 +201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SpeakerIndex: 0
   _AttachedGrainEmitters: []
-  _CurrentDSPSampleIndex: 0
-  _DebugLog: 0
+  _DebugLog: 1
   _DEBUG_LerpPitching: 1
 --- !u!1 &5433507750315278579
 GameObject:
