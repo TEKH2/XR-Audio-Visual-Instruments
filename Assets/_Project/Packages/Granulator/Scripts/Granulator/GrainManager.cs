@@ -45,8 +45,6 @@ public class GrainManager : MonoBehaviour
     public int _MaxGrainSpeakers = 10;
     int TotalSpeakerCount { get { return _InactiveSpeakers.Count + _ActiveSpeakers.Count;} }
 
-    public AnimationCurve _WindowingCurve;
-
     [Header("DEBUG")]
     public bool _DebugLog = false;
 

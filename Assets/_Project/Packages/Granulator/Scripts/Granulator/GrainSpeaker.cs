@@ -157,14 +157,18 @@ public class GrainSpeaker : MonoBehaviour
         float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
         float DSPSampleDiff = playbackData._DSPStartIndex - _GrainManager._CurrentDSPSample;
         int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
-        print
-        (
-            "Grain added. Start sample: " + playbackData._DSPStartIndex +
-            " Cadence samples: " + samplesBetweenGrains +
-            " Cadence m/s:   " + msBetweenGrains +
-            " DSP sample diff:   " + DSPSampleDiff + 
-            " DSP m/s diff:   " + DSPMSDiff
-        );
+
+        if (_DebugLog)
+        {
+            print
+            (
+                "Grain added. Start sample: " + playbackData._DSPStartIndex +
+                " Cadence samples: " + samplesBetweenGrains +
+                " Cadence m/s:   " + msBetweenGrains +
+                " DSP sample diff:   " + DSPSampleDiff +
+                " DSP m/s diff:   " + DSPMSDiff
+            );
+        }
 
         prevStartSample = playbackData._DSPStartIndex;
     }

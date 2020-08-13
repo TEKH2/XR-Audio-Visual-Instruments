@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using Unity.Transforms;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
@@ -29,6 +30,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position
         });
+
+        _EntityManager.SetComponentData(_Entity, new Translation { Value = transform.position });
     }
 
     void Update()
