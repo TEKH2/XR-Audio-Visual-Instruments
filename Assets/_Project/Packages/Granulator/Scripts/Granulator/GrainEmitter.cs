@@ -24,9 +24,9 @@ public class GrainEmitter : MonoBehaviour
         GrainManager.Instance.AddGrainEmitterToList(this);
     }
 
-    public void Init(int currentDSPIndex)
+    public void Init()
     {
-        _LastGrainSampleIndex = currentDSPIndex;
+        _LastGrainSampleIndex = GrainManager.Instance._CurrentDSPSample;
 
         _Active = true;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class EmitterDOTSAuthoring : MonoBehaviour
 {
     public GrainEmissionProps _EmissionProps;
 
@@ -13,11 +13,13 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     bool _Initialized = false;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    void Start()
     {
-        _Entity = entity;
+        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        dstManager.AddComponentData(entity, new EmitterComponent
+        _Entity = _EntityManager.CreateEntity();
+
+        _EntityManager.AddComponentData(_Entity, new EmitterComponent
         {
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
@@ -27,13 +29,6 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position
         });
-
-        _Initialized = true;
-    }
-
-    void Start()
-    {
-        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
     }
 
     void Update()
@@ -42,6 +37,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             return;
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_Entity);
+
         _EntityManager.SetComponentData(_Entity, new EmitterComponent
         {
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),

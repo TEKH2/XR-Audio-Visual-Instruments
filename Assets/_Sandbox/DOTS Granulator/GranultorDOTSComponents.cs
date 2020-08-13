@@ -44,7 +44,6 @@ public struct FloatBlobAsset
     public BlobArray<float> array;
 }
 
-
 public struct EmitterComponent : IComponentData
 {
     public int _CadenceInSamples;

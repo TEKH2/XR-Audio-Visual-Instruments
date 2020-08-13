@@ -158,7 +158,6 @@ public class GrainManager : MonoBehaviour
                         grainSpeaker = _InactiveSpeakers[0];
                         grainSpeaker.transform.position = emitter.transform.position;
                         grainSpeaker.gameObject.SetActive(true);
-                        grainSpeaker._CurrentDSPSampleIndex = _CurrentDSPSample;
 
                         _InactiveSpeakers.RemoveAt(0);
                         _ActiveSpeakers.Add(grainSpeaker);
@@ -205,7 +204,6 @@ public class GrainManager : MonoBehaviour
         GrainSpeaker speaker = Instantiate(_GrainSpeakerPrefab, transform);
         speaker.name = "Grain speaker " + TotalSpeakerCount;
         speaker.transform.position = pos;
-        speaker._CurrentDSPSampleIndex = _CurrentDSPSample;
         speaker._SpeakerIndex = _AllSpeakers.Count;
 
         if (addToActiveList)

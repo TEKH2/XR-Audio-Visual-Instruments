@@ -14,9 +14,6 @@ public class GrainSpeaker : MonoBehaviour
     GrainManager _GrainManager;
     public List<GrainEmitter> _AttachedGrainEmitters = new List<GrainEmitter>();
 
-    [HideInInspector]
-    public int _CurrentDSPSampleIndex = 0; //TODO read from manager
-
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
     int _MaxGrainDataCount = 1000; 
@@ -68,7 +65,6 @@ public class GrainSpeaker : MonoBehaviour
         if (_DebugLog)
         {
             print(name + " grains p/s:   " + _GrainsPerSecond + "   samples p/s: " + _SamplesEmittedPerSecond + "   layered samples per read: " + _LayeredSamples);
-            print(_CurrentDSPSampleIndex + "   " + GrainManager.Instance._CurrentDSPSample + "     " + (_CurrentDSPSampleIndex - GrainManager.Instance._CurrentDSPSample));
         }
     }
 
@@ -135,7 +131,6 @@ public class GrainSpeaker : MonoBehaviour
             grainPlaybackData._GrainSamples[i] = _FilterSignal.Apply(grainPlaybackData._GrainSamples[i]);
         }
 
-
         Profiler.BeginSample("Windowing");
         // Window samples
         for (int i = 0; i < durationInSamples; i++)
@@ -150,14 +145,28 @@ public class GrainSpeaker : MonoBehaviour
         grainPlaybackData._PlaybackSampleCount = durationInSamples;
         grainPlaybackData._DSPStartIndex = gd._StartSampleIndex;
 
-        _ActiveGrainPlaybackData.Add(grainPlaybackData);
+        AddGrainPlaybackData(grainPlaybackData);
     }
 
+    int prevStartSample = 0;
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)
     {
         _ActiveGrainPlaybackData.Add(playbackData);
 
-        //print("Active playback data: " + _ActiveGrainPlaybackData.Count + "    duration: " + playbackData._PlaybackSampleCount);
+        int samplesBetweenGrains = playbackData._DSPStartIndex - prevStartSample;
+        float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
+        float DSPSampleDiff = playbackData._DSPStartIndex - _GrainManager._CurrentDSPSample;
+        int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
+        print
+        (
+            "Grain added. Start sample: " + playbackData._DSPStartIndex +
+            " Cadence samples: " + samplesBetweenGrains +
+            " Cadence m/s:   " + msBetweenGrains +
+            " DSP sample diff:   " + DSPSampleDiff + 
+            " DSP m/s diff:   " + DSPMSDiff
+        );
+
+        prevStartSample = playbackData._DSPStartIndex;
     }
 
     public void Deactivate()
@@ -182,7 +191,7 @@ public class GrainSpeaker : MonoBehaviour
     public void AttachEmitter(GrainEmitter emitter)
     {
         gameObject.SetActive(true);
-        emitter.Init(_CurrentDSPSampleIndex);
+        emitter.Init();
         _AttachedGrainEmitters.Add(emitter);
     }
 
@@ -217,6 +226,7 @@ public class GrainSpeaker : MonoBehaviour
     float _SamplesPerRead= 0;
     float _SamplesPerSecond = 0;
     float prevTime = 0;
+
     void OnAudioFilterRead(float[] data, int channels)
     {
         _SamplesPerRead = 0;
@@ -230,7 +240,7 @@ public class GrainSpeaker : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_CurrentDSPSampleIndex >= grainData._DSPStartIndex)
+                if (_GrainManager._CurrentDSPSample >= grainData._DSPStartIndex)
                 {
                     //print("here");
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
@@ -247,8 +257,6 @@ public class GrainSpeaker : MonoBehaviour
                     }
                 }
             }
-
-            _CurrentDSPSampleIndex++;
         }
 
         for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
