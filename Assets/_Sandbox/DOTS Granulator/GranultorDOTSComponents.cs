@@ -27,6 +27,11 @@ public struct GrainProcessor : IComponentData
     public bool _SamplePopulated;
 }
 
+public struct GrainSpeakerComponent : IComponentData
+{
+    public int _Index; 
+}
+
 public struct DSPTimerComponent : IComponentData
 {
     public int _CurrentDSPSample;
@@ -46,6 +51,9 @@ public struct FloatBlobAsset
 
 public struct EmitterComponent : IComponentData
 {
+    public bool _Active;
+    public int _SpeakerIndex;
+
     public int _CadenceInSamples;
     public int _DurationInSamples;
     public int _LastGrainEmissionDSPIndex;

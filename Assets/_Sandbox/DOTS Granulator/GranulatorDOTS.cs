@@ -13,18 +13,19 @@ using System.Linq;
 
 public class GranulatorDOTS :  MonoBehaviour
 {
+    // Entity manager ref for creating and updating entities
     EntityManager _EntityManager;
-    EntityQuery _GrainQuery;
 
+    EntityQuery _GrainQuery;
     Entity _DSPTimerEntity;
 
     GrainManager _GrainManager;
-
     public AudioClip[] _AudioClips;
-    Entity[] _AudioClipEntities;
+
+    List<GrainSpeakerDOTS> _GrainSpeakers;
+    public int _MaxGrainSpeakers = 5;
 
     public float _LatencyInMS = 50;
-  
 
     public void Start()
     {
@@ -164,6 +165,11 @@ public class GranulatorSystem : SystemBase
 
         float dt = Time.DeltaTime;
 
+
+        // ----------------------------------- CHECK EMITTERS IN SPEAKER RADIUS
+
+
+        // ----------------------------------- EMITTER UPDATE
         Entities.ForEach
         (
             (int entityInQueryIndex, ref EmitterComponent emitter) =>
@@ -222,7 +228,7 @@ public class GranulatorSystem : SystemBase
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
 
 
-        // Grain sample allocation and windowing
+        // ----------------------------------- GRAIN PROCESSOR UPDATE
         Entities.ForEach
         (
             (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
@@ -281,9 +287,6 @@ public class GranulatorSystem : SystemBase
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
     }
 }
-
-
-
 
 
 
