@@ -20,9 +20,13 @@ public class GranulatorDOTS :  MonoBehaviour
 
     EntityQuery _GrainQuery;
     Entity _DSPTimerEntity;
+    Entity _SpeakerManagerEntity;
+
+    AudioListener _Listener;
 
     public AudioClip[] _AudioClips;
 
+    public GrainSpeakerDOTS _SpeakerPrefab;
     public List<GrainSpeakerDOTS> _GrainSpeakers = new List<GrainSpeakerDOTS>();
     public int _MaxGrainSpeakers = 5;
 
@@ -34,6 +38,7 @@ public class GranulatorDOTS :  MonoBehaviour
 
     public int _CurrentDSPSample;
 
+
     private void Awake()
     {
         Instance = this;
@@ -44,11 +49,19 @@ public class GranulatorDOTS :  MonoBehaviour
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _SampleRate = AudioSettings.outputSampleRate;
 
+        CreateSpeaker(transform.position);
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
         _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
+
+
+        // ------------------------------------------------ CREATE SPEAKER MANAGER
+        _Listener = FindObjectOfType<AudioListener>();
+        _SpeakerManagerEntity = _EntityManager.CreateEntity();
+        DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.AddBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
+        _EntityManager.AddComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent { _ListenerPos = _Listener.transform.position, _Speakers = activeSpeakerBuffer });
 
         // -------------------------------------------------   CREATE AUDIO SOURCE BLOB ASSETS AND ASSIGN TO AudioClipDataComponent ENTITIES
         for (int i = 0; i < _AudioClips.Length; i++)
@@ -100,6 +113,8 @@ public class GranulatorDOTS :  MonoBehaviour
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
+        // Update audio listener position
+        _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent { _ListenerPos = _Listener.transform.position });
 
         if (!_GrainSpeakers[0].gameObject.activeSelf)
         {
@@ -119,7 +134,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 if (playbackData == null)
                     break;
 
-                NativeArray<float> samples = _EntityManager.GetBuffer<FloatBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+                NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
                 playbackData._IsPlaying = true;
                 playbackData._PlaybackIndex = 0;
@@ -140,7 +155,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
-               _GrainSpeakers[0].AddGrainPlaybackData(playbackData);
+               _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
 
                 //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
                 //print(".....Copying sample data over: " + samples[1500] + "     " + playbackData._GrainSamples[1500]);
@@ -148,6 +163,12 @@ public class GranulatorDOTS :  MonoBehaviour
         }
 
         grainEntities.Dispose();
+    }
+
+    public void CreateSpeaker(Vector3 pos)
+    {
+        GrainSpeakerDOTS speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity);
+        _GrainSpeakers.Add(speaker);
     }
 
     public int RegisterSpeakerAndGetIndex(GrainSpeakerDOTS speaker)
@@ -192,9 +213,61 @@ public class GranulatorSystem : SystemBase
 
         float dt = Time.DeltaTime;
 
-
         // ----------------------------------- CHECK EMITTERS IN SPEAKER RADIUS
+        SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
+        //DynamicBuffer<GrainSpeakerBufferElement> speakers = speakerManager._Speakers;
 
+        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation));
+        NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
+        NativeArray<GrainSpeakerComponent> speakers = speakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
+
+        Entities.WithoutBurst().ForEach
+        (
+           (int entityInQueryIndex, ref EmitterComponent emitter, in Translation trans) =>
+           {
+               float closestDist = 100;
+               int closestSpeakerIndex = 0;
+
+               if (emitter._Active)
+               {
+
+               }
+               else
+               {
+                   bool speakerFound = false;
+
+                   for (int i = 0; i < speakers.Length; i++)
+                   {
+                       //if (speakers[i]._Active)
+                       {
+                           float dist = math.distance(trans.Value, speakerTranslations[i].Value);
+
+                           //Debug.Log(dist);
+
+                           if (dist < closestDist)
+                           {
+                               closestDist = dist;
+                               closestSpeakerIndex = speakers[i]._Index;
+
+                               speakerFound = true;
+                           }
+                       }
+                   }
+
+                   if (speakerFound)
+                   {
+                       emitter._Active = true;
+                       emitter._SpeakerIndex = closestSpeakerIndex;
+                   }
+               }
+
+               // if it has no speaker
+               // check to see if active speaker in range
+               // if speaker in range, assign closest
+
+               // if has speaker
+           }
+        ).WithDisposeOnCompletion(speakerTranslations).WithDisposeOnCompletion(speakers).ScheduleParallel();
 
         // ----------------------------------- EMITTER UPDATE
         Entities.ForEach
@@ -223,7 +296,7 @@ public class GranulatorSystem : SystemBase
                             _Pitch = emitter._Pitch,
                             _Volume = emitter._Volume,
 
-                            _SpeakerIndex = 0,
+                            _SpeakerIndex = emitter._SpeakerIndex,
                             _DSPSamplePlaybackStart = sampleIndexNextGrainStart,// + emitter._RandomOffsetInSamples,
                             _SamplePopulated = false
                         });
@@ -236,7 +309,7 @@ public class GranulatorSystem : SystemBase
                         grainCount++;
 
                         // Add sample buffer
-                        entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, grainProcessorEntity);
+                        entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
                         // Add bitcrush from emitter
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush
@@ -261,7 +334,7 @@ public class GranulatorSystem : SystemBase
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+            (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
             {
                 if (!grain._SamplePopulated)
                 {
@@ -300,7 +373,7 @@ public class GranulatorSystem : SystemBase
                         // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._DurationInSamples, 0, windowingData._WindowingArray.Value.array.Length)];
                         
-                        sampleOutputBuffer.Add(new FloatBufferElement { Value = sourceValue });
+                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
                     }
 
                     grain._SamplePopulated = true;
@@ -327,7 +400,7 @@ public class DSPSystem : SystemBase
     {       
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_BitCrush dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in DSP_BitCrush dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -350,7 +423,7 @@ public class DSPSystem : SystemBase
 
                        count++;
 
-                       sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOut };
+                       sampleOutputBuffer[i] = new GrainSampleBufferElement { Value = sampleOut };
                    }
                }
            }
@@ -358,7 +431,7 @@ public class DSPSystem : SystemBase
 
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -383,7 +456,7 @@ public class DSPSystem : SystemBase
                        previousY2 = previousY1;
                        previousY1 = sampleOut;
 
-                       sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOut };
+                       sampleOutputBuffer[i] = new GrainSampleBufferElement { Value = sampleOut };
                    }
                }
            }

@@ -1,4 +1,8 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
+
+#region ---------- COMPONENTS
+
 
 public struct AudioClipDataComponent :IComponentData
 {
@@ -9,6 +13,12 @@ public struct AudioClipDataComponent :IComponentData
 public struct WindowingDataComponent : IComponentData
 {
     public BlobAssetReference<FloatBlobAsset> _WindowingArray;   
+}
+
+public struct SpeakerManagerComponent : IComponentData
+{
+    public float3 _ListenerPos;
+    public DynamicBuffer<GrainSpeakerBufferElement> _Speakers;
 }
 
 public struct GrainProcessor : IComponentData
@@ -29,7 +39,8 @@ public struct GrainProcessor : IComponentData
 
 public struct GrainSpeakerComponent : IComponentData
 {
-    public int _Index; 
+    public bool _Active;
+    public int _Index;
 }
 
 public struct DSPTimerComponent : IComponentData
@@ -38,16 +49,6 @@ public struct DSPTimerComponent : IComponentData
     public int _EmissionLatencyInSamples;
 }
 
-public struct FloatBufferElement : IBufferElementData
-{
-    public float Value;
-}
-
-// ---------- Blob asset
-public struct FloatBlobAsset
-{
-    public BlobArray<float> array;
-}
 
 public struct EmitterComponent : IComponentData
 {
@@ -66,9 +67,10 @@ public struct EmitterComponent : IComponentData
 
     public DSP_BitCrush _BitCrush;
     public DSP_Filter _Filter;
+
+    public int _DebugCount;
 }
 
-// ---------- DSP
 public struct DSP_BitCrush : IComponentData
 {
     public float downsampleFactor;
@@ -82,3 +84,29 @@ public struct DSP_Filter : IComponentData
     public float b1;
     public float b2;
 }
+
+
+#endregion
+
+#region ---------- BUFFER ELEMENTS
+
+public struct GrainSampleBufferElement : IBufferElementData
+{
+    public float Value;
+}
+
+public struct GrainSpeakerBufferElement : IBufferElementData
+{
+    public GrainSpeakerComponent Value;
+}
+
+#endregion
+
+#region ---------- BLOB ASSETS
+
+public struct FloatBlobAsset
+{
+    public BlobArray<float> array;
+}
+
+#endregion

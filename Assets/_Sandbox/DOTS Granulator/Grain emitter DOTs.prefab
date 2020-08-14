@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &793884346762676951
 Transform:
   m_ObjectHideFlags: 0
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _EmissionProps:
     _ClipIndex: 0
-    _PlayheadPos: 0.40532735
+    _PlayheadPos: 0.47926575
     _PositionRandom: 0
     _Cadence: 20
     _CadenceRandom: 0
@@ -107,12 +107,18 @@ MonoBehaviour:
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-    _FilterProperties:
+    _DSP_Properties:
       Type: 0
-      _FilterCutoffNorm: 0.735
-      _FilterGain: 0.79
-      _FilterQ: 3.92
-      _DownsampleFactor: 39
+      _FilterCutoffNorm: 0.5
+      _FilterGain: 1
+      _FilterQ: 1
+      _DownsampleFactor: 1
+    _FilterCoefficients:
+      a0: 0.039030544
+      a1: 0.07806109
+      a2: 0.039030544
+      b1: -1.4936116
+      b2: 0.6497337
 --- !u!114 &3080604852309000471
 MonoBehaviour:
   m_ObjectHideFlags: 0
