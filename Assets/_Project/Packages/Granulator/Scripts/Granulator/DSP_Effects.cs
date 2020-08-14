@@ -71,16 +71,16 @@ public class DSP_Properties
     //---------------------------------------------------------------------
     [Range(0, 50f)]
     [SerializeField]
-    float _BitcrushAmount = 1;
-    public float downsampleFactor
+    float _DownsampleFactor = 1;
+    public float DownsampleFactor
     {
         get
         {
-            return Mathf.Clamp(_BitcrushAmount, 0.1f, 5f);
+            return Mathf.Clamp(_DownsampleFactor, 0, 50f);
         }
         set
         {
-            _BitcrushAmount = (int)Mathf.Clamp(value, 0.1f, 5f);
+            _DownsampleFactor = (int)Mathf.Clamp(value,0, 50f);
         }
     }
 }

@@ -38,7 +38,7 @@ public struct FloatBufferElement : IBufferElementData
     public float Value;
 }
 
-// Blob asset
+// ---------- Blob asset
 public struct FloatBlobAsset
 {
     public BlobArray<float> array;
@@ -57,7 +57,7 @@ public struct EmitterComponent : IComponentData
     public float _PlayheadPosNormalized;
 
     public DSP_BitCrush _BitCrush;
-    public DSP_Filter _Filter;
+    //public DSP_Filter _Filter;
 }
 
 // ---------- DSP

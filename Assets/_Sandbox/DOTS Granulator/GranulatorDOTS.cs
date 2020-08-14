@@ -37,7 +37,6 @@ public class GranulatorDOTS :  MonoBehaviour
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
 
-
         // -------------------------------------------------   CREATE AUDIO SOURCE BLOB ASSETS AND ASSIGN TO AudioClipDataComponent ENTITIES
         for (int i = 0; i < _AudioClips.Length; i++)
         {
@@ -201,22 +200,23 @@ public class GranulatorSystem : SystemBase
 
                     grainCount++;
 
+                    // Add sample buffer
                     entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
-                    // DSP Test - Adding bitcrush
+                    // Add bitcrush from emitter
                     entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush
                     {
                         downsampleFactor = emitter._BitCrush.downsampleFactor
                     });
 
-                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Filter
-                    {
-                        a0 = emitter._Filter.a0,
-                        a1 = emitter._Filter.a1,
-                        a2 = emitter._Filter.a2,
-                        b1 = emitter._Filter.b1,
-                        b2 = emitter._Filter.b2
-                    });
+                    //entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Filter
+                    //{
+                    //    a0 = emitter._Filter.a0,
+                    //    a1 = emitter._Filter.a1,
+                    //    a2 = emitter._Filter.a2,
+                    //    b1 = emitter._Filter.b1,
+                    //    b2 = emitter._Filter.b2
+                    //});
                 }
             }
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();

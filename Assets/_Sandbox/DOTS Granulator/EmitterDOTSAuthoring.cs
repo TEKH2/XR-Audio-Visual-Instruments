@@ -9,7 +9,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour
 {
     public GrainEmissionProps _EmissionProps;
 
-    Entity _Entity;
+    Entity _EmitterEntity;
     EntityManager _EntityManager;
 
     bool _Initialized = false;
@@ -18,9 +18,13 @@ public class EmitterDOTSAuthoring : MonoBehaviour
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        _Entity = _EntityManager.CreateEntity();
+        _EmitterEntity = _EntityManager.CreateEntity();
 
-        _EntityManager.AddComponentData(_Entity, new EmitterComponent
+        // Add a bitcrush component
+        _EntityManager.AddComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.DownsampleFactor });
+
+        // Add emitter component
+        _EntityManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
@@ -29,16 +33,18 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position,
-            _BitCrush = new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.downsampleFactor },
-            _Filter = new DSP_Filter
-            {
-                a0 = _EmissionProps._FilterCoefficients.a0,
-                a1 = _EmissionProps._FilterCoefficients.a1,
-                a2 = _EmissionProps._FilterCoefficients.a2,
-                b1 = _EmissionProps._FilterCoefficients.b1,
-                b2 = _EmissionProps._FilterCoefficients.b2
-            }
-         });
+            // Use entity manager to get the bitcrush
+            _BitCrush = _EntityManager.GetComponentData<DSP_BitCrush>(_EmitterEntity)
+        });
+
+        //_Filter = new DSP_Filter
+        //{
+        //    a0 = _EmissionProps._FilterCoefficients.a0,
+        //    a1 = _EmissionProps._FilterCoefficients.a1,
+        //    a2 = _EmissionProps._FilterCoefficients.a2,
+        //    b1 = _EmissionProps._FilterCoefficients.b1,
+        //    b2 = _EmissionProps._FilterCoefficients.b2
+        //}
 
         _Initialized = true;
 
@@ -50,9 +56,9 @@ public class EmitterDOTSAuthoring : MonoBehaviour
         if (!_Initialized)
             return;
 
-        EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_Entity);
+        EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
-        _EntityManager.SetComponentData(_Entity, new EmitterComponent
+        _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
@@ -61,15 +67,15 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position,
-            _BitCrush = new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.downsampleFactor },
-            _Filter = new DSP_Filter
-            {
-                a0 = _EmissionProps._FilterCoefficients.a0,
-                a1 = _EmissionProps._FilterCoefficients.a1,
-                a2 = _EmissionProps._FilterCoefficients.a2,
-                b1 = _EmissionProps._FilterCoefficients.b1,
-                b2 = _EmissionProps._FilterCoefficients.b2
-            }
+            _BitCrush = _EntityManager.GetComponentData<DSP_BitCrush>(_EmitterEntity)
+            //_Filter = new DSP_Filter
+            //{
+            //    a0 = _EmissionProps._FilterCoefficients.a0,
+            //    a1 = _EmissionProps._FilterCoefficients.a1,
+            //    a2 = _EmissionProps._FilterCoefficients.a2,
+            //    b1 = _EmissionProps._FilterCoefficients.b1,
+            //    b2 = _EmissionProps._FilterCoefficients.b2
+            //}
         });
     }
 }
