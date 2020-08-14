@@ -58,6 +58,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
+        _EntityManager.SetComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.DownsampleFactor});
+
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
