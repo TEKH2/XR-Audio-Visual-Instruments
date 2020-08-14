@@ -313,7 +313,7 @@ public class DSPSystem : SystemBase
 
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Rando dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
