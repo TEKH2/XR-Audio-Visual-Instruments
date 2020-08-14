@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
-public class GrainSpeakerDOTS : MonoBehaviour
+public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 {
-    GrainManager _GrainManager;
+    #region -------------------------- VARIABLES
+    GranulatorDOTS _GranulatorDOTS;
     public int _SpeakerIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
@@ -15,15 +17,23 @@ public class GrainSpeakerDOTS : MonoBehaviour
 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
-    DebugGUI_Granulator _DebugGUI;
+    //DebugGUI_Granulator _DebugGUI;
     int prevStartSample = 0;
 
     public bool _DebugLog = false;
+    #endregion
+
+
+    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    {
+        // Register the speaker and get the index
+        _SpeakerIndex = FindObjectOfType<GranulatorDOTS>().RegisterSpeakerAndGetIndex(this);
+        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex });
+    }
 
     public void Start()
     {
-        // Get ref to grain manager
-        _GrainManager = GrainManager.Instance;
+        _GranulatorDOTS = GranulatorDOTS.Instance;
 
         // Pool grain playback data
         for (int i = 0; i < _GrainPlaybackDataToPool; i++)        
@@ -36,7 +46,7 @@ public class GrainSpeakerDOTS : MonoBehaviour
 
         int samplesBetweenGrains = playbackData._DSPStartIndex - prevStartSample;
         float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
-        float DSPSampleDiff = playbackData._DSPStartIndex - _GrainManager._CurrentDSPSample;
+        float DSPSampleDiff = playbackData._DSPStartIndex - _GranulatorDOTS._CurrentDSPSample;
         int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
 
         if (_DebugLog)
@@ -51,9 +61,11 @@ public class GrainSpeakerDOTS : MonoBehaviour
             );
         }
 
-        _DebugGUI.LogLatency(DSPMSDiff);
+        //_DebugGUI.LogLatency(DSPMSDiff);
 
         prevStartSample = playbackData._DSPStartIndex;
+
+        //print("Grain added");
     }
 
     public void Deactivate()
@@ -112,7 +124,7 @@ public class GrainSpeakerDOTS : MonoBehaviour
                 if (grainData == null)
                     continue;
 
-                if (_GrainManager._CurrentDSPSample >= grainData._DSPStartIndex)
+                if (_GranulatorDOTS._CurrentDSPSample >= grainData._DSPStartIndex)
                 {
                     //print("here");
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
@@ -153,4 +165,6 @@ public class GrainSpeakerDOTS : MonoBehaviour
         float concurrentSamples = newSamplesPerSecond / 44100;
         _SamplesPerSecond = newSamplesPerSecond;
     }
+
+   
 }

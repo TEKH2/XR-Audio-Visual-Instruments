@@ -14,6 +14,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour
 
     bool _Initialized = false;
 
+    float _Timer = 0;
+
     void Start()
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -36,9 +38,10 @@ public class EmitterDOTSAuthoring : MonoBehaviour
         // Add emitter component
         _EntityManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Active = false,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-            _LastGrainEmissionDSPIndex = GrainManager.Instance._CurrentDSPSample,
+            _LastGrainEmissionDSPIndex = GranulatorDOTS.Instance._CurrentDSPSample,
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
@@ -58,6 +61,9 @@ public class EmitterDOTSAuthoring : MonoBehaviour
         if (!_Initialized)
             return;
 
+        _Timer += Time.deltaTime;
+       
+
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         _EntityManager.SetComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._DSP_Properties.DownsampleFactor});
@@ -70,8 +76,10 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             b2 = _EmissionProps._FilterCoefficients.b2
         });
 
+
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Active =  _Timer > 2,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,
