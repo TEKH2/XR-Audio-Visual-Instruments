@@ -85,6 +85,7 @@ public class DSP_Properties
     }
 }
 
+[System.Serializable]
 // These are calculated from the FilterProperties for each grain and don't update
 public class FilterCoefficients
 {

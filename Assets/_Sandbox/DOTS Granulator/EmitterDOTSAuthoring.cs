@@ -22,6 +22,8 @@ public class EmitterDOTSAuthoring : MonoBehaviour
 
         // Add DSP components
         _EntityManager.AddComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._DSP_Properties.DownsampleFactor });
+
+      
         _EntityManager.AddComponentData(_EmitterEntity, new DSP_Filter
         {
             a0 = _EmissionProps._FilterCoefficients.a0,
