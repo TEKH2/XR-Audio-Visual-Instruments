@@ -28,8 +28,17 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
-            _PlayheadPosNormalized = _EmissionProps.Position
-        });
+            _PlayheadPosNormalized = _EmissionProps.Position,
+            _BitCrush = new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.downsampleFactor },
+            _Filter = new DSP_Filter
+            {
+                a0 = _EmissionProps._FilterCoefficients.a0,
+                a1 = _EmissionProps._FilterCoefficients.a1,
+                a2 = _EmissionProps._FilterCoefficients.a2,
+                b1 = _EmissionProps._FilterCoefficients.b1,
+                b2 = _EmissionProps._FilterCoefficients.b2
+            }
+         });
 
         _Initialized = true;
 
@@ -51,7 +60,16 @@ public class EmitterDOTSAuthoring : MonoBehaviour
             _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
-            _PlayheadPosNormalized = _EmissionProps.Position
+            _PlayheadPosNormalized = _EmissionProps.Position,
+            _BitCrush = new DSP_BitCrush { downsampleFactor = _EmissionProps._FilterProperties.downsampleFactor },
+            _Filter = new DSP_Filter
+            {
+                a0 = _EmissionProps._FilterCoefficients.a0,
+                a1 = _EmissionProps._FilterCoefficients.a1,
+                a2 = _EmissionProps._FilterCoefficients.a2,
+                b1 = _EmissionProps._FilterCoefficients.b1,
+                b2 = _EmissionProps._FilterCoefficients.b2
+            }
         });
     }
 }

@@ -87,6 +87,8 @@ public class DOTSComparisonTest : MonoBehaviour
         if (_AutomatePitch)
             _EmissionProps.Pitch = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
 
+        _EmissionProps._FilterCoefficients = DSP_Effects.CreateCoefficents(_EmissionProps._FilterProperties);
+
         if (_TestType == Test.DOTS)
         {
             if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)

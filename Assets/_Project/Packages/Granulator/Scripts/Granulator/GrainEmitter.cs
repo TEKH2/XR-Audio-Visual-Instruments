@@ -9,7 +9,7 @@ public class GrainEmitter : MonoBehaviour
 {
     #region VARIABLES
     public GrainEmissionProps _EmissionProps;
-    private FilterCoefficients _FilterCoefficients; //TODO reimpliment
+    private FilterCoefficients _FilterCoefficients;
     
     int _LastGrainSampleIndex = 0;
 

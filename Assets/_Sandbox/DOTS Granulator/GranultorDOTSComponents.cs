@@ -55,6 +55,9 @@ public struct EmitterComponent : IComponentData
     public float _Volume;
 
     public float _PlayheadPosNormalized;
+
+    public DSP_BitCrush _BitCrush;
+    public DSP_Filter _Filter;
 }
 
 // ---------- DSP
@@ -65,5 +68,9 @@ public struct DSP_BitCrush : IComponentData
 
 public struct DSP_Filter : IComponentData
 {
-    public float coefficeint;
+    public float a0;
+    public float a1;
+    public float a2;
+    public float b1;
+    public float b2;
 }

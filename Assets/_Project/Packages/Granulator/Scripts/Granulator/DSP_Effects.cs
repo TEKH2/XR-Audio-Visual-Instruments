@@ -72,7 +72,7 @@ public class DSP_Properties
     [Range(0, 50f)]
     [SerializeField]
     float _BitcrushAmount = 1;
-    public float BitcrushAmount
+    public float downsampleFactor
     {
         get
         {

@@ -204,13 +204,25 @@ public class GranulatorSystem : SystemBase
                     entityCommandBuffer.AddBuffer<FloatBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
                     // DSP Test - Adding bitcrush
-                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush { downsampleFactor = 20 });
-                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Rando { downsampleFactor = 2 });
+                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush
+                    {
+                        downsampleFactor = emitter._BitCrush.downsampleFactor
+                    });
+
+                    entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Filter
+                    {
+                        a0 = emitter._Filter.a0,
+                        a1 = emitter._Filter.a1,
+                        a2 = emitter._Filter.a2,
+                        b1 = emitter._Filter.b1,
+                        b2 = emitter._Filter.b2
+                    });
                 }
             }
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
 
 
+        // Grain sample allocation and windowing
         Entities.ForEach
         (
             (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
@@ -313,11 +325,33 @@ public class DSPSystem : SystemBase
 
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Rando dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
-                   
+                   float previousX1 = 0;
+                   float previousX2 = 0;
+                   float previousY1 = 0;
+                   float previousY2 = 0;
+
+                   for (int i = 0; i < sampleOutputBuffer.Length; i++)
+                   {
+                       float sampleOut = 0;
+                       float sampleIn = sampleOutputBuffer[i].Value;
+
+                       sampleOut = (sampleIn * dsp.a0 +
+                                    previousX1 * dsp.a1 +
+                                    previousX2 * dsp.a2) -
+                                    (previousY1 * dsp.b1 +
+                                    previousY2 * dsp.b2);
+
+                       previousX2 = previousX1;
+                       previousX1 = sampleIn;
+                       previousY2 = previousY1;
+                       previousY1 = sampleOut;
+
+                       sampleOutputBuffer[i] = new FloatBufferElement { Value = sampleOut };
+                   }
                }
            }
         ).ScheduleParallel();

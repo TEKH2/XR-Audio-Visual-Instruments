@@ -404,6 +404,7 @@ public class GrainEmissionProps
     }
 
     public DSP_Properties _FilterProperties;
+    public FilterCoefficients _FilterCoefficients;
 
 
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,
