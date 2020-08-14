@@ -403,7 +403,7 @@ public class GrainEmissionProps
         }
     }
 
-    public DSP_Properties _FilterProperties;
+    public DSP_Properties _DSP_Properties;
     public FilterCoefficients _FilterCoefficients;
 
 
