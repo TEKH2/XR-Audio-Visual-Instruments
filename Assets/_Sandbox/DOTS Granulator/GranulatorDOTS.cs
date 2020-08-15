@@ -213,9 +213,14 @@ public class GranulatorSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
+        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+
+
         // ----------------------------------- CHECK IF LISTENER IS IN RANGE OF INACTIVE EMITTERS
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
         EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation));
+        NativeArray<Entity> speakerEntities = speakerQuery.ToEntityArray(Allocator.TempJob);
         NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
         NativeArray<GrainSpeakerComponent> speakers = speakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
 
@@ -269,21 +274,23 @@ public class GranulatorSystem : SystemBase
 
                                    Debug.Log("Found inactive speaker: " + foundSpeakerIndex);
 
-                                   //Change speaker to active and set position to emitter pos
-                                   speakers[i] = new GrainSpeakerComponent
+                                   entityCommandBuffer.SetComponent(entityInQueryIndex, speakerEntities[i], new GrainSpeakerComponent
                                    {
                                        _Active = true,
                                        _Index = speakers[i]._Index
-                                   };
+                                   });
 
-                                   speakerTranslations[i] = new Translation { Value = emitterTrans.Value };
+                                   entityCommandBuffer.SetComponent(entityInQueryIndex, speakerEntities[i], new Translation
+                                   {
+                                       Value = emitterTrans.Value
+                                   });
 
                                    inactiveSpeakerFound = true;
                                }
                            }
                        }
 
-                       if (activeSpeakerFound)
+                        if (activeSpeakerFound)
                        {
                            Debug.Log(entityInQueryIndex + "  speaker found: " + foundSpeakerIndex);
                            emitter._Active = true;
@@ -295,9 +302,7 @@ public class GranulatorSystem : SystemBase
         ).WithDisposeOnCompletion(speakerTranslations).WithDisposeOnCompletion(speakers).ScheduleParallel();
 
 
-        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
-        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-
+     
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
 
