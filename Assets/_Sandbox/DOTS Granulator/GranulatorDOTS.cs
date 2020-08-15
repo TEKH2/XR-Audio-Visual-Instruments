@@ -10,6 +10,8 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.Profiling;
 using System;
 using System.Linq;
+using Unity.Entities.UniversalDelegates;
+using Unity.Entities.CodeGeneratedJobForEach;
 
 public class GranulatorDOTS :  MonoBehaviour
 {
@@ -49,7 +51,11 @@ public class GranulatorDOTS :  MonoBehaviour
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _SampleRate = AudioSettings.outputSampleRate;
 
-        CreateSpeaker(transform.position);
+        for (int i = 0; i < _MaxGrainSpeakers; i++)
+        {
+            CreateSpeaker(transform.position);
+        }
+        
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
         _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
@@ -61,7 +67,12 @@ public class GranulatorDOTS :  MonoBehaviour
         _Listener = FindObjectOfType<AudioListener>();
         _SpeakerManagerEntity = _EntityManager.CreateEntity();
         DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.AddBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
-        _EntityManager.AddComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent { _ListenerPos = _Listener.transform.position, _Speakers = activeSpeakerBuffer });
+        _EntityManager.AddComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
+        {
+            _ListenerPos = _Listener.transform.position,
+            _EmitterActivationDist = 5,
+            _SpeakerEmitterAttachDist = 1
+        });
 
         // -------------------------------------------------   CREATE AUDIO SOURCE BLOB ASSETS AND ASSIGN TO AudioClipDataComponent ENTITIES
         for (int i = 0; i < _AudioClips.Length; i++)
@@ -113,8 +124,15 @@ public class GranulatorDOTS :  MonoBehaviour
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
+
+        DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.GetBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
         // Update audio listener position
-        _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent { _ListenerPos = _Listener.transform.position });
+        _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
+        {
+            _ListenerPos = _Listener.transform.position,
+            _EmitterActivationDist = 5,
+            _SpeakerEmitterAttachDist = 1
+        });
 
         if (!_GrainSpeakers[0].gameObject.activeSelf)
         {
@@ -168,14 +186,8 @@ public class GranulatorDOTS :  MonoBehaviour
     public void CreateSpeaker(Vector3 pos)
     {
         GrainSpeakerDOTS speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity);
+        speaker._SpeakerIndex = _GrainSpeakers.Count;
         _GrainSpeakers.Add(speaker);
-    }
-
-    public int RegisterSpeakerAndGetIndex(GrainSpeakerDOTS speaker)
-    {
-        int index = _GrainSpeakers.Count;
-        _GrainSpeakers.Add(speaker);
-        return index;
     }
 
     void OnAudioFilterRead(float[] data, int channels)
@@ -201,6 +213,80 @@ public class GranulatorSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        // ----------------------------------- CHECK IF LISTENER IS IN RANGE OF INACTIVE EMITTERS
+        SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
+        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation));
+        NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
+        NativeArray<GrainSpeakerComponent> speakers = speakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
+
+        Entities.ForEach
+        (
+           (int entityInQueryIndex, ref EmitterComponent emitter, in Translation emitterTrans) =>
+           {
+               if (!emitter._Active)
+               {
+                   // find distance to the listener
+                   float emitterToListenerDist = math.distance(emitterTrans.Value, speakerManager._ListenerPos);
+
+                   if (emitterToListenerDist < speakerManager._EmitterActivationDist)
+                   {
+                       float closestDist = speakerManager._SpeakerEmitterAttachDist;
+                       int foundSpeakerIndex = 0;
+                       bool activeSpeakerFound = false;
+
+                       // ------------------------------  TRY FIND CLOSE ACTIVE SPEAKER
+                       for (int i = 0; i < speakers.Length; i++)
+                       {
+                           if (speakers[i]._Active)
+                           {
+                               float dist = math.distance(emitterTrans.Value, speakerTranslations[i].Value);
+
+                               if (dist < closestDist)
+                               {
+                                   Debug.Log("Found active speaker index / dist " + speakers[i]._Index + "   " + dist);
+                                   closestDist = dist;
+                                   foundSpeakerIndex = speakers[i]._Index;
+                                   activeSpeakerFound = true;
+                               }
+                           }
+                       }
+
+                        if (!activeSpeakerFound)
+                        {
+                           // ------------------------------  FIND INACTIVE SPEAKER
+                           for (int i = 0; i < speakers.Length; i++)
+                           {
+                               if (!speakers[i]._Active && !speakers[i]._Activating)
+                               {
+                                   foundSpeakerIndex = speakers[i]._Index;
+                                   activeSpeakerFound = true;
+
+                                   Debug.Log("Found inactive speaker: " + foundSpeakerIndex);
+
+                                   // Change speaker to active and set position to emitter pos
+                                   speakers[i] = new GrainSpeakerComponent
+                                   {
+                                       _Activating = true,
+                                       _Index = speakers[i]._Index
+                                   };
+
+                                   speakerTranslations[i] = new Translation { Value = emitterTrans.Value };
+                               }
+                           }                          
+                       }
+
+                       if(activeSpeakerFound)
+                       {
+                           Debug.Log(entityInQueryIndex + "  speaker found: " + foundSpeakerIndex);
+                           emitter._Active = true;
+                           emitter._SpeakerIndex = foundSpeakerIndex;
+                       }
+                   }
+               }
+           }
+        ).WithDisposeOnCompletion(speakerTranslations).WithDisposeOnCompletion(speakers).ScheduleParallel();
+
+
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
@@ -212,63 +298,6 @@ public class GranulatorSystem : SystemBase
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
 
         float dt = Time.DeltaTime;
-
-        // ----------------------------------- CHECK EMITTERS IN SPEAKER RADIUS
-        SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
-        //DynamicBuffer<GrainSpeakerBufferElement> speakers = speakerManager._Speakers;
-
-        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation));
-        NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-        NativeArray<GrainSpeakerComponent> speakers = speakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
-
-        Entities.WithoutBurst().ForEach
-        (
-           (int entityInQueryIndex, ref EmitterComponent emitter, in Translation trans) =>
-           {
-               float closestDist = 100;
-               int closestSpeakerIndex = 0;
-
-               if (emitter._Active)
-               {
-
-               }
-               else
-               {
-                   bool speakerFound = false;
-
-                   for (int i = 0; i < speakers.Length; i++)
-                   {
-                       //if (speakers[i]._Active)
-                       {
-                           float dist = math.distance(trans.Value, speakerTranslations[i].Value);
-
-                           //Debug.Log(dist);
-
-                           if (dist < closestDist)
-                           {
-                               closestDist = dist;
-                               closestSpeakerIndex = speakers[i]._Index;
-
-                               speakerFound = true;
-                           }
-                       }
-                   }
-
-                   if (speakerFound)
-                   {
-                       emitter._Active = true;
-                       emitter._SpeakerIndex = closestSpeakerIndex;
-                   }
-               }
-
-               // if it has no speaker
-               // check to see if active speaker in range
-               // if speaker in range, assign closest
-
-               // if has speaker
-           }
-        ).WithDisposeOnCompletion(speakerTranslations).WithDisposeOnCompletion(speakers).ScheduleParallel();
-
         // ----------------------------------- EMITTER UPDATE
         Entities.ForEach
         (

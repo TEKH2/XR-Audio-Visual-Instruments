@@ -27,8 +27,7 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Register the speaker and get the index
-        _SpeakerIndex = GranulatorDOTS.Instance.RegisterSpeakerAndGetIndex(this);
-        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex });
+        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _Active = false });
     }
 
     public void Start()
@@ -165,6 +164,4 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
         float concurrentSamples = newSamplesPerSecond / 44100;
         _SamplesPerSecond = newSamplesPerSecond;
     }
-
-   
 }

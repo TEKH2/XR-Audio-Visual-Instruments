@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 #region ---------- COMPONENTS
 
@@ -18,7 +19,8 @@ public struct WindowingDataComponent : IComponentData
 public struct SpeakerManagerComponent : IComponentData
 {
     public float3 _ListenerPos;
-    public DynamicBuffer<GrainSpeakerBufferElement> _Speakers;
+    public float _EmitterActivationDist;
+    public float _SpeakerEmitterAttachDist;
 }
 
 public struct GrainProcessor : IComponentData
@@ -40,6 +42,7 @@ public struct GrainProcessor : IComponentData
 public struct GrainSpeakerComponent : IComponentData
 {
     public bool _Active;
+    public bool _Activating;
     public int _Index;
 }
 
