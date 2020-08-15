@@ -2219,7 +2219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb6f375d26ad994eb0aab6077418701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Volume: {x: 0.1, y: 0.1, z: 0.1}
+  m_Volume: {x: 6, y: 0.5, z: 0.1}
   m_RotationRange: {x: 0, y: 0, z: 0}
   m_ScaleRange: {x: 0.1, y: 0.1}
   m_ObjectsToSpawn:
@@ -4382,7 +4382,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 5
+  _MaxGrainSpeakers: 2
   _LatencyInMS: 10
   _EmissionLatencyMS: 80
   _CurrentDSPSample: 0
@@ -6348,7 +6348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TestType: 0
-  _EmitterCount: 1
+  _EmitterCount: 5
   _LatencyInMS: 100
   _EmissionProps:
     _ClipIndex: 0

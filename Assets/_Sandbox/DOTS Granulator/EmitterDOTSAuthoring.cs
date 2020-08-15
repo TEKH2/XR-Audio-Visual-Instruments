@@ -36,6 +36,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
             _Active = false,
+            _InRange = false,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = GranulatorDOTS.Instance._CurrentDSPSample,
@@ -82,6 +83,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
             _Active = data._Active,
+            _InRange = data._InRange,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,

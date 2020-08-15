@@ -225,11 +225,16 @@ public class GranulatorSystem : SystemBase
            {
                if (!emitter._Active)
                {
+                   bool inactiveSpeakerFound = false;
+
                    // find distance to the listener
                    float emitterToListenerDist = math.distance(emitterTrans.Value, speakerManager._ListenerPos);
 
                    if (emitterToListenerDist < speakerManager._EmitterActivationDist)
                    {
+                       // Set In range flag
+                       emitter._InRange = true;
+
                        float closestDist = speakerManager._SpeakerEmitterAttachDist;
                        int foundSpeakerIndex = 0;
                        bool activeSpeakerFound = false;
@@ -251,31 +256,34 @@ public class GranulatorSystem : SystemBase
                            }
                        }
 
-                        if (!activeSpeakerFound)
-                        {
-                           // ------------------------------  FIND INACTIVE SPEAKER
+                       // Only find one inactive spaeker per update to stop parallell conflicts
+                       if (!activeSpeakerFound && !inactiveSpeakerFound)
+                       {
+                           //------------------------------FIND INACTIVE SPEAKER
                            for (int i = 0; i < speakers.Length; i++)
                            {
-                               if (!speakers[i]._Active && !speakers[i]._Activating)
+                               if (!speakers[i]._Active)
                                {
                                    foundSpeakerIndex = speakers[i]._Index;
                                    activeSpeakerFound = true;
 
                                    Debug.Log("Found inactive speaker: " + foundSpeakerIndex);
 
-                                   // Change speaker to active and set position to emitter pos
+                                   //Change speaker to active and set position to emitter pos
                                    speakers[i] = new GrainSpeakerComponent
                                    {
-                                       _Activating = true,
+                                       _Active = true,
                                        _Index = speakers[i]._Index
                                    };
 
                                    speakerTranslations[i] = new Translation { Value = emitterTrans.Value };
+
+                                   inactiveSpeakerFound = true;
                                }
-                           }                          
+                           }
                        }
 
-                       if(activeSpeakerFound)
+                       if (activeSpeakerFound)
                        {
                            Debug.Log(entityInQueryIndex + "  speaker found: " + foundSpeakerIndex);
                            emitter._Active = true;

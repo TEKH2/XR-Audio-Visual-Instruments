@@ -56,6 +56,7 @@ public struct DSPTimerComponent : IComponentData
 public struct EmitterComponent : IComponentData
 {
     public bool _Active;
+    public bool _InRange;
     public int _SpeakerIndex;
 
     public int _CadenceInSamples;
