@@ -35,9 +35,9 @@ public class GrainSpeakerDOTS : MonoBehaviour
         _ActiveGrainPlaybackData.Add(playbackData);
 
         int samplesBetweenGrains = playbackData._DSPStartIndex - prevStartSample;
-        float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
+        float msBetweenGrains = samplesBetweenGrains / (float)AudioSettings.outputSampleRate * 1000;
         float DSPSampleDiff = playbackData._DSPStartIndex - _GrainManager._CurrentDSPSample;
-        int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
+        int DSPMSDiff = (int)(DSPSampleDiff / (float)AudioSettings.outputSampleRate * 1000);
 
         if (_DebugLog)
         {

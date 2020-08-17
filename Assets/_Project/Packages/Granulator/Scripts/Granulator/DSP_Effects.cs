@@ -5,21 +5,27 @@ using System.Dynamic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
+using UnityEditor.PackageManager.UI;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+
+
+public class DSP_Effects
+{
+
+}
 
 
 // Front-end filter properties (shouldn't be passed to grains)
 [System.Serializable]
 public class DSP_Properties
 {
-    public DSP_Effects.FilterType Type;
-
-    const float _LowLimit = 20f;
-    const float _HighLimit = 20000f;
-
-
     // Filter
     //---------------------------------------------------------------------
+    
+    [Header("Filter")]
+    public FilterConstruction.FilterType Type;
+    
     [Range(0f, 1f)]
     [SerializeField]
     float _FilterCutoffNorm = 0.5f;
@@ -27,14 +33,8 @@ public class DSP_Properties
 
     public float FilterCutoff
     {
-        get
-        {
-            return AudioUtils.NormToFreq(_FilterCutoffNorm);
-        }
-        set
-        {
-            _FilterCutoffFreq = AudioUtils.NormToFreq(value);
-        }
+        get {return AudioUtils.NormToFreq(_FilterCutoffNorm);}
+        set {_FilterCutoffFreq = AudioUtils.NormToFreq(value);}
     }
 
     [Range(0.05f, 1)]
@@ -42,14 +42,8 @@ public class DSP_Properties
     float _FilterGain = 1;
     public float FilterGain
     {
-        get
-        {
-            return Mathf.Clamp(_FilterGain, 0.5f, 1f);
-        }
-        set
-        {
-            _FilterGain = (int)Mathf.Clamp(value, 0.5f, 1f);
-        }
+        get {return Mathf.Clamp(_FilterGain, 0.5f, 1f);}
+        set {_FilterGain = (int)Mathf.Clamp(value, 0.5f, 1f);}
     }
 
     [Range(0.1f, 5)]
@@ -57,31 +51,56 @@ public class DSP_Properties
     float _FilterQ = 1;
     public float FilterQ
     {
-        get
-        {
-            return Mathf.Clamp(_FilterQ, 0.1f, 5f);
-        }
-        set
-        {
-            _FilterQ = (int)Mathf.Clamp(value, 0.1f, 5f);
-        }
+        get {return Mathf.Clamp(_FilterQ, 0.1f, 5f);}
+        set {_FilterQ = (int)Mathf.Clamp(value, 0.1f, 5f);}
     }
 
-    // Filter
+    // Bitcrush
     //---------------------------------------------------------------------
+    [Header("Bitcrush")]
     [Range(0, 50f)]
     [SerializeField]
-    float _DownsampleFactor = 1;
+    float _DownsampleFactor = 0;
     public float DownsampleFactor
     {
-        get
-        {
-            return Mathf.Clamp(_DownsampleFactor, 0, 50f);
-        }
-        set
-        {
-            _DownsampleFactor = (int)Mathf.Clamp(value,0, 50f);
-        }
+        get {return Mathf.Clamp(_DownsampleFactor, 0, 50f);}
+        set {_DownsampleFactor = (int)Mathf.Clamp(value,0, 50f);}
+    }
+
+    // Chorus
+    //---------------------------------------------------------------------
+    [Header("Chorus")]
+    [Range(0, 1000)]
+    [SerializeField]
+    int _ChorusCentre = 0;
+    public int ChorusCentre
+    {
+        get { return Mathf.Clamp(_ChorusCentre, 0, 1000); }
+        set { _ChorusCentre = Mathf.Clamp(value, 0, 1000); }
+    }
+    [Range(0.1f, 1000f)]
+    [SerializeField]
+    float _ChorusBW = 0;
+    public float ChorusBW
+    {
+        get { return Mathf.Clamp(_ChorusBW, 0.1f, 1000f); }
+        set { _ChorusBW = (int)Mathf.Clamp(value, 0.1f, 1000f); }
+    }
+    [Range(0.1f, 300f)]
+    [SerializeField]
+    float _ChorusRate = 0;
+    public float ChorusRate
+    {
+        get { return Mathf.Clamp(_ChorusRate, 0.1f, 300f); }
+        set { _ChorusRate = (int)Mathf.Clamp(value, 0.1f, 300f); }
+    }
+    [Range(0, 0.99f)]
+    [SerializeField]
+    float _ChorusFB = 0;
+    public float ChorusFB
+    {
+        get { return Mathf.Clamp(_ChorusFB, 0, 0.99f); }
+        set { _ChorusFB = (int)Mathf.Clamp(value, 0, 0.99f); }
     }
 }
 
@@ -94,18 +113,12 @@ public class FilterCoefficients
     public float a2;
     public float b1;
     public float b2;
-
-    public void PrintFC()
-    {
-        Debug.Log(string.Format("Filter Coefficients: {0} {1} {2} {3} {4}",
-            a0, a1, a2, b1, b2));
-    }
 }
 
 // Instantiated within each grain to maintain a very short history of the audio signal
-public class FilterSignal
+public class Filter
 {
-    public DSP_Effects.FilterType _Type = DSP_Effects.FilterType.None;
+    public FilterConstruction.FilterType _Type = FilterConstruction.FilterType.None;
 
     public float previousX1 = 0;
     public float previousX2 = 0;
@@ -116,11 +129,6 @@ public class FilterSignal
 
     public FilterCoefficients fc = new FilterCoefficients();
 
-    public void SetCoefficients()
-    {
-
-    }
-
     public void Reset()
     {
         previousX1 = 0;
@@ -130,10 +138,10 @@ public class FilterSignal
     }
 
     // Main filtering process - note that this will be called HEAVILY (every sample, per grain object)
-    public float Apply(float input)
+    public float Apply(float sampleIn)
     {
         // Apply coefficients to input singal and history data
-        filteredSignal = ( input * fc.a0 +
+        filteredSignal = ( sampleIn * fc.a0 +
                          previousX1 * fc.a1 +
                          previousX2 * fc.a2 ) -
                          ( previousY1 * fc.b1 +
@@ -141,7 +149,7 @@ public class FilterSignal
 
         // Set history states for signal data
         previousX2 = previousX1;
-        previousX1 = input;
+        previousX1 = sampleIn;
         previousY2 = previousY1;
         previousY1 = filteredSignal;
 
@@ -150,7 +158,7 @@ public class FilterSignal
     }
 }
 
-public class BitcrushSignal
+public class BitCrush
 {
     public float downsampleFactor = 0;
     private float previousValue = 0;
@@ -174,7 +182,53 @@ public class BitcrushSignal
 }
 
 
-public class DSP_Effects
+public class ChorusProperties
+{
+    public int centre;
+    public float bw;
+    public float rate;
+    public float fb;
+}
+
+public class ChorusMono
+{
+    private float[] delayBuffer;
+    private int delayReadIndex = 0;
+    private int delayWriteIndex = 0;
+    private float feedback = 0;
+    private float sinInput = 0;
+    private float oscRate = 0;
+    private int sampleRate = AudioSettings.outputSampleRate;
+
+    private ChorusProperties chorusProperties = new ChorusProperties();
+
+    public void SetProperties(ChorusProperties properties)
+    {
+        chorusProperties = properties;
+        delayBuffer = new float[(int)(properties.bw + properties.centre)];
+        oscRate = chorusProperties.rate / sampleRate * 2 * Mathf.PI;
+    }
+
+    public float Apply(float sampleIn)
+    {
+        // Increment oscillation and get index for delay writting
+        sinInput += oscRate;
+        delayWriteIndex = chorusProperties.centre + (int)(chorusProperties.bw * Mathf.Sin(sinInput)) % delayBuffer.Length;
+
+        // Read from delay buffer and increment index
+        float delaySampleOutput = delayBuffer[delayReadIndex];
+        delayReadIndex = delayReadIndex++ % delayBuffer.Length;
+
+        // Write to delay buffer
+        feedback = -delaySampleOutput * chorusProperties.fb;
+        delayBuffer[delayWriteIndex] += sampleIn + feedback;
+
+        return delaySampleOutput + sampleIn;
+    }
+}
+
+
+public class FilterConstruction
 {
     static float _SampleRate = AudioSettings.outputSampleRate;
 

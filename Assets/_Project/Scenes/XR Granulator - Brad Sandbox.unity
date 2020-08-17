@@ -4378,6 +4378,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
+  _MaxGrainSpeakers: 5
   _LatencyInMS: 10
 --- !u!1 &859464191
 GameObject:
@@ -4657,12 +4658,18 @@ MonoBehaviour:
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-    _FilterProperties:
+    _DSP_Properties:
       Type: 0
       _FilterCutoffNorm: 0.5
       _FilterGain: 1
       _FilterQ: 1
-      _BitcrushAmount: 1
+      _DownsampleFactor: 1
+    _FilterCoefficients:
+      a0: 0
+      a1: 0
+      a2: 0
+      b1: 0
+      b2: 0
   _RandomizedPlaybackPos: 0
   _Active: 0
 --- !u!23 &890891116
@@ -6235,7 +6242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TestType: 0
   _EmitterCount: 1
-  _LatencyInMS: 100
+  _LatencyInMS: 50
   _EmissionProps:
     _ClipIndex: 0
     _PlayheadPos: 0.27
@@ -6248,12 +6255,18 @@ MonoBehaviour:
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-    _FilterProperties:
+    _DSP_Properties:
       Type: 0
-      _FilterCutoffNorm: 0.5
+      _FilterCutoffNorm: 1
       _FilterGain: 1
       _FilterQ: 1
-      _BitcrushAmount: 1
+      _DownsampleFactor: 0
+    _FilterCoefficients:
+      a0: 0
+      a1: 0
+      a2: 0
+      b1: 0
+      b2: 0
   _AutomationSpeed: 1
   _AutomatePlayhead: 1
   _AutomatePlayheadRange: {x: 0.2, y: 0.8}
@@ -10190,6 +10203,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: baaf3eb83fa6d364c926f2d1dc31fe11, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
+  _MaxGrainSpeakers: 5
   _LatencyInMS: 10
 --- !u!4 &1878083883
 Transform:
