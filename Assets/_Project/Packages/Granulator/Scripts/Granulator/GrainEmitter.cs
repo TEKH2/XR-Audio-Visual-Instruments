@@ -46,7 +46,7 @@ public class GrainEmitter : MonoBehaviour
         // Find sample that next grain is emitted at
         int sampleIndexNextGrainStart = _LastGrainSampleIndex + currentCadence;
 
-        _FilterCoefficients = DSP_Effects.CreateCoefficents(_EmissionProps._DSP_Properties);
+        _FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
 
         int max = 10;
         int count = 0;

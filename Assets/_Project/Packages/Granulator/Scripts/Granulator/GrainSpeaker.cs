@@ -19,7 +19,7 @@ public class GrainSpeaker : MonoBehaviour
     int _MaxGrainDataCount = 1000; 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
-    private FilterSignal _FilterSignal = new FilterSignal();
+    private Filter _FilterSignal = new Filter();
     private float[] _Window;
 
     float _GrainsPerSecond = 0;

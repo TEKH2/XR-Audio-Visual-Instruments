@@ -125,16 +125,13 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
                 if (_GranulatorDOTS._CurrentDSPSample >= grainData._DSPStartIndex)
                 {
-                    //print("here");
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                     {
-                        //print("here2");
                         grainData._IsPlaying = false;
                     }
                     else
                     {
                         _SamplesPerRead++;
-                        //print("here3..    "  + grainData._GrainSamples[grainData._PlaybackIndex]);
                         data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
                         grainData._PlaybackIndex++;
                     }
@@ -142,6 +139,7 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
             }
         }
 
+        // Removed finished playback data from pool
         for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
         {
             if (_ActiveGrainPlaybackData[i] == null)
