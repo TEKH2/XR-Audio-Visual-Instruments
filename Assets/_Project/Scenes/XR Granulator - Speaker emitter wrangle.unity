@@ -1408,14 +1408,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb6f375d26ad994eb0aab6077418701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Volume: {x: 0.1, y: 0.1, z: 0.1}
+  m_Volume: {x: 6, y: 1, z: 0.1}
   m_RotationRange: {x: 0, y: 0, z: 0}
   m_ScaleRange: {x: 0.1, y: 0.1}
   m_ObjectsToSpawn:
   - {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9, type: 3}
   m_NumberToPool: 1
   _SpawnOnStart: 1
-  _Parent: {fileID: 0}
+  _Parent: {fileID: 403250667}
 --- !u!1 &422937823
 GameObject:
   m_ObjectHideFlags: 0

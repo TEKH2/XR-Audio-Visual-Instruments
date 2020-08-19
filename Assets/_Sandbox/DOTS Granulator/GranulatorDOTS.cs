@@ -191,7 +191,7 @@ public class GranulatorDOTS :  MonoBehaviour
 
     public void CreateSpeaker(Vector3 pos)
     {
-        GrainSpeakerDOTS speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity);
+        GrainSpeakerDOTS speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);
         speaker._SpeakerIndex = _GrainSpeakers.Count;
         _GrainSpeakers.Add(speaker);
     }
@@ -225,6 +225,7 @@ public class SpeakerFinderSystem : ComponentSystem
             {
                 Debug.Log("Speaker moving out of range: " + speaker._Index);
                 speaker._ConnectedToEmitter = false;
+                emitterTrans.Value = new float3(0);
             }
         });
 
@@ -287,9 +288,10 @@ public class SpeakerFinderSystem : ComponentSystem
                     {
                         // Set speaker active and move to emitter positions
                         speaker._InRange = true;
+                        speaker._ConnectedToEmitter = true;
                         speakerTrans.Value = emitterPos;
 
-                        Debug.Log("Emitter pos: " + emitterPos);
+                        //Debug.Log("Emitter pos: " + emitterPos);
 
                         foundSpeakerIndex = speaker._Index;
                         foundSpeakerEntity = speakerEntity;
@@ -299,7 +301,7 @@ public class SpeakerFinderSystem : ComponentSystem
 
                 if (speakerFound)
                 {
-                    Debug.Log("Found inactive speaker index / dist " + foundSpeakerIndex);
+                    //Debug.Log("Found inactive speaker index / dist " + foundSpeakerIndex);
                     emitter._SpeakerIndex = foundSpeakerIndex;
                     emitter._AttachedToSpeaker = true;
                     emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
