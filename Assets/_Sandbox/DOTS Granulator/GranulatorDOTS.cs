@@ -176,7 +176,7 @@ public class GranulatorDOTS :  MonoBehaviour
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
-               _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
+                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
 
                 //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
                 //print(".....Copying sample data over: " + samples[1500] + "     " + playbackData._GrainSamples[1500]);

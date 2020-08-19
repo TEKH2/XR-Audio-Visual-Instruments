@@ -17,7 +17,7 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
 
     int _GrainPlaybackDataToPool = 100;
-    int _MaxGrainPlaybackDataCout = 200;
+    int _MaxGrainPlaybackDataCout = 500;
 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
