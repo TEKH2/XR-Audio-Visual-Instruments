@@ -41,7 +41,6 @@ public class DOTSComparisonTest : MonoBehaviour
     public GrainEmitter _EmitterPrefab;
     public GranulatorDOTS _DOTSSystem;
     public Spawner _Spawner;
-    public GrainManager _GrainManager;
 
     EmitterDOTSAuthoring[] _DOTSEmitters;
     GrainEmitter[] _GrainEmitters;
@@ -54,7 +53,6 @@ public class DOTSComparisonTest : MonoBehaviour
         _EmitterPrefab._EmissionProps = _EmissionProps;
         _EmitterPrefabDOTs._EmissionProps = _EmissionProps;
 
-        _GrainManager._EmissionLatencyMS = _LatencyInMS;
         _DOTSSystem._LatencyInMS = _LatencyInMS;
 
         if (_TestType == Test.Normal)

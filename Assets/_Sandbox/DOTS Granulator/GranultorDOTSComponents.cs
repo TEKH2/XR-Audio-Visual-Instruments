@@ -19,8 +19,8 @@ public struct WindowingDataComponent : IComponentData
 public struct SpeakerManagerComponent : IComponentData
 {
     public float3 _ListenerPos;
-    public float _EmitterActivationDist;
-    public float _SpeakerEmitterAttachDist;
+    public float _EmitterToListenerActivationRange;
+    public float _EmitterToSpeakerAttachRadius;
 }
 
 public struct GrainProcessor : IComponentData
@@ -44,6 +44,10 @@ public struct GrainSpeakerComponent : IComponentData
     public bool _Active;
     public bool _Activating;
     public int _Index;
+}
+
+public struct IsActiveTag : IComponentData
+{
 }
 
 public struct DSPTimerComponent : IComponentData
