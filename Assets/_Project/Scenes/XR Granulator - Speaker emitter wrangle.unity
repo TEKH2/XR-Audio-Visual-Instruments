@@ -2606,7 +2606,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 1
+  _MaxGrainSpeakers: 2
   _LatencyInMS: 10
   _EmissionLatencyMS: 80
   _CurrentDSPSample: 0
@@ -3755,7 +3755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TestType: 0
-  _EmitterCount: 1
+  _EmitterCount: 6
   _LatencyInMS: 50
   _EmissionProps:
     _ClipIndex: 0

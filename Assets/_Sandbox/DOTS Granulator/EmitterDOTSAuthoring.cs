@@ -35,7 +35,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
-            _Active = false,
+            _AttachedToSpeaker = false,
             _InRange = false,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
@@ -82,7 +82,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
-            _Active = data._Active,
+            _AttachedToSpeaker = data._AttachedToSpeaker,
             _InRange = data._InRange,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),

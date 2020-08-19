@@ -184,6 +184,9 @@ public class GranulatorDOTS :  MonoBehaviour
         }
 
         grainEntities.Dispose();
+
+
+
     }
 
     public void CreateSpeaker(Vector3 pos)
@@ -207,27 +210,52 @@ public class SpeakerFinderSystem : ComponentSystem
     protected override void OnUpdate()
     {
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
+        DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
 
+        // ------------------------------------------------------------------------------------- CHECK SPEAKERS IN RANGE
+        Entities.ForEach((ref GrainSpeakerComponent speaker, ref Translation emitterTrans) =>
+        {
+            bool prevInRange = speaker._InRange;
+
+            // -------------------------------------------  CHECK IN RANGE
+            speaker._InRange = math.distance(emitterTrans.Value, speakerManager._ListenerPos) < speakerManager._EmitterToListenerActivationRange;
+
+            // If moving out of range
+            if (prevInRange && !speaker._InRange)
+            {
+                Debug.Log("Speaker moving out of range: " + speaker._Index);
+                speaker._ConnectedToEmitter = false;
+            }
+        });
+
+        // ------------------------------------------------------------------------------------- CHECK EMITTERS IN RANGE AND ATTACH TO SPEAKERS
         Entities.ForEach((ref EmitterComponent emitter, ref Translation emitterTrans) =>
         {
-            // Check if it is in range of the listener
-            float emitterToListenerDist = math.distance(emitterTrans.Value, speakerManager._ListenerPos);
+            bool prevInRange = emitter._InRange;
 
-            if (emitterToListenerDist < speakerManager._EmitterToListenerActivationRange)
+            // -------------------------------------------  CHECK IN RANGE
+            emitter._InRange = math.distance(emitterTrans.Value, speakerManager._ListenerPos) < speakerManager._EmitterToListenerActivationRange;
+                    
+            // If moving out of range
+            if(prevInRange && !emitter._InRange)
             {
-                // Set In range flag
-                emitter._InRange = true;
+                Debug.Log("Emitter moving out of range.");
+                emitter._AttachedToSpeaker = false;
+            }
 
+            // if in range but not active
+            if(emitter._InRange && !emitter._AttachedToSpeaker)
+            {
                 float closestDist = speakerManager._EmitterToSpeakerAttachRadius;
                 int foundSpeakerIndex = 0;
                 bool speakerFound = false;
                 float3 emitterPos = emitterTrans.Value;             
                 Entity foundSpeakerEntity;
 
-                // Search all active speakers with active tag component
+                // Search all currently connected speakers
                 Entities.ForEach((Entity speakerEntity, ref GrainSpeakerComponent speaker, ref Translation speakerTrans) =>
                 {
-                    if (speaker._Active)
+                    if (speaker._InRange && speaker._ConnectedToEmitter)
                     {
                         float dist = math.distance(emitterPos, speakerTrans.Value);
 
@@ -246,18 +274,22 @@ public class SpeakerFinderSystem : ComponentSystem
                 {
                     Debug.Log("Found active speaker index / dist " + foundSpeakerIndex + "   " + closestDist);
                     emitter._SpeakerIndex = foundSpeakerIndex;
-                    emitter._Active = true;
+                    emitter._AttachedToSpeaker = true;
+                    emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
                     return;
                 }
 
                 // Search all inactive speakers with active tag component
                 Entities.ForEach((Entity speakerEntity, ref GrainSpeakerComponent speaker, ref Translation speakerTrans) =>
                 {
-                    if (!speaker._Active)
+                    // if spaker isnt found, search through inactive speakers
+                    if (!speaker._ConnectedToEmitter && !speakerFound)
                     {
                         // Set speaker active and move to emitter positions
-                        speaker._Active = true;
+                        speaker._InRange = true;
                         speakerTrans.Value = emitterPos;
+
+                        Debug.Log("Emitter pos: " + emitterPos);
 
                         foundSpeakerIndex = speaker._Index;
                         foundSpeakerEntity = speakerEntity;
@@ -269,14 +301,10 @@ public class SpeakerFinderSystem : ComponentSystem
                 {
                     Debug.Log("Found inactive speaker index / dist " + foundSpeakerIndex);
                     emitter._SpeakerIndex = foundSpeakerIndex;
-                    emitter._Active = true;
+                    emitter._AttachedToSpeaker = true;
+                    emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
                     return;
                 }
-            }
-            else
-            {
-                Debug.Log("Emitter out of range of listener ");
-                emitter._Active = false;
             }
         });
     }
@@ -395,7 +423,7 @@ public class GranulatorSystem : SystemBase
         (
             (int entityInQueryIndex, ref EmitterComponent emitter) =>
             {
-                if (emitter._Active)
+                if (emitter._AttachedToSpeaker)
                 {
                     // Max grains to stop it getting stuck in a while loop
                     int maxGrains = 20;

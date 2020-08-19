@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 
 public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 {
     #region -------------------------- VARIABLES
+    EntityManager _EntityManager;
+    Entity _Entity;
+
     GranulatorDOTS _GranulatorDOTS;
     public int _SpeakerIndex = 0;
 
@@ -26,17 +30,29 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        _Entity = entity;
+
         // Register the speaker and get the index
-        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _Active = false });
+        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
     }
 
     public void Start()
     {
         _GranulatorDOTS = GranulatorDOTS.Instance;
+        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         // Pool grain playback data
         for (int i = 0; i < _GrainPlaybackDataToPool; i++)        
             _PooledGrainPlaybackData.Add(new GrainPlaybackData());        
+    }
+
+    public void Update()
+    {
+        transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
+
+        // Clear playback data if not connected too emitters
+        GrainSpeakerComponent speaker = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
+        //if(speaker._ConnectedToEmitter)
     }
 
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)

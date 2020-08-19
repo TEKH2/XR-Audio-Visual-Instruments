@@ -41,9 +41,9 @@ public struct GrainProcessor : IComponentData
 
 public struct GrainSpeakerComponent : IComponentData
 {
-    public bool _Active;
-    public bool _Activating;
-    public int _Index;
+    public bool _InRange;
+    public bool _ConnectedToEmitter;
+    public int _Index;    
 }
 
 public struct IsActiveTag : IComponentData
@@ -59,7 +59,7 @@ public struct DSPTimerComponent : IComponentData
 
 public struct EmitterComponent : IComponentData
 {
-    public bool _Active;
+    public bool _AttachedToSpeaker;
     public bool _InRange;
     public int _SpeakerIndex;
 
