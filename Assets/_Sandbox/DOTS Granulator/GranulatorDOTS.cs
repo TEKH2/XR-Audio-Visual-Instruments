@@ -294,7 +294,9 @@ public class GranulatorSystem : SystemBase
 public class DSPSystem : SystemBase
 {
     protected override void OnUpdate()
-    {       
+    {
+        // Bitcrush
+        //---------------------------------------------------------------------
         Entities.ForEach
         (
            (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_BitCrush dsp, in GrainProcessor grain) =>
@@ -326,6 +328,8 @@ public class DSPSystem : SystemBase
            }
         ).ScheduleParallel();
 
+        // Filter
+        //---------------------------------------------------------------------
         Entities.ForEach
         (
            (int entityInQueryIndex, DynamicBuffer<FloatBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>

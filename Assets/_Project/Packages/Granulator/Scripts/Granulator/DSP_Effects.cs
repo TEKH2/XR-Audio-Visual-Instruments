@@ -80,7 +80,7 @@ public class DSP_Properties
     }
     [Range(0.1f, 1000f)]
     [SerializeField]
-    float _ChorusBW = 0;
+    float _ChorusBW = 0.1f;
     public float ChorusBW
     {
         get { return Mathf.Clamp(_ChorusBW, 0.1f, 1000f); }
@@ -88,7 +88,7 @@ public class DSP_Properties
     }
     [Range(0.1f, 300f)]
     [SerializeField]
-    float _ChorusRate = 0;
+    float _ChorusRate = 0.1f;
     public float ChorusRate
     {
         get { return Mathf.Clamp(_ChorusRate, 0.1f, 300f); }
@@ -213,7 +213,7 @@ public class ChorusMono
     {
         // Increment oscillation and get index for delay writting
         sinInput += oscRate;
-        delayWriteIndex = chorusProperties.centre + (int)(chorusProperties.bw * Mathf.Sin(sinInput)) % delayBuffer.Length;
+        delayWriteIndex = (delayReadIndex + Mathf.Max(chorusProperties.centre + (int)(chorusProperties.bw * Mathf.Sin(sinInput)), 0)) % delayBuffer.Length;
 
         // Read from delay buffer and increment index
         float delaySampleOutput = delayBuffer[delayReadIndex];
