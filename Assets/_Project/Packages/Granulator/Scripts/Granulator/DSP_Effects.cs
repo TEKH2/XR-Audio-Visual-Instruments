@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
-
+using UnityEngine.PlayerLoop;
 
 public class DSP_Effects
 {
@@ -70,27 +70,27 @@ public class DSP_Properties
     [Header("Chorus")]
     [Range(0, 1000)]
     [SerializeField]
-    int _ChorusCentre = 0;
-    public int ChorusCentre
+    int _ChorusDelay = 0;
+    public int ChorusDelay
     {
-        get { return Mathf.Clamp(_ChorusCentre, 0, 1000); }
-        set { _ChorusCentre = Mathf.Clamp(value, 0, 1000); }
+        get { return Mathf.Clamp(_ChorusDelay, 0, 1000); }
+        set { _ChorusDelay = Mathf.Clamp(value, 0, 1000); }
     }
     [Range(0.1f, 1000f)]
     [SerializeField]
-    float _ChorusBW = 0.1f;
-    public float ChorusBW
+    float _ChorusMod = 0.1f;
+    public float ChorusMod
     {
-        get { return Mathf.Clamp(_ChorusBW, 0.1f, 1000f); }
-        set { _ChorusBW = (int)Mathf.Clamp(value, 0.1f, 1000f); }
+        get { return Mathf.Clamp(_ChorusMod, 0.1f, 1000f); }
+        set { _ChorusMod = (int)Mathf.Clamp(value, 0.1f, 1000f); }
     }
     [Range(0.1f, 300f)]
     [SerializeField]
-    float _ChorusRate = 0.1f;
-    public float ChorusRate
+    float _ChorusFrequency = 0.1f;
+    public float ChorusFreq
     {
-        get { return Mathf.Clamp(_ChorusRate, 0.1f, 300f); }
-        set { _ChorusRate = (int)Mathf.Clamp(value, 0.1f, 300f); }
+        get { return Mathf.Clamp(_ChorusFrequency, 0.1f, 300f); }
+        set { _ChorusFrequency = (int)Mathf.Clamp(value, 0.1f, 300f); }
     }
     [Range(0, 0.99f)]
     [SerializeField]
@@ -182,48 +182,138 @@ public class BitCrush
 
 public class ChorusProperties
 {
-    public int centre;
-    public float bw;
-    public float rate;
+    public int delay;
+    public float mod;
+    public float frequency;
     public float fb;
 }
 
 public class ChorusMono
 {
-    private float[] delayBuffer;
     private int delayReadIndex = 0;
     private int delayWriteIndex = 0;
     private float feedback = 0;
-    private float sinInput = 0;
-    private float oscRate = 0;
+    private float phase = 0;
+    private float phaseIncrement = 0;
     private int sampleRate = AudioSettings.outputSampleRate;
+
+    private DSP_Buffer delayBuffer;
+    private DSP_Ocillator chorusOscillator;
 
     private ChorusProperties chorusProperties = new ChorusProperties();
 
     public void SetProperties(ChorusProperties properties)
     {
         chorusProperties = properties;
-        delayBuffer = new float[(int)(properties.bw + properties.centre)];
-        oscRate = chorusProperties.rate / sampleRate * 2 * Mathf.PI;
+
+        delayBuffer = new DSP_Buffer();
+        chorusOscillator = new DSP_Ocillator();
+
+        delayBuffer.SetBufferSize(4410);
+        chorusOscillator.SetSampleRate(sampleRate);
+        chorusOscillator.SetFrequency(chorusProperties.frequency);
     }
 
+    // PORTED FROM https://github.com/marcwilhite/StereoChorus/blob/master/Source/FractionalDelayBuffer.cpp
     public float Apply(float sampleIn)
     {
-        // Increment oscillation and get index for delay writting
-        sinInput += oscRate;
-        delayWriteIndex = (delayReadIndex + Mathf.Max(chorusProperties.centre + (int)(chorusProperties.bw * Mathf.Sin(sinInput)), 0)) % delayBuffer.Length;
+        float delayTime = chorusProperties.delay + (chorusOscillator.NextSample() + 1.01f) * chorusProperties.mod;
+        float delayOutput = delayBuffer.GetSample(delayTime);
 
-        // Read from delay buffer and increment index
-        float delaySampleOutput = delayBuffer[delayReadIndex];
-        delayReadIndex = delayReadIndex++ % delayBuffer.Length;
+        float combined = sampleIn + delayOutput * chorusProperties.fb;
+        delayBuffer.AddSample(combined);
 
-        // Write to delay buffer
-        feedback = -delaySampleOutput * chorusProperties.fb;
-        delayBuffer[delayWriteIndex] += sampleIn + feedback;
-
-        return delaySampleOutput + sampleIn;
+        return combined;
     }
 }
+
+
+// PORTED FROM https://github.com/marcwilhite/StereoChorus/blob/master/Source/FractionalDelayBuffer.cpp
+public class DSP_Ocillator
+{
+    private float frequency = 0;
+    private int sampleRate = 44100;
+    private float phaseIncrement = 0;
+    private float phase = 0;
+
+    public void SetFrequency(float freq)
+    {
+        frequency = freq;
+        UpdateIncrement();
+    }
+    public void SetSampleRate(int rate)
+    {
+        sampleRate = rate;
+        UpdateIncrement();
+    }
+
+    private void UpdateIncrement()
+    {
+        phaseIncrement = frequency * 2 * Mathf.PI / sampleRate;
+    }
+
+    public float NextSample()
+    {
+        float value = 0.0f;
+
+        value = Mathf.Sin(phase);
+
+        phase += phaseIncrement;
+        while (phase >= Mathf.PI * 2)
+        {
+            phase -= Mathf.PI * 2;
+        }
+        return value;
+    }
+}
+
+
+// PORTED FROM https://github.com/marcwilhite/StereoChorus/blob/master/Source/FractionalDelayBuffer.cpp
+public class DSP_Buffer
+{
+    private int index;
+    private int bufferSize;
+    private float[] buffer;
+
+    public void SetBufferSize(int size)
+    {
+        bufferSize = size;
+        buffer = new float[bufferSize];
+    }
+
+    public void AddSample(float sample)
+    {
+        index = index % bufferSize;
+        buffer[index] = sample;
+        index++;
+    }
+
+    public float GetSample(float sampleIndex)
+    {
+        float localIndex = (float)index - sampleIndex;
+
+        if (localIndex >= bufferSize)
+            localIndex -= bufferSize;
+
+        if (localIndex < 0)
+            localIndex += bufferSize;
+
+        return LinearInterpolate(buffer, localIndex);
+    }
+
+    public static float LinearInterpolate(float[] data, float position)
+    {
+        int lower = (int)position;
+        int upper = lower + 1;
+        if (upper == data.Length)
+            upper = 0;
+
+        float difference = position - lower;
+
+        return (data[upper] * difference) + (data[lower] * (1 - difference));
+    }
+}
+
 
 
 public class FilterConstruction

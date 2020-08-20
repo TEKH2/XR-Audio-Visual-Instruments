@@ -20,10 +20,10 @@ public class ChorusTEST : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        chorusProperties.bw = DSP_Properties.ChorusBW;
-        chorusProperties.centre = DSP_Properties.ChorusCentre;
+        chorusProperties.mod = DSP_Properties.ChorusMod;
+        chorusProperties.delay = DSP_Properties.ChorusDelay;
         chorusProperties.fb = DSP_Properties.ChorusFB;
-        chorusProperties.rate = DSP_Properties.ChorusRate;
+        chorusProperties.frequency = DSP_Properties.ChorusFreq;
 
         chorusMono.SetProperties(chorusProperties);
 
@@ -37,6 +37,7 @@ public class ChorusTEST : MonoBehaviour
         {
             outputSample = chorusMono.Apply(data[dataIndex]);
             data[dataIndex] = outputSample;
+            data[dataIndex+1] = outputSample;
         }
     }
 }

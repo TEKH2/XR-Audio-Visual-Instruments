@@ -1249,9 +1249,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 40644eeab2cbac44582d1712922c83ac, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b31e2fc4c1a34224aba99fed315577a2, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.566
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1361,17 +1361,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e8601b981ee294f8dd177f2d726cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 198654452}
   DSP_Properties:
     Type: 0
     _FilterCutoffNorm: 0.5
     _FilterGain: 1
     _FilterQ: 1
     _DownsampleFactor: 0
-    _ChorusCentre: 293
-    _ChorusBW: 186
-    _ChorusRate: 40
-    _ChorusFB: 0.354
+    _ChorusDelay: 84
+    _ChorusMod: 90
+    _ChorusFrequency: 32
+    _ChorusFB: 0.269
 --- !u!1 &213543996
 GameObject:
   m_ObjectHideFlags: 0
@@ -4529,8 +4529,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
+  _SpeakerPrefab: {fileID: 0}
+  _GrainSpeakers: []
   _MaxGrainSpeakers: 5
   _LatencyInMS: 10
+  _EmissionLatencyMS: 80
+  _CurrentDSPSample: 0
+  _EmitterToListenerActivationRange: 3
+  _EmitterToSpeakerAttachRadius: 1
 --- !u!1 &859464191
 GameObject:
   m_ObjectHideFlags: 0
@@ -4815,9 +4821,9 @@ MonoBehaviour:
       _FilterGain: 1
       _FilterQ: 1
       _DownsampleFactor: 1
-      _ChorusCentre: 0
-      _ChorusBW: 0
-      _ChorusRate: 0
+      _ChorusDelay: 0
+      _ChorusMod: 0.1
+      _ChorusFrequency: 0.1
       _ChorusFB: 0
     _FilterCoefficients:
       a0: 0
@@ -6416,9 +6422,9 @@ MonoBehaviour:
       _FilterGain: 1
       _FilterQ: 1
       _DownsampleFactor: 0
-      _ChorusCentre: 0
-      _ChorusBW: 0
-      _ChorusRate: 0
+      _ChorusDelay: 0
+      _ChorusMod: 0.1
+      _ChorusFrequency: 0.1
       _ChorusFB: 0
     _FilterCoefficients:
       a0: 0
@@ -6441,7 +6447,6 @@ MonoBehaviour:
     type: 3}
   _DOTSSystem: {fileID: 844739180}
   _Spawner: {fileID: 403250668}
-  _GrainManager: {fileID: 1605323146}
 --- !u!1 &1222252166
 GameObject:
   m_ObjectHideFlags: 0
@@ -8480,18 +8485,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1605323146 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1244338074411448928, guid: a13d7ca3013f6454d8baa14bda3c705f,
-    type: 3}
-  m_PrefabInstance: {fileID: 993538535}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82f40ed166221a440bae22bdcda6705c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1606269822
 GameObject:
   m_ObjectHideFlags: 0
@@ -10362,8 +10355,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: baaf3eb83fa6d364c926f2d1dc31fe11, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 9ed2a630e8a5c1e4ab288cc90199b603, type: 3}
+  _SpeakerPrefab: {fileID: 0}
+  _GrainSpeakers: []
   _MaxGrainSpeakers: 5
   _LatencyInMS: 10
+  _EmissionLatencyMS: 80
+  _CurrentDSPSample: 0
+  _EmitterToListenerActivationRange: 3
+  _EmitterToSpeakerAttachRadius: 1
 --- !u!4 &1878083883
 Transform:
   m_ObjectHideFlags: 0
