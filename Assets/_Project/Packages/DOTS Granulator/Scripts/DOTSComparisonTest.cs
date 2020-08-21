@@ -38,31 +38,22 @@ public class DOTSComparisonTest : MonoBehaviour
     [Space]
 
     public EmitterDOTSAuthoring _EmitterPrefabDOTs;
-    public GrainEmitter _EmitterPrefab;
     public GranulatorDOTS _DOTSSystem;
     public Spawner _Spawner;
 
     EmitterDOTSAuthoring[] _DOTSEmitters;
-    GrainEmitter[] _GrainEmitters;
 
   
 
     // Start is called before the first frame update
     void Awake()
     {
-        _EmitterPrefab._EmissionProps = _EmissionProps;
         _EmitterPrefabDOTs._EmissionProps = _EmissionProps;
 
         _DOTSSystem._LatencyInMS = _LatencyInMS;
 
-        if (_TestType == Test.Normal)
-        {
-            _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefab.gameObject };
-        }
-        else
-        {
-            _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };
-        }
+        _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };
+        
 
         _Spawner.m_NumberToPool = _EmitterCount;
 
@@ -96,16 +87,6 @@ public class DOTSComparisonTest : MonoBehaviour
             {
                 _DOTSEmitters[i]._EmissionProps = _EmissionProps;
             }
-        }
-        else
-        {
-            if (_GrainEmitters == null || _GrainEmitters.Length == 0)
-                _GrainEmitters = FindObjectsOfType<GrainEmitter>();
-
-            for (int i = 0; i < _GrainEmitters.Length; i++)
-            {
-                _GrainEmitters[i]._EmissionProps = _EmissionProps;
-            }
-        }
+        }       
     }
 }
