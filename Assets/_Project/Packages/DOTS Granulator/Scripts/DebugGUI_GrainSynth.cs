@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugGUI_Granulator : MonoBehaviour
+public class DebugGUI_GrainSynth : MonoBehaviour
 {
 
 

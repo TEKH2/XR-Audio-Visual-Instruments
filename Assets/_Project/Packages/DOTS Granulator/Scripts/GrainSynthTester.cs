@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DOTSComparisonTest : MonoBehaviour
+public class GrainSynthTester : MonoBehaviour
 {
     public enum Test
     {
@@ -37,11 +37,11 @@ public class DOTSComparisonTest : MonoBehaviour
     [Space]
     [Space]
 
-    public EmitterDOTSAuthoring _EmitterPrefabDOTs;
-    public GranulatorDOTS _DOTSSystem;
+    public GrainEmitterAuthoring _EmitterPrefabDOTs;
+    public GrainSynth _DOTSSystem;
     public Spawner _Spawner;
 
-    EmitterDOTSAuthoring[] _DOTSEmitters;
+    GrainEmitterAuthoring[] _DOTSEmitters;
 
   
 
@@ -81,7 +81,7 @@ public class DOTSComparisonTest : MonoBehaviour
         if (_TestType == Test.DOTS)
         {
             if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)
-                _DOTSEmitters = FindObjectsOfType<EmitterDOTSAuthoring>();
+                _DOTSEmitters = FindObjectsOfType<GrainEmitterAuthoring>();
 
             for (int i = 0; i < _DOTSEmitters.Length; i++)
             {

@@ -1376,7 +1376,7 @@ GameObject:
   - component: {fileID: 403250667}
   - component: {fileID: 403250668}
   m_Layer: 0
-  m_Name: Grain emitter spawner
+  m_Name: Spawner - Emitters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2567,7 +2567,7 @@ GameObject:
   - component: {fileID: 844739180}
   - component: {fileID: 844739181}
   m_Layer: 0
-  m_Name: Granulator DOTS
+  m_Name: Grain Synth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2596,7 +2596,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 844739178}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76e518dbbe349e1438281f6e89526fce, type: 3}
+  m_Script: {fileID: 11500000, guid: 575024e13d07ce244a554537f81bdf43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _AudioClips:
@@ -3720,7 +3720,7 @@ GameObject:
   - component: {fileID: 1211885925}
   - component: {fileID: 1211885926}
   m_Layer: 0
-  m_Name: DOTS Test
+  m_Name: Grain synth tester
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3795,8 +3795,6 @@ MonoBehaviour:
   _AutomatePitch: 0
   _AutomatePitchRange: {x: -1, y: 1}
   _EmitterPrefabDOTs: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
-    type: 3}
-  _EmitterPrefab: {fileID: 8996200946907528258, guid: 80dbce1aa77d06a40b48788bc09972e7,
     type: 3}
   _DOTSSystem: {fileID: 844739180}
   _Spawner: {fileID: 403250668}

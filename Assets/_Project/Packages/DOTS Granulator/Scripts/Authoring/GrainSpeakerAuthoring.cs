@@ -4,7 +4,27 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 
-public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
+
+public class GrainPlaybackData
+{
+    public bool _IsPlaying = true;
+    public float[] _GrainSamples;
+    public float[] _TempSampleBuffer;
+    public int _PlaybackIndex = 0;
+    public int _PlaybackSampleCount;
+
+    // The DSP sample that the grain starts at
+    public int _DSPStartIndex;
+
+    public GrainPlaybackData()
+    {
+        // instantiate the grain samples at the max length of a grain of 1 second worth of samples
+        _GrainSamples = new float[44 * 1000];
+        _TempSampleBuffer = new float[44 * 1000];
+    }
+}
+
+public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     #region -------------------------- VARIABLES
     EntityManager _EntityManager;
@@ -13,7 +33,7 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
     MeshRenderer _MeshRenderer;
 
-    GranulatorDOTS _GranulatorDOTS;
+    GrainSynth _GranulatorDOTS;
     public int _SpeakerIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
@@ -49,7 +69,7 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Start()
     {
-        _GranulatorDOTS = GranulatorDOTS.Instance;
+        _GranulatorDOTS = GrainSynth.Instance;
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2519325204652697373}
   - component: {fileID: 2519325204652697372}
   m_Layer: 0
-  m_Name: Grain Speaker DOTS
+  m_Name: Grain Speaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2519325204652697371}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c65429b5b54dec041b17f3a8d8bbd0f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _SpeakerIndex: 0

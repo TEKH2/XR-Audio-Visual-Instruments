@@ -2,10 +2,140 @@
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
+using Random = UnityEngine.Random;
+
+[System.Serializable]
+public class GrainEmissionProps
+{
+    [Header("Speaker")]
+    public int _ClipIndex = 0;
+
+    // Position (normalised)
+    //---------------------------------------------------------------------
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    float _PlayheadPos = 0;
+    [Range(0.0f, .1f)]
+    [SerializeField]
+    public float _PositionRandom = 0;
+    public float Position
+    {
+        get
+        {
+            return Mathf.Clamp(_PlayheadPos + Random.Range(0, _PositionRandom), 0f, 1f);
+        }
+        set
+        {
+            _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
+        }
+    }
+
+    [Header("Timing")]
+    [Range(2.0f, 1000f)]
+    public int _Cadence = 20;             // ms
+    [Range(0.002f, 1000f)]
+    public int _CadenceRandom = 0;        // ms
+    public float Cadence
+    {
+        get
+        {
+            return Mathf.Clamp(_Cadence + Random.Range(0, _CadenceRandom), 2f, 1000f);
+        }
+        set
+        {
+            _Cadence = (int)Mathf.Clamp(value, 2f, 1000f);
+        }
+    }
+
+
+
+    // Duration (ms)
+    //---------------------------------------------------------------------
+    [Range(2.0f, 1000f)]
+    [SerializeField]
+    int _Duration = 100;
+    [Range(0.0f, 500f)]
+    [SerializeField]
+    int _DurationRandom = 0;
+    public float Duration
+    {
+        get
+        {
+            return Mathf.Clamp(_Duration + Random.Range(0, _DurationRandom), 2, 1000);
+        }
+        set
+        {
+            _Duration = (int)Mathf.Clamp(value, 2, 1000);
+        }
+    }
+
+    [Header("Effects")]
+    // Volume
+    //---------------------------------------------------------------------
+    [Range(0.0f, 2.0f)]
+    [SerializeField]
+    float _Volume = 1;          // from 0 > 1
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    float _VolumeRandom = 0;      // from 0 > 1
+    public float Volume
+    {
+        get
+        {
+            return Mathf.Clamp(_Volume + Random.Range(-_VolumeRandom, _VolumeRandom), 0f, 3f);
+        }
+        set
+        {
+            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
+        }
+    }
+
+
+    // Transpose
+    //---------------------------------------------------------------------
+    [Range(-3f, 3f)]
+    [SerializeField]
+    float _Transpose = 0;
+    [Range(0f, 1f)]
+    [SerializeField]
+    float _TransposeRandom = 0;
+
+    float _Pitch = 1;
+    public float Pitch
+    {
+        get
+        {
+            _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -4f, 4f));
+            return Mathf.Clamp(_Pitch, 0.06f, 16f);
+        }
+        set
+        {
+            _Transpose = Mathf.Clamp(value, -3, 3f);
+        }
+    }
+
+    public DSP_Properties _DSP_Properties;
+    public FilterCoefficients _FilterCoefficients;
+
+    public GrainEmissionProps(float pos, int duration, float pitch, float volume,
+        float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
+    {
+        _PlayheadPos = pos;
+        _Duration = duration;
+        _Pitch = pitch;
+        _Volume = volume;
+
+        _PositionRandom = posRand;
+        _DurationRandom = durationRand;
+        //_PitchRandom = pitchRand;
+        _VolumeRandom = volumeRand;
+    }
+}
+
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public GrainEmissionProps _EmissionProps;
 
@@ -39,7 +169,7 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _InRange = false,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-            _LastGrainEmissionDSPIndex = GranulatorDOTS.Instance._CurrentDSPSample,
+            _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
@@ -96,19 +226,3 @@ public class EmitterDOTSAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         });
     }
 }
-
-//EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
-
-//_EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
-//        {
-//            _Active = data._Active,
-//            _CadenceInSamples = (int) (_EmissionProps.Cadence* AudioSettings.outputSampleRate* .001f),
-//            _DurationInSamples = (int) (_EmissionProps.Duration* AudioSettings.outputSampleRate* .001f),
-//            _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,
-//            _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
-//            _Pitch = _EmissionProps.Pitch,
-//            _Volume = _EmissionProps.Volume,
-//            _PlayheadPosNormalized = _EmissionProps.Position,
-//            _BitCrush = _EntityManager.GetComponentData<DSP_BitCrush>(_EmitterEntity),
-//            _Filter = _EntityManager.GetComponentData<DSP_Filter>(_EmitterEntity)
-//        });
