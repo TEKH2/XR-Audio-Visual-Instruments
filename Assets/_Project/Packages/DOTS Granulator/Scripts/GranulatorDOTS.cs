@@ -203,6 +203,15 @@ public class GranulatorDOTS :  MonoBehaviour
             _CurrentDSPSample++;
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying)
+            return;
+         
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(_Listener.transform.position, _EmitterToListenerActivationRange);
+    }
 }
 
 public class GranulatorSystem : SystemBase

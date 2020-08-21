@@ -9,6 +9,9 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
     #region -------------------------- VARIABLES
     EntityManager _EntityManager;
     Entity _Entity;
+    GrainSpeakerComponent _SpeakerComponenet;
+
+    MeshRenderer _MeshRenderer;
 
     GranulatorDOTS _GranulatorDOTS;
     public int _SpeakerIndex = 0;
@@ -23,8 +26,12 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
     //DebugGUI_Granulator _DebugGUI;
     int prevStartSample = 0;
-
     bool _Initialized = false;
+
+    AudioSource _AudioSource;
+    float _VolumeSmoothing = 4;
+
+    float _TargetVolume = 0;
 
     public bool _DebugLog = false;
     #endregion
@@ -37,13 +44,16 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
 
-        _Initialized = false;
+        _Initialized = true;
     }
 
     public void Start()
     {
         _GranulatorDOTS = GranulatorDOTS.Instance;
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+        _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
+        _AudioSource = gameObject.GetComponent<AudioSource>();
 
         // Pool grain playback data
         for (int i = 0; i < _GrainPlaybackDataToPool; i++)        
@@ -58,8 +68,10 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
         // Clear playback data if not connected too emitters
-        GrainSpeakerComponent speaker = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
-        //if(speaker._ConnectedToEmitter)
+        _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
+        _TargetVolume = _SpeakerComponenet._ConnectedToEmitter ? 1 : 0;
+        _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
+        _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;
     }
 
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)
@@ -184,5 +196,14 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
         float newSamplesPerSecond = _SamplesPerRead * (1f / dt);
         float concurrentSamples = newSamplesPerSecond / 44100;
         _SamplesPerSecond = newSamplesPerSecond;
+    }
+
+    void OnDrawGizmos()
+    {
+        if (_SpeakerComponenet._ConnectedToEmitter)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, _GranulatorDOTS._EmitterToSpeakerAttachRadius);
+        }
     }
 }
