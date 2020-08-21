@@ -24,6 +24,8 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
     //DebugGUI_Granulator _DebugGUI;
     int prevStartSample = 0;
 
+    bool _Initialized = false;
+
     public bool _DebugLog = false;
     #endregion
 
@@ -34,6 +36,8 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
+
+        _Initialized = false;
     }
 
     public void Start()
@@ -48,6 +52,9 @@ public class GrainSpeakerDOTS : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Update()
     {
+        if (!_Initialized)
+            return;
+
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
         // Clear playback data if not connected too emitters

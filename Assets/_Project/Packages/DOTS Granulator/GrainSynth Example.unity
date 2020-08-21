@@ -2520,7 +2520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &813938863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2606,7 +2606,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 8
+  _MaxGrainSpeakers: 5
   _LatencyInMS: 10
   _EmissionLatencyMS: 80
   _CurrentDSPSample: 0
@@ -3761,9 +3761,9 @@ MonoBehaviour:
     _ClipIndex: 0
     _PlayheadPos: 0.27
     _PositionRandom: 0
-    _Cadence: 5
+    _Cadence: 10
     _CadenceRandom: 0
-    _Duration: 100
+    _Duration: 50
     _DurationRandom: 0
     _Volume: 0.5
     _VolumeRandom: 0
@@ -3775,9 +3775,9 @@ MonoBehaviour:
       _FilterGain: 1
       _FilterQ: 1
       _DownsampleFactor: 0
-      _ChorusCentre: 0
-      _ChorusBW: 0
-      _ChorusRate: 0
+      _ChorusDelay: 0
+      _ChorusMod: 0.1
+      _ChorusFrequency: 0.1
       _ChorusFB: 0
     _FilterCoefficients:
       a0: 0
@@ -4689,7 +4689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1328537743
 Transform:
   m_ObjectHideFlags: 0
