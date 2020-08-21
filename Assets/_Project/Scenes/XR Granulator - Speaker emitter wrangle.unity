@@ -1390,7 +1390,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403250666}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 2}
+  m_LocalPosition: {x: 0, y: 1, z: -0.022}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1211885925}
@@ -1408,7 +1408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb6f375d26ad994eb0aab6077418701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Volume: {x: 6, y: 1, z: 0.1}
+  m_Volume: {x: 6, y: 1, z: 6}
   m_RotationRange: {x: 0, y: 0, z: 0}
   m_ScaleRange: {x: 0.1, y: 0.1}
   m_ObjectsToSpawn:
@@ -2520,7 +2520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &813938863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2606,7 +2606,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 2
+  _MaxGrainSpeakers: 8
   _LatencyInMS: 10
   _EmissionLatencyMS: 80
   _CurrentDSPSample: 0
@@ -3755,17 +3755,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TestType: 0
-  _EmitterCount: 6
+  _EmitterCount: 10
   _LatencyInMS: 50
   _EmissionProps:
     _ClipIndex: 0
     _PlayheadPos: 0.27
     _PositionRandom: 0
-    _Cadence: 20
+    _Cadence: 5
     _CadenceRandom: 0
-    _Duration: 200
+    _Duration: 100
     _DurationRandom: 0
-    _Volume: 1
+    _Volume: 0.5
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
@@ -4689,7 +4689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1328537743
 Transform:
   m_ObjectHideFlags: 0
