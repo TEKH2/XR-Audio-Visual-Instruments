@@ -33,7 +33,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     MeshRenderer _MeshRenderer;
 
-    GrainSynth _GranulatorDOTS;
+    GrainSynth _GrainSynth;
     public int _SpeakerIndex = 0;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
@@ -53,6 +53,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     float _TargetVolume = 0;
 
+
+    public bool _Registered = false;
+
     public bool _DebugLog = false;
     #endregion
 
@@ -60,6 +63,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _Entity = entity;
+        _GrainSynth = FindObjectOfType<GrainSynth>();
+        _GrainSynth.RegisterSpeaker(this);
 
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
@@ -69,7 +74,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Start()
     {
-        _GranulatorDOTS = GrainSynth.Instance;
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
@@ -100,7 +104,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         int samplesBetweenGrains = playbackData._DSPStartIndex - prevStartSample;
         float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
-        float DSPSampleDiff = playbackData._DSPStartIndex - _GranulatorDOTS._CurrentDSPSample;
+        float DSPSampleDiff = playbackData._DSPStartIndex - _GrainSynth._CurrentDSPSample;
         int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
 
         if (_DebugLog)
@@ -119,7 +123,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         prevStartSample = playbackData._DSPStartIndex;
 
-        //print("Grain added");
+        print("Grain added. Sample 1000: " + playbackData._GrainSamples[1000] + "  playbackData duration: " + playbackData._GrainSamples.Length);
     }
 
     public void Deactivate()
@@ -178,7 +182,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 if (grainData == null)
                     continue;
 
-                if (_GranulatorDOTS._CurrentDSPSample >= grainData._DSPStartIndex)
+                if (_GrainSynth._CurrentDSPSample >= grainData._DSPStartIndex)
                 {
                     if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
                     {
@@ -223,7 +227,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (_SpeakerComponenet._ConnectedToEmitter)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, _GranulatorDOTS._EmitterToSpeakerAttachRadius);
+            Gizmos.DrawWireSphere(transform.position, _GrainSynth._EmitterToSpeakerAttachRadius);
         }
     }
 }

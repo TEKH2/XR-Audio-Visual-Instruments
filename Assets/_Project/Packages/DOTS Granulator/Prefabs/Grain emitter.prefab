@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5547042272322170265}
   - component: {fileID: 3080604852309000471}
   m_Layer: 0
-  m_Name: Grain emitter DOTs
+  m_Name: Grain emitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,28 +97,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _EmissionProps:
     _ClipIndex: 0
-    _PlayheadPos: 0.47926575
+    _PlayheadPos: 0.27
     _PositionRandom: 0
-    _Cadence: 20
+    _Cadence: 10
     _CadenceRandom: 0
-    _Duration: 200
+    _Duration: 50
     _DurationRandom: 0
-    _Volume: 1
+    _Volume: 0.5
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
     _DSP_Properties:
-      Type: 0
-      _FilterCutoffNorm: 0.5
+      Type: 4
+      _FilterCutoffNorm: 1
       _FilterGain: 1
       _FilterQ: 1
-      _DownsampleFactor: 1
+      _DownsampleFactor: 0
+      _ChorusDelay: 0
+      _ChorusMod: 0.1
+      _ChorusFrequency: 0.1
+      _ChorusFB: 0
     _FilterCoefficients:
-      a0: 0.039030544
-      a1: 0.07806109
-      a2: 0.039030544
-      b1: -1.4936116
-      b2: 0.6497337
+      a0: 0
+      a1: 0
+      a2: 0
+      b1: 0
+      b2: 0
 --- !u!114 &3080604852309000471
 MonoBehaviour:
   m_ObjectHideFlags: 0

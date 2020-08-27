@@ -5,13 +5,6 @@ using UnityEngine;
 
 public class GrainSynthTester : MonoBehaviour
 {
-    public enum Test
-    {
-        DOTS,
-        Normal,
-    }
-
-    public Test _TestType = Test.DOTS;
     public int _EmitterCount = 1;
     public float _LatencyInMS = 20;
     public GrainEmissionProps _EmissionProps;
@@ -52,12 +45,9 @@ public class GrainSynthTester : MonoBehaviour
 
         _DOTSSystem._LatencyInMS = _LatencyInMS;
 
-        _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };
-        
+        _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };        
 
         _Spawner.m_NumberToPool = _EmitterCount;
-
-        _DOTSSystem.gameObject.SetActive(_TestType == Test.DOTS);
     }
 
     private void Update()
@@ -77,16 +67,16 @@ public class GrainSynthTester : MonoBehaviour
             _EmissionProps.Pitch = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
 
         _EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
+       
+       
 
-        if (_TestType == Test.DOTS)
+        if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)
+            _DOTSEmitters = FindObjectsOfType<GrainEmitterAuthoring>();
+
+        for (int i = 0; i < _DOTSEmitters.Length; i++)
         {
-            if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)
-                _DOTSEmitters = FindObjectsOfType<GrainEmitterAuthoring>();
-
-            for (int i = 0; i < _DOTSEmitters.Length; i++)
-            {
-                _DOTSEmitters[i]._EmissionProps = _EmissionProps;
-            }
-        }       
+            _DOTSEmitters[i]._EmissionProps = _EmissionProps;
+        }  
+         
     }
 }

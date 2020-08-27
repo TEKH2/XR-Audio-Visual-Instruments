@@ -138,12 +138,6 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-        if (!_GrainSpeakers[0].gameObject.activeSelf)
-        {
-            _GrainSpeakers[0].gameObject.SetActive(true);
-            _GrainSpeakers[0].transform.position = transform.position;
-        }
-
         // print("Processed grains: " + grainEntities.Length);
         for (int i = grainEntities.Length-1; i > 0; i--)
         {
@@ -192,8 +186,16 @@ public class GrainSynth :  MonoBehaviour
 
     public void CreateSpeaker(Vector3 pos)
     {
-        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);
+        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);       
+    }
+
+    public void RegisterSpeaker(GrainSpeakerAuthoring speaker)
+    {
+        if (_GrainSpeakers.Contains(speaker))
+            print("Speaker already regsitered.");
+
         speaker._SpeakerIndex = _GrainSpeakers.Count;
+        speaker._Registered = true;
         _GrainSpeakers.Add(speaker);
     }
 

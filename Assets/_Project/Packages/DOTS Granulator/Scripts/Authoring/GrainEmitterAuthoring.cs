@@ -194,7 +194,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             return;
 
         _Timer += Time.deltaTime;
-       
+
+        // TODO, only do when updated
+        _EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
