@@ -65,9 +65,7 @@ public class GrainSynthTester : MonoBehaviour
 
         if (_AutomatePitch)
             _EmissionProps.Pitch = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
-
-        _EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
-       
+               
        
 
         if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)

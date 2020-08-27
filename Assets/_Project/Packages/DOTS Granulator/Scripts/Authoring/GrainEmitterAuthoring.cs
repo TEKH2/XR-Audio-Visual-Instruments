@@ -114,9 +114,6 @@ public class GrainEmissionProps
         }
     }
 
-    public DSP_Properties _DSP_Properties;
-    public FilterCoefficients _FilterCoefficients;
-
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,
         float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
     {
@@ -150,18 +147,6 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EmitterEntity = entity;
 
-        // Add DSP components
-        dstManager.AddComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._DSP_Properties.DownsampleFactor });
-
-        dstManager.AddComponentData(_EmitterEntity, new DSP_Filter
-        {
-            a0 = _EmissionProps._FilterCoefficients.a0,
-            a1 = _EmissionProps._FilterCoefficients.a1,
-            a2 = _EmissionProps._FilterCoefficients.a2,
-            b1 = _EmissionProps._FilterCoefficients.b1,
-            b2 = _EmissionProps._FilterCoefficients.b2
-        });
-
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
@@ -175,9 +160,6 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _SpeakerIndex = 0,
             _PlayheadPosNormalized = _EmissionProps.Position,
-            // Use entity manager to get the bitcrush
-            _BitCrush = _EntityManager.GetComponentData<DSP_BitCrush>(_EmitterEntity),
-            _Filter = _EntityManager.GetComponentData<DSP_Filter>(_EmitterEntity)
         });
 
         _Initialized = true;
@@ -196,19 +178,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Timer += Time.deltaTime;
 
         // TODO, only do when updated
-        _EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
+        //_EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
-
-        _EntityManager.SetComponentData(_EmitterEntity, new DSP_BitCrush { downsampleFactor = _EmissionProps._DSP_Properties.DownsampleFactor});
-        _EntityManager.SetComponentData(_EmitterEntity, new DSP_Filter
-        {
-            a0 = _EmissionProps._FilterCoefficients.a0,
-            a1 = _EmissionProps._FilterCoefficients.a1,
-            a2 = _EmissionProps._FilterCoefficients.a2,
-            b1 = _EmissionProps._FilterCoefficients.b1,
-            b2 = _EmissionProps._FilterCoefficients.b2
-        });
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
@@ -222,9 +194,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
-            _PlayheadPosNormalized = _EmissionProps.Position,
-            _BitCrush = _EntityManager.GetComponentData<DSP_BitCrush>(_EmitterEntity),
-            _Filter = _EntityManager.GetComponentData<DSP_Filter>(_EmitterEntity)
+            _PlayheadPosNormalized = _EmissionProps.Position
         });
     }
 }

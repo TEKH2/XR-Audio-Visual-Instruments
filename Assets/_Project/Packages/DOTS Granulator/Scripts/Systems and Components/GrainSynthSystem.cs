@@ -162,21 +162,6 @@ public class GrainSynthSystem : SystemBase
 
                         // Add sample buffer
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
-
-                        // Add bitcrush from emitter
-                        entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_BitCrush
-                        {
-                            downsampleFactor = emitter._BitCrush.downsampleFactor
-                        });
-
-                        entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new DSP_Filter
-                        {
-                            a0 = emitter._Filter.a0,
-                            a1 = emitter._Filter.a1,
-                            a2 = emitter._Filter.a2,
-                            b1 = emitter._Filter.b1,
-                            b2 = emitter._Filter.b2
-                        });
                     }
                 }
             }

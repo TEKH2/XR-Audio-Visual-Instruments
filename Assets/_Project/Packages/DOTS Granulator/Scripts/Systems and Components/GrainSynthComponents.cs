@@ -73,9 +73,6 @@ public struct EmitterComponent : IComponentData
 
     public float _PlayheadPosNormalized;
 
-    public DSP_BitCrush _BitCrush;
-    public DSP_Filter _Filter;
-
     public int _DebugCount;
 }
 
