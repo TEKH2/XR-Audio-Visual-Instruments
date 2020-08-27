@@ -56,6 +56,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public bool _Registered = false;
 
+    [HideInInspector]
+    public bool _StaticallyPaired = false;
+
     public bool _DebugLog = false;
     #endregion
 
@@ -65,6 +68,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Entity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
         _GrainSynth.RegisterSpeaker(this);
+
+        name = "Speaker " + _SpeakerIndex;
 
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
@@ -91,11 +96,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
-        // Clear playback data if not connected too emitters
-        _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
-        _TargetVolume = _SpeakerComponenet._ConnectedToEmitter ? 1 : 0;
-        _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
-        _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;
+        if (!_StaticallyPaired)
+        {
+            // Clear playback data if not connected too emitters
+            _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
+            _TargetVolume = _SpeakerComponenet._ConnectedToEmitter ? 1 : 0;
+            _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
+            _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;
+        }
     }
 
     public void AddGrainPlaybackData(GrainPlaybackData playbackData)
@@ -123,7 +131,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         prevStartSample = playbackData._DSPStartIndex;
 
-        print("Grain added. Sample 1000: " + playbackData._GrainSamples[1000] + "  playbackData duration: " + playbackData._GrainSamples.Length);
+        //print("Grain added. Sample 1000: " + playbackData._GrainSamples[1000] + "  playbackData duration: " + playbackData._GrainSamples.Length);
     }
 
     public void Deactivate()

@@ -141,17 +141,29 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     bool _Initialized = false;
 
+    bool _StaticallyPaired = false;
+    GrainSpeakerAuthoring _PairedSpeaker;
+
     float _Timer = 0;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;
 
+        // If this emitter has a speaker componenet then it is statically paired        
+        if (gameObject.GetComponent<GrainSpeakerAuthoring>() != null)
+        {
+            _PairedSpeaker = gameObject.GetComponent<GrainSpeakerAuthoring>();
+            _PairedSpeaker._StaticallyPaired = true;
+            _StaticallyPaired = true;
+            dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
+        }
+
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
-            _AttachedToSpeaker = false,
-            _InRange = false,
+            _AttachedToSpeaker = _StaticallyPaired,
+            _InRange = _StaticallyPaired,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
@@ -180,21 +192,28 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // TODO, only do when updated
         //_EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
 
-        EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
+        int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
+            _SpeakerIndex = attachedSpeakerIndex,
             _AttachedToSpeaker = data._AttachedToSpeaker,
             _InRange = data._InRange,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-            _LastGrainEmissionDSPIndex = emitter._LastGrainEmissionDSPIndex,
-            _RandomOffsetInSamples = emitter._RandomOffsetInSamples,
+            _LastGrainEmissionDSPIndex = data._LastGrainEmissionDSPIndex,
+            _RandomOffsetInSamples = data._RandomOffsetInSamples,
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position
+        });
+
+        Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
+        _EntityManager.SetComponentData(_EmitterEntity, new Translation
+        {
+            Value = transform.position
         });
     }
 }

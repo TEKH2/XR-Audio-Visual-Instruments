@@ -23,6 +23,7 @@ public struct SpeakerManagerComponent : IComponentData
     public float _EmitterToSpeakerAttachRadius;
 }
 
+
 public struct GrainProcessor : IComponentData
 {
     public AudioClipDataComponent _AudioClipDataComponent;
@@ -47,6 +48,10 @@ public struct GrainSpeakerComponent : IComponentData
 }
 
 public struct IsActiveTag : IComponentData
+{
+}
+
+public struct StaticallyPairedTag : IComponentData
 {
 }
 

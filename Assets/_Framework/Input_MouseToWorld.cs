@@ -35,7 +35,10 @@ public class Input_MouseToWorld : MonoBehaviour
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * m_Smoothing);
+            if (m_Smoothing != 0)
+                transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * m_Smoothing);
+            else
+                transform.position = newPos;
         }
     }
 }

@@ -11,8 +11,8 @@ public class SpeakerEmitterPairingSystem : ComponentSystem
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
 
-        // ------------------------------------------------------------------------------------- CHECK SPEAKERS IN RANGE
-        Entities.ForEach((ref GrainSpeakerComponent speaker, ref Translation emitterTrans) =>
+        // ------------------------------------------------------------------------------------- CHECK SPEAKERS IN RANGE OF LISTENER
+        Entities.WithNone<StaticallyPairedTag>().ForEach((ref GrainSpeakerComponent speaker, ref Translation emitterTrans) =>
         {
             bool prevInRange = speaker._InRange;
 
@@ -29,7 +29,7 @@ public class SpeakerEmitterPairingSystem : ComponentSystem
         });
 
         // ------------------------------------------------------------------------------------- CHECK EMITTERS IN RANGE AND ATTACH TO SPEAKERS
-        Entities.ForEach((ref EmitterComponent emitter, ref Translation emitterTrans) =>
+        Entities.WithNone<StaticallyPairedTag>().ForEach((ref EmitterComponent emitter, ref Translation emitterTrans) =>
         {
             bool prevInRange = emitter._InRange;
 
@@ -53,7 +53,7 @@ public class SpeakerEmitterPairingSystem : ComponentSystem
                 Entity foundSpeakerEntity;
 
                 // Search all currently connected speakers
-                Entities.ForEach((Entity speakerEntity, ref GrainSpeakerComponent speaker, ref Translation speakerTrans) =>
+                Entities.WithNone<StaticallyPairedTag>().ForEach((Entity speakerEntity, ref GrainSpeakerComponent speaker, ref Translation speakerTrans) =>
                 {
                     if (speaker._InRange && speaker._ConnectedToEmitter)
                     {
