@@ -17,12 +17,20 @@ namespace EXP
         public bool _FollowPosition = false;
         public bool _FollowRotation = false;
 
+        Rigidbody _RB;
+        public float _Force = 1;
         #endregion
-        
+
         #region UNITY METHODS
 
         protected virtual void Start()
         {
+            if (GetComponent<Rigidbody>() != null)
+            {
+                _RB = GetComponent<Rigidbody>();
+                _RB.isKinematic = false;
+            }
+
             if (_ParentAtStart)
             {
                 Debug.LogWarning(name + " PARENTING TOO: " + _TransformToFollow.name);
@@ -37,10 +45,19 @@ namespace EXP
         {
             if (_FollowPosition)
             {
-                if (_FollowSmoothing > 0)
-                    transform.position = Vector3.Lerp(transform.position, _TransformToFollow.position, Time.deltaTime * _FollowSmoothing);
+                Vector3 vectorTo = _TransformToFollow.position - transform.position;
+
+                if (_RB)
+                {
+                    _RB.AddForce(vectorTo * _Force);
+                }
                 else
-                    transform.position = _TransformToFollow.position;
+                {
+                    if (_FollowSmoothing > 0)
+                        transform.position = Vector3.Lerp(transform.position, _TransformToFollow.position, Time.deltaTime * _FollowSmoothing);
+                    else
+                        transform.position = _TransformToFollow.position;
+                }
             }
 
             if(_FollowRotation)

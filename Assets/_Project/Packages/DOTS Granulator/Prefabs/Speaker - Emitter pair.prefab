@@ -109,7 +109,6 @@ GameObject:
   - component: {fileID: 5528598471599412522}
   - component: {fileID: 5528598471599412523}
   - component: {fileID: 7948844444687561264}
-  - component: {fileID: 7948844444687561295}
   m_Layer: 0
   m_Name: Speaker - Emitter pair
   m_TagString: Untagged
@@ -338,20 +337,3 @@ MonoBehaviour:
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
---- !u!114 &7948844444687561295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5528598471599412524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c184062ad262b64b8e7d46c5eab7590, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _TransformToFollow: {fileID: 0}
-  _FollowSmoothing: 0
-  _ParentAtStart: 0
-  _FollowPosition: 1
-  _FollowRotation: 0
