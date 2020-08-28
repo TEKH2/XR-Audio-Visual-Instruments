@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6265534318032636271}
   - component: {fileID: 8944971330612368948}
   - component: {fileID: 1930228841805102672}
-  - component: {fileID: 5106961459794950154}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -82,19 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &5106961459794950154
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 566881036350847417}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5528598471599412524
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,11 +90,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5527569295418995652}
+  - component: {fileID: 7948844444687561264}
+  - component: {fileID: 5528598471599412522}
   - component: {fileID: 5844714684452509595}
   - component: {fileID: 866662605309907886}
-  - component: {fileID: 5528598471599412522}
   - component: {fileID: 5528598471599412523}
-  - component: {fileID: 7948844444687561264}
   m_Layer: 0
   m_Name: Speaker - Emitter pair
   m_TagString: Untagged
@@ -131,6 +117,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7948844444687561264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5528598471599412524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _EmissionProps:
+    _ClipIndex: 0
+    _PlayheadPos: 0.27
+    _PositionRandom: 0
+    _Cadence: 10
+    _CadenceRandom: 0
+    _Duration: 50
+    _DurationRandom: 0
+    _Volume: 2
+    _VolumeRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
+  test: 0
+--- !u!114 &5528598471599412522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5528598471599412524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SpeakerIndex: 0
+  _Registered: 0
+  _StaticallyPaired: 0
+  _DebugLog: 0
 --- !u!82 &5844714684452509595
 AudioSource:
   m_ObjectHideFlags: 0
@@ -284,22 +311,6 @@ MonoBehaviour:
   volumetricRadius: 0
   reverbSend: 0
   enableRfl: 0
---- !u!114 &5528598471599412522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5528598471599412524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _SpeakerIndex: 0
-  _Registered: 0
-  _StaticallyPaired: 0
-  _DebugLog: 0
 --- !u!114 &5528598471599412523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,27 +324,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 1
---- !u!114 &7948844444687561264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5528598471599412524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _EmissionProps:
-    _ClipIndex: 0
-    _PlayheadPos: 0.27
-    _PositionRandom: 0
-    _Cadence: 10
-    _CadenceRandom: 0
-    _Duration: 50
-    _DurationRandom: 0
-    _Volume: 2
-    _VolumeRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0

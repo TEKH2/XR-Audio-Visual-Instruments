@@ -61,6 +61,29 @@ public static class FloatExtensions
         return Mathf.Clamp(scaledVal, toMin, toMax);    // Clamp value to toRange
     }
 
+    public static float Scale(this float val, Vector2 fromRangeVals, Vector2 toRangeVals)
+    {
+        float norm = Mathf.InverseLerp(fromRangeVals.x, fromRangeVals.y, val);
+        return Mathf.Lerp(toRangeVals.x, toRangeVals.y, norm);
+
+        //float fromRange = fromRangeVals.y - fromRangeVals.x;
+        //float toRange = toRangeVals.y - toRangeVals.x;
+
+        //if (fromRange == 0)
+        //    return 0;
+
+        //float fromNormalizedValue = Mathf.Clamp01((val - fromRangeVals.x) / fromRange);
+
+        //float scaledVal;
+
+        //if (toRangeVals.y < toRangeVals.x)
+        //    scaledVal = toRangeVals.y + ((toRange) * (1 - fromNormalizedValue));
+        //else
+        //    scaledVal = toRangeVals.x + ((toRange) * fromNormalizedValue);
+
+        //return Mathf.Clamp(scaledVal, toRangeVals.x, toRangeVals.y);    // Clamp value to toRange
+    }
+
     public static float ScaleTo01(this float val, float min, float max)
     {
         float range = max - min;
