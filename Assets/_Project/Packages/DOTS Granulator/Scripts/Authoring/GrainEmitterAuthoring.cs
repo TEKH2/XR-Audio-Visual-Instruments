@@ -146,8 +146,6 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     float _Timer = 0;
 
-    public float test;
-
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;
