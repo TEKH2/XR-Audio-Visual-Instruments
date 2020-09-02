@@ -1,4 +1,4 @@
-# Ethnotekhv2_baseproject
+# XR-Audio-Visual-Instruments
 
 <img src="http://www.ethnotekh.com/wp-content/uploads/2014/09/ET-No-Eveil2.jpg">
 
