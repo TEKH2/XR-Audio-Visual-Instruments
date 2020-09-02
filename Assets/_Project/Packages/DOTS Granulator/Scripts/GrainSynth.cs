@@ -62,7 +62,7 @@ public class GrainSynth :  MonoBehaviour
         
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
-        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionLatencyInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
+        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionDurationInSamples = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
 
@@ -124,7 +124,7 @@ public class GrainSynth :  MonoBehaviour
     {
         // Update DSP sample
         DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
-        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionLatencyInSamples = EmissionLatencyInSamples });
+        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _EmissionDurationInSamples = EmissionLatencyInSamples });
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 

@@ -133,7 +133,7 @@ public class GrainSynthSystem : SystemBase
                     int grainCount = 0;
 
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
-                    while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._EmissionLatencyInSamples && grainCount < maxGrains)
+                    while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._EmissionDurationInSamples && grainCount < maxGrains)
                     {
                         // Create a new grain processor entity
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);

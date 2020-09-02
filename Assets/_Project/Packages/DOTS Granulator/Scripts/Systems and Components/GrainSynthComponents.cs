@@ -58,7 +58,7 @@ public struct StaticallyPairedTag : IComponentData
 public struct DSPTimerComponent : IComponentData
 {
     public int _CurrentDSPSample;
-    public int _EmissionLatencyInSamples;
+    public int _EmissionDurationInSamples;
 }
 
 
