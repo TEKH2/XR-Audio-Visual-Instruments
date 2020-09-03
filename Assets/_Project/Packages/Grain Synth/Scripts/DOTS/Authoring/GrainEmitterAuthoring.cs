@@ -108,10 +108,6 @@ public class GrainEmissionProps
             _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -4f, 4f));
             return Mathf.Clamp(_Pitch, 0.06f, 16f);
         }
-        set
-        {
-            _Transpose = Mathf.Clamp(value, -3, 3f);
-        }
     }
 
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,
@@ -133,7 +129,7 @@ public class GrainEmissionProps
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
-{
+{  
     public GrainEmissionProps _EmissionProps;
 
     Entity _EmitterEntity;

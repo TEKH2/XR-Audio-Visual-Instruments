@@ -64,7 +64,7 @@ public class GrainSynthTester : MonoBehaviour
             _EmissionProps.Duration = Mathf.Lerp(_AutomateDurationRange.x, _AutomateDurationRange.y, automation);
 
         if (_AutomatePitch)
-            _EmissionProps.Pitch = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
+            _EmissionProps._Transpose = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
                
        
 

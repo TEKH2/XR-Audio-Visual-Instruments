@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class EmissionPropertiesUI : MonoBehaviour
 {
+    public GrainEmitterAuthoring _GrainEmitterAuthoring;
     GrainEmissionProps _EmissionProps;
 
     public Slider _Playhead;
@@ -48,8 +49,8 @@ public class EmissionPropertiesUI : MonoBehaviour
         _VolumeRand.minValue = 0f;
         _VolumeRand.maxValue = 1f;
 
-        _Transpose.minValue = -3f;
-        _Transpose.maxValue = 3f;
+        _Transpose.minValue = -2f;
+        _Transpose.maxValue = 2f;
         _TransposeRand.minValue = 0f;
         _TransposeRand.maxValue = 1f;
 
@@ -69,6 +70,10 @@ public class EmissionPropertiesUI : MonoBehaviour
 
         _Transpose.onValueChanged.AddListener((float f) => _EmissionProps._Transpose = f);
         _TransposeRand.onValueChanged.AddListener((float f) => _EmissionProps._TransposeRandom = f);
+
+        // Set emission props
+        if (_GrainEmitterAuthoring)
+            AssignEmitterProps(_GrainEmitterAuthoring._EmissionProps);
     }
 
     void Update()
