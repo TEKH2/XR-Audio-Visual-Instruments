@@ -16,7 +16,7 @@ by TEKH:2
 
 ## Links
 <ul>
-  <li> [Discord](https://discord.com/invite/J4UDwHR) </li>
+  <li>[Discord][1]</li>
   <li>Twitter: [TEKH:2](https://twitter.com/2_tekh)| [Chris](https://twitter.com/MaxVram)| [Brad](https://twitter.com/xy01)
 </ul>
 
@@ -39,3 +39,6 @@ by TEKH:2
   <li>[Keijiro Takahashi](https://github.com/keijiro)</li>
   <li>[Axel Mulder's](https://scholar.google.com/citations?user=h4LiTPsAAAAJ&hl=en&oi=ao) work on virtual 3D instruments</li>
 </ul>
+
+
+[1]: https://discord.com/invite/J4UDwHR
