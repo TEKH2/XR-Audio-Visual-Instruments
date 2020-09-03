@@ -16,7 +16,7 @@ by TEKH:2
 ## Links
 
 - [Discord](https://discord.com/invite/J4UDwHR)
-- Twitter: [TEKH:2](https://twitter.com/2_tekh)| [Chris](https://twitter.com/MaxVram)| [Brad](https://twitter.com/xy01)
+- Twitter: [TEKH:2](https://twitter.com/2_tekh) | [Chris](https://twitter.com/MaxVram) | [Brad](https://twitter.com/xy01)
 
 ## Current Dependencies
 
