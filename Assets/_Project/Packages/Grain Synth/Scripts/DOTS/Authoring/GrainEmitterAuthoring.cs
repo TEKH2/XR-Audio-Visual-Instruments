@@ -14,19 +14,19 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(0.0f, 1.0f)]
     [SerializeField]
-    float _PlayheadPos = 0;
-    [Range(0.0f, .1f)]
+    public float _Playhead = 0;
+    [Range(0.0f, 1f)]
     [SerializeField]
-    public float _PositionRandom = 0;
+    public float _PlayheadRand = 0;
     public float Position
     {
         get
         {
-            return Mathf.Clamp(_PlayheadPos + Random.Range(0, _PositionRandom), 0f, 1f);
+            return Mathf.Clamp(_Playhead + Random.Range(0, _PlayheadRand), 0f, 1f);
         }
         set
         {
-            _PlayheadPos = Mathf.Clamp(value, 0f, 1f);
+            _Playhead = Mathf.Clamp(value, 0f, 1f);
         }
     }
 
@@ -53,10 +53,10 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(2.0f, 1000f)]
     [SerializeField]
-    int _Duration = 100;
+    public int _Duration = 100;
     [Range(0.0f, 500f)]
     [SerializeField]
-    int _DurationRandom = 0;
+    public int _DurationRandom = 0;
     public float Duration
     {
         get
@@ -74,10 +74,10 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(0.0f, 2.0f)]
     [SerializeField]
-    float _Volume = 1;          // from 0 > 1
+    public float _Volume = 1;          // from 0 > 1
     [Range(0.0f, 1.0f)]
     [SerializeField]
-    float _VolumeRandom = 0;      // from 0 > 1
+    public float _VolumeRandom = 0;      // from 0 > 1
     public float Volume
     {
         get
@@ -95,10 +95,10 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(-3f, 3f)]
     [SerializeField]
-    float _Transpose = 0;
+    public float _Transpose = 0;
     [Range(0f, 1f)]
     [SerializeField]
-    float _TransposeRandom = 0;
+    public float _TransposeRandom = 0;
 
     float _Pitch = 1;
     public float Pitch
@@ -117,12 +117,12 @@ public class GrainEmissionProps
     public GrainEmissionProps(float pos, int duration, float pitch, float volume,
         float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
     {
-        _PlayheadPos = pos;
+        _Playhead = pos;
         _Duration = duration;
         _Pitch = pitch;
         _Volume = volume;
 
-        _PositionRandom = posRand;
+        _PlayheadRand = posRand;
         _DurationRandom = durationRand;
         //_PitchRandom = pitchRand;
         _VolumeRandom = volumeRand;
