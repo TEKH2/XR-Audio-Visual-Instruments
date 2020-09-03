@@ -9,8 +9,7 @@ public class Input_MouseToWorld : MonoBehaviour
 
     Rigidbody m_RB;
 
-    public bool _MouseLeft = false;
-    public bool _MouseRight = false;
+    public int _MouseButton = 0;
 
     void Start()
     {
@@ -20,10 +19,7 @@ public class Input_MouseToWorld : MonoBehaviour
 
     void Update()
     {
-        if (_MouseLeft && !Input.GetMouseButton(0))
-            return;
-
-        if (_MouseRight && !Input.GetMouseButton(1))
+        if (!Input.GetMouseButton(_MouseButton))
             return;
 
         Vector3 newPos = m_Camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_DistanceFromCamera));
