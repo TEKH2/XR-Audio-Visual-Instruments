@@ -66,15 +66,12 @@ public class GrainSynthTester : MonoBehaviour
         if (_AutomatePitch)
             _EmissionProps._Transpose = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
                
-       
-
         if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)
             _DOTSEmitters = FindObjectsOfType<GrainEmitterAuthoring>();
 
         for (int i = 0; i < _DOTSEmitters.Length; i++)
         {
             _DOTSEmitters[i]._EmissionProps = _EmissionProps;
-        }  
-         
+        }    
     }
 }
