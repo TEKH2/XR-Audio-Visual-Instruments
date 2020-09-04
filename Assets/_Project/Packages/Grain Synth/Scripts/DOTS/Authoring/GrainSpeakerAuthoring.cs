@@ -26,6 +26,9 @@ public class GrainPlaybackData
 
 public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
+    public delegate void GrainEmitted(GrainPlaybackData data, int currentDSPSample);
+    public event GrainEmitted OnGrainEmitted;
+
     #region -------------------------- VARIABLES
     EntityManager _EntityManager;
     Entity _Entity;
@@ -114,6 +117,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
         float DSPSampleDiff = playbackData._DSPStartIndex - _GrainSynth._CurrentDSPSample;
         int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
+
+        // Fire event if hooked up
+        OnGrainEmitted?.Invoke(playbackData, _GrainSynth._CurrentDSPSample);
 
         if (_DebugLog)
         {
