@@ -482,7 +482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &497121603
 Transform:
   m_ObjectHideFlags: 0
@@ -745,6 +745,8 @@ MonoBehaviour:
   _XAxisPivot_Frametime: {fileID: 497121603}
   _YAxisPivot: {fileID: 1181866220}
   _GrainSpeaker: {fileID: 6280660555622072609}
+  _BlockPrefab: {fileID: 5522368454783977950, guid: f213f51cbd5753844899af50fdc54793,
+    type: 3}
 --- !u!199 &608940425
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -12719,6 +12721,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 228971635}
     m_Modifications:
+    - target: {fileID: 6280660555291504029, guid: 8408191c1bcbfa340b0f13e414291219,
+        type: 3}
+      propertyPath: _EmissionProps._Cadence
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280660555291504029, guid: 8408191c1bcbfa340b0f13e414291219,
+        type: 3}
+      propertyPath: _EmissionProps._Duration
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6280660555642658240, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12774,6 +12786,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6280660555642658241, guid: 8408191c1bcbfa340b0f13e414291219,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6280660555642658243, guid: 8408191c1bcbfa340b0f13e414291219,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6280660555642658244, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}
       propertyPath: _data._objectReferences.Array.data[1]
@@ -12805,6 +12827,11 @@ PrefabInstance:
       propertyPath: _TransformToFollow
       value: 
       objectReference: {fileID: 1153047060}
+    - target: {fileID: 6280660555642658303, guid: 8408191c1bcbfa340b0f13e414291219,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6280660556090871992, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}
       propertyPath: m_LocalScale.x
