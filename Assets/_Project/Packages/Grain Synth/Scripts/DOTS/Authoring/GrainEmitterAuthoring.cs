@@ -33,7 +33,7 @@ public class GrainEmissionProps
     [Header("Timing")]
     [Range(2.0f, 1000f)]
     public int _Cadence = 20;             // ms
-    [Range(0.002f, 1000f)]
+    [Range(0f, 1000f)]
     public int _CadenceRandom = 0;        // ms
     public float Cadence
     {

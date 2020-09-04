@@ -138,11 +138,14 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-      
+
 
         // print("Processed grains: " + grainEntities.Length);
-        for (int i = grainEntities.Length-1; i > 0; i--)
+        for (int i = 0; i < grainEntities.Length; i++)
         {
+        //}
+        //for (int i = grainEntities.Length-1; i > 0; i--)
+        //{
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
 
             if(grainProcessor._SamplePopulated)

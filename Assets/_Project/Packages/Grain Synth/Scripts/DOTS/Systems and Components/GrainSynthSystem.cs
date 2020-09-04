@@ -30,92 +30,6 @@ public class GrainSynthSystem : SystemBase
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-
-        //// ----------------------------------- CHECK IF LISTENER IS IN RANGE OF INACTIVE EMITTERS
-        //SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
-        //EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation));
-        //NativeArray<Entity> speakerEntities = speakerQuery.ToEntityArray(Allocator.TempJob);
-        //NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-        //NativeArray<GrainSpeakerComponent> speakers = speakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
-
-        //Entities.ForEach
-        //(
-        //   (int entityInQueryIndex, ref EmitterComponent emitter, in Translation emitterTrans) =>
-        //   {
-        //       if (!emitter._Active)
-        //       {
-        //           bool inactiveSpeakerFound = false;
-
-        //           // find distance to the listener
-        //           float emitterToListenerDist = math.distance(emitterTrans.Value, speakerManager._ListenerPos);
-
-        //           if (emitterToListenerDist < speakerManager._EmitterActivationDist)
-        //           {
-        //               // Set In range flag
-        //               emitter._InRange = true;
-
-        //               float closestDist = speakerManager._SpeakerEmitterAttachDist;
-        //               int foundSpeakerIndex = 0;
-        //               bool activeSpeakerFound = false;
-
-        //               // ------------------------------  TRY FIND CLOSE ACTIVE SPEAKER
-        //               for (int i = 0; i < speakers.Length; i++)
-        //               {
-        //                   if (speakers[i]._Active)
-        //                   {
-        //                       float dist = math.distance(emitterTrans.Value, speakerTranslations[i].Value);
-
-        //                       if (dist < closestDist)
-        //                       {
-        //                           Debug.Log("Found active speaker index / dist " + speakers[i]._Index + "   " + dist);
-        //                           closestDist = dist;
-        //                           foundSpeakerIndex = speakers[i]._Index;
-        //                           activeSpeakerFound = true;
-        //                       }
-        //                   }
-        //               }
-
-        //               // Only find one inactive spaeker per update to stop parallell conflicts
-        //               if (!activeSpeakerFound && !inactiveSpeakerFound)
-        //               {
-        //                   //------------------------------FIND INACTIVE SPEAKER
-        //                   for (int i = 0; i < speakers.Length; i++)
-        //                   {
-        //                       if (!speakers[i]._Active)
-        //                       {
-        //                           foundSpeakerIndex = speakers[i]._Index;
-        //                           activeSpeakerFound = true;
-
-        //                           Debug.Log("Found inactive speaker: " + foundSpeakerIndex);
-
-        //                           entityCommandBuffer.SetComponent(entityInQueryIndex, speakerEntities[i], new GrainSpeakerComponent
-        //                           {
-        //                               _Active = true,
-        //                               _Index = speakers[i]._Index
-        //                           });
-
-        //                           entityCommandBuffer.SetComponent(entityInQueryIndex, speakerEntities[i], new Translation
-        //                           {
-        //                               Value = emitterTrans.Value
-        //                           });
-
-        //                           inactiveSpeakerFound = true;
-        //                       }
-        //                   }
-        //               }
-
-        //               if (activeSpeakerFound)
-        //               {
-        //                   Debug.Log(entityInQueryIndex + "  speaker found: " + foundSpeakerIndex);
-        //                   emitter._Active = true;
-        //                   emitter._SpeakerIndex = foundSpeakerIndex;
-        //               }
-        //           }
-        //       }
-        //   }
-        //).WithDisposeOnCompletion(speakerTranslations).WithDisposeOnCompletion(speakers).ScheduleParallel();
-
-
         // ----------------------------------- EMITTER UPDATE
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
@@ -129,7 +43,7 @@ public class GrainSynthSystem : SystemBase
                 if (emitter._AttachedToSpeaker)
                 {
                     // Max grains to stop it getting stuck in a while loop
-                    int maxGrains = 20;
+                    int maxGrains = 30;
                     int grainCount = 0;
 
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Ludiq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,8 +53,18 @@ public class GrainSynthVisualizer : MonoBehaviour
             _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._EmissionLatencyMS * .001f * (_Distance / _Lifetime));
     }
 
+    int prevEmitSample;
+    int sampleGap;
     public void EmitGrain(GrainPlaybackData grainData, int currentDSPSample)
-    {        
+    {
+        // DEBUG
+        sampleGap = (int)(_SampleRate * .001f * 20);
+        int sampleTIming = grainData._DSPStartIndex - prevEmitSample;
+        if (sampleTIming != sampleGap)
+            print(sampleTIming + "   " + sampleGap);
+
+        prevEmitSample = grainData._DSPStartIndex;
+
         ParticleSystem.EmitParams emit = new ParticleSystem.EmitParams();
 
         // Position based on start index
@@ -68,6 +79,11 @@ public class GrainSynthVisualizer : MonoBehaviour
         durationInSeconds *= _Distance / _Lifetime;
         Vector3 size = new Vector3(durationInSeconds, _Scale, .001f);
         emit.startSize3D = size;
+
+        emit.startColor = Color.white;
+
+        if (grainData._DSPStartIndex <= currentDSPSample)
+            emit.startColor = Color.yellow;
 
         // Velocity based on lifetime/dist
         emit.velocity = -transform.right * (_Distance/_Lifetime);
