@@ -141,10 +141,17 @@ public static class VectorExtensions
     }
 
 
-    public static float SignedAngleBetweenVectors(this Vector3 A, Vector3 B)
+    public static float SignedAngleBetweenVectorsXY(this Vector3 A, Vector3 B)
     {
         float angle = 0;
         angle = Mathf.Atan2(A.x * B.y - A.y * B.x, A.x * B.x + A.y * B.y);
+        return angle * Mathf.Rad2Deg;
+    }
+
+    public static float SignedAngleBetweenVectorsXZ(this Vector3 A, Vector3 B)
+    {
+        float angle = 0;
+        angle = Mathf.Atan2(A.x * B.z - A.z * B.x, A.x * B.x + A.z * B.z);
         return angle * Mathf.Rad2Deg;
     }
 
