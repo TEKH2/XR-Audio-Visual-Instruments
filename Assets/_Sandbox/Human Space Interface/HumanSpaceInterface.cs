@@ -41,6 +41,7 @@ public class HumanSpaceInterface : MonoBehaviour
     public Transform _LeftHand;
     public Transform _RightHand;
     public Transform _CenterTransform;
+    public Transform _HeadTransform;
 
 
     // Seperation between hand positions
@@ -55,6 +56,7 @@ public class HumanSpaceInterface : MonoBehaviour
     public Vector3 _RotOffset;
 
     Vector3 _HandToHandVector;
+    Vector3 _HeadOnGround;
 
     Vector3 _CenterFlatX;
 
@@ -99,36 +101,32 @@ public class HumanSpaceInterface : MonoBehaviour
         leftForwardOnPlane.x = 0;
         rightForwardOnPlane = _CenterTransform.InverseTransformPoint(_RightHand.position + _RightHand.forward);
         rightForwardOnPlane.x = 0;
-        _Twist.Value = Vector3.Dot(leftForwardOnPlane, rightForwardOnPlane);
-        //print(Vector3.Dot(leftForwardOnPlane, rightForwardOnPlane));
+        float dot = Vector3.Dot(leftForwardOnPlane.normalized, rightForwardOnPlane.normalized); 
+        _Twist.Value = dot;
+        
 
         // -----------------  ROLL - Dot between centreal transform right vector and vector between hands
 
         if(_CenterTransform.position.z < 0)
         {
-
+            _CenterFlatX = Vector3.Cross((_CenterTransform.position - transform.position).normalized, Vector3.up);
+            float signedAngleRoll = VectorExtensions.SignedAngleBetweenVectorsXY(_HandToHandVector.normalized, _CenterFlatX);
+            signedAngleRoll = Mathf.Clamp(signedAngleRoll, -90, 90);
+            _Roll.Value = signedAngleRoll;
         }
         else
         {
-
+            _CenterFlatX = Vector3.Cross((transform.position - _CenterTransform.position).normalized, Vector3.up);
+            float signedAngleRoll = VectorExtensions.SignedAngleBetweenVectorsXY(_HandToHandVector.normalized, _CenterFlatX);
+            signedAngleRoll = Mathf.Clamp(signedAngleRoll, -90, 90);
+            _Roll.Value = signedAngleRoll;
         }
 
-        _CenterFlatX = Vector3.Cross((transform.position - _CenterTransform.position).normalized, Vector3.up);
-        float signedAngleRoll = VectorExtensions.SignedAngleBetweenVectorsXY(_HandToHandVector.normalized, _CenterFlatX);
-        signedAngleRoll = Mathf.Clamp(signedAngleRoll ,- 90,90);
-        _Roll.Value = signedAngleRoll;
-
-
-        //if(signedAngleRoll < -90 || signedAngleRoll > 90)
-        //{
-        //    _CenterFlatX = Vector3.Cross((_CenterTransform.position - transform.position).normalized, Vector3.up);
-        //    signedAngleRoll = VectorExtensions.SignedAngleBetweenVectorsXY(_HandToHandVector.normalized, _CenterFlatX);
-        //    _Roll.Value = signedAngleRoll;
-        //}
 
         // -----------------  PAN
         _CenterOnGround = new Vector3(_CenterTransform.position.x, 0, _CenterTransform.position.z);
-        float signedAnglePan = VectorExtensions.SignedAngleBetweenVectorsXZ(transform.forward, (_CenterOnGround - transform.position).normalized);
+        _HeadOnGround = new Vector3(_HeadTransform.position.x, 0, _HeadTransform.position.z);
+        float signedAnglePan = VectorExtensions.SignedAngleBetweenVectorsXZ(transform.forward, (_CenterOnGround - _HeadOnGround).normalized);
         _Pan.Value = signedAnglePan;
 
 
@@ -166,8 +164,8 @@ public class HumanSpaceInterface : MonoBehaviour
         Gizmos.DrawLine(offsetCenter, offsetCenter + _HandToHandVector.normalized);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + _CenterOnGround.normalized);
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+        Gizmos.DrawLine(transform.position, _HeadOnGround + _CenterOnGround.normalized);
+        Gizmos.DrawLine(transform.position, _HeadOnGround + transform.forward);
 
         //Gizmos.DrawLine(_LeftHand.position, _LeftHand.position + leftForwardOnPlane);
         //Gizmos.DrawLine(_RightHand.position, _RightHand.position + rightForwardOnPlane);
