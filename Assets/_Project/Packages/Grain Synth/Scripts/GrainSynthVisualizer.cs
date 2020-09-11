@@ -65,7 +65,7 @@ public class GrainSynthVisualizer : MonoBehaviour
             _XAxisPivot.SetScaleX(_Distance);
 
         if (Application.isPlaying && _XAxisPivot_Frametime != null)
-            _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._EmissionLatencyMS * .001f * (_Distance / _Lifetime));
+            _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._LatencyInMS * .001f * (_Distance / _Lifetime));
 
         for (int i = 0; i < _Blocks.Length; i++)
         {

@@ -33,11 +33,10 @@ public class GrainSynth :  MonoBehaviour
     public List<GrainSpeakerAuthoring> _GrainSpeakers = new List<GrainSpeakerAuthoring>();
     public int _MaxGrainSpeakers = 5;
 
-    public float _LatencyInMS = 50;
     [Range(0, 100)]
-    public float _EmissionLatencyMS = 80;
+    public float _LatencyInMS = 50;
     int _SampleRate;
-    public int _EmissionDurationInSamples { get { return (int)(_EmissionLatencyMS * _SampleRate * .001f); } }
+    public int _EmissionDurationInSamples { get { return (int)(_LatencyInMS * _SampleRate * .001f); } }
 
     public int _CurrentDSPSample;
 
