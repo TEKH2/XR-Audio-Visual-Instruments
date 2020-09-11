@@ -16,11 +16,11 @@ public class GrainPlaybackData
     // The DSP sample that the grain starts at
     public int _DSPStartIndex;
 
-    public GrainPlaybackData()
+    public GrainPlaybackData(int sampleRate)
     {
         // instantiate the grain samples at the max length of a grain of 1 second worth of samples
-        _GrainSamples = new float[44 * 1000];
-        _TempSampleBuffer = new float[44 * 1000];
+        _GrainSamples = new float[sampleRate];
+        _TempSampleBuffer = new float[sampleRate];
     }
 }
 
@@ -38,6 +38,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     GrainSynth _GrainSynth;
     public int _SpeakerIndex = 0;
+
+    private int _SampleRate;
 
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
@@ -87,9 +89,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
         _AudioSource = gameObject.GetComponent<AudioSource>();
 
+        _SampleRate = AudioSettings.outputSampleRate;
+
         // Pool grain playback data
         for (int i = 0; i < _GrainPlaybackDataToPool; i++)        
-            _PooledGrainPlaybackData.Add(new GrainPlaybackData());        
+            _PooledGrainPlaybackData.Add(new GrainPlaybackData(_SampleRate));        
     }
 
     public void Update()
@@ -163,7 +167,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
         else if (GrainDataCount < _MaxGrainPlaybackDataCout)
         {
-            GrainPlaybackData grainPlaybackData = new GrainPlaybackData();
+            GrainPlaybackData grainPlaybackData = new GrainPlaybackData(_SampleRate);
             return grainPlaybackData;
         }
         else
@@ -232,7 +236,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         float dt = (float)AudioSettings.dspTime - prevTime;
         prevTime = (float)AudioSettings.dspTime;
         float newSamplesPerSecond = _SamplesPerRead * (1f / dt);
-        float concurrentSamples = newSamplesPerSecond / 44100;
+        float concurrentSamples = newSamplesPerSecond / _SampleRate;
         _SamplesPerSecond = newSamplesPerSecond;
     }
 
