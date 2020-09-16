@@ -34,9 +34,9 @@ public class GrainSynth :  MonoBehaviour
     public int _MaxGrainSpeakers = 5;
 
     [Range(0, 100)]
-    public float _LatencyInMS = 50;
+    public float _GrainQueueInMS = 50;
     int _SampleRate;
-    public int _EmissionDurationInSamples { get { return (int)(_LatencyInMS * _SampleRate * .001f); } }
+    public int _GrainQueueDurationInSamples { get { return (int)(_GrainQueueInMS * _SampleRate * .001f); } }
 
     public int _CurrentDSPSample;
 
@@ -61,7 +61,7 @@ public class GrainSynth :  MonoBehaviour
         
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
-        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _GrainQueueDuration = (int)(AudioSettings.outputSampleRate * _LatencyInMS) });
+        _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _GrainQueueDuration = (int)(AudioSettings.outputSampleRate * _GrainQueueInMS) });
 
         _GrainQuery = _EntityManager.CreateEntityQuery(typeof(GrainProcessor));
 
@@ -123,7 +123,7 @@ public class GrainSynth :  MonoBehaviour
     {
         // Update DSP sample
         DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
-        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample + (int)(Time.deltaTime * AudioSettings.outputSampleRate), _GrainQueueDuration = _EmissionDurationInSamples });
+        _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample + (int)(Time.deltaTime * AudioSettings.outputSampleRate), _GrainQueueDuration = _GrainQueueDurationInSamples });
 
         NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
@@ -157,9 +157,9 @@ public class GrainSynth :  MonoBehaviour
                 NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
                 playbackData._IsPlaying = true;
-                playbackData._PlaybackIndex = 0;
-                playbackData._PlaybackSampleCount = samples.Length;
-                playbackData._DSPStartIndex = grainProcessor._DSPSamplePlaybackStart;
+                playbackData._PlayheadIndex = 0;
+                playbackData._SizeInSamples = samples.Length;
+                playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
                 playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;
 
                 //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);

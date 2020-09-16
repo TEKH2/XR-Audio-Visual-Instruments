@@ -10,20 +10,20 @@ public class GrainPlaybackData
     public bool _IsPlaying = true;
     public float[] _GrainSamples;
     public float[] _TempSampleBuffer;
-    public int _PlaybackIndex = 0;
-    public int _PlaybackSampleCount;
+    public int _PlayheadIndex = 0;
+    public int _SizeInSamples;
 
     // Used for visualizing the grain
     public float _PlayheadPos;
 
     // The DSP sample that the grain starts at
-    public int _DSPStartIndex;
+    public int _DSPStartTime;
 
-    public GrainPlaybackData(int sampleRate)
+    public GrainPlaybackData(int maxGrainSize)
     {
-        // instantiate the grain samples at the max length of a grain of 1 second worth of samples
-        _GrainSamples = new float[sampleRate];
-        _TempSampleBuffer = new float[sampleRate];
+        // instantiate the grain samples at a given maximum length
+        _GrainSamples = new float[maxGrainSize];
+        _TempSampleBuffer = new float[maxGrainSize];
     }
 }
 
@@ -48,7 +48,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
 
     int _GrainPlaybackDataToPool = 100;
-    int _MaxGrainPlaybackDataCout = 500;
+    int _MaxGrainPlaybackDataCount = 500;
 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
 
@@ -94,8 +94,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _SampleRate = AudioSettings.outputSampleRate;
 
-        // Pool grain playback data
-        for (int i = 0; i < _GrainPlaybackDataToPool; i++)        
+        // Pool grain playback data - current maximum length set to one second of samples (_SampleRate)
+        for (int i = 0; i < _GrainPlaybackDataToPool; i++)
             _PooledGrainPlaybackData.Add(new GrainPlaybackData(_SampleRate));        
     }
 
@@ -120,9 +120,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _ActiveGrainPlaybackData.Add(playbackData);
 
-        int samplesBetweenGrains = playbackData._DSPStartIndex - prevStartSample;
+        int samplesBetweenGrains = playbackData._DSPStartTime - prevStartSample;
         float msBetweenGrains = (samplesBetweenGrains / (float)AudioSettings.outputSampleRate) * 1000;
-        float DSPSampleDiff = playbackData._DSPStartIndex - _GrainSynth._CurrentDSPSample;
+        float DSPSampleDiff = playbackData._DSPStartTime - _GrainSynth._CurrentDSPSample;
         int DSPMSDiff = (int)((DSPSampleDiff / (float)AudioSettings.outputSampleRate) * 1000);
 
         // Fire event if hooked up
@@ -132,7 +132,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             print
             (
-                "Grain added. Start sample: " + playbackData._DSPStartIndex +
+                "Grain added. Start sample: " + playbackData._DSPStartTime +
                 " Cadence samples: " + samplesBetweenGrains +
                 " Cadence m/s:   " + msBetweenGrains +
                 " DSP sample diff:   " + DSPSampleDiff +
@@ -142,7 +142,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         //_DebugGUI.LogLatency(DSPMSDiff);
 
-        prevStartSample = playbackData._DSPStartIndex;
+        prevStartSample = playbackData._DSPStartTime;
 
         //print("Grain added. Sample 1000: " + playbackData._GrainSamples[1000] + "  playbackData duration: " + playbackData._GrainSamples.Length);
     }
@@ -168,14 +168,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             return grainPlaybackData;
         }
-        else if (GrainDataCount < _MaxGrainPlaybackDataCout)
+        else if (GrainDataCount < _MaxGrainPlaybackDataCount)
         {
             GrainPlaybackData grainPlaybackData = new GrainPlaybackData(_SampleRate);
             return grainPlaybackData;
         }
         else
         {
-            print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainPlaybackDataCout);
+            print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainPlaybackDataCount);
             return null;
         }
     }
@@ -203,17 +203,18 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 if (grainData == null)
                     continue;
 
-                if (_GrainSynth._CurrentDSPSample >= grainData._DSPStartIndex)
+                // If the grain's DSP start time has been reached
+                if (_GrainSynth._CurrentDSPSample >= grainData._DSPStartTime)
                 {
-                    if (grainData._PlaybackIndex >= grainData._PlaybackSampleCount)
+                    if (grainData._PlayheadIndex >= grainData._SizeInSamples)
                     {
                         grainData._IsPlaying = false;
                     }
                     else
                     {
                         _SamplesPerRead++;
-                        data[dataIndex] += grainData._GrainSamples[grainData._PlaybackIndex];
-                        grainData._PlaybackIndex++;
+                        data[dataIndex] += grainData._GrainSamples[grainData._PlayheadIndex];
+                        grainData._PlayheadIndex++;
                     }
                 }
             }
