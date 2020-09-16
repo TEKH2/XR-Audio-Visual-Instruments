@@ -1071,7 +1071,7 @@ MonoBehaviour:
     type: 3}
   _TimelineScale: 0.1
   _TimelineDistance: 3
-  _TimelineDuration: 3
+  _TimelineDuration: 1
   _TimelineHeightCount: 4
   _XAxisPivot: {fileID: 1066627962}
   _XAxisPivot_Frametime: {fileID: 497121603}
