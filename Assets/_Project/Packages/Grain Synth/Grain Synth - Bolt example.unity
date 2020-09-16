@@ -308,7 +308,7 @@ PrefabInstance:
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: _EmissionProps._Cadence
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -7716,7 +7716,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594698397}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -8555,7 +8555,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907422186}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
