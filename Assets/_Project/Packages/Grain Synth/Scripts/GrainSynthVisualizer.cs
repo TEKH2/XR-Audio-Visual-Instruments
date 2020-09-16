@@ -253,9 +253,16 @@ public class GrainSynthVisualizer : MonoBehaviour
         _BlockCounter++;
         _BlockCounter %= _TimelineBlocks.Length;
 
+      
+
+    }
+
+    void SpawnWaveformGrain()
+    {
+
         // Waveform grain
         WaveformVizGrain grain = _WaveformVizGrainPool[_WaveformGrainIndex];
-        grain.transform.position = GetPositionOnArc(grainData._PlayheadPos,0, -.01f );
+        grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -.01f);
 
         // Width from duration
         float width = grainData._PlaybackSampleCount / (float)_ClipSampleCount;
