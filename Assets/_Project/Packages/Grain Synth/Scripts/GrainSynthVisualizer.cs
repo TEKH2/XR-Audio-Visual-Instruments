@@ -33,7 +33,7 @@ public class GrainSynthVisualizer : MonoBehaviour
     public LineRenderer _WaveformBorderLine;
     public int _BorderVerts = 30;
 
-    float _PlayheadZOffset = .01f;
+    float _PlayheadZOffset = .03f;
 
     public LineRenderer _PlayheadLine;
 
@@ -180,6 +180,7 @@ public class GrainSynthVisualizer : MonoBehaviour
             {
                 float norm = i / (float)(_PlayheadLine.positionCount - 1);
                 float playheadPos = startPos + (playheadWidth * norm);
+                playheadPos = Mathf.Clamp01(playheadPos);
                 _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
             }
 
@@ -292,7 +293,7 @@ public class GrainSynthVisualizer : MonoBehaviour
         {
             // Waveform grain
             WaveformVizGrain grain = _WaveformVizGrainPool[_WaveformGrainIndex];
-            grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -.01f);
+            grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -_PlayheadZOffset);
 
             // Width from duration
             float width = grainData._PlaybackSampleCount / (float)_ClipSampleCount;
