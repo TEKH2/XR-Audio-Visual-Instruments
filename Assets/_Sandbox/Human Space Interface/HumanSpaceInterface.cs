@@ -43,15 +43,16 @@ public class HumanSpaceInterface : MonoBehaviour
     public Transform _CenterTransform;
     public Transform _HeadTransform;
 
-
-    // Seperation between hand positions
-    public RangedFloat _Seperation;
-    // X rotation difference between hands
-    public RangedFloat _Twist;
-    // Rotation of hand to hand vector about the forward axis
-    public RangedFloat _Roll;
     // Y rotation of central point from forward
     public RangedFloat _Pan;
+    // Seperation between hand positions
+    public RangedFloat _Seperation;
+    // Rotation of hand to hand vector about the forward axis
+    public RangedFloat _Roll;
+    // X rotation difference between hands
+    public RangedFloat _Twist;
+  
+   
 
     public Vector3 _RotOffset;
 
