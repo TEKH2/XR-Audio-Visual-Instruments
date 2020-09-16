@@ -15,6 +15,12 @@ public class GrainSynthVisualizer : MonoBehaviour
     Vector3 _LookAtPos;
     int _ClipSampleCount;
 
+    public bool _DrawWavefrom = true;
+    public bool _DrawTimeline = true;
+
+    public Transform _WaveformParent;
+    public Transform _TimelineParent;
+
     // ----------------------------------- WAVEFORM/PLAYHEAD
     [Header("Waveform - Playhead")]
     public float _ArcTotalAngle = 90;    
@@ -65,137 +71,152 @@ public class GrainSynthVisualizer : MonoBehaviour
         _SampleRate = AudioSettings.outputSampleRate;
         _GrainSpeaker.OnGrainEmitted += EmitGrain;
 
-        // Waveform
-        float[] clipData = new float[GrainSynth.Instance._AudioClips[0].samples];
-        GrainSynth.Instance._AudioClips[0].GetData(clipData, 0);
-        _ClipSampleCount = clipData.Length;
-        int samplesPerBlock = clipData.Length / _WaveformBlockCount;
-
-        _PlayheadLine.positionCount = 10;
-
-        float maxSampleValue = 0;
-        float minSampleValue = float.MaxValue;
-        _WaveformBlocks = new GameObject[_WaveformBlockCount];
-        float waveformBlockWidth = Vector3.Distance(GetPositionOnArc(0), GetPositionOnArc(1f/ (_WaveformBlockCount-1) ) );
-        float[] averagedSamples = new float[_WaveformBlockCount];
-
-        _LookAtPos = Vector3.up * _WaveformHeight;
-
-        int index = 0;
-        for (int i = 0; i < _WaveformBlockCount; i++)
+        if (_DrawWavefrom)
         {
-            float sumedSquaredSamples = 0;
-            for (int s = 0; s < samplesPerBlock; s++)
+            // Waveform
+            float[] clipData = new float[GrainSynth.Instance._AudioClips[0].samples];
+            GrainSynth.Instance._AudioClips[0].GetData(clipData, 0);
+            _ClipSampleCount = clipData.Length;
+            int samplesPerBlock = clipData.Length / _WaveformBlockCount;
+
+            _PlayheadLine.positionCount = 10;
+
+            float maxSampleValue = 0;
+            float minSampleValue = float.MaxValue;
+            _WaveformBlocks = new GameObject[_WaveformBlockCount];
+            float waveformBlockWidth = Vector3.Distance(GetPositionOnArc(0), GetPositionOnArc(1f / (_WaveformBlockCount - 1)));
+            float[] averagedSamples = new float[_WaveformBlockCount];
+
+            _LookAtPos = Vector3.up * _WaveformHeight;
+
+            int index = 0;
+            for (int i = 0; i < _WaveformBlockCount; i++)
             {
-                sumedSquaredSamples += clipData[index] * clipData[index]; // sum squared samples
-                index++;
+                float sumedSquaredSamples = 0;
+                for (int s = 0; s < samplesPerBlock; s++)
+                {
+                    sumedSquaredSamples += clipData[index] * clipData[index]; // sum squared samples
+                    index++;
+                }
+
+                sumedSquaredSamples /= samplesPerBlock;
+                float rmsValue = Mathf.Sqrt(sumedSquaredSamples / samplesPerBlock); // rms = square root of average
+
+                maxSampleValue = Mathf.Max(rmsValue, maxSampleValue);
+                minSampleValue = Mathf.Min(rmsValue, minSampleValue);
+                averagedSamples[i] = rmsValue;
+
+                float norm = i / (_WaveformBlockCount - 1f);
+                _WaveformBlocks[i] = Instantiate(_WaveformBlockPrefab, transform);
+                _WaveformBlocks[i].transform.position = GetPositionOnArc(norm);
+                _WaveformBlocks[i].transform.LookAt(_LookAtPos);
+                _WaveformBlocks[i].transform.rotation *= Quaternion.Euler(0, 180, 0);
             }
 
-            sumedSquaredSamples /= samplesPerBlock;
-            float rmsValue = Mathf.Sqrt(sumedSquaredSamples / samplesPerBlock); // rms = square root of average
+            for (int i = 0; i < _WaveformBlockCount; i++)
+            {
+                float height = Mathf.InverseLerp(minSampleValue, maxSampleValue, averagedSamples[i]);
+                _WaveformBlocks[i].transform.localScale = new Vector3(waveformBlockWidth * .7f, height * _WaveformBlockHeight * .85f, .01f);
+            }
 
-            maxSampleValue = Mathf.Max(rmsValue, maxSampleValue);
-            minSampleValue = Mathf.Min(rmsValue, minSampleValue);
-            averagedSamples[i] = rmsValue;
+            // Setup waveform border
+            _WaveformBorderLine.positionCount = _BorderVerts * 2;
 
-            float norm = i / (_WaveformBlockCount - 1f);
-            _WaveformBlocks[i] = Instantiate(_WaveformBlockPrefab, transform);
-            _WaveformBlocks[i].transform.position = GetPositionOnArc(norm);
-            _WaveformBlocks[i].transform.LookAt(_LookAtPos);
-            _WaveformBlocks[i].transform.rotation *= Quaternion.Euler(0, 180, 0);
+            // Create waveform grains
+            _WaveformVizGrainPool = new WaveformVizGrain[30];
+            for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
+            {
+                WaveformVizGrain newGrain = Instantiate(_WaveformVizGrainPrefab, transform);
+                newGrain.gameObject.SetActive(false);
+                _WaveformVizGrainPool[i] = newGrain;
+            }
+
+            int borderIndex = 0;
+            for (int i = 0; i < _BorderVerts; i++)
+            {
+                float norm = i / (_BorderVerts - 1f);
+                norm = Mathf.Lerp(-.01f, 1.01f, norm);
+                _WaveformBorderLine.SetPosition(borderIndex, GetPositionOnArc(norm, _WaveformBlockHeight * .5f));
+                borderIndex++;
+            }
+
+            for (int i = 0; i < _BorderVerts; i++)
+            {
+                float norm = 1 - (i / (_BorderVerts - 1f));
+                norm = Mathf.Lerp(-.01f, 1.01f, norm);
+                _WaveformBorderLine.SetPosition(borderIndex, GetPositionOnArc(norm, _WaveformBlockHeight * -.5f));
+                borderIndex++;
+            }
         }
+        else
+            _WaveformParent.gameObject.SetActive(false);
 
-        for (int i = 0; i < _WaveformBlockCount; i++)
+        if (_DrawTimeline)
         {
-            float height = Mathf.InverseLerp(minSampleValue, maxSampleValue, averagedSamples[i]);
-            _WaveformBlocks[i].transform.localScale = new Vector3(waveformBlockWidth * .7f, height * _WaveformBlockHeight * .85f, .01f);
+            // Create grain blocks
+            _TimelineBlocks = new GrainSynthVisualizerBlock[_TimelinePoolAmount];
+            for (int i = 0; i < _TimelineBlocks.Length; i++)
+            {
+                GrainSynthVisualizerBlock newBlock = Instantiate(_TimelineBlockPrefab, transform);
+                newBlock.gameObject.SetActive(false);
+                _TimelineBlocks[i] = newBlock;
+            }
         }
-
-        // Setup waveform border
-        _WaveformBorderLine.positionCount = _BorderVerts * 2;
-
-        // Create waveform grains
-        _WaveformVizGrainPool = new WaveformVizGrain[30];
-        for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
-        {
-            WaveformVizGrain newGrain = Instantiate(_WaveformVizGrainPrefab, transform);
-            newGrain.gameObject.SetActive(false);
-            _WaveformVizGrainPool[i] = newGrain;
-        }
-
-
-        int borderIndex = 0;
-        for (int i = 0; i < _BorderVerts; i++)
-        {
-            float norm = i / (_BorderVerts - 1f);
-            norm = Mathf.Lerp(-.01f, 1.01f, norm);
-            _WaveformBorderLine.SetPosition(borderIndex, GetPositionOnArc(norm, _WaveformBlockHeight * .5f));
-            borderIndex++;
-        }
-
-        for (int i = 0; i < _BorderVerts; i++)
-        {
-            float norm = 1 - (i / (_BorderVerts - 1f));
-            norm = Mathf.Lerp(-.01f, 1.01f, norm);
-            _WaveformBorderLine.SetPosition(borderIndex, GetPositionOnArc(norm, _WaveformBlockHeight * -.5f));
-            borderIndex++;
-        }
-
-        // Create grain blocks
-        _TimelineBlocks = new GrainSynthVisualizerBlock[_TimelinePoolAmount];
-        for (int i = 0; i < _TimelineBlocks.Length; i++)
-        {
-            GrainSynthVisualizerBlock newBlock = Instantiate(_TimelineBlockPrefab, transform);
-            newBlock.gameObject.SetActive(false);
-            _TimelineBlocks[i] = newBlock;
-        }
+        else
+            _TimelineParent.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Waveform       
-        float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
-
-
-        float startPos = _Emitter._EmissionProps._Playhead - .005f;
-        for (int i = 0; i < _PlayheadLine.positionCount; i++)
+        if (_DrawWavefrom)
         {
-            float norm = i / (float)(_PlayheadLine.positionCount - 1);
-            float playheadPos = startPos + (playheadWidth * norm);
-            _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
+            // Waveform       
+            float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
 
-        }
 
-        // Grain timeline
-        if (_YAxisPivot != null)
-            _YAxisPivot.SetScaleY(_TimelineScale * _TimelineHeightCount);
-
-        if (_XAxisPivot != null)
-            _XAxisPivot.SetScaleX(_TimelineDistance);
-
-        if (Application.isPlaying && _XAxisPivot_Frametime != null)
-            _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._LatencyInMS * .001f * (_TimelineDistance / _TimelineDuration));
-
-        for (int i = 0; i < _TimelineBlocks.Length; i++)
-        {
-            if(_TimelineBlocks[i].gameObject.activeSelf)
+            float startPos = _Emitter._EmissionProps._Playhead - .005f;
+            for (int i = 0; i < _PlayheadLine.positionCount; i++)
             {
-                int sampleDiff = _TimelineBlocks[i]._StartIndex - GrainSynth.Instance._CurrentDSPSample;
-                Vector3 pos = transform.position + transform.right * (sampleDiff / _SampleRate) * (_TimelineDistance / _TimelineDuration);
-                pos.y = _TimelineBlocks[i].transform.position.y;
+                float norm = i / (float)(_PlayheadLine.positionCount - 1);
+                float playheadPos = startPos + (playheadWidth * norm);
+                _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
+            }
 
-                _TimelineBlocks[i].transform.position = pos;
+            for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
+            {
+                if (_WaveformVizGrainPool[i].gameObject.activeSelf)
+                {
+                    _WaveformVizGrainPool[i]._Lifetime -= Time.deltaTime;
+                    if (_WaveformVizGrainPool[i]._Lifetime <= 0)
+                        _WaveformVizGrainPool[i].gameObject.SetActive(false);
+                }
             }
         }
 
-        for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
+
+        if (_DrawTimeline)
         {
-            if (_WaveformVizGrainPool[i].gameObject.activeSelf)
+            // Grain timeline
+            if (_YAxisPivot != null)
+                _YAxisPivot.SetScaleY(_TimelineScale * _TimelineHeightCount);
+
+            if (_XAxisPivot != null)
+                _XAxisPivot.SetScaleX(_TimelineDistance);
+
+            if (Application.isPlaying && _XAxisPivot_Frametime != null)
+                _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._LatencyInMS * .001f * (_TimelineDistance / _TimelineDuration));
+
+            for (int i = 0; i < _TimelineBlocks.Length; i++)
             {
-                _WaveformVizGrainPool[i]._Lifetime -= Time.deltaTime;
-                if (_WaveformVizGrainPool[i]._Lifetime <= 0)
-                    _WaveformVizGrainPool[i].gameObject.SetActive(false);
+                if (_TimelineBlocks[i].gameObject.activeSelf)
+                {
+                    int sampleDiff = _TimelineBlocks[i]._StartIndex - GrainSynth.Instance._CurrentDSPSample;
+                    Vector3 pos = transform.position + transform.right * (sampleDiff / _SampleRate) * (_TimelineDistance / _TimelineDuration);
+                    pos.y = _TimelineBlocks[i].transform.position.y;
+
+                    _TimelineBlocks[i].transform.position = pos;
+                }
             }
         }
     }
@@ -250,31 +271,38 @@ public class GrainSynthVisualizer : MonoBehaviour
    
     public void EmitGrain(GrainPlaybackData grainData, int currentDSPSample)
     {
-        // Scale based on duration
-        float durationInSeconds = grainData._PlaybackSampleCount / _SampleRate;
-        durationInSeconds *= _TimelineDistance / _TimelineDuration;
-        Vector3 size = new Vector3(durationInSeconds, _TimelineScale, .001f);
-                
-        GrainSynthVisualizerBlock block = _TimelineBlocks[_BlockCounter];
-        block.transform.position = PosFromStartSampleIndex(grainData._DSPStartIndex);
-        block.transform.localScale = size;
-        block._StartIndex = grainData._DSPStartIndex;
-        block.gameObject.SetActive(true);
-        _BlockCounter++;
-        _BlockCounter %= _TimelineBlocks.Length;
+        if (_DrawTimeline)
+        {
+            // Scale based on duration
+            float durationInSeconds = grainData._PlaybackSampleCount / _SampleRate;
+            durationInSeconds *= _TimelineDistance / _TimelineDuration;
+            Vector3 size = new Vector3(durationInSeconds, _TimelineScale, .001f);
 
-        // Waveform grain
-        WaveformVizGrain grain = _WaveformVizGrainPool[_WaveformGrainIndex];
-        grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -.01f);
+            GrainSynthVisualizerBlock block = _TimelineBlocks[_BlockCounter];
+            block.transform.position = PosFromStartSampleIndex(grainData._DSPStartIndex);
+            block.transform.localScale = size;
+            block._StartIndex = grainData._DSPStartIndex;
+            block.gameObject.SetActive(true);
+            _BlockCounter++;
+            _BlockCounter %= _TimelineBlocks.Length;
+        }
 
-        // Width from duration
-        float width = grainData._PlaybackSampleCount / (float)_ClipSampleCount;
-        grain.transform.localScale = new Vector3(width, _WaveformBlockHeight * .9f, 1);
-        grain.transform.LookAt(_LookAtPos);
-        grain._Lifetime = grainData._GrainSamples.Length / (float)_SampleRate;
-        grain.gameObject.SetActive(true);
 
-        _WaveformGrainIndex++;
-        _WaveformGrainIndex %= _WaveformVizGrainPool.Length;
+        if (_DrawWavefrom)
+        {
+            // Waveform grain
+            WaveformVizGrain grain = _WaveformVizGrainPool[_WaveformGrainIndex];
+            grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -.01f);
+
+            // Width from duration
+            float width = grainData._PlaybackSampleCount / (float)_ClipSampleCount;
+            grain.transform.localScale = new Vector3(width, _WaveformBlockHeight * .9f, 1);
+            grain.transform.LookAt(_LookAtPos);
+            grain._Lifetime = grainData._GrainSamples.Length / (float)_SampleRate;
+            grain.gameObject.SetActive(true);
+
+            _WaveformGrainIndex++;
+            _WaveformGrainIndex %= _WaveformVizGrainPool.Length;
+        }
     }
 }
