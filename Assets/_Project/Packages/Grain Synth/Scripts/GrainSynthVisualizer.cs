@@ -25,7 +25,9 @@ public class GrainSynthVisualizer : MonoBehaviour
     public LineRenderer _WaveformBorderLine;
     public int _BorderVerts = 30;
 
-    public Transform _WaveformPlayhead;
+    float _PlayheadZOffset = .01f;
+
+    public LineRenderer _PlayheadLine;
 
     // ----------------------------------- TIMELINE
     [Header("Timeline")]
@@ -60,6 +62,8 @@ public class GrainSynthVisualizer : MonoBehaviour
         float[] clipData = new float[GrainSynth.Instance._AudioClips[0].samples];
         GrainSynth.Instance._AudioClips[0].GetData(clipData, 0);
         int samplesPerBlock = clipData.Length / _WaveformBlockCount;
+
+        _PlayheadLine.positionCount = 4;
 
         float maxSampleValue = 0;
         float minSampleValue = float.MaxValue;
@@ -120,9 +124,6 @@ public class GrainSynthVisualizer : MonoBehaviour
             borderIndex++;
         }
 
-        _WaveformPlayhead.localScale = new Vector3(.03f, _WaveformBlockHeight * .85f, 1);
-
-
         // Create grain blocks
         _TimelineBlocks = new GrainSynthVisualizerBlock[_TimelinePoolAmount];
         for (int i = 0; i < _TimelineBlocks.Length; i++)
@@ -136,9 +137,15 @@ public class GrainSynthVisualizer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Waveform
-        _WaveformPlayhead.position = GetPositionOnArc(_Emitter._EmissionProps._Playhead, 0, -.03f);
-        _WaveformPlayhead.LookAt(_LookAtPos);
+        // Waveform       
+        float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
+        for (int i = 0; i < _PlayheadLine.positionCount; i++)
+        {
+            float norm = i / (_PlayheadLine.positionCount - 1);
+            float playheadPos = _Emitter._EmissionProps._Playhead + playheadWidth * norm;
+            _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
+
+        }
 
         // Grain timeline
         if (_YAxisPivot != null)
