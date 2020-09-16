@@ -13,6 +13,9 @@ public class GrainPlaybackData
     public int _PlaybackIndex = 0;
     public int _PlaybackSampleCount;
 
+    // Used for visualizing the grain
+    public float _PlayheadPos;
+
     // The DSP sample that the grain starts at
     public int _DSPStartIndex;
 

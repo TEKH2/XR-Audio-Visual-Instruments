@@ -160,6 +160,7 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._PlaybackIndex = 0;
                 playbackData._PlaybackSampleCount = samples.Length;
                 playbackData._DSPStartIndex = grainProcessor._DSPSamplePlaybackStart;
+                playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;
 
                 //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 

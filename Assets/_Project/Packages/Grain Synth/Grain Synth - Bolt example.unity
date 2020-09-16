@@ -638,7 +638,7 @@ PrefabInstance:
     - target: {fileID: 4575650916884872, guid: 825d823e977265e428192f421b7166b1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 70e01fb1fa97ee0408cd585c4d966069, type: 2}
+      objectReference: {fileID: 2100000, guid: 8a62a976fd0088242be5e8dfd031be6f, type: 2}
     - target: {fileID: 3335689825720417030, guid: 825d823e977265e428192f421b7166b1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -838,6 +838,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535210591}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &540536381 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5528598471599412522, guid: bc7466bca05a79c468c5fced2d31f364,
+    type: 3}
+  m_PrefabInstance: {fileID: 1255868408}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &540536382 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
@@ -972,6 +984,8 @@ MonoBehaviour:
   _WaveformBorderLine: {fileID: 608940425}
   _BorderVerts: 30
   _WaveformPlayhead: {fileID: 869616718}
+  _WaveformVizGrainPrefab: {fileID: 6024378002063491092, guid: 1fffff8a294896c45a64a6c72d7b50bb,
+    type: 3}
   _TimelineScale: 0.1
   _TimelineDistance: 3
   _TimelineDuration: 3
@@ -979,7 +993,7 @@ MonoBehaviour:
   _XAxisPivot: {fileID: 1066627962}
   _XAxisPivot_Frametime: {fileID: 497121603}
   _YAxisPivot: {fileID: 1181866220}
-  _GrainSpeaker: {fileID: 1788394193}
+  _GrainSpeaker: {fileID: 540536381}
   _TimelineBlockPrefab: {fileID: 5522368454783977950, guid: f213f51cbd5753844899af50fdc54793,
     type: 3}
 --- !u!120 &608940425
@@ -7879,18 +7893,6 @@ Transform:
   m_Father: {fileID: 813938864}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1788394193 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5528598471599412522, guid: bc7466bca05a79c468c5fced2d31f364,
-    type: 3}
-  m_PrefabInstance: {fileID: 228839729}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1821086921
 GameObject:
   m_ObjectHideFlags: 0
