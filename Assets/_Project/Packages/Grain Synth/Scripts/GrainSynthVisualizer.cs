@@ -205,7 +205,7 @@ public class GrainSynthVisualizer : MonoBehaviour
                 _XAxisPivot.SetScaleX(_TimelineDistance);
 
             if (Application.isPlaying && _XAxisPivot_Frametime != null)
-                _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._LatencyInMS * .001f * (_TimelineDistance / _TimelineDuration));
+                _XAxisPivot_Frametime.SetScaleX(-GrainSynth.Instance._GrainQueueInMS * .001f * (_TimelineDistance / _TimelineDuration));
 
             for (int i = 0; i < _TimelineBlocks.Length; i++)
             {
@@ -274,14 +274,14 @@ public class GrainSynthVisualizer : MonoBehaviour
         if (_DrawTimeline)
         {
             // Scale based on duration
-            float durationInSeconds = grainData._PlaybackSampleCount / _SampleRate;
+            float durationInSeconds = grainData._SizeInSamples / _SampleRate;
             durationInSeconds *= _TimelineDistance / _TimelineDuration;
             Vector3 size = new Vector3(durationInSeconds, _TimelineScale, .001f);
 
             GrainSynthVisualizerBlock block = _TimelineBlocks[_BlockCounter];
-            block.transform.position = PosFromStartSampleIndex(grainData._DSPStartIndex);
+            block.transform.position = PosFromStartSampleIndex(grainData._DSPStartTime);
             block.transform.localScale = size;
-            block._StartIndex = grainData._DSPStartIndex;
+            block._StartIndex = grainData._DSPStartTime;
             block.gameObject.SetActive(true);
             _BlockCounter++;
             _BlockCounter %= _TimelineBlocks.Length;
@@ -295,7 +295,7 @@ public class GrainSynthVisualizer : MonoBehaviour
             grain.transform.position = GetPositionOnArc(grainData._PlayheadPos, 0, -_PlayheadZOffset);
 
             // Width from duration
-            float width = grainData._PlaybackSampleCount / (float)_ClipSampleCount;
+            float width = grainData._SizeInSamples / (float)_ClipSampleCount;
             grain.transform.localScale = new Vector3(width, _WaveformBlockHeight * .9f, 1);
             grain.transform.LookAt(_LookAtPos);
             grain._Lifetime = grainData._GrainSamples.Length / (float)_SampleRate;

@@ -43,7 +43,7 @@ public class GrainSynthTester : MonoBehaviour
     {
         _EmitterPrefabDOTs._EmissionProps = _EmissionProps;
 
-        _DOTSSystem._LatencyInMS = _LatencyInMS;
+        _DOTSSystem._GrainQueueInMS = _LatencyInMS;
 
         _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };        
 
