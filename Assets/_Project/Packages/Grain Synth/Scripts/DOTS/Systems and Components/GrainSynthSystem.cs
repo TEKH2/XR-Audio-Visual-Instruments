@@ -36,6 +36,8 @@ public class GrainSynthSystem : SystemBase
         WindowingDataComponent windowingData = GetSingleton<WindowingDataComponent>();
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         float dt = Time.DeltaTime;
+
+        // Process 
         Entities.ForEach
         (
             (int entityInQueryIndex, ref EmitterComponent emitter) =>
