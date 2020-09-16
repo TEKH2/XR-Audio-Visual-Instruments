@@ -11,6 +11,7 @@ public class GrainSynthVisualizer : MonoBehaviour
     #region ------------------------------------- VARIABLES 
     float _SampleRate;
     public GrainEmitterAuthoring _Emitter;
+    public GrainSpeakerAuthoring _GrainSpeaker;
     Vector3 _LookAtPos;
     int _ClipSampleCount;
 
@@ -49,7 +50,7 @@ public class GrainSynthVisualizer : MonoBehaviour
     public Transform _XAxisPivot_Frametime;
     public Transform _YAxisPivot;
 
-    public GrainSpeakerAuthoring _GrainSpeaker;
+   
 
     public GrainSynthVisualizerBlock _TimelineBlockPrefab;
     GrainSynthVisualizerBlock[] _TimelineBlocks;
@@ -70,7 +71,7 @@ public class GrainSynthVisualizer : MonoBehaviour
         _ClipSampleCount = clipData.Length;
         int samplesPerBlock = clipData.Length / _WaveformBlockCount;
 
-        _PlayheadLine.positionCount = 4;
+        _PlayheadLine.positionCount = 10;
 
         float maxSampleValue = 0;
         float minSampleValue = float.MaxValue;
@@ -155,10 +156,13 @@ public class GrainSynthVisualizer : MonoBehaviour
     {
         // Waveform       
         float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
+
+
+        float startPos = _Emitter._EmissionProps._Playhead - .005f;
         for (int i = 0; i < _PlayheadLine.positionCount; i++)
         {
-            float norm = i / (_PlayheadLine.positionCount - 1);
-            float playheadPos = _Emitter._EmissionProps._Playhead + playheadWidth * norm;
+            float norm = i / (float)(_PlayheadLine.positionCount - 1);
+            float playheadPos = startPos + (playheadWidth * norm);
             _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
 
         }
@@ -258,13 +262,6 @@ public class GrainSynthVisualizer : MonoBehaviour
         block.gameObject.SetActive(true);
         _BlockCounter++;
         _BlockCounter %= _TimelineBlocks.Length;
-
-      
-
-    }
-
-    void SpawnWaveformGrain()
-    {
 
         // Waveform grain
         WaveformVizGrain grain = _WaveformVizGrainPool[_WaveformGrainIndex];
