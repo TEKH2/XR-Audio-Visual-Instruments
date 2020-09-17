@@ -82,18 +82,27 @@ public class GrainSynth :  MonoBehaviour
         {
             Entity audioClipDataEntity = _EntityManager.CreateEntity();
 
+            int clipChannels = _AudioClips[i].channels;
+
             float[] clipData = new float[_AudioClips[i].samples];
+
             _AudioClips[i].GetData(clipData, 0);
 
             using (BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp))
             {
                 // ---------------------------------- CREATE BLOB
                 ref FloatBlobAsset audioclipBlobAsset = ref blobBuilder.ConstructRoot<FloatBlobAsset>();
-                BlobBuilderArray<float> audioclipArray = blobBuilder.Allocate(ref audioclipBlobAsset.array, clipData.Length);
+                BlobBuilderArray<float> audioclipArray = blobBuilder.Allocate(ref audioclipBlobAsset.array, (clipData.Length / clipChannels));
 
-                for (int s = 0; s < clipData.Length; s++)
+                for (int s = 0; s < clipData.Length - 1; s += clipChannels)
                 {
-                    audioclipArray[s] = clipData[s];
+                    audioclipArray[s / clipChannels] = 0;
+                    
+                    // MonoSum stereo audio files
+                    for (int c = 0; c < clipChannels; c++)
+                    {
+                        audioclipArray[s / clipChannels] += clipData[s + c];
+                    }
                 }
 
                 // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY

@@ -1329,6 +1329,22 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 2b1d52e33eb214348b460abdf2d6d909, type: 3}
+  - {fileID: 8300000, guid: c1194fd948a6b264b95e2307dde041b2, type: 3}
+  - {fileID: 8300000, guid: 9f6fbf599328db949ae02c3d19208e15, type: 3}
+  - {fileID: 8300000, guid: ca35934def4836943ba9cc0d66d5d715, type: 3}
+  - {fileID: 8300000, guid: d6544ee5e54b6554785f0e87d500803f, type: 3}
+  - {fileID: 8300000, guid: fb637ca7c1d6ce44e9eb67486ea664ac, type: 3}
+  - {fileID: 8300000, guid: 2996e8001c845b045b509995754ef11f, type: 3}
+  - {fileID: 8300000, guid: 0c948ccde8f99e449b1b5cff6330f6df, type: 3}
+  - {fileID: 8300000, guid: aa8141a45a9fe7a449970d89ce1d855b, type: 3}
+  - {fileID: 8300000, guid: 573ffaa57a371644c95e7c7afd20def0, type: 3}
+  - {fileID: 8300000, guid: 787dd862a7830ce4b84d6974d307e40e, type: 3}
+  - {fileID: 8300000, guid: 6587c6a274b9d2c4ca5f9dab5ef9095b, type: 3}
+  - {fileID: 8300000, guid: 1b4be63e61af08644b2331179890dff6, type: 3}
+  - {fileID: 8300000, guid: 1b6d89090f74b37498c3c4d0fbdc9420, type: 3}
+  - {fileID: 8300000, guid: 56d64282c83c0114bbb1338427e8b429, type: 3}
+  - {fileID: 8300000, guid: 570e8a783e62c834aba7854aed13eeb5, type: 3}
+  - {fileID: 8300000, guid: 2b1d52e33eb214348b460abdf2d6d909, type: 3}
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
@@ -2288,7 +2304,7 @@ PrefabInstance:
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: _EmissionProps._Cadence
-      value: 50
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -2313,7 +2329,7 @@ PrefabInstance:
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: _EmissionProps._Playhead
-      value: 0.15
+      value: 0.22
       objectReference: {fileID: 0}
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -2323,7 +2339,7 @@ PrefabInstance:
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: _EmissionProps._ClipIndex
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc7466bca05a79c468c5fced2d31f364, type: 3}
