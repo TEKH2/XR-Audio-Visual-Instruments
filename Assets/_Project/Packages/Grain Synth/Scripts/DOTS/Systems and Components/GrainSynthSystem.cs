@@ -69,9 +69,9 @@ public class GrainSynthSystem : SystemBase
                             _SamplePopulated = false
                         });
 
-                        // Set last grain emitted index
+                        // Set last grain start time
                         emitter._LastGrainEmissionDSPIndex = sampleIndexNextGrainStart;
-                        // Increment emission Index
+                        // Set next grain start time
                         sampleIndexNextGrainStart += emitter._CadenceInSamples;
 
                         grainCount++;

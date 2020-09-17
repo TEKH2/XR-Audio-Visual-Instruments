@@ -147,13 +147,8 @@ public class GrainSynth :  MonoBehaviour
         });
 
 
-
-        // print("Processed grains: " + grainEntities.Length);
         for (int i = 0; i < grainEntities.Length; i++)
         {
-        //}
-        //for (int i = grainEntities.Length-1; i > 0; i--)
-        //{
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
 
             if(grainProcessor._SamplePopulated)
@@ -171,12 +166,11 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
                 playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;
 
-                //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 
                 int sampleLength = samples.Length;
                 for (int s = 0; s < playbackData._GrainSamples.Length; s++)
                 {
-                    if(s<sampleLength)
+                    if(s < sampleLength)
                         playbackData._GrainSamples[s] = samples[s];
                     else
                         playbackData._GrainSamples[s] = 0;
@@ -186,16 +180,9 @@ public class GrainSynth :  MonoBehaviour
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
                 _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
-
-                //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
-                //print(".....Copying sample data over: " + samples[1500] + "     " + playbackData._GrainSamples[1500]);
             }
         }
-
         grainEntities.Dispose();
-
-
-
     }
 
     public void CreateSpeaker(Vector3 pos)

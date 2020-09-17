@@ -197,7 +197,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             _SpeakerIndex = attachedSpeakerIndex,
             _AttachedToSpeaker = data._AttachedToSpeaker,
-            _AudioClipIndex = data._AudioClipIndex,
+            _AudioClipIndex = _EmissionProps._ClipIndex,
             _InRange = data._InRange,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
