@@ -1333,7 +1333,7 @@ MonoBehaviour:
     type: 3}
   _GrainSpeakers: []
   _MaxGrainSpeakers: 5
-  _LatencyInMS: 24
+  _GrainQueueInMS: 50
   _CurrentDSPSample: 0
   _EmitterToListenerActivationRange: 3
   _EmitterToSpeakerAttachRadius: 1
@@ -2278,7 +2278,7 @@ PrefabInstance:
     - target: {fileID: 5528598471599412524, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -2319,6 +2319,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _EmissionProps._Transpose
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
+        type: 3}
+      propertyPath: _EmissionProps._ClipIndex
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc7466bca05a79c468c5fced2d31f364, type: 3}
@@ -8615,7 +8620,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2040540458
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -191,7 +191,7 @@ public class GrainSynth :  MonoBehaviour
 
     public void CreateSpeaker(Vector3 pos)
     {
-        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);       
+        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);    
     }
 
     public void RegisterSpeaker(GrainSpeakerAuthoring speaker)
