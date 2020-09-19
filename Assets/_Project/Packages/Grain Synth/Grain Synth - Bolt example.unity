@@ -1326,14 +1326,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AudioClips:
-  - {fileID: 8300000, guid: 833f911660d18014b96171466d6977b7, type: 3}
+  - {fileID: 8300000, guid: 0c948ccde8f99e449b1b5cff6330f6df, type: 3}
   - {fileID: 8300000, guid: bf1735a3ad886c04fa4a4125460515e1, type: 3}
   - {fileID: 8300000, guid: 2b1d52e33eb214348b460abdf2d6d909, type: 3}
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
   _MaxGrainSpeakers: 5
-  _LatencyInMS: 24
+  _GrainQueueInMS: 50
   _CurrentDSPSample: 0
   _EmitterToListenerActivationRange: 3
   _EmitterToSpeakerAttachRadius: 1
