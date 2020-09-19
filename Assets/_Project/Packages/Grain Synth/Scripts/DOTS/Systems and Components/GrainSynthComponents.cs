@@ -67,6 +67,7 @@ public struct EmitterComponent : IComponentData
     public bool _AttachedToSpeaker;
     public bool _InRange;
     public int _SpeakerIndex;
+    public int _AudioClipIndex;
 
     public int _CadenceInSamples;
     public int _DurationInSamples;

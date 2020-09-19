@@ -56,7 +56,7 @@ public class GrainSynthSystem : SystemBase
 
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
-                            _AudioClipDataComponent = audioClipData[0],
+                            _AudioClipDataComponent = audioClipData[emitter._AudioClipIndex],
 
                             _PlaybackHeadNormPos = emitter._PlayheadPosNormalized,
                             _DurationInSamples = emitter._DurationInSamples,
@@ -69,9 +69,9 @@ public class GrainSynthSystem : SystemBase
                             _SamplePopulated = false
                         });
 
-                        // Set last grain emitted index
+                        // Set last grain start time
                         emitter._LastGrainEmissionDSPIndex = sampleIndexNextGrainStart;
-                        // Increment emission Index
+                        // Set next grain start time
                         sampleIndexNextGrainStart += emitter._CadenceInSamples;
 
                         grainCount++;

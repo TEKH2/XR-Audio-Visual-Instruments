@@ -82,18 +82,27 @@ public class GrainSynth :  MonoBehaviour
         {
             Entity audioClipDataEntity = _EntityManager.CreateEntity();
 
+            int clipChannels = _AudioClips[i].channels;
+
             float[] clipData = new float[_AudioClips[i].samples];
+
             _AudioClips[i].GetData(clipData, 0);
 
             using (BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp))
             {
                 // ---------------------------------- CREATE BLOB
                 ref FloatBlobAsset audioclipBlobAsset = ref blobBuilder.ConstructRoot<FloatBlobAsset>();
-                BlobBuilderArray<float> audioclipArray = blobBuilder.Allocate(ref audioclipBlobAsset.array, clipData.Length);
+                BlobBuilderArray<float> audioclipArray = blobBuilder.Allocate(ref audioclipBlobAsset.array, (clipData.Length / clipChannels));
 
-                for (int s = 0; s < clipData.Length; s++)
+                for (int s = 0; s < clipData.Length - 1; s += clipChannels)
                 {
-                    audioclipArray[s] = clipData[s];
+                    audioclipArray[s / clipChannels] = 0;
+                    
+                    // MonoSum stereo audio files
+                    for (int c = 0; c < clipChannels; c++)
+                    {
+                        audioclipArray[s / clipChannels] += clipData[s + c];
+                    }
                 }
 
                 // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY
@@ -138,13 +147,8 @@ public class GrainSynth :  MonoBehaviour
         });
 
 
-
-        // print("Processed grains: " + grainEntities.Length);
         for (int i = 0; i < grainEntities.Length; i++)
         {
-        //}
-        //for (int i = grainEntities.Length-1; i > 0; i--)
-        //{
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
 
             if(grainProcessor._SamplePopulated)
@@ -162,12 +166,11 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
                 playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;
 
-                //print("Current dsp time: " + _GrainManager._CurrentDSPSample + "   grain start dsp index: " + playbackData._DSPStartIndex);
 
                 int sampleLength = samples.Length;
                 for (int s = 0; s < playbackData._GrainSamples.Length; s++)
                 {
-                    if(s<sampleLength)
+                    if(s < sampleLength)
                         playbackData._GrainSamples[s] = samples[s];
                     else
                         playbackData._GrainSamples[s] = 0;
@@ -177,21 +180,14 @@ public class GrainSynth :  MonoBehaviour
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
                 _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
-
-                //print("Copying sample data over: " + samples[1000] + "     " + playbackData._GrainSamples[1000]);
-                //print(".....Copying sample data over: " + samples[1500] + "     " + playbackData._GrainSamples[1500]);
             }
         }
-
         grainEntities.Dispose();
-
-
-
     }
 
     public void CreateSpeaker(Vector3 pos)
     {
-        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);       
+        GrainSpeakerAuthoring speaker = Instantiate(_SpeakerPrefab, pos, quaternion.identity, transform);    
     }
 
     public void RegisterSpeaker(GrainSpeakerAuthoring speaker)

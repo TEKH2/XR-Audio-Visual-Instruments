@@ -31,7 +31,7 @@ public class GrainEmissionProps
     }
 
     [Header("Timing")]
-    [Range(2.0f, 1000f)]
+    [Range(3.0f, 1000f)]
     public int _Cadence = 20;             // ms
     [Range(0f, 1000f)]
     public int _CadenceRandom = 0;        // ms
@@ -39,11 +39,11 @@ public class GrainEmissionProps
     {
         get
         {
-            return Mathf.Clamp(_Cadence + Random.Range(0, _CadenceRandom), 2f, 1000f);
+            return Mathf.Clamp(_Cadence + Random.Range(0, _CadenceRandom), 3f, 1000f);
         }
         set
         {
-            _Cadence = (int)Mathf.Clamp(value, 2f, 1000f);
+            _Cadence = (int)Mathf.Clamp(value, 3f, 1000f);
         }
     }
 
@@ -166,6 +166,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
+            _AudioClipIndex = _EmissionProps._ClipIndex,
             _SpeakerIndex = 0,
             _PlayheadPosNormalized = _EmissionProps.Position,
         });
@@ -196,6 +197,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             _SpeakerIndex = attachedSpeakerIndex,
             _AttachedToSpeaker = data._AttachedToSpeaker,
+            _AudioClipIndex = _EmissionProps._ClipIndex,
             _InRange = data._InRange,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
