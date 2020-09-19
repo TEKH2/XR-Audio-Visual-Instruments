@@ -32,9 +32,9 @@ public class GrainEmissionProps
 
     [Header("Timing")]
     [Range(3.0f, 1000f)]
-    public int _Cadence = 20;             // ms
+    public float _Cadence = 20;             // ms
     [Range(0f, 1000f)]
-    public int _CadenceRandom = 0;        // ms
+    public float _CadenceRandom = 0;        // ms
     public float Cadence
     {
         get
@@ -43,7 +43,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Cadence = (int)Mathf.Clamp(value, 3f, 1000f);
+            _Cadence = Mathf.Clamp(value, 3f, 1000f);
         }
     }
 
@@ -53,10 +53,10 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(2.0f, 1000f)]
     [SerializeField]
-    public int _Duration = 100;
+    public float _Duration = 100;
     [Range(0.0f, 500f)]
     [SerializeField]
-    public int _DurationRandom = 0;
+    public float _DurationRandom = 0;
     public float Duration
     {
         get
@@ -65,7 +65,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Duration = (int)Mathf.Clamp(value, 2, 1000);
+            _Duration = Mathf.Clamp(value, 2, 1000);
         }
     }
 

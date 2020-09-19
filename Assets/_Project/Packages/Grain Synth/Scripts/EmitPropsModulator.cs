@@ -8,23 +8,27 @@ public class EmitPropsModulator : MonoBehaviour
 
     public ParticleSystem.MinMaxCurve _Playhead;
     public ParticleSystem.MinMaxCurve _Cadence;
+    public ParticleSystem.MinMaxCurve _Duration;
 
     public float _LoopDuration = 4;
     float _Timer;
     public float _Norm;
+    public bool _Active = true;
 
     public bool _Loop = true;
   
     // Update is called once per frame
     void Update()
     {
-        _Timer += Time.deltaTime;
-        _Timer %= _LoopDuration;
-        _Norm = _Timer / _LoopDuration;
-
-        _Emitter._EmissionProps._Playhead = GetMinMaxValue(_Playhead, _Norm);
-        _Emitter._EmissionProps.Cadence = GetMinMaxValue(_Cadence, _Norm);
-
+        if (_Active)
+        {
+            _Timer += Time.deltaTime;
+            _Timer %= _LoopDuration;
+            _Norm = _Timer / _LoopDuration;
+            _Emitter._EmissionProps._Playhead = GetMinMaxValue(_Playhead, _Norm);
+            _Emitter._EmissionProps._Cadence = GetMinMaxValue(_Cadence, _Norm);
+            _Emitter._EmissionProps._Duration = GetMinMaxValue(_Duration, _Norm);
+        }
     }
 
     public float GetMinMaxValue(ParticleSystem.MinMaxCurve minMaxCurve, float norm)
