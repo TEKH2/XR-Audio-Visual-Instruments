@@ -58,7 +58,7 @@ public class BehaviourParameter
                     _ModulationInput = GetValue(_AttachedGameObject.transform.position, _Axis);
                     break;
                 case ModulationType.Velocity:
-                    if (_AttachedGameObject.GetComponent<Rigidbody>() != null)
+                    if (_AttachedGameObject.GetComponent<Rigidbody>() != null) // TODO Get component is very slow. Best to check the rigidbody exists one on start up rather than each value get
                         _ModulationInput = GetValue(_AttachedGameObject.GetComponent<Rigidbody>().velocity, _Axis);
                     break;
                 case ModulationType.Rotation:
@@ -91,7 +91,7 @@ public class BehaviourParameter
             case AxisSelection.Z:
                 return input.z;
             case AxisSelection.Magnitude:
-                return Vector3.SqrMagnitude(input);
+                return Vector3.SqrMagnitude(input); //TODO did you mean to get sqr magnitude instead of staright magnitude?
             default:
                 return 0;
         }
