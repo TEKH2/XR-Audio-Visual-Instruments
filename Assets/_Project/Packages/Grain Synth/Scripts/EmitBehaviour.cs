@@ -6,127 +6,32 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
 
-[System.Serializable]
-public class BehaviourParameter
-{    public void SetGameObject(GameObject gameObject)
-    {
-        _AttachedGameObject = gameObject;
-    }
-
-    public enum ModulationType
-    {
-        Time,
-        Position,
-        Velocity,
-        Rotation,
-        Scale,
-        TEST
-    }
-
-    public enum AxisSelection
-    {
-        Magnitude,
-        X,
-        Y,
-        Z
-    }
-
-    private GameObject _AttachedGameObject;
-
-    public ParticleSystem.MinMaxCurve _Curve;
-
-    public ModulationType _ModulationType;
-    public AxisSelection _Axis;
-    public float _ModulationInput = 0;
-    public Vector2 _InputScale = new Vector2(0.0f, 1.0f);
-
-    [Range(0,1)]
-    public float _TestInput = 0;
-
-    public float GetValue(float time)
-    {
-        if (_ModulationType == ModulationType.Time)
-            _ModulationInput = time;
-        else
-        {
-            switch (_ModulationType)
-            {
-                case ModulationType.Time:
-                    _ModulationInput = time;
-                    break;
-                case ModulationType.Position:
-                    _ModulationInput = GetValue(_AttachedGameObject.transform.position, _Axis);
-                    break;
-                case ModulationType.Velocity:
-                    if (_AttachedGameObject.GetComponent<Rigidbody>() != null) // TODO Get component is very slow. Best to check the rigidbody exists one on start up rather than each value get
-                        _ModulationInput = GetValue(_AttachedGameObject.GetComponent<Rigidbody>().velocity, _Axis);
-                    break;
-                case ModulationType.Rotation:
-                    _ModulationInput = GetValue(_AttachedGameObject.transform.rotation.eulerAngles, _Axis);
-                    break;
-                case ModulationType.Scale:
-                    _ModulationInput = GetValue(_AttachedGameObject.transform.localScale, _Axis);
-                    break;
-                case ModulationType.TEST:
-                    _ModulationInput = _TestInput;
-                    break;
-                default:
-                    break;
-            }
-
-            _ModulationInput = GrainSynthSystem.Map(_ModulationInput, _InputScale.x, _InputScale.y, 0, 1);
-        }
-
-        return GetMinMaxValue(_Curve, _ModulationInput);
-    }
-
-    public float GetValue(Vector3 input, AxisSelection axis)
-    {
-        switch (axis)
-        {
-            case AxisSelection.X:
-                return input.x;
-            case AxisSelection.Y:
-                return input.y;
-            case AxisSelection.Z:
-                return input.z;
-            case AxisSelection.Magnitude:
-                return Vector3.SqrMagnitude(input); //TODO did you mean to get sqr magnitude instead of staright magnitude?
-            default:
-                return 0;
-        }
-    }
-
-    public float GetMinMaxValue(ParticleSystem.MinMaxCurve minMaxCurve, float norm)
-    {
-        switch (minMaxCurve.mode)
-        {
-            case ParticleSystemCurveMode.Constant:
-                return minMaxCurve.constant;
-            case ParticleSystemCurveMode.Curve:
-                return minMaxCurve.curve.Evaluate(norm);
-            case ParticleSystemCurveMode.TwoConstants:
-                return Mathf.Lerp(minMaxCurve.constantMin, minMaxCurve.constantMax, UnityEngine.Random.value);
-            case ParticleSystemCurveMode.TwoCurves:
-                return Mathf.Lerp(minMaxCurve.curveMin.Evaluate(norm), minMaxCurve.curveMax.Evaluate(norm), UnityEngine.Random.value);
-            default:
-                return 0;
-        }
-    }
-}
-
-
+// TODO One shot, hold, Loop
+// Play pause stop
+// Output scalar
+// behaviors Idle, interaction, collision, moving
 
 public class EmitBehaviour : MonoBehaviour
 {
-    public enum BehaviourType
+    public enum State
     {
-        Move,
-        Collide
+        Idle,
+        Moving,
+        Collided,
+        Interacting
     }
 
+    public State _State = State.Idle;
+
+    public EmitterBehavior _IdleBehavior;
+    public EmitterBehavior _MovingBehavior;
+    public EmitterBehavior _CollidingBehavior;
+    public EmitterBehavior _InteractingBehavior;
+
+    public EmitterBehavior _ActiveBehavior;
+
+
     public string _BehaviourName;
-    public BehaviourType _Behaviour;
     public GrainEmitterAuthoring _Emitter;
 
     [Header("Global Values")]
@@ -135,24 +40,22 @@ public class EmitBehaviour : MonoBehaviour
     private float _TimerPrevious;
     [Range(0,1)]
     public float _Norm;
-    public bool _Active = true;
+   
     public bool _Play = true;
     private bool _PlayPreviously = true;
     public bool _Loop = true;
     public bool _SilenceWhenDone = true;
 
-    [Header("Grain Modulations")]
-    public BehaviourParameter _Playhead;
-    public BehaviourParameter _Cadence;
-    public BehaviourParameter _Duration;
-    public BehaviourParameter _Transpose;
+
+    [Header("DEBUG")]
+    public bool _Active = true;
 
     void Start()
     {
-        _Playhead.SetGameObject(gameObject);
-        _Cadence.SetGameObject(gameObject);
-        _Duration.SetGameObject(gameObject);
-        _Transpose.SetGameObject(gameObject);
+        _IdleBehavior.Init(gameObject);
+        _MovingBehavior.Init(gameObject);
+        _CollidingBehavior.Init(gameObject);
+        _InteractingBehavior.Init(gameObject);
     }
 
     // Update is called once per frame
@@ -172,6 +75,23 @@ public class EmitBehaviour : MonoBehaviour
             _Timer += Time.deltaTime * 1000;
             _Timer %= _BehaviourDuration;
 
+            switch (_State)
+            {
+                case State.Idle:
+                    _ActiveBehavior = _IdleBehavior;
+                    break;
+                case State.Moving:
+                    _ActiveBehavior = _MovingBehavior;
+                    break;
+                case State.Interacting:
+                    _ActiveBehavior = _InteractingBehavior;
+                    break;
+                case State.Collided:
+                    _ActiveBehavior = _CollidingBehavior;
+                    break;
+            }
+
+
             // End of non-looped trigger
             if (!_Loop && _Timer < _TimerPrevious)
             {
@@ -184,10 +104,10 @@ public class EmitBehaviour : MonoBehaviour
             else
             {
                 _Norm = _Timer / _BehaviourDuration;
-                _Emitter._EmissionProps._Playhead = _Playhead.GetValue(_Norm);
-                _Emitter._EmissionProps._Cadence = _Cadence.GetValue(_Norm);
-                _Emitter._EmissionProps._Duration = _Duration.GetValue(_Norm);
-                _Emitter._EmissionProps._Transpose = _Transpose.GetValue(_Norm);
+                _Emitter._EmissionProps._Playhead = _ActiveBehavior._Playhead.GetValue(_Norm);
+                _Emitter._EmissionProps._Cadence = _ActiveBehavior._Cadence.GetValue(_Norm);
+                _Emitter._EmissionProps._Duration = _ActiveBehavior._Duration.GetValue(_Norm);
+                _Emitter._EmissionProps._Transpose = _ActiveBehavior._Transpose.GetValue(_Norm);
             }
         }
 

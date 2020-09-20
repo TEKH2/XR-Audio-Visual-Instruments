@@ -7753,12 +7753,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abef63853a7e7ef41896f330d70c70ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _IdleBehavior: {fileID: 11400000, guid: 7c8513d346d9ddc43902326fe2f44e55, type: 2}
+  _MovingBehavior: {fileID: 11400000, guid: 2ff6905a6782bc641b14ad6a9962c9a7, type: 2}
+  _CollidingBehavior: {fileID: 11400000, guid: 29347e0f04905d34f88b37cf7ece410c, type: 2}
+  _InteractingBehavior: {fileID: 11400000, guid: ff6f3d567c50ef848b5ddb3e8aa26311,
+    type: 2}
   _BehaviourName: Test Behaviour
   _Behaviour: 0
   _Emitter: {fileID: 1255868409}
   _BehaviourDuration: 4000
   _Norm: 0
-  _Active: 1
   _Play: 1
   _Loop: 1
   _SilenceWhenDone: 1
@@ -7800,9 +7804,9 @@ MonoBehaviour:
       m_ConstantMax: 0
     _ModulationType: 0
     _Axis: 0
-    _ModulationInput: 0
     _InputScale: {x: 0, y: 0}
-    _NormalisedInput: 0
+    _TestInput: 0
+    _ModulationInput: 0
   _Cadence:
     _Curve:
       m_Mode: 0
@@ -7823,9 +7827,9 @@ MonoBehaviour:
       m_ConstantMax: 10
     _ModulationType: 0
     _Axis: 0
-    _ModulationInput: 0
     _InputScale: {x: 0, y: 1}
-    _NormalisedInput: 0
+    _TestInput: 0
+    _ModulationInput: 0
   _Duration:
     _Curve:
       m_Mode: 0
@@ -7846,9 +7850,9 @@ MonoBehaviour:
       m_ConstantMax: 50
     _ModulationType: 0
     _Axis: 0
-    _ModulationInput: 0
     _InputScale: {x: 0, y: 0}
-    _NormalisedInput: 0
+    _TestInput: 0
+    _ModulationInput: 0
   _Transpose:
     _Curve:
       m_Mode: 1
@@ -7887,9 +7891,10 @@ MonoBehaviour:
       m_ConstantMax: 0
     _ModulationType: 4
     _Axis: 0
-    _ModulationInput: 0
     _InputScale: {x: 0, y: 1}
-    _NormalisedInput: 0
+    _TestInput: 0
+    _ModulationInput: 0
+  _Active: 1
 --- !u!54 &1576440258
 Rigidbody:
   m_ObjectHideFlags: 0
