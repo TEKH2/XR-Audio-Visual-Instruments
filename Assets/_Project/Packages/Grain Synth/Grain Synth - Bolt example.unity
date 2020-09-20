@@ -7748,6 +7748,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abef63853a7e7ef41896f330d70c70ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _BehaviourName: Test Behaviour
+  _Behaviour: 1
   _Emitter: {fileID: 1255868409}
   _Playhead:
     m_Mode: 1
@@ -8083,6 +8085,7 @@ MonoBehaviour:
   _Active: 1
   _Play: 1
   _Loop: 0
+  _OffOnEnd: 0
 --- !u!1 &1594698397
 GameObject:
   m_ObjectHideFlags: 0

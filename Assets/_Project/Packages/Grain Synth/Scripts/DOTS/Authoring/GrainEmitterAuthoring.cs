@@ -7,7 +7,9 @@ using Random = UnityEngine.Random;
 [System.Serializable]
 public class GrainEmissionProps
 {
-    [Header("Speaker")]
+    public bool _Playing = true;
+
+    [Header("Clip")]
     public int _ClipIndex = 0;
 
     // Position (normalised)
@@ -120,7 +122,6 @@ public class GrainEmissionProps
 
         _PlayheadRand = posRand;
         _DurationRandom = durationRand;
-        //_PitchRandom = pitchRand;
         _VolumeRandom = volumeRand;
     }
 }
@@ -158,6 +159,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
             _InRange = _StaticallyPaired,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
@@ -195,6 +197,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Playing = _EmissionProps._Playing,
             _SpeakerIndex = attachedSpeakerIndex,
             _AttachedToSpeaker = data._AttachedToSpeaker,
             _AudioClipIndex = _EmissionProps._ClipIndex,

@@ -2,8 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmitPropsModulator : MonoBehaviour
+public class EmitBehaviour : MonoBehaviour
 {
+    public enum BehaviourType
+    {
+        Move,
+        Collide
+    }
+
+    public string _BehaviourName;
+    public BehaviourType _Behaviour;
+
     public GrainEmitterAuthoring _Emitter;
 
     public ParticleSystem.MinMaxCurve _Playhead;
@@ -18,14 +27,16 @@ public class EmitPropsModulator : MonoBehaviour
     public bool _Active = true;
     public bool _Play = true;
     private bool _PlayPreviously = true;
-
     public bool _Loop = true;
+
+    public bool _SilenceWhenDone = true;
 
     private bool _ModEnd = false;
 
     // Update is called once per frame
     void Update()
     {
+        // If not looping, but play has turned to active
         if (!_Loop && _Play && !_PlayPreviously)
         {
             ResetTimer();
@@ -33,13 +44,20 @@ public class EmitPropsModulator : MonoBehaviour
 
         if (_Active && _Play)
         {
+            if (!_PlayPreviously)
+                _Emitter._EmissionProps._Playing = true;
+
             _Timer += Time.deltaTime;
             _Timer %= _LoopDuration;
 
+            // End of non-looped trigger
             if (!_Loop && _Timer < _TimerPrevious)
             {
                 _Play = false;
                 ResetTimer();
+
+                if (_SilenceWhenDone)
+                    _Emitter._EmissionProps._Playing = false;
             }
             else
             {
