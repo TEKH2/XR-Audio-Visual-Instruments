@@ -13,14 +13,14 @@ public class BehaviourParameter
         _AttachedGameObject = gameObject;
     }
 
-
     public enum ModulationType
     {
         Time,
         Position,
         Velocity,
         Rotation,
-        Scale
+        Scale,
+        TEST
     }
 
     public enum AxisSelection
@@ -39,7 +39,9 @@ public class BehaviourParameter
     public AxisSelection _Axis;
     public float _ModulationInput = 0;
     public Vector2 _InputScale = new Vector2(0.0f, 1.0f);
-    public float _NormalisedInput = 0;
+
+    [Range(0,1)]
+    public float _TestInput = 0;
 
     public float GetValue(float time)
     {
@@ -64,6 +66,9 @@ public class BehaviourParameter
                     break;
                 case ModulationType.Scale:
                     _ModulationInput = GetValue(_AttachedGameObject.transform.localScale, _Axis);
+                    break;
+                case ModulationType.TEST:
+                    _ModulationInput = _TestInput;
                     break;
                 default:
                     break;
@@ -128,6 +133,7 @@ public class EmitBehaviour : MonoBehaviour
     public float _BehaviourDuration = 4000;
     private float _Timer;
     private float _TimerPrevious;
+    [Range(0,1)]
     public float _Norm;
     public bool _Active = true;
     public bool _Play = true;
