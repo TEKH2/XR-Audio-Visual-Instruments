@@ -20,7 +20,7 @@ public class EmitterBehaviour : ScriptableObject
     private float _TimerNorm = 0;
     public bool _Active = false;
     private bool _Started = false;
-    private bool _Ended = false;
+    private bool _TimerEnd = false;
 
     [Header("Grain Parameters")]
     public BehaviourParameter _Playhead;
@@ -50,7 +50,7 @@ public class EmitterBehaviour : ScriptableObject
     {
         _Active = true;
         _Started = false;
-        _Ended = false;
+        _TimerEnd = false;
     }
 
 
@@ -62,34 +62,32 @@ public class EmitterBehaviour : ScriptableObject
             if (!_Started)
             {
                 _Started = true;
-                _Ended = false;
+                _TimerEnd = false;
                 if (_EventType != EventType.Loop)
                     _Timer = 0;
             }
 
             // Update timer, or deactivate if OneShot and has ended
-            if (!_Ended)
+            if (!_TimerEnd)
             {
                 _Timer += Time.deltaTime * 1000;
 
-                if (_EventType == EventType.OneShot)
-                    if (_Timer > _BehaviourDuration)
+                if (_Timer > _BehaviourDuration)
+                    switch(_EventType)
                     {
-                        _Ended = true;
-                        _Active = false;
-                        _Collision = null;
-                    }
-                else if (_EventType == EventType.Hold)
-                    if (_Timer > _BehaviourDuration)
-                    {
-                        _Ended = true;
-                        _Timer = _BehaviourDuration - 1;
-                    }
-                else if (_EventType == EventType.Loop)
-                {
-                    _Timer += Time.deltaTime * 1000;
-                    _Timer %= _BehaviourDuration;
-                }
+                        case EventType.OneShot:
+                            _TimerEnd = true;
+                            _Active = false;
+                            _Collision = null;
+                            break;
+                        case EventType.Hold:
+                            _TimerEnd = true;
+                            _Timer = _BehaviourDuration - 1;
+                            break;
+                        case EventType.Loop:
+                            _Timer %= _BehaviourDuration;
+                            break;
+                    }    
             }
 
             if (_Active)
@@ -148,12 +146,12 @@ public class BehaviourParameter
     public ModulationType _ModulationType;
     public AxisSelection _Axis;
 
-    public float _InputLow = 0;
-    public float _InputHigh = 1;
+    public float _InputLow;
+    public float _InputHigh;
 
     [Header("Output")]
-    public float _OutputLow = 0;
-    public float _OutputHigh = 1;
+    public float _OutputLow;
+    public float _OutputHigh;
 
     [Header("DEBUG")]
     [Range(0, 1)]
@@ -191,10 +189,10 @@ public class BehaviourParameter
                     break;
             }
 
-            _ModulationInput = GrainSynthSystem.Map(_ModulationInput, _InputLow, _InputHigh, _OutputLow, _OutputHigh);
+            _ModulationInput = GrainSynthSystem.Map(_ModulationInput, _InputLow, _InputHigh, 0, 1);
         }
 
-        return GetMinMaxValue(_Curve, _ModulationInput);
+        return GrainSynthSystem.Map(GetMinMaxValue(_Curve, _ModulationInput), 0, 1, _OutputLow, _OutputHigh);
     }
 
     public float GetValue(Vector3 input, AxisSelection axis)

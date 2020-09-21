@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b188311e491993c4ea0c3c48d174eace, type: 3}
   m_Name: EmitBehaviour - Idle
   m_EditorClassIdentifier: 
-  _EventType: 0
+  _EventType: 2
   _BehaviourDuration: 1000
   _Active: 1
   _Playhead:
@@ -58,7 +58,7 @@ MonoBehaviour:
     _OutputLow: 0
     _OutputHigh: 1
     _TestInput: 0
-    _ModulationInput: 1.0833445
+    _ModulationInput: 1.0197985
   _Cadence:
     _Curve:
       m_Mode: 0
@@ -76,7 +76,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 20
+      m_ConstantMax: 0.2
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
@@ -84,7 +84,7 @@ MonoBehaviour:
     _OutputLow: 3
     _OutputHigh: 200
     _TestInput: 0
-    _ModulationInput: 1.0833445
+    _ModulationInput: 1.0197985
   _Duration:
     _Curve:
       m_Mode: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 0
+      m_ConstantMax: 0.2
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
     _OutputLow: 5
     _OutputHigh: 500
     _TestInput: 0
-    _ModulationInput: 1.0833445
+    _ModulationInput: 1.0197985
   _Transpose:
     _Curve:
       m_Mode: 0
@@ -128,7 +128,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 0
+      m_ConstantMax: 0.5
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
@@ -136,4 +136,4 @@ MonoBehaviour:
     _OutputLow: -3
     _OutputHigh: 3
     _TestInput: 0
-    _ModulationInput: 1.0833445
+    _ModulationInput: 1.0197985

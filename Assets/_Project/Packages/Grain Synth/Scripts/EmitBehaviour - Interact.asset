@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b188311e491993c4ea0c3c48d174eace, type: 3}
   m_Name: EmitBehaviour - Interact
   m_EditorClassIdentifier: 
+  _EventType: 2
+  _BehaviourDuration: 1000
+  _Active: 1
   _Playhead:
     _Curve:
-      m_Mode: 0
-      m_CurveMultiplier: 0
+      m_Mode: 1
+      m_CurveMultiplier: 1
       m_CurveMin:
         serializedVersion: 2
         m_Curve: []
@@ -24,7 +27,25 @@ MonoBehaviour:
         m_RotationOrder: 4
       m_CurveMax:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
@@ -55,13 +76,13 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 0
+      m_ConstantMax: 0.2
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
     _InputHigh: 1
-    _OutputLow: 0
-    _OutputHigh: 1
+    _OutputLow: 3
+    _OutputHigh: 200
     _TestInput: 0
     _ModulationInput: 0
   _Duration:
@@ -81,13 +102,13 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 0
+      m_ConstantMax: 0.2
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
     _InputHigh: 1
-    _OutputLow: 0
-    _OutputHigh: 1
+    _OutputLow: 5
+    _OutputHigh: 500
     _TestInput: 0
     _ModulationInput: 0
   _Transpose:
@@ -107,12 +128,12 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_ConstantMin: 0
-      m_ConstantMax: 0
+      m_ConstantMax: 0.5
     _ModulationType: 0
     _Axis: 0
     _InputLow: 0
     _InputHigh: 1
-    _OutputLow: 0
-    _OutputHigh: 1
+    _OutputLow: -3
+    _OutputHigh: 3
     _TestInput: 0
     _ModulationInput: 0

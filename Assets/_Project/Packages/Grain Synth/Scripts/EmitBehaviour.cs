@@ -28,6 +28,7 @@ public class EmitBehaviour : MonoBehaviour
 
     [Header("Behaviour States")]
     public State _State = State.Idle;
+    private State _StatePrevious = State.Idle;
     public EmitterBehaviour _ActiveBehaviour;
 
     public EmitterBehaviour _IdleBehaviour;
@@ -102,22 +103,22 @@ public class EmitBehaviour : MonoBehaviour
                 _State = State.Off;
 
         // If behaviour isn't an active collsion - check state in order of priority
-        if (_State != State.Collided)
-        {
-            if (_InteractionEnabled)
-            {
-                // TODO define interaction triggers
-            }
-            else if (_MovingEnabled)
-                if (_RigidBody.velocity.magnitude > _MovingSpeedThreshold || (_RotateTriggersMoving && _RigidBody.angularVelocity.magnitude > _RotationSpeedThreshold))
-                {
-                    _State = State.Moving;
-                }
-                else if (_IdleEnabled)
-                    _State = State.Idle;
-                else
-                    _State = State.Off;
-        }
+        //if (_State != State.Collided)
+        //{
+        //    if (_InteractionEnabled)
+        //    {
+        //        // TODO define interaction triggers
+        //    }
+        //    else if (_MovingEnabled)
+        //        if (_RigidBody.velocity.magnitude > _MovingSpeedThreshold || (_RotateTriggersMoving && _RigidBody.angularVelocity.magnitude > _RotationSpeedThreshold))
+        //        {
+        //            _State = State.Moving;
+        //        }
+        //        else if (_IdleEnabled)
+        //            _State = State.Idle;
+        //        else
+        //            _State = State.Off;
+        //}
 
         // Switch to requried behaviour
         switch (_State)
@@ -135,6 +136,9 @@ public class EmitBehaviour : MonoBehaviour
                 _ActiveBehaviour = _CollisionBehaviour;
                 break;
         }
+
+        if (_ActiveBehaviour != null && _StatePrevious != _State)
+            _ActiveBehaviour.Reset();
 
 
         if (_State != State.Off || _ActiveBehaviour != null)
