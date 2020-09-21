@@ -29,12 +29,14 @@ public class EmitBehaviour : MonoBehaviour
     [Header("Behaviour States")]
     public State _State = State.Idle;
     private State _StatePrevious = State.Idle;
-    public EmitterBehaviour _ActiveBehaviour;
+    EmitterStateBehavior _ActiveBehaviour;
 
-    public EmitterBehaviour _IdleBehaviour;
-    public EmitterBehaviour _MovingBehaviour;
-    public EmitterBehaviour _CollisionBehaviour;
-    public EmitterBehaviour _InteractionBehaviour;
+
+
+    public EmitterStateBehavior _IdleBehaviour;
+    public EmitterStateBehavior _MovingBehaviour;
+    public EmitterStateBehavior _CollisionBehaviour;
+    public EmitterStateBehavior _InteractionBehaviour;
 
     [Header("State Configuration")]
 
@@ -77,6 +79,15 @@ public class EmitBehaviour : MonoBehaviour
         {
             _State = State.Off;
         }
+    }
+
+    [ContextMenu("Copy Templates")]
+    void CopyTemplates()
+    {
+        _IdleBehaviour.CopyTemplate();
+        _MovingBehaviour.CopyTemplate();
+        _CollisionBehaviour.CopyTemplate();
+        _InteractionBehaviour.CopyTemplate();
     }
 
     public void OnCollisionEnter(Collision collision)

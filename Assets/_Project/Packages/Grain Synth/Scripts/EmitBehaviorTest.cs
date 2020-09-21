@@ -8,6 +8,7 @@ using UnityEngine;
 /// <summary>
 ///  Usability in edotir
 ///  Multi curve editing
+///  Modulations only return 0-1 get scaled after output
 /// </summary>
 public class EmitBehaviorTest : MonoBehaviour
 {
@@ -149,3 +150,5 @@ public class ScaledMinMaxCurve
         return Mathf.Lerp(_OutputRange.x, _OutputRange.y, curveVal);
     }
 }
+
+
