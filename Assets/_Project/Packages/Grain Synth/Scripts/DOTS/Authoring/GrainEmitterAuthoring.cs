@@ -7,7 +7,9 @@ using Random = UnityEngine.Random;
 [System.Serializable]
 public class GrainEmissionProps
 {
-    [Header("Speaker")]
+    public bool _Playing = true;
+
+    [Header("Clip")]
     public int _ClipIndex = 0;
 
     // Position (normalised)
@@ -32,9 +34,9 @@ public class GrainEmissionProps
 
     [Header("Timing")]
     [Range(3.0f, 1000f)]
-    public int _Cadence = 20;             // ms
+    public float _Cadence = 20;             // ms
     [Range(0f, 1000f)]
-    public int _CadenceRandom = 0;        // ms
+    public float _CadenceRandom = 0;        // ms
     public float Cadence
     {
         get
@@ -43,7 +45,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Cadence = (int)Mathf.Clamp(value, 3f, 1000f);
+            _Cadence = Mathf.Clamp(value, 3f, 1000f);
         }
     }
 
@@ -53,10 +55,10 @@ public class GrainEmissionProps
     //---------------------------------------------------------------------
     [Range(2.0f, 1000f)]
     [SerializeField]
-    public int _Duration = 100;
+    public float _Duration = 100;
     [Range(0.0f, 500f)]
     [SerializeField]
-    public int _DurationRandom = 0;
+    public float _DurationRandom = 0;
     public float Duration
     {
         get
@@ -65,7 +67,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Duration = (int)Mathf.Clamp(value, 2, 1000);
+            _Duration = Mathf.Clamp(value, 2, 1000);
         }
     }
 
@@ -120,7 +122,6 @@ public class GrainEmissionProps
 
         _PlayheadRand = posRand;
         _DurationRandom = durationRand;
-        //_PitchRandom = pitchRand;
         _VolumeRandom = volumeRand;
     }
 }
@@ -158,6 +159,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
             _InRange = _StaticallyPaired,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
@@ -195,6 +197,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
+            _Playing = _EmissionProps._Playing,
             _SpeakerIndex = attachedSpeakerIndex,
             _AttachedToSpeaker = data._AttachedToSpeaker,
             _AudioClipIndex = _EmissionProps._ClipIndex,

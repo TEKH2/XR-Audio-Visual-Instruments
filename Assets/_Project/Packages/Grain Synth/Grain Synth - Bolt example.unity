@@ -2775,6 +2775,11 @@ PrefabInstance:
       propertyPath: _EmissionProps._ClipIndex
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7948844444687561264, guid: bc7466bca05a79c468c5fced2d31f364,
+        type: 3}
+      propertyPath: _EmissionProps._Playing
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc7466bca05a79c468c5fced2d31f364, type: 3}
 --- !u!114 &1255868409 stripped
@@ -8243,80 +8248,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abef63853a7e7ef41896f330d70c70ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _BehaviourName: Test Behaviour
   _Emitter: {fileID: 1255868409}
-  _Playhead:
-    m_Mode: 1
-    m_CurveMultiplier: 1
-    m_CurveMin:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_CurveMax:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_ConstantMin: 0
-    m_ConstantMax: 0
-  _Cadence:
-    m_Mode: 1
-    m_CurveMultiplier: 10
-    m_CurveMin:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_CurveMax:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1.999994
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_ConstantMin: 0
-    m_ConstantMax: 0
-  _LoopDuration: 4
-  _Norm: 0
-  _Loop: 1
+  _State: 0
+  _ActiveBehaviour: {fileID: 0}
+  _IdleBehaviour: {fileID: 11400000, guid: 7c8513d346d9ddc43902326fe2f44e55, type: 2}
+  _MovingBehaviour: {fileID: 11400000, guid: 2ff6905a6782bc641b14ad6a9962c9a7, type: 2}
+  _CollisionBehaviour: {fileID: 11400000, guid: 29347e0f04905d34f88b37cf7ece410c,
+    type: 2}
+  _InteractionBehaviour: {fileID: 11400000, guid: ff6f3d567c50ef848b5ddb3e8aa26311,
+    type: 2}
+  _IdleEnabled: 1
+  _MovingEnabled: 1
+  _CollisionEnabled: 1
+  _InteractionEnabled: 1
+  _MovingSpeedThreshold: 0.1
+  _RotateTriggersMoving: 1
+  _RotationSpeedThreshold: 0.1
+  _Active: 1
+--- !u!54 &1576440258
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576440256}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1594698397
 GameObject:
   m_ObjectHideFlags: 0

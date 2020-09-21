@@ -42,7 +42,7 @@ public class GrainSynthSystem : SystemBase
         (
             (int entityInQueryIndex, ref EmitterComponent emitter) =>
             {
-                if (emitter._AttachedToSpeaker)
+                if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
                     // Max grains to stop it getting stuck in a while loop
                     int maxGrains = 30;
