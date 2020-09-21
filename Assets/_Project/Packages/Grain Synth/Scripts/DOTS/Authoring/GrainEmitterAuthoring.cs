@@ -88,7 +88,7 @@ public class GrainEmissionProps
         }
         set
         {
-            _Volume = (int)Mathf.Clamp(value, 0f, 3f);
+            _Volume = Mathf.Clamp(value, 0f, 3f);
         }
     }
 
