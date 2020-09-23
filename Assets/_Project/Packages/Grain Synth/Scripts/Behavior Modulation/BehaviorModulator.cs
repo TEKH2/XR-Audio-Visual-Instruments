@@ -132,10 +132,12 @@ namespace Tekh2
                 case State.Stopped:
                     _Timer = 0;
                     _TimerNorm = 0;
-                    UpdateValues();
                     break;
             }
 
+            print(name + "  Set state: " + state);
+
+            UpdateValues();
             _State = state;
         }
     }

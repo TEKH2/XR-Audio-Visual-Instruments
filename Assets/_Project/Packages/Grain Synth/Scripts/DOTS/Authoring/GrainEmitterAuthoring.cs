@@ -139,7 +139,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     bool _Initialized = false;
 
     bool _StaticallyPaired = false;
-    GrainSpeakerAuthoring _PairedSpeaker;
+    public GrainSpeakerAuthoring _PairedSpeaker;
 
     float _Timer = 0;
 
@@ -148,9 +148,13 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _EmitterEntity = entity;
 
         // If this emitter has a speaker componenet then it is statically paired        
-        if (gameObject.GetComponent<GrainSpeakerAuthoring>() != null)
+        if (_PairedSpeaker == null && gameObject.GetComponent<GrainSpeakerAuthoring>() != null)
         {
-            _PairedSpeaker = gameObject.GetComponent<GrainSpeakerAuthoring>();
+            _PairedSpeaker = gameObject.GetComponent<GrainSpeakerAuthoring>();          
+        }
+
+        if(_PairedSpeaker != null)
+        {
             _PairedSpeaker._StaticallyPaired = true;
             _StaticallyPaired = true;
             dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
