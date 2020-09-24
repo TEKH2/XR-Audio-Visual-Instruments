@@ -141,6 +141,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     bool _StaticallyPaired = false;
     public GrainSpeakerAuthoring _PairedSpeaker;
 
+    public bool _AttachedToSpeaker = false;
+    int _AttachedSpeakerIndex;
+    public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
+
     float _Timer = 0;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -214,6 +218,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _PlayheadPosNormalized = _EmissionProps.Position
         });
+
+        _AttachedSpeakerIndex = data._SpeakerIndex;
+        _AttachedToSpeaker = data._AttachedToSpeaker;
 
         Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
         _EntityManager.SetComponentData(_EmitterEntity, new Translation

@@ -21,7 +21,14 @@ public class GrainEmitterPS : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _Main.startLifetime = _GrainEmitter._EmissionProps.Duration * .001f;
-        _Emission.rateOverTime = 1000f / _GrainEmitter._EmissionProps.Cadence;
+        if (_GrainEmitter._AttachedToSpeaker)
+        {
+            _Main.startLifetime = _GrainEmitter._EmissionProps.Duration * .001f;
+            _Emission.rateOverTime = 1000f / _GrainEmitter._EmissionProps.Cadence;
+        }
+        else
+        {
+            _Emission.rateOverTime = 0;
+        }
     }
 }

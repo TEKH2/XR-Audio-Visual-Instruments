@@ -13,6 +13,7 @@ using System.Linq;
 using Unity.Entities.UniversalDelegates;
 using Unity.Entities.CodeGeneratedJobForEach;
 using Random = UnityEngine.Random;
+using System.Runtime.InteropServices;
 
 public class GrainSynth :  MonoBehaviour
 {
@@ -148,9 +149,9 @@ public class GrainSynth :  MonoBehaviour
 
        
         for (int i = 0; i < grainEntities.Length; i++)
-        {           
+        {
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
-            
+
             if (grainProcessor._SamplePopulated)
             {
                 GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
@@ -164,26 +165,24 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._PlayheadIndex = 0;
                 playbackData._SizeInSamples = samples.Length;
                 playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
-                playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;
+                playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;               
 
-
-                int sampleLength = samples.Length;
-                for (int s = 0; s < playbackData._GrainSamples.Length; s++)
-                {
-                    if(s < sampleLength)
-                        playbackData._GrainSamples[s] = samples[s];
-                    else
-                        playbackData._GrainSamples[s] = 0;
-                }
+                NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
 
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
-                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);            
+                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
             }
         }       
 
         grainEntities.Dispose();
+    }
+
+    public static unsafe void NativeToManagedCopyMemory(float[] targetArray, NativeArray<float> SourceNativeArray)
+    {
+        void* memoryPointer = NativeArrayUnsafeUtility.GetUnsafeBufferPointerWithoutChecks(SourceNativeArray);
+        Marshal.Copy((IntPtr)memoryPointer, targetArray, 0, SourceNativeArray.Length);
     }
 
     public void CreateSpeaker(Vector3 pos)
