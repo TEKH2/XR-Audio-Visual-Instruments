@@ -75,7 +75,7 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
             float timingRange = (Mathf.Abs(_DurationRange.x / _CadenceRange.x) + Mathf.Abs(_DurationRange.y / _CadenceRange.y)) / 2;
             _EmissionProps.Cadence = tempAutomation;
             _EmissionProps.Duration = tempAutomation * timingRange;
-            Debug.Log(timingRange);
+            //Debug.Log(timingRange);
         }
         else
         {
