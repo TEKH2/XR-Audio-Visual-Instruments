@@ -12,6 +12,7 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
     [Space]
     [Header("Automation")]
 
+    float _Seed;
     public float _AutomationSpeed = 1;
 
     public bool _AutomatePlayhead = false;
@@ -28,12 +29,13 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
 
     private void Awake()
     {
+        _Seed = Random.value * 123.74f;
         _Emitter = GetComponent<GrainEmitterAuthoring>();
     }
 
     private void Update()
     {
-        float automation = Mathf.PerlinNoise(Time.time * _AutomationSpeed, Time.time * _AutomationSpeed * .5f);
+        float automation = Mathf.PerlinNoise(Time.time * _AutomationSpeed + _Seed, Time.time * _AutomationSpeed * .5f + _Seed);
 
         if (_AutomatePlayhead)
             _EmissionProps.Position = Mathf.Lerp(_AutomatePlayheadRange.x, _AutomatePlayheadRange.y, automation);
