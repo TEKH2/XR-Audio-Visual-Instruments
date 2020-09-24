@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrainSynthTester : MonoBehaviour
+public class EmitterPropModSimpleNoise : MonoBehaviour
 {
     public int _EmitterCount = 1;
     public float _LatencyInMS = 20;
