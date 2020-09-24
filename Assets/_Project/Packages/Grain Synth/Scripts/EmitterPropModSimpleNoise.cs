@@ -98,8 +98,8 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
                 outputValue = Mathf.Lerp(range.x, range.y, automation);
                 break;
             case Automation.Straight:
-                phase += Time.deltaTime * speed / _GrainSynth._AudioClips[_Emitter._EmissionProps._ClipIndex].length + _Seed;
-                outputValue = _PlayheadPhase % 1;
+                phase += Time.deltaTime * speed / _GrainSynth._AudioClips[_Emitter._EmissionProps._ClipIndex].length;
+                outputValue = (_PlayheadPhase + _Seed) % 1;
                 break;
             case Automation.PingPong:
                 break;
