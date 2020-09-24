@@ -4,6 +4,8 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 
+using UnityEngine.Profiling;
+
 
 public class GrainPlaybackData
 {
@@ -47,10 +49,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     List<GrainPlaybackData> _PooledGrainPlaybackData = new List<GrainPlaybackData>();
 
-    int _GrainPlaybackDataToPool = 100;
+    int _GrainPlaybackDataToPool = 300;
     int _MaxGrainPlaybackDataCount = 500;
 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
+    int _DebugTotalGrainsCreated = 0;
 
     //DebugGUI_Granulator _DebugGUI;
     int prevStartSample = 0;
@@ -82,6 +85,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
 
+        // Pool grain playback data - current maximum length set to one second of samples (_SampleRate)
+        print(name + " Pooling grains");
+        for (int i = 0; i < _GrainPlaybackDataToPool; i++)
+        {
+            _PooledGrainPlaybackData.Add(CreateNewGrain());
+        }
+        ReportGrainsDebug();
+
         _Initialized = true;
     }
 
@@ -89,14 +100,20 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
+      
+
         _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
         _AudioSource = gameObject.GetComponent<AudioSource>();
 
         _SampleRate = AudioSettings.outputSampleRate;
 
-        // Pool grain playback data - current maximum length set to one second of samples (_SampleRate)
-        for (int i = 0; i < _GrainPlaybackDataToPool; i++)
-            _PooledGrainPlaybackData.Add(new GrainPlaybackData(_SampleRate));        
+      
+    }
+
+    GrainPlaybackData CreateNewGrain()
+    {
+        _DebugTotalGrainsCreated++;
+        return new GrainPlaybackData(_SampleRate);
     }
 
     public void Update()
@@ -161,6 +178,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public GrainPlaybackData GetGrainPlaybackDataFromPool()
     {
+        if(_DebugLog)
+            print("Active: " + _ActiveGrainPlaybackData.Count + "   Pooled: " + _PooledGrainPlaybackData.Count);
+
         if (_PooledGrainPlaybackData.Count >= 1)
         {
             GrainPlaybackData grainPlaybackData = _PooledGrainPlaybackData[0];
@@ -170,7 +190,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
         else if (GrainDataCount < _MaxGrainPlaybackDataCount)
         {
-            GrainPlaybackData grainPlaybackData = new GrainPlaybackData(_SampleRate);
+            print("Creating new grain");
+            ReportGrainsDebug();
+            GrainPlaybackData grainPlaybackData = CreateNewGrain();
             return grainPlaybackData;
         }
         else
@@ -178,6 +200,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             print(name + "------  Audio output already using max grains. " + GrainDataCount + "/" + _MaxGrainPlaybackDataCount);
             return null;
         }
+    }
+
+    void ReportGrainsDebug()
+    {
+        print(name + "------------  Active: " + _ActiveGrainPlaybackData.Count + "  Pooled: " + _PooledGrainPlaybackData.Count + "  Total created: " + _DebugTotalGrainsCreated);
     }
 
     // AUDIO BUFFER CALLS
@@ -220,6 +247,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             }
         }
 
+
         // Removed finished playback data from pool
         for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
         {
@@ -228,6 +256,12 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             if (!_ActiveGrainPlaybackData[i]._IsPlaying)
             {
+                if (_DebugLog)
+                {
+                    print("Adding grain back to pool");
+                    ReportGrainsDebug();
+                }
+
                 // Add to pool
                 _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
                 // Remove from active pist

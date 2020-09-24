@@ -146,19 +146,23 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-        Profiler.BeginSample("Grain update");
+       
         for (int i = 0; i < grainEntities.Length; i++)
-        {
+        {           
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
 
             if(grainProcessor._SamplePopulated)
             {
+                Profiler.BeginSample("Grain update 1");
                 GrainPlaybackData playbackData = _GrainSpeakers[0].GetGrainPlaybackDataFromPool();
+                Profiler.EndSample();
 
                 if (playbackData == null)
                     break;
 
                 NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+
+              
 
                 playbackData._IsPlaying = true;
                 playbackData._PlayheadIndex = 0;
@@ -179,10 +183,9 @@ public class GrainSynth :  MonoBehaviour
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
-                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
+                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);            
             }
-        }
-        Profiler.EndSample();
+        }       
 
         grainEntities.Dispose();
     }
@@ -199,6 +202,7 @@ public class GrainSynth :  MonoBehaviour
 
         speaker._SpeakerIndex = _GrainSpeakers.Count;
         speaker._Registered = true;
+        speaker.name = "Speaker " + _GrainSpeakers.Count;
         _GrainSpeakers.Add(speaker);
     }
 
