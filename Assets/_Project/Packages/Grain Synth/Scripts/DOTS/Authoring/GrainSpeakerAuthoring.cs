@@ -55,8 +55,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     int _ActiveGrains = 0;
     int _PooledGrains = 0;
 
-    int _GrainPlaybackDataToPool = 300;
-    int _MaxGrainPlaybackDataCount = 500;
+    int _GrainPlaybackDataToPool = 100;
+    int _MaxGrainPlaybackDataCount = 200;
 
     int GrainDataCount { get { return _ActiveGrainPlaybackData.Count + _PooledGrainPlaybackData.Count; } }
     int _DebugTotalGrainsCreated = 0;
@@ -69,6 +69,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     float _VolumeSmoothing = 4;
 
     float _TargetVolume = 0;
+
+    bool _ConnectedToEmitter = false;
 
 
     public bool _Registered = false;
@@ -110,7 +112,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             }
         }
       
-        ReportGrainsDebug("Pooling");
+        //ReportGrainsDebug("Pooling");
 
         _Initialized = true;
     }
@@ -136,18 +138,61 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (!_Initialized)
             return;
 
+        if (_DebugLog)
+            ReportGrainsDebug("");
+
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
+        // Check pairing to emitters
         if (!_StaticallyPaired)
         {
+            Profiler.BeginSample("here");
+
             // Clear playback data if not connected too emitters
             _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
+            bool isConnectedThisFrame = _SpeakerComponenet._ConnectedToEmitter;
+
+            // If previously connceted and now disconnected
+            if (_ConnectedToEmitter && !isConnectedThisFrame)
+            {
+                if(_UseSingleGrainPlaybackDataArray)
+                {
+                    for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
+                    {
+                        _GrainPlaybackDataArray[i]._Pooled = true;
+                        _GrainPlaybackDataArray[i]._IsPlaying = false;
+                    }
+                    
+                    _ActiveGrains = 0;
+                    _PooledGrains = _GrainPlaybackDataArray.Length;
+                }
+                else
+                {
+                    // Move all active grain playback data to the pool
+                    for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
+                    {
+                        _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
+                    }
+                    _ActiveGrainPlaybackData.Clear();
+                }
+            }
+
+            Profiler.EndSample();
+
+            Profiler.BeginSample("here2");
+            // Set mesh visibility and volume based on connection to emitter
             _TargetVolume = _SpeakerComponenet._ConnectedToEmitter ? 1 : 0;
             _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
-            _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;
+            if (_TargetVolume == 0 && _AudioSource.volume < .005f)
+                _AudioSource.volume = 0;
+
+            _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;            
+
+            _ConnectedToEmitter = isConnectedThisFrame;
+
+            Profiler.EndSample();
         }
     }
-
 
     public GrainPlaybackData GetGrainPlaybackDataFromPool()
     {
@@ -169,7 +214,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             }
             else
             {
-                ReportGrainsDebug("Creating new grain");
+                //ReportGrainsDebug("Creating new grain");
                 return null;
             }
         }
@@ -183,7 +228,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             }
             else if (GrainDataCount < _MaxGrainPlaybackDataCount)
             {
-                ReportGrainsDebug("Creating new grain");
+                //ReportGrainsDebug("Creating new grain");
                 GrainPlaybackData grainPlaybackData = CreateNewGrain();
                 return grainPlaybackData;
             }
@@ -208,15 +253,15 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _ActiveGrains++;
             _PooledGrains--;
 
-            print("Adding grain too speaker: " + _SpeakerIndex);
+            //print("Adding grain too speaker: " + _SpeakerIndex);
 
-            ReportGrainsDebug("Adding grain playback data");
+            //ReportGrainsDebug("Adding grain playback data");
         }
         else
         {
             _ActiveGrainPlaybackData.Add(playbackData);
             _PooledGrainPlaybackData.Remove(playbackData);
-            ReportGrainsDebug("Removing pooled data");
+            //ReportGrainsDebug("Removing pooled data");
         }
            
 
@@ -247,23 +292,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         //print("Grain added. Sample 1000: " + playbackData._GrainSamples[1000] + "  playbackData duration: " + playbackData._GrainSamples.Length);
     }
 
-    public void Deactivate()
-    {       
-        // Move all active grain playback data to the pool
-        for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
-        {
-            _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
-        }
-        _ActiveGrainPlaybackData.Clear();
-
-        gameObject.SetActive(false);
-    }
-
-
     void ReportGrainsDebug(string action)
     {
-        if (!_DebugLog)
-            return;
+        //if (!_DebugLog)
+        //    return;
 
         if (_UseSingleGrainPlaybackDataArray)
         {
@@ -378,8 +410,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 }
             }
 
-            if (_DebugLog)
-                ReportGrainsDebug("Updating pooling list");
+            //if (_DebugLog)
+            //    ReportGrainsDebug("Updating pooling list");
         }
         else
         {

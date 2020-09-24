@@ -150,12 +150,10 @@ public class GrainSynth :  MonoBehaviour
         for (int i = 0; i < grainEntities.Length; i++)
         {           
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
-
-            if(grainProcessor._SamplePopulated)
+            
+            if (grainProcessor._SamplePopulated)
             {
-                Profiler.BeginSample("Grain update 1");
-                GrainPlaybackData playbackData = _GrainSpeakers[0].GetGrainPlaybackDataFromPool();
-                Profiler.EndSample();
+                GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
 
                 if (playbackData == null)
                     break;
