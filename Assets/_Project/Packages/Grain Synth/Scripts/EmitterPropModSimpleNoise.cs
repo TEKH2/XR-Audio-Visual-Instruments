@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(GrainEmitterAuthoring))]
 public class EmitterPropModSimpleNoise : MonoBehaviour
-{
-    public int _EmitterCount = 1;
-    public float _LatencyInMS = 20;
+{  
+    GrainEmitterAuthoring _Emitter;
     public GrainEmissionProps _EmissionProps;
 
     [Space]
@@ -26,28 +26,9 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
     public bool _AutomatePitch = false;
     public Vector2 _AutomatePitchRange = new Vector2(0, 0);
 
-    [Space]
-    [Space]
-    [Space]
-
-    public GrainEmitterAuthoring _EmitterPrefabDOTs;
-    public GrainSynth _DOTSSystem;
-    public Spawner _Spawner;
-
-    GrainEmitterAuthoring[] _DOTSEmitters;
-
-  
-
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-        _EmitterPrefabDOTs._EmissionProps = _EmissionProps;
-
-        _DOTSSystem._GrainQueueInMS = _LatencyInMS;
-
-        _Spawner.m_ObjectsToSpawn = new GameObject[] { _EmitterPrefabDOTs.gameObject };        
-
-        _Spawner.m_NumberToPool = _EmitterCount;
+        _Emitter = GetComponent<GrainEmitterAuthoring>();
     }
 
     private void Update()
@@ -64,14 +45,8 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
             _EmissionProps.Duration = Mathf.Lerp(_AutomateDurationRange.x, _AutomateDurationRange.y, automation);
 
         if (_AutomatePitch)
-            _EmissionProps._Transpose = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);
-               
-        if (_DOTSEmitters == null || _DOTSEmitters.Length == 0)
-            _DOTSEmitters = FindObjectsOfType<GrainEmitterAuthoring>();
-
-        for (int i = 0; i < _DOTSEmitters.Length; i++)
-        {
-            _DOTSEmitters[i]._EmissionProps = _EmissionProps;
-        }    
+            _EmissionProps._Transpose = Mathf.Lerp(_AutomatePitchRange.x, _AutomatePitchRange.y, automation);               
+        
+        _Emitter._EmissionProps = _EmissionProps;
     }
 }
