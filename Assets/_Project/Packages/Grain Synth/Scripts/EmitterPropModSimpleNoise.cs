@@ -61,8 +61,6 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
 
     private void Update()
     {
-        float automation = Mathf.PerlinNoise(Time.time * _AutomationSpeed + _Seed, Time.time * _AutomationSpeed * .5f + _Seed);
-
         if (_PlayheadType != Automation.Off)
             _EmissionProps.Position = Automate(_PlayheadType, _PlayheadRange, _PlayheadSpeed, ref _PlayheadPhase);
 
@@ -96,11 +94,11 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
         switch (type)
         {
             case Automation.Perlin:
-                automation = Mathf.PerlinNoise(Time.time * speed, Time.time * speed * .5f);
+                automation = Mathf.PerlinNoise(Time.time * speed + _Seed, Time.time * speed * .5f + _Seed);
                 outputValue = Mathf.Lerp(range.x, range.y, automation);
                 break;
             case Automation.Straight:
-                phase += Time.deltaTime * speed / _GrainSynth._AudioClips[_Emitter._EmissionProps._ClipIndex].length;
+                phase += Time.deltaTime * speed / _GrainSynth._AudioClips[_Emitter._EmissionProps._ClipIndex].length + _Seed;
                 outputValue = _PlayheadPhase % 1;
                 break;
             case Automation.PingPong:
