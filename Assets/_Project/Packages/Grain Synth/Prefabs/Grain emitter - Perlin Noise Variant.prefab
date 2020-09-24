@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5974125177847436799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405554466996523600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b09f551c08e7ed408ff01c5a2f8b2d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _EmitterCount: 1
+  _LatencyInMS: 20
+  _EmissionProps:
+    _Playing: 0
+    _ClipIndex: 0
+    _Playhead: 0
+    _PlayheadRand: 0
+    _Cadence: 0
+    _CadenceRandom: 0
+    _Duration: 0
+    _DurationRandom: 0
+    _Volume: 0
+    _VolumeRandom: 0
+    _Transpose: 0
+    _TransposeRandom: 0
+  _AutomationSpeed: 1
+  _AutomatePlayhead: 0
+  _AutomatePlayheadRange: {x: 0, y: 0}
+  _AutomateCadence: 0
+  _AutomateCadenceRange: {x: 0, y: 0}
+  _AutomateDuration: 0
+  _AutomateDurationRange: {x: 0, y: 0}
+  _AutomatePitch: 0
+  _AutomatePitchRange: {x: 0, y: 0}
+  _EmitterPrefabDOTs: {fileID: 0}
+  _DOTSSystem: {fileID: 0}
+  _Spawner: {fileID: 0}
+--- !u!1001 &5286060674381791176
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_Name
+      value: Grain emitter - Perlin Noise
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: _EmissionProps._Playing
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ff926722edf529948bed432c7d891fd9, type: 3}
+--- !u!1 &405554466996523600 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9,
+    type: 3}
+  m_PrefabInstance: {fileID: 5286060674381791176}
+  m_PrefabAsset: {fileID: 0}
