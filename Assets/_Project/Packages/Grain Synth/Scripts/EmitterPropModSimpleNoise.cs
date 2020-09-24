@@ -69,11 +69,12 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
 
         if (_LinkTiming && _CadenceType != Automation.Off)
         {
-            float tempAutomation = Automate(_CadenceType, _CadenceRange, _CadenceSpeed, ref _CadencePhase);
-            float timingRange = (Mathf.Abs(_DurationRange.x / _CadenceRange.x) + Mathf.Abs(_DurationRange.y / _CadenceRange.y)) / 2;
+            // Temporarily store phase so ref doesn't update CadencePhase twice per call
+            float tempPhase = _CadencePhase;
+            float tempAutomation = Automate(_CadenceType, _CadenceRange, _CadenceSpeed, ref tempPhase);
+
             _EmissionProps.Cadence = tempAutomation;
-            _EmissionProps.Duration = tempAutomation * timingRange;
-            //Debug.Log(timingRange);
+            _EmissionProps.Duration = Automate(_CadenceType, _DurationRange, _CadenceSpeed, ref _CadencePhase);
         }
         else
         {
