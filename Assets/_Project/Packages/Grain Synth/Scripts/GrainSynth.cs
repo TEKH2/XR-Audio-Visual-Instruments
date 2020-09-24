@@ -146,7 +146,7 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-
+        Profiler.BeginSample("Grain update");
         for (int i = 0; i < grainEntities.Length; i++)
         {
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
@@ -182,6 +182,8 @@ public class GrainSynth :  MonoBehaviour
                 _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
             }
         }
+        Profiler.EndSample();
+
         grainEntities.Dispose();
     }
 

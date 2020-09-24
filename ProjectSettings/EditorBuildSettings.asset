@@ -18,10 +18,10 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/XR Granulator - Brad Sandbox.unity
     guid: b0ad09aa0c1f1c64f88e03e8e5ee442b
   - enabled: 0
-    path: Assets/_Project/Packages/Grain Synth/Grain Synth Example.unity
+    path: Assets/_Project/Packages/Grain Synth/Scenes/Grain Synth Example.unity
     guid: b12ce358169f7f04dab3fd870cfc50a1
   - enabled: 1
-    path: Assets/_Project/Packages/Grain Synth/Grain Synth - Bolt example.unity
+    path: Assets/_Project/Packages/Grain Synth/Scenes/Grain Synth - Bolt example.unity
     guid: b02fd4c5dbeaa184f97133ce829161f8
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d706ac39f2e2cdf458fe53385d06423c,
