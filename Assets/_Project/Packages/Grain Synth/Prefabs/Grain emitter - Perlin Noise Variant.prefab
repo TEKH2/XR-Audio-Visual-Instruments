@@ -12,33 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b09f551c08e7ed408ff01c5a2f8b2d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _EmitterCount: 1
-  _LatencyInMS: 20
-  _EmissionProps:
-    _Playing: 0
-    _ClipIndex: 0
-    _Playhead: 0
-    _PlayheadRand: 0
-    _Cadence: 0
-    _CadenceRandom: 0
-    _Duration: 0
-    _DurationRandom: 0
-    _Volume: 0
-    _VolumeRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0
-  _AutomationSpeed: 1
-  _AutomatePlayhead: 0
-  _AutomatePlayheadRange: {x: 0, y: 0}
-  _AutomateCadence: 0
-  _AutomateCadenceRange: {x: 0, y: 0}
-  _AutomateDuration: 0
-  _AutomateDurationRange: {x: 0, y: 0}
-  _AutomatePitch: 0
-  _AutomatePitchRange: {x: 0, y: 0}
-  _EmitterPrefabDOTs: {fileID: 0}
-  _DOTSSystem: {fileID: 0}
-  _Spawner: {fileID: 0}
+  _GrainSynth: {fileID: 0}
+  _AutomationSpeed: 0.2
+  _PlayheadType: 1
+  _PlayheadSpeed: 1
+  _PlayheadRange: {x: 0.2, y: 0.4}
+  _TransposeType: 0
+  _TransposeSpeed: 1
+  _TransposeRange: {x: 0, y: 0.4}
+  _LinkTiming: 1
+  _CadenceType: 1
+  _CadenceSpeed: 1
+  _CadenceRange: {x: 5, y: 20}
+  _DurationType: 0
+  _DurationSpeed: 1
+  _DurationRange: {x: 30, y: 100}
 --- !u!1001 &5286060674381791176
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49,7 +37,7 @@ PrefabInstance:
     - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.545
       objectReference: {fileID: 0}
     - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}
@@ -59,7 +47,7 @@ PrefabInstance:
     - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.596
       objectReference: {fileID: 0}
     - target: {fileID: 793884346762676951, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}
@@ -109,6 +97,16 @@ PrefabInstance:
     - target: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}
       propertyPath: _EmissionProps._Playing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead
+      value: 0.216
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

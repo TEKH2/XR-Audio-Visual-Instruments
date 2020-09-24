@@ -317,6 +317,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1438,10 +1443,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter - Perlin Noise (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523600, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.03
+      value: -0.703
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -1451,7 +1466,7 @@ PrefabInstance:
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.596
+      value: 0.525
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -1904,6 +1919,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2107,7 +2127,7 @@ PrefabInstance:
     - target: {fileID: 5527569295418995652, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5527569295418995652, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -3383,6 +3403,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3552,6 +3577,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -3788,6 +3818,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -4756,7 +4791,7 @@ PrefabInstance:
     - target: {fileID: 5527569295418995652, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5527569295418995652, guid: bc7466bca05a79c468c5fced2d31f364,
         type: 3}
@@ -5147,6 +5182,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5312,10 +5352,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter - Perlin Noise (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523600, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.69
+      value: 0.117
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -5325,7 +5375,7 @@ PrefabInstance:
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.596
+      value: -0.589
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -10695,6 +10745,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11054,6 +11109,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -11554,10 +11614,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter - Perlin Noise (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523600, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.85
+      value: 3.022
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -11567,7 +11637,7 @@ PrefabInstance:
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.596
+      value: 0.386
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -11812,6 +11882,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -13207,6 +13282,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13669,6 +13749,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -14692,6 +14777,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grain emitter - Perlin Noise
       objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -14746,96 +14836,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._Playing
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomatePlayhead
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomatePlayheadRange.x
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomatePlayheadRange.y
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._Cadence
-      value: 27
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._Duration
-      value: 153.74379
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._Volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._ClipIndex
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _EmissionProps._Playhead
-      value: 0.6991337
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateCadence
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateCadenceRange.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateCadenceRange.y
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateDuration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateDurationRange.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomateDurationRange.y
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomatePitchRange.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomatePitchRange.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
-        type: 3}
-      propertyPath: _AutomationSpeed
-      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00b2617a196ae2348bba494a0af8c43b, type: 3}
@@ -15008,6 +15008,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 228971635}
     m_Modifications:
+    - target: {fileID: 1394369109, guid: 8408191c1bcbfa340b0f13e414291219, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6280660555291504029, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}
       propertyPath: _EmissionProps._Cadence
@@ -15056,7 +15060,7 @@ PrefabInstance:
     - target: {fileID: 6280660555642658240, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6280660555642658240, guid: 8408191c1bcbfa340b0f13e414291219,
         type: 3}

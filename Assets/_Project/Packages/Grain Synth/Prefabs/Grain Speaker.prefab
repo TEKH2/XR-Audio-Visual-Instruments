@@ -201,6 +201,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SpeakerIndex: 0
+  _Registered: 0
+  _StaticallyPaired: 0
+  _UseSingleGrainPlaybackDataArray: 1
   _DebugLog: 0
 --- !u!114 &2519325204652697372
 MonoBehaviour:

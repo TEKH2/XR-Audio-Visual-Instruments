@@ -162,8 +162,6 @@ public class GrainSynth :  MonoBehaviour
 
                 NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
-              
-
                 playbackData._IsPlaying = true;
                 playbackData._PlayheadIndex = 0;
                 playbackData._SizeInSamples = samples.Length;
