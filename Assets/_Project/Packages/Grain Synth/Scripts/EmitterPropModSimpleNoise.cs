@@ -1,8 +1,68 @@
 ﻿using EXPToolkit;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using YamlDotNet.Core;
+
+[System.Serializable]
+public class AutomationData
+{
+    public EmitterPropModSimpleNoise.Automation Type = EmitterPropModSimpleNoise.Automation.Off;
+    public float Speed = 1;
+    public Vector2 Range = new Vector2(0, 1);
+    private float Phase = 0;
+    private float Seed = 0;
+    private GrainSynth GrainSynth;
+    private GrainEmissionProps Props;
+    private bool Flip = false;
+
+    public void SetData(GrainSynth grainSynth, GrainEmissionProps props)
+    {
+        GrainSynth = grainSynth;
+        Props = props;
+        Phase = UnityEngine.Random.value * 123.74f;
+    }
+
+    public void UpdatePhase()
+    {
+        Phase += Time.deltaTime * Speed / GrainSynth._AudioClips[Props._ClipIndex].length;
+        if ((int)(Phase % 2) == 0)
+            Flip = true;
+        else
+            Flip = false;
+    }
+
+    public float Process()
+    {
+        float output = 0;
+
+        switch (Type)
+        {
+            case EmitterPropModSimpleNoise.Automation.Perlin:
+                float norm = Mathf.PerlinNoise(Phase, Phase * 0.5f);
+                output = Mathf.Lerp(Range.x, Range.y, norm);
+                break;
+            case EmitterPropModSimpleNoise.Automation.Straight:
+                output = Phase % 1;
+                break;
+            case EmitterPropModSimpleNoise.Automation.PingPong:
+                float ping;
+                if (Flip)
+                    ping = Phase % 1;
+                else
+                    ping = 1 - (Phase % 1);
+                output = ping;
+                break;
+            case EmitterPropModSimpleNoise.Automation.Sine:
+                break;
+            default:
+                break;
+        }
+
+        return output;
+    }
+}
 
 [RequireComponent(typeof(GrainEmitterAuthoring))]
 public class EmitterPropModSimpleNoise : MonoBehaviour
@@ -20,11 +80,16 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
     private GrainEmitterAuthoring _Emitter;
     private GrainEmissionProps _EmissionProps;
 
+    public AutomationData _Playhead;
+    public AutomationData _Transpose;
+    public AutomationData _Cadence;
+    public AutomationData _Duration;
+
+
     [Space]
     [Header("Automation")]
 
     float _Seed;
-    public float _AutomationSpeed = 1;
 
     [Header("Playhead")]
     public Automation _PlayheadType = Automation.Off;
@@ -52,11 +117,25 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
     public Vector2 _DurationRange = new Vector2(20, 200);
     private float _DurationPhase = 0;
 
+
+
     private void Awake()
     {
-        _Seed = Random.value * 123.74f;
+        _Seed = UnityEngine.Random.value * 123.74f;
         _Emitter = GetComponent<GrainEmitterAuthoring>();
         _EmissionProps = _Emitter._EmissionProps;
+
+        _Playhead = new AutomationData();
+        _Playhead.SetData(_GrainSynth, _EmissionProps);
+
+        _Transpose = new AutomationData();
+        _Transpose.SetData(_GrainSynth, _EmissionProps);
+
+        _Cadence = new AutomationData();
+        _Cadence.SetData(_GrainSynth, _EmissionProps);
+
+        _Duration = new AutomationData();
+        _Duration.SetData(_GrainSynth, _EmissionProps);
     }
 
     private void Update()
