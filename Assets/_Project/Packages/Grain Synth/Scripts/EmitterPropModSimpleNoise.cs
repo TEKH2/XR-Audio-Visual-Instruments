@@ -28,15 +28,9 @@ public class AutomationData
         Phase = phase;
     }
 
-
     public float UpdatePhase()
     {
         Phase += Time.deltaTime * Speed / ( GrainSynth._AudioClips[Props._ClipIndex].length / GrainSynth._AudioClips[Props._ClipIndex].channels);
-        return Phase;
-    }
-
-    public float GetPhase()
-    {
         return Phase;
     }
 
@@ -57,11 +51,12 @@ public class AutomationData
                 break;
             case EmitterPropModSimpleNoise.Automation.PingPong:
                 if ((int)(Phase % 2) == 0)
-                    output = GrainSynthSystem.Map((Phase % 1), 0, 1, Range.x, Range.y);
+                    output = Mathf.Lerp(Range.x, Range.y, Phase % 1);
                 else
-                    output = 1 - GrainSynthSystem.Map((Phase % 1), 0, 1, Range.x, Range.y);
+                    output = 1 - Mathf.Lerp(Range.x, Range.y, Phase % 1);
                 break;
             case EmitterPropModSimpleNoise.Automation.Sine:
+                output = Mathf.Lerp(Range.x, Range.y, (1 + Mathf.Sin(Phase * 2)) / 2);
                 break;
             default:
                 break;
