@@ -43,8 +43,7 @@ public class AutomationData
             case EmitterPropModSimpleNoise.Automation.Off:
                 break;
             case EmitterPropModSimpleNoise.Automation.Perlin:
-                float norm = Mathf.PerlinNoise(Phase, Phase * 0.5f);
-                output = Mathf.Lerp(Range.x, Range.y, norm);
+                output = Mathf.Lerp(Range.x, Range.y, Mathf.PerlinNoise(Phase, Phase * 0.5f));
                 break;
             case EmitterPropModSimpleNoise.Automation.Straight:
                 output = GrainSynthSystem.Map((Phase % 1), 0, 1, Range.x, Range.y);
