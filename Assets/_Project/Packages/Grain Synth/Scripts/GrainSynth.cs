@@ -165,7 +165,7 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._PlayheadIndex = 0;
                 playbackData._SizeInSamples = samples.Length;
                 playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
-                playbackData._PlayheadPos = grainProcessor._PlaybackHeadNormPos;               
+                playbackData._PlayheadPos = grainProcessor._PlayheadNorm;               
 
                 NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
 

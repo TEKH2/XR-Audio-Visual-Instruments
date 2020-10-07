@@ -58,11 +58,11 @@ public class GrainSynthSystem : SystemBase
                         {
                             _AudioClipDataComponent = audioClipData[emitter._AudioClipIndex],
 
-                            _PlaybackHeadNormPos = emitter._PlayheadPosNormalized,
+                            _PlayheadNorm = emitter._PlayheadPosNormalized,
                             _DurationInSamples = emitter._DurationInSamples,
 
                             _Pitch = emitter._Pitch,
-                            _Volume = emitter._Volume,
+                            _Volume = emitter._Volume * emitter._DistanceAmplitude,
 
                             _SpeakerIndex = emitter._SpeakerIndex,
                             _DSPSamplePlaybackStart = sampleIndexNextGrainStart,// + emitter._RandomOffsetInSamples,
@@ -91,7 +91,7 @@ public class GrainSynthSystem : SystemBase
             {
                 if (!grain._SamplePopulated)
                 {
-                    float sourceIndex = grain._PlaybackHeadNormPos * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
+                    float sourceIndex = grain._PlayheadNorm * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                     float increment = grain._Pitch;
 
                     for (int i = 0; i < grain._DurationInSamples; i++)

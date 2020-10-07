@@ -137,9 +137,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     EntityManager _EntityManager;
 
     bool _Initialized = false;
-
     bool _StaticallyPaired = false;
     public GrainSpeakerAuthoring _PairedSpeaker;
+
+    public Transform _HeadPosition;
 
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
@@ -176,6 +177,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
+            _DistanceAmplitude = 1,
             _AudioClipIndex = _EmissionProps._ClipIndex,
             _SpeakerIndex = 0,
             _PlayheadPosNormalized = _EmissionProps.Position,
@@ -187,6 +189,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     void Start()
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        _HeadPosition = FindObjectOfType<Camera>().transform;
     }
 
     void Update()
@@ -196,13 +199,18 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _Timer += Time.deltaTime;
 
-        // TODO, only do when updated
-        //_EmissionProps._FilterCoefficients = FilterConstruction.CreateCoefficents(_EmissionProps._DSP_Properties);
 
+        //Debug.Log(AudioUtils.DistanceAttenuation(_HeadPosition.position, _PairedSpeaker.gameObject.transform.position, transform.position));
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
+
+        float distanceAmplitude = AudioUtils.DistanceAttenuation(
+            _HeadPosition.position,
+            GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
+            transform.position);
+
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
             _Playing = _EmissionProps._Playing,
@@ -216,6 +224,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _RandomOffsetInSamples = data._RandomOffsetInSamples,
             _Pitch = _EmissionProps.Pitch,
             _Volume = _EmissionProps.Volume,
+            _DistanceAmplitude = distanceAmplitude,
             _PlayheadPosNormalized = _EmissionProps.Position
         });
 

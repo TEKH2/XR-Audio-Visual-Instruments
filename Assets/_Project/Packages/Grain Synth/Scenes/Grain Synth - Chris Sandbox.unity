@@ -1587,11 +1587,11 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 5
+  _MaxGrainSpeakers: 1
   _GrainQueueInMS: 27.4
   _CurrentDSPSample: 0
-  _EmitterToListenerActivationRange: 3
-  _EmitterToSpeakerAttachRadius: 1
+  _EmitterToListenerActivationRange: 5
+  _EmitterToSpeakerAttachRadius: 3
 --- !u!82 &844739181
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4824,6 +4824,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grain emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547042272322170264, guid: ff926722edf529948bed432c7d891fd9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5547042272322170265, guid: ff926722edf529948bed432c7d891fd9,
         type: 3}

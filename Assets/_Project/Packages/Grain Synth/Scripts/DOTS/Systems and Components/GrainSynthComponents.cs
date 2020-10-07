@@ -28,7 +28,7 @@ public struct GrainProcessor : IComponentData
 {
     public AudioClipDataComponent _AudioClipDataComponent;
 
-    public float _PlaybackHeadNormPos;
+    public float _PlayheadNorm;
     public int _DurationInSamples;
 
     public float _Pitch;
@@ -77,6 +77,7 @@ public struct EmitterComponent : IComponentData
 
     public float _Pitch;
     public float _Volume;
+    public float _DistanceAmplitude;
 
     public float _PlayheadPosNormalized;
 

@@ -38,4 +38,11 @@ public class AudioUtils
         return Mathf.Clamp(freq, 20, 20000);
     }
 
+    public static float DistanceAttenuation(Vector3 listener, Vector3 pos1, Vector3 pos2)
+    {
+        float pos1Dist = Mathf.Abs((listener - pos1).magnitude);
+        float pos2Dist = Mathf.Abs((listener - pos2).magnitude);
+        float amplitude = pos1Dist / pos2Dist;
+        return Mathf.Clamp(amplitude, 0.0f, 2.0f);
+    }
 }
