@@ -83,12 +83,12 @@ public struct EmitterComponent : IComponentData
     public int _DebugCount;
 }
 
-public struct DSP_BitCrush : IComponentData
+public struct Dots_DSP_BitCrush : IComponentData
 {
     public float downsampleFactor;
 }
 
-public struct DSP_Filter : IComponentData
+public struct Dots_DSP_Filter : IComponentData
 {
     public float a0;
     public float a1;

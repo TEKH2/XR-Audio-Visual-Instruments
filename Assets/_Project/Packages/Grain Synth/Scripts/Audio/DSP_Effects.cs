@@ -232,7 +232,7 @@ public class ChorusMono
 public class DSP_Ocillator
 {
     private float frequency = 0;
-    private int sampleRate = 44100;
+    private int sampleRate = AudioSettings.outputSampleRate;
     private float phaseIncrement = 0;
     private float phase = 0;
 
@@ -292,10 +292,10 @@ public class DSP_Buffer
     {
         float localIndex = (float)index - sampleIndex;
 
-        if (localIndex >= bufferSize)
+        while (localIndex >= bufferSize)
             localIndex -= bufferSize;
 
-        if (localIndex < 0)
+        while (localIndex < 0)
             localIndex += bufferSize;
 
         return LinearInterpolate(buffer, localIndex);

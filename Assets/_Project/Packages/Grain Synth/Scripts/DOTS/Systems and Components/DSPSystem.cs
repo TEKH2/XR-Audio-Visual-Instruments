@@ -24,7 +24,7 @@ public class DSPSystem : SystemBase
         //---------------------------------------------------------------------
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in DSP_BitCrush dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in Dots_DSP_BitCrush dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -57,7 +57,7 @@ public class DSPSystem : SystemBase
         //---------------------------------------------------------------------
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in DSP_Filter dsp, in GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, in Dots_DSP_Filter dsp, in GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
