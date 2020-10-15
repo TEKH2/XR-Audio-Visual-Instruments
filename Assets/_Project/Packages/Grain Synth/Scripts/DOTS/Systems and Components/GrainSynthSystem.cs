@@ -149,27 +149,21 @@ public class GrainSynthSystem : SystemBase
         // ----    DSP CHAIN
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspParamsBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
-                   for (int i = 0; i < dspTypeBuffer.Length; i++)
+                   for (int i = 0; i < dspParamsBuffer.Length; i++)
                    {
-                       switch (dspTypeBuffer[i]._DSPType)
+                       switch (dspParamsBuffer[i]._DSPType)
                        {
                            case DSPTypes.Bitcrush:
-                               //Do bitcrush here
-                               TestHalfVolSynth(sampleOutputBuffer, dspTypeBuffer[i]);
+                               DSP_Bitcrush.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);                              
                                break;
-                           case DSPTypes.Delay:
-                               //Do Delay here
-                               for (int s = 0; s < sampleOutputBuffer.Length; s++)
-                               {
-                                   sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = 0 };
-                               }
+                           case DSPTypes.Delay:                               
                                break;
                            case DSPTypes.Flange:
-                               //Do Flange here
+                               DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
                                break;
                        }
                    }

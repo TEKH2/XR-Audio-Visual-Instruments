@@ -15,7 +15,7 @@ public class DSP_Flange : DSPBase
         return dspBuffer;
     }
 
-    public void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
+    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
     {
         // Do DSP magic here
         for (int i = 0; i < sampleBuffer.Length; i++)
