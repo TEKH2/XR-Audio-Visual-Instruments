@@ -205,11 +205,14 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
-
-        float distanceAmplitude = AudioUtils.DistanceAttenuation(
-            _HeadPosition.position,
-            GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-            transform.position);
+        float distanceAmplitude = 1;
+        if (data._AttachedToSpeaker)
+        {
+            distanceAmplitude = AudioUtils.DistanceAttenuation(
+                _HeadPosition.position,
+                GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
+                transform.position);
+        }
 
         _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
         {
