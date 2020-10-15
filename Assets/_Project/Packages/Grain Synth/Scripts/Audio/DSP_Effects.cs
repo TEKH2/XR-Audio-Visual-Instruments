@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
@@ -178,6 +180,115 @@ public class BitCrush
         return sampleOut;
     }
 }
+
+
+// ---------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
+public class BitCrush_DOTS_Example
+{
+    public void BitCrush_Process()
+    {
+        // Grain Buffers
+        float[] inputBuffer = new float[1000];
+        float[] outputBuffer = new float[inputBuffer.Length];
+
+        // Parameters
+        float downsampleFactor = 0;
+
+        // Processing
+        outputBuffer = BitCrush_DOTS_Static.ApplyBitCrush_Static(inputBuffer, downsampleFactor);
+
+        // DO SOMETHING WITH OUTPUTBUFFER
+    }
+}
+
+public class BitCrush_DOTS_Static
+{
+    // Static Method
+    public static float[] ApplyBitCrush_Static(float[] inputBuffer, float downsampleFactor)
+    {
+        float[] outputBuffer = new float[inputBuffer.Length];
+        int count = 0;
+        float previousSample = 0;
+
+        for (int i = 0; i < inputBuffer.Length; i++)
+        {
+            if (count >= downsampleFactor)
+            {
+                outputBuffer[i] = inputBuffer[i];
+                previousSample = outputBuffer[i];
+                count = 0;
+            }
+            else
+            {
+                outputBuffer[i] = previousSample;
+                count++;
+            }
+        }
+
+        return outputBuffer;
+    }
+}
+// ---------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
+
+public class Filter_DOTS_Example
+{
+    public void Filter_Process()
+    {
+        // Grain Buffers
+        float[] inputBuffer = new float[1000];
+        float[] outputBuffer = new float[inputBuffer.Length];
+
+        // Parameters
+        float[] coefficients = new float[5];
+
+        // Processing
+        outputBuffer = Filter_DOTS_Static.Applyfilter_Static(inputBuffer, coefficients);
+
+        // DO SOMETHING WITH OUTPUTBUFFER
+    }
+}
+
+public class Filter_DOTS_Static
+{
+    public static float[] Applyfilter_Static(float[] inputBuffer, float[] coefficients)
+    {
+        // Coefficient reference
+        //public float a0;
+        //public float a1;
+        //public float a2;
+        //public float b1;
+        //public float b2;
+
+        float previousX1 = 0;
+        float previousX2 = 0;
+        float previousY1 = 0;
+        float previousY2 = 0;
+
+        float[] outputBuffer = new float[inputBuffer.Length];
+
+        for (int i = 0; i < inputBuffer.Length; i++)
+        {
+            // Apply coefficients to input singal and history data
+            outputBuffer[i] = (inputBuffer[i] * coefficients[0] +
+                             previousX1 * coefficients[1] +
+                             previousX2 * coefficients[2]) -
+                             (previousY1 * coefficients[3] +
+                             previousY2 * coefficients[4]);
+
+            // Set history states for signal data
+            previousX2 = previousX1;
+            previousX1 = inputBuffer[i];
+            previousY2 = previousY1;
+            previousY1 = outputBuffer[i];
+        }
+
+        return outputBuffer;
+    }
+}
+// ---------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
 
 
 public class ChorusProperties
