@@ -113,7 +113,7 @@ public struct GrainSpeakerBufferElement : IBufferElementData
 }
 
 [System.Serializable]
-public struct DSPBufferElement : IBufferElementData
+public struct DSPParametersElement : IBufferElementData
 {
     public DSPTypes _DSPType;
     public float _Value0;
@@ -128,7 +128,6 @@ public struct DSPBufferElement : IBufferElementData
     public float _Value9;
     public float _Value10;
 }
-
 
 public enum DSPTypes
 {
