@@ -98,29 +98,6 @@ public struct Dots_DSP_Filter : IComponentData
     public float b2;
 }
 
-
-public struct DSPParametersComponent : IComponentData
-{
-    public float _Value0;
-    public float _Value1;
-    public float _Value2;
-    public float _Value3;
-    public float _Value4;
-    public float _Value5;
-    public float _Value6;
-    public float _Value7;
-    public float _Value8;
-    public float _Value9;
-    public float _Value10;
-}
-
-public enum DSPTypes
-{
-    Bitcrush,
-    Flange,
-    Delay,
-}
-
 #endregion
 
 #region ---------- BUFFER ELEMENTS
@@ -135,10 +112,31 @@ public struct GrainSpeakerBufferElement : IBufferElementData
     public GrainSpeakerComponent Value;
 }
 
-public struct DSPTypeBufferElement : IBufferElementData
+[System.Serializable]
+public struct DSPBufferElement : IBufferElementData
 {
     public DSPTypes _DSPType;
+    public float _Value0;
+    public float _Value1;
+    public float _Value2;
+    public float _Value3;
+    public float _Value4;
+    public float _Value5;
+    public float _Value6;
+    public float _Value7;
+    public float _Value8;
+    public float _Value9;
+    public float _Value10;
 }
+
+
+public enum DSPTypes
+{
+    Bitcrush,
+    Flange,
+    Delay,
+}
+
 
 #endregion
 

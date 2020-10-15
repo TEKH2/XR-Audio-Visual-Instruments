@@ -42,7 +42,7 @@ public class GrainSynthSystem : SystemBase
         // Process 
         Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer < DSPTypeBufferElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
+            (int entityInQueryIndex, DynamicBuffer < DSPBufferElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -72,7 +72,7 @@ public class GrainSynthSystem : SystemBase
                         });
                                                 
                         // ----    Add DSP Buffer
-                        DynamicBuffer<DSPTypeBufferElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPTypeBufferElement>(entityInQueryIndex, grainProcessorEntity);
+                        DynamicBuffer<DSPBufferElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPBufferElement>(entityInQueryIndex, grainProcessorEntity);
                         for (int i = 0; i < dspTypeBuffer.Length; i++)
                         {
                             dspBuffer.Add(dspTypeBuffer[i]);
@@ -149,7 +149,7 @@ public class GrainSynthSystem : SystemBase
         // ----    DSP CHAIN
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<DSPTypeBufferElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<DSPBufferElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -159,7 +159,7 @@ public class GrainSynthSystem : SystemBase
                        {
                            case DSPTypes.Bitcrush:
                                //Do bitcrush here
-                               TestHalfVolSynth(sampleOutputBuffer);
+                               TestHalfVolSynth(sampleOutputBuffer, dspTypeBuffer[i]);
                                break;
                            case DSPTypes.Delay:
                                //Do Delay here
@@ -185,11 +185,11 @@ public class GrainSynthSystem : SystemBase
         _CommandBufferSystem.AddJobHandleForProducer(Dependency);
     }
 
-    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer)
+    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DSPBufferElement dsp)
     {
         for (int s = 0; s < sampleOutputBuffer.Length; s++)
         {
-            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * .5f };
+            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * dsp._Value0 };
         }
     }
 

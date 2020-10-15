@@ -32718,8 +32718,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
+      propertyPath: _DSPChain.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChainParams.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
       propertyPath: _EmissionProps._PlayheadRand
       value: 0.064
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChain.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChain.Array.data[1]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChain.Array.data[2]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChain.Array.data[3]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChain.Array.data[4]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _DSPChainParams.Array.data[0]._Value0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
