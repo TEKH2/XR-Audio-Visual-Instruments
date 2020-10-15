@@ -14590,7 +14590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070a2054bf4dec145baba520ba00fcd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BitAmount: 0.1
+  _BitAmount: 1
   _CrushAmount: 0
 --- !u!1001 &1164844052
 PrefabInstance:
@@ -22830,8 +22830,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98516dee25a2254d875923bec4f3aa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _FlangeSoft: 0.8
-  _FlangeWide: -0.1
+  _FlangeSoft: 1
+  _FlangeWide: 0
 --- !u!1001 &1481442911
 PrefabInstance:
   m_ObjectHideFlags: 0
