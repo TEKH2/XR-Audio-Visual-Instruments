@@ -42,7 +42,7 @@ public class GrainSynthSystem : SystemBase
         // Process 
         Entities.ForEach
         (
-            (int entityInQueryIndex, ref EmitterComponent emitter) =>
+            (int entityInQueryIndex, DynamicBuffer < DSPTypeBufferElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -70,6 +70,14 @@ public class GrainSynthSystem : SystemBase
                             _DSPSamplePlaybackStart = sampleIndexNextGrainStart,// + emitter._RandomOffsetInSamples,
                             _SamplePopulated = false
                         });
+                                                
+                        // ----    Add DSP Buffer
+                        DynamicBuffer<DSPTypeBufferElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPTypeBufferElement>(entityInQueryIndex, grainProcessorEntity);
+                        for (int i = 0; i < dspTypeBuffer.Length; i++)
+                        {
+                            dspBuffer.Add(dspTypeBuffer[i]);
+                        }
+
 
                         // Set last grain start time
                         emitter._LastGrainEmissionDSPIndex = sampleIndexNextGrainStart;
@@ -137,6 +145,7 @@ public class GrainSynthSystem : SystemBase
             }
         ).ScheduleParallel();
 
+
         // ----    DSP CHAIN
         Entities.ForEach
         (
@@ -149,24 +158,27 @@ public class GrainSynthSystem : SystemBase
                        switch (dspTypeBuffer[i]._DSPType)
                        {
                            case DSPTypes.Bitcrush:
-                               // Do bitcrush here
-                               //TestHalfVolSynth(sampleOutputBuffer);
+                               //Do bitcrush here
+                               TestHalfVolSynth(sampleOutputBuffer);
                                break;
                            case DSPTypes.Delay:
-                               // Do Delay here
+                               //Do Delay here
                                for (int s = 0; s < sampleOutputBuffer.Length; s++)
                                {
-                                   //sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * 2f };
+                                   sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = 0 };
                                }
                                break;
                            case DSPTypes.Flange:
-                               // Do Flange here
+                               //Do Flange here
                                break;
                        }
                    }
+
+                   grain._SamplePopulated = true;
                }
            }
         ).ScheduleParallel();
+
 
 
         // Make sure that the ECB system knows about our job
@@ -175,15 +187,6 @@ public class GrainSynthSystem : SystemBase
 
     public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer)
     {
-        for (int s = 0; s < sampleOutputBuffer.Length; s++)
-        {
-            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * .5f };
-        }
-    }
-
-    public static void TestReverseSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer)
-    {
-        //NativeArray<float> sampleBuffer = new NativeArray<float>()
         for (int s = 0; s < sampleOutputBuffer.Length; s++)
         {
             sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * .5f };
