@@ -144,6 +144,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
+
+    public DSPTypes[] _DSPChain;
+
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
     float _Timer = 0;
@@ -183,6 +186,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _PlayheadPosNormalized = _EmissionProps.Position,
         });
 
+        dstManager.AddBuffer<DSPTypeBufferElement>(_EmitterEntity); 
+
         _Initialized = true;
     }
 
@@ -199,6 +204,16 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _Timer += Time.deltaTime;
 
+
+        //// ----   Update DSP chain
+        DynamicBuffer<DSPTypeBufferElement> dspTypes = _EntityManager.GetBuffer<DSPTypeBufferElement>(_EmitterEntity);
+
+        // TODO Check if changed
+        dspTypes.Clear();
+        for (int i = 0; i < _DSPChain.Length; i++)
+        {
+            dspTypes.Add(new DSPTypeBufferElement { _DSPType = _DSPChain[i] });
+        }
 
         //Debug.Log(AudioUtils.DistanceAttenuation(_HeadPosition.position, _PairedSpeaker.gameObject.transform.position, transform.position));
 

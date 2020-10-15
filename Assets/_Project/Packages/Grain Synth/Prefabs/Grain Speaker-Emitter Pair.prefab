@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 866662605309907886}
   - component: {fileID: 5528598471599412523}
   m_Layer: 0
-  m_Name: Speaker - Emitter pair
+  m_Name: Grain Speaker-Emitter Pair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,18 +130,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _EmissionProps:
+    _Playing: 1
     _ClipIndex: 0
-    _PlayheadPos: 0.27
-    _PositionRandom: 0
+    _Playhead: 0.173
+    _PlayheadRand: 0
     _Cadence: 10
     _CadenceRandom: 0
     _Duration: 50
     _DurationRandom: 0
-    _Volume: 2
+    _Volume: 1
     _VolumeRandom: 0
     _Transpose: 0
     _TransposeRandom: 0
-  test: 0
+  _PairedSpeaker: {fileID: 0}
+  _HeadPosition: {fileID: 0}
+  _AttachedToSpeaker: 0
+  _DSPChain: 
 --- !u!114 &5528598471599412522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,6 +161,7 @@ MonoBehaviour:
   _SpeakerIndex: 0
   _Registered: 0
   _StaticallyPaired: 0
+  _UseSingleGrainPlaybackDataArray: 0
   _DebugLog: 0
 --- !u!82 &5844714684452509595
 AudioSource:

@@ -30,6 +30,8 @@ public class GrainSynthSystem : SystemBase
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
+
+
         // ----------------------------------- EMITTER UPDATE
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
@@ -84,6 +86,7 @@ public class GrainSynthSystem : SystemBase
         ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
 
 
+
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         Entities.ForEach
         (
@@ -134,8 +137,57 @@ public class GrainSynthSystem : SystemBase
             }
         ).ScheduleParallel();
 
+        // ----    DSP CHAIN
+        Entities.ForEach
+        (
+           (int entityInQueryIndex, DynamicBuffer<DSPTypeBufferElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+           {
+               if (grain._SamplePopulated)
+               {
+                   for (int i = 0; i < dspTypeBuffer.Length; i++)
+                   {
+                       switch (dspTypeBuffer[i]._DSPType)
+                       {
+                           case DSPTypes.Bitcrush:
+                               // Do bitcrush here
+                               //TestHalfVolSynth(sampleOutputBuffer);
+                               break;
+                           case DSPTypes.Delay:
+                               // Do Delay here
+                               for (int s = 0; s < sampleOutputBuffer.Length; s++)
+                               {
+                                   //sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * 2f };
+                               }
+                               break;
+                           case DSPTypes.Flange:
+                               // Do Flange here
+                               break;
+                       }
+                   }
+               }
+           }
+        ).ScheduleParallel();
+
+
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(Dependency);
+    }
+
+    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer)
+    {
+        for (int s = 0; s < sampleOutputBuffer.Length; s++)
+        {
+            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * .5f };
+        }
+    }
+
+    public static void TestReverseSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer)
+    {
+        //NativeArray<float> sampleBuffer = new NativeArray<float>()
+        for (int s = 0; s < sampleOutputBuffer.Length; s++)
+        {
+            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * .5f };
+        }
     }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
