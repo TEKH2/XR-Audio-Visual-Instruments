@@ -42,7 +42,7 @@ public class GrainSynthSystem : SystemBase
         // Process 
         Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer < DSPBufferElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
+            (int entityInQueryIndex, DynamicBuffer < DSPParametersElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -72,7 +72,7 @@ public class GrainSynthSystem : SystemBase
                         });
                                                 
                         // ----    Add DSP Buffer
-                        DynamicBuffer<DSPBufferElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPBufferElement>(entityInQueryIndex, grainProcessorEntity);
+                        DynamicBuffer<DSPParametersElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
                         for (int i = 0; i < dspTypeBuffer.Length; i++)
                         {
                             dspBuffer.Add(dspTypeBuffer[i]);
@@ -149,7 +149,7 @@ public class GrainSynthSystem : SystemBase
         // ----    DSP CHAIN
         Entities.ForEach
         (
-           (int entityInQueryIndex, DynamicBuffer<DSPBufferElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+           (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspTypeBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -185,7 +185,7 @@ public class GrainSynthSystem : SystemBase
         _CommandBufferSystem.AddJobHandleForProducer(Dependency);
     }
 
-    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DSPBufferElement dsp)
+    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DSPParametersElement dsp)
     {
         for (int s = 0; s < sampleOutputBuffer.Length; s++)
         {

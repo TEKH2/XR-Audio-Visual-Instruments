@@ -145,7 +145,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
 
-    public DSPBufferElement[] _DSPChainParams;
+    public DSPBase[] _DSPChainParams;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
@@ -186,7 +186,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _PlayheadPosNormalized = _EmissionProps.Position,
         });
 
-        dstManager.AddBuffer<DSPBufferElement>(_EmitterEntity); 
+        dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity); 
 
         _Initialized = true;
     }
@@ -206,13 +206,13 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
         //// ----   Update DSP chain
-        DynamicBuffer<DSPBufferElement> dspTypes = _EntityManager.GetBuffer<DSPBufferElement>(_EmitterEntity);
+        DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
 
         // TODO Check if changed
         dspTypes.Clear();
         for (int i = 0; i < _DSPChainParams.Length; i++)
         {
-            dspTypes.Add(_DSPChainParams[i]);
+            dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
 
         //Debug.Log(AudioUtils.DistanceAttenuation(_HeadPosition.position, _PairedSpeaker.gameObject.transform.position, transform.position));
