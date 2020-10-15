@@ -10,7 +10,7 @@ public class DSP_Bitcrush : DSPBase
         DSPParametersElement dspBuffer = new DSPParametersElement();
         dspBuffer._DSPType = DSPTypes.Bitcrush;
         dspBuffer._Value0 = _BitAmount;
-        dspBuffer._Value1 = _BitAmount;
+        dspBuffer._Value1 = _CrushAmount;
 
         return dspBuffer;
     }

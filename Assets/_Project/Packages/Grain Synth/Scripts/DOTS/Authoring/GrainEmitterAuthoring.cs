@@ -205,10 +205,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Timer += Time.deltaTime;
 
 
-        //// ----   Update DSP chain
+        // ----   Update DSP chain  // TODO Check if changed
         DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-
-        // TODO Check if changed
         dspTypes.Clear();
         for (int i = 0; i < _DSPChainParams.Length; i++)
         {
