@@ -47,7 +47,10 @@ public class DSPSystem : SystemBase
 
                        count++;
 
-                       sampleOutputBuffer[i] = new GrainSampleBufferElement { Value = sampleOut };
+                       sampleOutputBuffer[i] = new GrainSampleBufferElement
+                       {
+                           Value = Mathf.Lerp(sampleOutputBuffer[i].Value, sampleOut, dsp.mix)
+                       };
                    }
                }
            }
@@ -82,7 +85,10 @@ public class DSPSystem : SystemBase
                        previousY2 = previousY1;
                        previousY1 = sampleOut;
 
-                       sampleOutputBuffer[i] = new GrainSampleBufferElement { Value = sampleOut };
+                       sampleOutputBuffer[i] = new GrainSampleBufferElement
+                       {
+                           Value = Mathf.Lerp(sampleOutputBuffer[i].Value, sampleOut, dsp.mix)
+                       };
                    }
                }
            }

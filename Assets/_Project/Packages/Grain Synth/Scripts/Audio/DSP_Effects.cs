@@ -222,10 +222,9 @@ public class BitCrush_DOTS_Static
                 count = 0;
             }
             else
-            {
                 outputSample = previousSample;
-                count++;
-            }
+
+            count++;
 
             outputBuffer[i] = Mathf.Lerp(inputBuffer[i], outputSample, mix);
         }

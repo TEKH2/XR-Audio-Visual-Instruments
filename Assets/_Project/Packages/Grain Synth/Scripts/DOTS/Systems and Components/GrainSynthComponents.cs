@@ -86,11 +86,13 @@ public struct EmitterComponent : IComponentData
 
 public struct Dots_DSP_BitCrush : IComponentData
 {
+    public float mix;
     public float downsampleFactor;
 }
 
 public struct Dots_DSP_Filter : IComponentData
 {
+    public float mix;
     public float a0;
     public float a1;
     public float a2;
