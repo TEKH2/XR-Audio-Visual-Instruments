@@ -150,7 +150,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             // Clear playback data if not connected too emitters
             _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
-            bool isConnectedThisFrame = _SpeakerComponenet._ConnectedToEmitter;
+            bool isConnectedThisFrame = _EntityManager.HasComponent<PooledActiveTag>(_Entity);
 
             // If previously connceted and now disconnected
             if (_ConnectedToEmitter && !isConnectedThisFrame)
@@ -168,7 +168,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 }
                 else
                 {
-                    // Move all active grain playback data to the pool
+                    // ----    Move all active grain playback data to the pool
                     for (int i = _ActiveGrainPlaybackData.Count - 1; i >= 0; i--)
                     {
                         _PooledGrainPlaybackData.Add(_ActiveGrainPlaybackData[i]);
