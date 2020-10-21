@@ -442,7 +442,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         if (_ConnectedToEmitter)
         {
-            Gizmos.color = Color.yellow;
+            if(_SpeakerIndex == 0)
+                Gizmos.color = Color.blue;
+            else
+                Gizmos.color = Color.yellow;
+
             Gizmos.DrawWireSphere(transform.position, _GrainSynth._EmitterToSpeakerAttachRadius);
         }
     }

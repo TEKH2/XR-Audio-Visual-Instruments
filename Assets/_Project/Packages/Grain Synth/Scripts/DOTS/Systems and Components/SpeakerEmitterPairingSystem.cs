@@ -16,17 +16,18 @@ public class RangeCheckSystem : SystemBase
     protected override void OnUpdate()
     {
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
-
-        //----    DETACH EMITTERS WHERE SPEAKERS ARE OUT OF RANGE
+        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent), typeof(Translation));
+        NativeArray<PooledObjectComponent> pooledSpeakers = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);
+        NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
 
         //----    EMITTERS RANGE CHECK
-        JobHandle emitterRangeCheck = Entities.WithoutBurst().WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
+        JobHandle emitterRangeCheck = Entities.WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
         {
-            float dist = math.distance(trans.Value, speakerManager._ListenerPos);
-            bool inRangeCurrent = dist < speakerManager._EmitterToListenerActivationRange;
+            float distToListener = math.distance(trans.Value, speakerManager._ListenerPos);
+            bool inRangeCurrent = distToListener < speakerManager._EmitterToListenerActivationRange;
 
             //--  If moving out of range, deactive
-            if (emitter._InRange && !inRangeCurrent)
+            if (emitter._InRange && emitter._AttachedToSpeaker && !inRangeCurrent)
             {
                 emitter._AttachedToSpeaker = false;
                 emitter._InRange = false;
@@ -37,7 +38,21 @@ public class RangeCheckSystem : SystemBase
             {
                 emitter._InRange = true;
             }
-        }).ScheduleParallel(this.Dependency);
+
+            //--  If the assigned speaker is attached to a speaker that isn't active or out of range, deactivate
+            if(emitter._AttachedToSpeaker)
+            {
+                float distToSpeaker = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
+                if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || distToSpeaker > speakerManager._EmitterToSpeakerAttachRadius)
+                {
+                    emitter._AttachedToSpeaker = false;
+                    emitter._InRange = false;
+                    emitter._SpeakerIndex = int.MaxValue;
+                }
+            }
+        }).WithDisposeOnCompletion(pooledSpeakers)
+        .WithDisposeOnCompletion(speakerTranslations)
+        .ScheduleParallel(this.Dependency);
 
 
 
@@ -60,9 +75,8 @@ public class RangeCheckSystem : SystemBase
 
         //----     FIND ACTIVE SPEAKERS IN RANGE
         JobHandle rangeCheckDeps = JobHandle.CombineDependencies(emitterRangeCheck, speakerRangeCheck);
-
-        DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         NativeArray<Entity> speakerEnts = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation)).ToEntityArray(Allocator.TempJob);
+        DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();       
 
         JobHandle activeSpeakersInRange = Entities.WithName("activeSpeakersInRange").ForEach((ref EmitterComponent emitter, in Translation emitterTrans) =>
         {
@@ -103,7 +117,7 @@ public class RangeCheckSystem : SystemBase
         NativeArray<Entity> emitterEnts = emitterQuery.ToEntityArray(Allocator.TempJob);
         NativeArray<EmitterComponent> emitters = GetEntityQuery(typeof(EmitterComponent)).ToComponentDataArray<EmitterComponent>(Allocator.TempJob);
 
-        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent));
+        
         NativeArray<Entity> speakerEntities = speakerQuery.ToEntityArray(Allocator.TempJob);
         NativeArray<PooledObjectComponent> pooledSpeakerStates = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);        
 
@@ -119,8 +133,13 @@ public class RangeCheckSystem : SystemBase
                     // Look through all emitters to find one in range but not attached to a speaker
                     for (int e = 0; e < emitters.Length; e++)
                     {
-                        if (emitters[e]._InRange && !emitters[e]._AttachedToSpeaker)
+                        if (emitters[e]._InRange && !emitters[e]._AttachedToSpeaker && !spawned)
                         {
+                            spawned = true;
+
+                            int speakerIndex = GetComponent<GrainSpeakerComponent>(speakerEntities[s])._SpeakerIndex;
+                            float3 speakerPos = GetComponent<Translation>(emitterEnts[e]).Value;
+
                             // Set emitter component
                             EmitterComponent emitter = GetComponent<EmitterComponent>(emitterEnts[e]);
                             emitter._AttachedToSpeaker = true;
@@ -129,18 +148,20 @@ public class RangeCheckSystem : SystemBase
                             SetComponent<EmitterComponent>(emitterEnts[e], emitter);
 
 
-
                             // Set speaker translation
                             Translation speakerTrans = GetComponent<Translation>(speakerEntities[s]);
                             speakerTrans.Value = GetComponent<Translation>(emitterEnts[e]).Value;
                             SetComponent<Translation>(speakerEntities[s], speakerTrans);
+
 
                             // Set speaker pooled component
                             PooledObjectComponent pooledObj = GetComponent<PooledObjectComponent>(speakerEntities[s]);
                             pooledObj._State = PooledObjectState.Active;
                             SetComponent<PooledObjectComponent>(speakerEntities[s], pooledObj);
 
-                            spawned = true;
+                            Debug.Log("Speaker placed - Index: " + speakerIndex + " @ " + speakerPos);
+                           
+                            return;
                         }
                     }
                 }
