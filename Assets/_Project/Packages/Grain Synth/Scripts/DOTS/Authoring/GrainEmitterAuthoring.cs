@@ -168,12 +168,12 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
         }
 
+        int index = GrainSynth.Instance.RegisterEmitter(entity);
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
             _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
-            _InRange = _StaticallyPaired,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
@@ -182,11 +182,14 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _DistanceAmplitude = 1,
             _AudioClipIndex = _EmissionProps._ClipIndex,
-            _SpeakerIndex = 0,
+            _SpeakerIndex = int.MaxValue,
+            _Index = index,
             _PlayheadPosNormalized = _EmissionProps.Position,
         });
 
-        dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity); 
+        dstManager.SetName(entity, "Emitter");
+        dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
+        dstManager.AddComponentData(entity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Emitter });
 
         _Initialized = true;
     }
@@ -227,22 +230,19 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 transform.position);
         }
 
-        _EntityManager.SetComponentData(_EmitterEntity, new EmitterComponent
-        {
-            _Playing = _EmissionProps._Playing,
-            _SpeakerIndex = attachedSpeakerIndex,
-            _AttachedToSpeaker = data._AttachedToSpeaker,
-            _AudioClipIndex = _EmissionProps._ClipIndex,
-            _InRange = data._InRange,
-            _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
-            _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-            _LastGrainEmissionDSPIndex = data._LastGrainEmissionDSPIndex,
-            _RandomOffsetInSamples = data._RandomOffsetInSamples,
-            _Pitch = _EmissionProps.Pitch,
-            _Volume = _EmissionProps.Volume,
-            _DistanceAmplitude = distanceAmplitude,
-            _PlayheadPosNormalized = _EmissionProps.Position
-        });
+        EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
+
+        data._Playing = _EmissionProps._Playing;
+        data._SpeakerIndex = attachedSpeakerIndex;
+        data._AudioClipIndex = _EmissionProps._ClipIndex;
+        data._CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f);
+        data._DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f);
+        data._Pitch = _EmissionProps.Pitch;
+        data._Volume = _EmissionProps.Volume;
+        data._DistanceAmplitude = distanceAmplitude;
+        data._PlayheadPosNormalized = _EmissionProps.Position;
+
+        _EntityManager.SetComponentData(_EmitterEntity, data);
 
         _AttachedSpeakerIndex = data._SpeakerIndex;
         _AttachedToSpeaker = data._AttachedToSpeaker;

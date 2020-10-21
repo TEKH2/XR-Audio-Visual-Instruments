@@ -26,6 +26,8 @@ public class GrainSynth :  MonoBehaviour
     Entity _DSPTimerEntity;
     Entity _SpeakerManagerEntity;
 
+    public List<Entity> _AllEmitters = new List<Entity>();
+
     AudioListener _Listener;
 
     public AudioClip[] _AudioClips;
@@ -109,6 +111,7 @@ public class GrainSynth :  MonoBehaviour
                 // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY
                 BlobAssetReference<FloatBlobAsset> audioClipBlobAssetRef = blobBuilder.CreateBlobAssetReference<FloatBlobAsset>(Allocator.Persistent);
                 _EntityManager.AddComponentData(audioClipDataEntity, new AudioClipDataComponent { _ClipDataBlobAsset = audioClipBlobAssetRef, _ClipIndex = i });
+                _EntityManager.SetName(audioClipDataEntity, "Audio clip blob asset " + i);
             }
         }
 
@@ -199,6 +202,16 @@ public class GrainSynth :  MonoBehaviour
         speaker._Registered = true;
         speaker.name = "Speaker " + _GrainSpeakers.Count;
         _GrainSpeakers.Add(speaker);
+    }
+
+    public int RegisterEmitter(Entity emitterEntity)
+    {
+        int index = _AllEmitters.Count;
+        _AllEmitters.Add(emitterEntity);
+
+        print("Registering emitter: " + index);
+
+        return index;
     }
 
     void OnAudioFilterRead(float[] data, int channels)

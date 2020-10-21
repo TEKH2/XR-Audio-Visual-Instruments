@@ -42,26 +42,23 @@ public struct GrainProcessor : IComponentData
 
 public struct GrainSpeakerComponent : IComponentData
 {
-    public bool _InRange;
-    public int _Index;    
+    public int _SpeakerIndex;
+}
+
+public struct PooledObjectComponent : IComponentData
+{
+    public PooledObjectState _State;
+}
+
+public enum PooledObjectState
+{
+    Pooled,
+    Active
 }
 
 public struct StaticallyPairedTag : IComponentData
 {
 }
-
-public struct PooledInactiveTag : IComponentData
-{
-}
-
-public struct PooledActiveTag : IComponentData
-{
-}
-
-public struct InListenerRangeTag : IComponentData
-{
-}
-
 
 public struct DSPTimerComponent : IComponentData
 {
@@ -72,17 +69,19 @@ public struct DSPTimerComponent : IComponentData
 
 public struct EmitterComponent : IComponentData
 {
-    public bool _Playing;
     public bool _AttachedToSpeaker;
-    public bool _InRange;
     public int _SpeakerIndex;
-    public int _AudioClipIndex;
+    public bool _InRange;
 
+    public int _Index;
+
+    public bool _Playing;   
+
+    public int _AudioClipIndex;
     public int _CadenceInSamples;
     public int _DurationInSamples;
     public int _LastGrainEmissionDSPIndex;
     public int _RandomOffsetInSamples;
-
     public float _Pitch;
     public float _Volume;
     public float _DistanceAmplitude;
@@ -159,3 +158,11 @@ public struct FloatBlobAsset
 }
 
 #endregion
+
+
+
+public struct TestComp : IComponentData
+{
+    public float testVar;
+}
+
