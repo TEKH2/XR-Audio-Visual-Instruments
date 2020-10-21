@@ -466,6 +466,25 @@ public class FilterConstruction
         return newFilterCoefficients;
     }
 
+    public static FilterCoefficients CreateCoefficents_DOTS(DSP_Properties fp)
+    {
+        FilterCoefficients newFilterCoefficients;
+
+        if (fp.Type == FilterType.LowPass)
+            newFilterCoefficients = LowPass(fp);
+        else if (fp.Type == FilterType.HiPass)
+            newFilterCoefficients = HiPass(fp);
+        else if (fp.Type == FilterType.BandPass)
+            newFilterCoefficients = BandPass(fp);
+        else if (fp.Type == FilterType.PeakNotch)
+            newFilterCoefficients = PeakNotch(fp);
+        else
+            newFilterCoefficients = AllPass(fp);
+
+        return newFilterCoefficients;
+    }
+
+
     private static FilterCoefficients LowPass (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();

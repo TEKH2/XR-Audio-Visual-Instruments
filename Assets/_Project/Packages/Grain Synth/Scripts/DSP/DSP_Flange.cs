@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
+using UnityEngine;
 
-public class DSP_Flange : DSPBase
+public class DSP_Flange : DSP_Base
 {
     public float _FlangeSoft;
     public float _FlangeWide;
@@ -9,6 +10,7 @@ public class DSP_Flange : DSPBase
     {
         DSPParametersElement dspBuffer = new DSPParametersElement();
         dspBuffer._DSPType = DSPTypes.Flange;
+        dspBuffer._Mix = _Mix;
         dspBuffer._Value0 = _FlangeSoft;
         dspBuffer._Value1 = _FlangeWide;
 
@@ -17,11 +19,12 @@ public class DSP_Flange : DSPBase
 
     public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
     {
-        // Do DSP magic here
+        float outputSample = 0;
+
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = sampleBuffer[i].Value * dspParams._Value0 };
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = sampleBuffer[i].Value + dspParams._Value1 };
+            outputSample = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix);
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = outputSample };
         }
     }
 }

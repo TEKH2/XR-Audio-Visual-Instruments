@@ -145,7 +145,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
 
-    public DSPBase[] _DSPChainParams;
+    public DSP_Base[] _DSPChainParams;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
