@@ -89,9 +89,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Entity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
         _GrainSynth.RegisterSpeaker(this);
-
+        dstManager.SetName(_Entity, "Speaker " + _SpeakerIndex);
         // Register the speaker and get the index
-        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _Index = _SpeakerIndex, _InRange = false });
+        dstManager.AddComponentData(entity, new GrainSpeakerComponent { _SpeakerIndex = _SpeakerIndex });
 
         // Pool grain playback data - current maximum length set to one second of samples (_SampleRate)
 
@@ -111,7 +111,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _PooledGrainPlaybackData.Add(CreateNewGrain());
             }
         }
-      
+
+        // Add pooling componenet
+        dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
+
         //ReportGrainsDebug("Pooling");
 
         _Initialized = true;
@@ -150,10 +153,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             // Clear playback data if not connected too emitters
             _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
-            bool isConnectedThisFrame = _EntityManager.HasComponent<PooledActiveTag>(_Entity);
+            bool isCurrentlyConnected = _EntityManager.GetComponentData<PooledObjectComponent>(_Entity)._State == PooledObjectState.Active;
 
             // If previously connceted and now disconnected
-            if (_ConnectedToEmitter && !isConnectedThisFrame)
+            if (_ConnectedToEmitter && !isCurrentlyConnected)
             {
                 if(_UseSingleGrainPlaybackDataArray)
                 {
@@ -181,14 +184,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             Profiler.BeginSample("here2");
             // Set mesh visibility and volume based on connection to emitter
-            _TargetVolume = _SpeakerComponenet._ConnectedToEmitter ? 1 : 0;
+            _TargetVolume = isCurrentlyConnected ? 1 : 0;
             _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
             if (_TargetVolume == 0 && _AudioSource.volume < .005f)
                 _AudioSource.volume = 0;
 
-            _MeshRenderer.enabled = _SpeakerComponenet._ConnectedToEmitter;            
+            _MeshRenderer.enabled = isCurrentlyConnected;            
 
-            _ConnectedToEmitter = isConnectedThisFrame;
+            _ConnectedToEmitter = isCurrentlyConnected;
 
             Profiler.EndSample();
         }
@@ -437,7 +440,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     void OnDrawGizmos()
     {
-        if (_SpeakerComponenet._ConnectedToEmitter)
+        if (_ConnectedToEmitter)
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, _GrainSynth._EmitterToSpeakerAttachRadius);
