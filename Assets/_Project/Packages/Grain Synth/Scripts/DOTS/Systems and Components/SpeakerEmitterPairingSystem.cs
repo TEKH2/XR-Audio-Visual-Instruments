@@ -17,6 +17,8 @@ public class RangeCheckSystem : SystemBase
     {
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
 
+        //----    DETACH EMITTERS WHERE SPEAKERS ARE OUT OF RANGE
+
         //----    EMITTERS RANGE CHECK
         JobHandle emitterRangeCheck = Entities.WithoutBurst().WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
         {
@@ -42,7 +44,10 @@ public class RangeCheckSystem : SystemBase
         //----    SPEAKERS OUT OF RANGE CHECK
         JobHandle speakerRangeCheck = Entities.WithName("speakerRangeCheck").ForEach((ref PooledObjectComponent poolObj, in GrainSpeakerComponent speaker, in Translation trans ) =>
         {
-            bool inRangeCurrent = math.distance(trans.Value, speakerManager._ListenerPos) > speakerManager._EmitterToListenerActivationRange;
+            float dist = math.distance(trans.Value, speakerManager._ListenerPos);
+            bool inRangeCurrent = dist < speakerManager._EmitterToListenerActivationRange;
+
+            //Debug.Log("In range: " + inRangeCurrent + "  Dist: " + dist + " < " + speakerManager._EmitterToListenerActivationRange);
 
             //--  If moving out of range
             if (poolObj._State == PooledObjectState.Active && !inRangeCurrent)
@@ -93,54 +98,58 @@ public class RangeCheckSystem : SystemBase
 
 
 
-        ////----     IF THERE ARE EMITTERS WITHOUT A SPEAKER, SPAWN A POOLED SPEAKER ON AN EMITTER IN RANGE    
-        //EntityQuery emitterQuery = GetEntityQuery(typeof(EmitterComponent));
-        //NativeArray<Entity> emitterEnts = emitterQuery.ToEntityArray(Allocator.TempJob);
-        //NativeArray<EmitterComponent> emitters = GetEntityQuery(typeof(EmitterComponent)).ToComponentDataArray<EmitterComponent>(Allocator.TempJob);
+        //----     IF THERE ARE EMITTERS WITHOUT A SPEAKER, SPAWN A POOLED SPEAKER ON AN EMITTER IN RANGE    
+        EntityQuery emitterQuery = GetEntityQuery(typeof(EmitterComponent));
+        NativeArray<Entity> emitterEnts = emitterQuery.ToEntityArray(Allocator.TempJob);
+        NativeArray<EmitterComponent> emitters = GetEntityQuery(typeof(EmitterComponent)).ToComponentDataArray<EmitterComponent>(Allocator.TempJob);
 
-        //EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent));
-        //NativeArray<Entity> pooledSpeakerEnts = speakerQuery.ToEntityArray(Allocator.TempJob);
-        //NativeArray<PooledObjectComponent> pooledSpeakerStates = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);
+        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent));
+        NativeArray<Entity> speakerEntities = speakerQuery.ToEntityArray(Allocator.TempJob);
+        NativeArray<PooledObjectComponent> pooledSpeakerStates = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);        
 
+        JobHandle speakerActivation = Job.WithName("speakerActivation").WithoutBurst().WithCode(() =>
+        {
+            bool spawned = false;
 
-        //JobHandle speakerActivation = Job.WithName("speakerActivation").WithoutBurst().WithCode(() =>
-        //{
-        //    bool spawned = false;
-
-        //    // Look through each speaker to see if it's pooled
-        //    for (int s = 0; s < pooledSpeakerStates.Length; s++)
-        //    {
-        //        if (pooledSpeakerStates[s]._State == PooledObjectState.Pooled && !spawned)
-        //        {
-        //            // Look through all emitters to find one in range but not attached to a speaker
-        //            for (int e = 0; e < emitters.Length; e++)
-        //            {
-        //                if (emitters[e]._InRange && !emitters[e]._AttachedToSpeaker)
-        //                {
-        //                    // Set emitter component
-        //                    EmitterComponent emitter = GetComponent<EmitterComponent>(emitterEnts[e]);
-        //                    emitter._AttachedToSpeaker = false;
-        //                    emitter._InRange = false;
-        //                    emitter._SpeakerIndex = int.MaxValue;
-        //                    SetComponent<EmitterComponent>(emitterEnts[e], emitter);
-
-
-        //                    // Set speaker pooled component
-        //                    PooledObjectComponent pooledObj = GetComponent<PooledObjectComponent>(pooledSpeakerEnts[s]);
-        //                    pooledObj._State = PooledObjectState.Active;
-        //                    SetComponent<PooledObjectComponent>(pooledSpeakerEnts[s], pooledObj);
-
-        //                    spawned = true;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}).WithDisposeOnCompletion(pooledSpeakerEnts).WithDisposeOnCompletion(pooledSpeakerStates)
-        //.WithDisposeOnCompletion(emitterEnts).WithDisposeOnCompletion(emitters)
-        //.Schedule(activeSpeakersInRange);
+            // Look through each speaker to see if it's pooled
+            for (int s = 0; s < pooledSpeakerStates.Length; s++)
+            {
+                if (pooledSpeakerStates[s]._State == PooledObjectState.Pooled && !spawned)
+                {
+                    // Look through all emitters to find one in range but not attached to a speaker
+                    for (int e = 0; e < emitters.Length; e++)
+                    {
+                        if (emitters[e]._InRange && !emitters[e]._AttachedToSpeaker)
+                        {
+                            // Set emitter component
+                            EmitterComponent emitter = GetComponent<EmitterComponent>(emitterEnts[e]);
+                            emitter._AttachedToSpeaker = true;
+                            emitter._SpeakerIndex = GetComponent<GrainSpeakerComponent>(speakerEntities[s])._SpeakerIndex;
+                            emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
+                            SetComponent<EmitterComponent>(emitterEnts[e], emitter);
 
 
-        //this.Dependency = speakerActivation;
-        this.Dependency = activeSpeakersInRange;
+
+                            // Set speaker translation
+                            Translation speakerTrans = GetComponent<Translation>(speakerEntities[s]);
+                            speakerTrans.Value = GetComponent<Translation>(emitterEnts[e]).Value;
+                            SetComponent<Translation>(speakerEntities[s], speakerTrans);
+
+                            // Set speaker pooled component
+                            PooledObjectComponent pooledObj = GetComponent<PooledObjectComponent>(speakerEntities[s]);
+                            pooledObj._State = PooledObjectState.Active;
+                            SetComponent<PooledObjectComponent>(speakerEntities[s], pooledObj);
+
+                            spawned = true;
+                        }
+                    }
+                }
+            }
+        }).WithDisposeOnCompletion(speakerEntities).WithDisposeOnCompletion(pooledSpeakerStates)
+        .WithDisposeOnCompletion(emitterEnts).WithDisposeOnCompletion(emitters)
+        .Schedule(activeSpeakersInRange);
+
+
+        this.Dependency = speakerActivation;
     }
 }
