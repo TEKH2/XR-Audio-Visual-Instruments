@@ -114,12 +114,20 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
 
 
-        // Add pooling componenet
+
+        //-- Add pooling componenet
         dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
 
-        // Add audio buffer component
-        dstManager.AddComponentData(entity, new RollingBufferFiller { _StartIndex = 0, _SampleCount = 400 });
-        dstManager.AddBuffer<AudioSampleBufferElement>(entity);
+
+
+        //-- Add rolling audio buffer comonenets and initialize
+        dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
+        dstManager.AddBuffer<AudioRingBufferElement>(entity);
+        DynamicBuffer<AudioRingBufferElement> buffer = _EntityManager.GetBuffer<AudioRingBufferElement>(entity);
+        for (int i = 0; i < AudioSettings.outputSampleRate; i++)
+        {
+            buffer.Add(new AudioRingBufferElement { Value = 0 });
+        }
 
         //ReportGrainsDebug("Pooling");
 

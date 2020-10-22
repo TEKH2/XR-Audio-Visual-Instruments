@@ -62,8 +62,6 @@ public class GrainSynth :  MonoBehaviour
             CreateSpeaker(transform.position);
         }
 
-        print("Sample rate: " + AudioSettings.outputSampleRate);
-
         _DSPTimerEntity = _EntityManager.CreateEntity();
         _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _GrainQueueDuration = (int)(AudioSettings.outputSampleRate * _GrainQueueInMS) });
 

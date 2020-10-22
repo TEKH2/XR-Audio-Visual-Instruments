@@ -105,7 +105,7 @@ public struct Dots_DSP_Filter : IComponentData
     public float b2;
 }
 
-public struct RollingBufferFiller : IComponentData
+public struct RingBufferFiller : IComponentData
 {
     public int _StartIndex;  
     public int _EndIndex;
@@ -123,7 +123,7 @@ public struct GrainSampleBufferElement : IBufferElementData
 }
 
 //[InternalBufferCapacity(44100)]
-public struct AudioSampleBufferElement : IBufferElementData
+public struct AudioRingBufferElement : IBufferElementData
 {
     public float Value;
 }
