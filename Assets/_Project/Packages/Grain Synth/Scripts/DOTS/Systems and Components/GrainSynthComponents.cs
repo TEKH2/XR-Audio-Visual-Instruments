@@ -29,14 +29,14 @@ public struct GrainProcessor : IComponentData
     public AudioClipDataComponent _AudioClipDataComponent;
 
     public float _PlayheadNorm;
-    public int _DurationInSamples;
+    public int _SampleCount;
 
     public float _Pitch;
     public float _Volume;
 
     public int _SpeakerIndex;
 
-    public int _DSPSamplePlaybackStart;
+    public int _DSPStartIndex;
     public bool _SamplePopulated;
 }
 
@@ -105,11 +105,25 @@ public struct Dots_DSP_Filter : IComponentData
     public float b2;
 }
 
+public struct RollingBufferFiller : IComponentData
+{
+    public int _StartIndex;  
+    public int _EndIndex;
+    public int _SampleCount;
+}
+
 #endregion
 
 #region ---------- BUFFER ELEMENTS
-
+// Capacity set to a 1 second length by default
+//[InternalBufferCapacity(44100)]
 public struct GrainSampleBufferElement : IBufferElementData
+{
+    public float Value;
+}
+
+//[InternalBufferCapacity(44100)]
+public struct AudioSampleBufferElement : IBufferElementData
 {
     public float Value;
 }

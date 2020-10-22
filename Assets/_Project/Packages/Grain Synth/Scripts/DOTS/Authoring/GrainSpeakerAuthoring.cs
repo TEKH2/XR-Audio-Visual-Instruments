@@ -90,11 +90,12 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _GrainSynth = FindObjectOfType<GrainSynth>();
         _GrainSynth.RegisterSpeaker(this);
         dstManager.SetName(_Entity, "Speaker " + _SpeakerIndex);
+
+
         // Register the speaker and get the index
         dstManager.AddComponentData(entity, new GrainSpeakerComponent { _SpeakerIndex = _SpeakerIndex });
 
         // Pool grain playback data - current maximum length set to one second of samples (_SampleRate)
-
         if (_UseSingleGrainPlaybackDataArray)
         {
             _GrainPlaybackDataArray = new GrainPlaybackData[_GrainPlaybackDataToPool];
@@ -112,8 +113,13 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             }
         }
 
+
         // Add pooling componenet
         dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
+
+        // Add audio buffer component
+        dstManager.AddComponentData(entity, new RollingBufferFiller { _StartIndex = 0, _SampleCount = 400 });
+        dstManager.AddBuffer<AudioSampleBufferElement>(entity);
 
         //ReportGrainsDebug("Pooling");
 
@@ -144,18 +150,19 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (_DebugLog)
             ReportGrainsDebug("");
 
+
+        //----     Update translation component
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
-        // Check pairing to emitters
+
+        //----     Check pairing to emitters
         if (!_StaticallyPaired)
         {
-            Profiler.BeginSample("here");
-
-            // Clear playback data if not connected too emitters
+            //--   Clear playback data if not connected too emitters
             _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
             bool isCurrentlyConnected = _EntityManager.GetComponentData<PooledObjectComponent>(_Entity)._State == PooledObjectState.Active;
 
-            // If previously connceted and now disconnected
+            //--   If previously connceted and now disconnected
             if (_ConnectedToEmitter && !isCurrentlyConnected)
             {
                 if(_UseSingleGrainPlaybackDataArray)
@@ -180,9 +187,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 }
             }
 
-            Profiler.EndSample();
 
-            Profiler.BeginSample("here2");
+            //Profiler.BeginSample("here2");
             // Set mesh visibility and volume based on connection to emitter
             _TargetVolume = isCurrentlyConnected ? 1 : 0;
             _AudioSource.volume = Mathf.Lerp(_AudioSource.volume, _TargetVolume, Time.deltaTime * _VolumeSmoothing);
@@ -193,7 +199,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             _ConnectedToEmitter = isCurrentlyConnected;
 
-            Profiler.EndSample();
+            //Profiler.EndSample();
         }
     }
 

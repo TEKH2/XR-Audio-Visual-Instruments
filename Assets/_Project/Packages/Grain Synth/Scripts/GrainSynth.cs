@@ -61,7 +61,8 @@ public class GrainSynth :  MonoBehaviour
         {
             CreateSpeaker(transform.position);
         }
-        
+
+        print("Sample rate: " + AudioSettings.outputSampleRate);
 
         _DSPTimerEntity = _EntityManager.CreateEntity();
         _EntityManager.AddComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample, _GrainQueueDuration = (int)(AudioSettings.outputSampleRate * _GrainQueueInMS) });
@@ -151,6 +152,7 @@ public class GrainSynth :  MonoBehaviour
         });
 
        
+        //----    Loop through all grain processors and fill audio buffers of assigned speakers
         for (int i = 0; i < grainEntities.Length; i++)
         {
             GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
@@ -167,7 +169,7 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._IsPlaying = true;
                 playbackData._PlayheadIndex = 0;
                 playbackData._SizeInSamples = samples.Length;
-                playbackData._DSPStartTime = grainProcessor._DSPSamplePlaybackStart;
+                playbackData._DSPStartTime = grainProcessor._DSPStartIndex;
                 playbackData._PlayheadPos = grainProcessor._PlayheadNorm;               
 
                 NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
