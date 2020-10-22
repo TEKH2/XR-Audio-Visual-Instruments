@@ -159,7 +159,7 @@ public class RangeCheckSystem : SystemBase
                             pooledObj._State = PooledObjectState.Active;
                             SetComponent<PooledObjectComponent>(speakerEntities[s], pooledObj);
 
-                            Debug.Log("Speaker placed - Index: " + speakerIndex + " @ " + speakerPos);
+                            //Debug.Log("Speaker placed - Index: " + speakerIndex + " @ " + speakerPos);
                            
                             return;
                         }
