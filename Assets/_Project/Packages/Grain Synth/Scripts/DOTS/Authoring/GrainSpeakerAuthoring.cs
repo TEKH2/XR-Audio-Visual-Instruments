@@ -123,11 +123,13 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         //-- Add rolling audio buffer comonenets and initialize
         dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
         dstManager.AddBuffer<AudioRingBufferElement>(entity);
-        DynamicBuffer<AudioRingBufferElement> buffer = _EntityManager.GetBuffer<AudioRingBufferElement>(entity);
-        for (int i = 0; i < AudioSettings.outputSampleRate; i++)
+        DynamicBuffer<AudioRingBufferElement> outputBuffer = dstManager.GetBuffer<AudioRingBufferElement>(entity);
+        for (int i = 0; i < AudioSettings.outputSampleRate * 2; i++)
         {
-            buffer.Add(new AudioRingBufferElement { Value = 0 });
+            outputBuffer.Add(new AudioRingBufferElement { Value = 0 });
         }
+
+        dstManager.AddBuffer<GrainSampleBufferElement>(entity);
 
         //ReportGrainsDebug("Pooling");
 
@@ -209,6 +211,23 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             //Profiler.EndSample();
         }
+
+        // Test buffer clear
+        DynamicBuffer<GrainSampleBufferElement> audioBuffer = _EntityManager.GetBuffer<GrainSampleBufferElement>(_Entity);
+
+        bool goodVal = false;
+        for (int i = 0; i < audioBuffer.Length; i++)
+        {
+            if (audioBuffer[i].Value != 0)
+                goodVal = true;
+        }
+
+       
+
+        if(audioBuffer.Length > 0)
+            audioBuffer.RemoveRange(0, audioBuffer.Length);
+
+
     }
 
     public GrainPlaybackData GetGrainPlaybackDataFromPool()

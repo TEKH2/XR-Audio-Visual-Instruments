@@ -141,6 +141,7 @@ public class GrainSynth :  MonoBehaviour
 
 
         DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.GetBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
+
         // Update audio listener position
         _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
         {

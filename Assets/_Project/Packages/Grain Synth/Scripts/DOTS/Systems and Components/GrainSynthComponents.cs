@@ -24,6 +24,9 @@ public struct SpeakerManagerComponent : IComponentData
 }
 
 
+
+
+
 public struct GrainProcessor : IComponentData
 {
     public AudioClipDataComponent _AudioClipDataComponent;
@@ -119,6 +122,7 @@ public struct RingBufferFiller : IComponentData
 //[InternalBufferCapacity(44100)]
 public struct GrainSampleBufferElement : IBufferElementData
 {
+    public int DSPSampleIndex;
     public float Value;
 }
 

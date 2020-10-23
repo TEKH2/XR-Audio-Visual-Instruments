@@ -109,6 +109,7 @@ public class GrainSynthSystem : SystemBase
                 {
                     float sourceIndex = grain._PlayheadNorm * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                     float increment = grain._Pitch;
+                    int sampleCount = 0;
 
                     for (int i = 0; i < grain._SampleCount; i++)
                     {
@@ -142,7 +143,8 @@ public class GrainSynthSystem : SystemBase
                         // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
-                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
+                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue, DSPSampleIndex = grain._DSPStartIndex + sampleCount });
+                        sampleCount++;
                     }
 
                     grain._SamplePopulated = true;
@@ -219,74 +221,68 @@ public class GrainSynthSystem : SystemBase
 
 [UpdateAfter(typeof(GrainSynthSystem))]
 public class GrainsToAudioBuffersSystem : SystemBase
-{
+{   
+    // Command buffer for removing tween componants once they are completed
+    private EndSimulationEntityCommandBufferSystem _CommandBufferSystem;
+
     protected override void OnCreate()
     {
-
+        base.OnCreate();
+        _CommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
     {
-        //----    FILL GRAIN SPEAKER ROLLING BUFFERS
-        NativeArray<Entity> grainEnts = GetEntityQuery(typeof(GrainProcessor), typeof(DynamicBuffer<GrainSampleBufferElement>)).ToEntityArray(Allocator.TempJob);
-        NativeArray<GrainProcessor> grains = GetEntityQuery(typeof(GrainProcessor)).ToComponentDataArray<GrainProcessor>(Allocator.TempJob);
-
-        Entities.WithName("FillSpeakerRingBuffer").ForEach
-        (
-           (ref DynamicBuffer<AudioRingBufferElement> ringBuffer, ref RingBufferFiller ringBufferFiller, in GrainSpeakerComponent grainSpeaker) =>
-           {
-               BufferFromEntity<GrainSampleBufferElement> bufferLookup = GetBufferFromEntity<GrainSampleBufferElement>(true);
-
-               //--  Fill buffer with grains
-               int startIndex = int.MaxValue;
-               int endIndexUnclamped = 0;
-
-               for (int i = 0; i < grainEnts.Length; i++)
-               {
-                   Entity grainEnt = grainEnts[i];
-
-                   if (!bufferLookup.HasComponent(grainEnt))
-                       return;
-                                    
-                   DynamicBuffer <GrainSampleBufferElement> grainSampleBuffer = bufferLookup[grainEnt];
-
-                   //--  If the grain is routing to this speaker
-                   if (grains[i]._SpeakerIndex == grainSpeaker._SpeakerIndex && grains[i]._SamplePopulated && grainSampleBuffer.Length > 0)
-                   {
-                       //-- Update values for the ring buffer filler
-                       startIndex = math.min(startIndex, grains[i]._DSPStartIndex);
-                       endIndexUnclamped = math.max(endIndexUnclamped, grains[i]._DSPStartIndex + grains[i]._SampleCount);
-
-                       //Debug.Log("ring buffer sample count: " + ringBufferFiller._SampleCount + "  grainSampleBuffer:  " + grainSampleBuffer.Length + "   Audio buffer length: " + ringBuffer.Length);
-
-                       //--  Fill ring buffer from grain samples
-                       for (int s = 0; s < grainSampleBuffer.Length; s++)
-                       {
-                           float grainSampleVal = grainSampleBuffer[s].Value;
-
-                           int ringBuffIndex = (grains[i]._DSPStartIndex + s) % (ringBuffer.Length - 1);
-                           float ringBufferVal = ringBuffer[ringBuffIndex].Value;
-                           ringBuffer[ringBuffIndex] = new AudioRingBufferElement { Value = ringBufferVal + grainSampleVal };
-                       }
-                   }
-               }
 
 
-               //-- Clear previous samples
-               //int prevSampleCount = ringBufferFiller._SampleCount;
-               //int prevStartIndex = ringBufferFiller._StartIndex;
-               //ringBufferFiller._StartIndex = startIndex;
-               //ringBufferFiller._EndIndex = endIndexUnclamped % ringBuffer.Length;
-               //ringBufferFiller._SampleCount = endIndexUnclamped - startIndex;
 
-               //for (int s = 0; s < prevSampleCount; s++)
-               //{
-               //    int index = (prevStartIndex + s) % ringBuffer.Length;
-               //    ringBuffer[s] = new AudioRingBufferElement { Value = 0 };
-               //}
-           }
-        ).WithDisposeOnCompletion(grainEnts)
-        //.WithDisposeOnCompletion(grains)
-        .ScheduleParallel();
+        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
+        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+        NativeArray<Entity> speakerEnts = GetEntityQuery(ComponentType.ReadOnly(typeof(GrainSpeakerComponent))).ToEntityArray(Allocator.TempJob);
+
+        JobHandle addGrainsToSpeakers = Entities.ForEach
+        ((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSampleBufferElement> grainOutputBuffer, ref GrainProcessor grain) =>
+        {
+            //--  If not attached to a speaker then return
+            if (grain._SpeakerIndex == int.MaxValue)
+                return;
+
+            Entity speakerEntity = speakerEnts[grain._SpeakerIndex];
+
+            for (int i = 0; i < grainOutputBuffer.Length; i++)
+            {
+                entityCommandBuffer.AppendToBuffer(entityInQueryIndex, speakerEntity, new GrainSampleBufferElement { Value = grainOutputBuffer[i].Value, DSPSampleIndex = i });
+            }
+        }).WithDisposeOnCompletion(speakerEnts)
+        .ScheduleParallel(this.Dependency);
+
+
+
+        ////----    AGGREGATE GRAIN SAMPLES
+        //DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
+
+        //JobHandle aggregateGrainSamplesInSpeaker = Entities.ForEach
+        //((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSampleElement> grainSampleElementBuffer, DynamicBuffer<AudioRingBufferElement> outputBuffer) =>
+        //{
+        //    //Debug.Log("here1");
+        //    //--  If not attached to a speaker then return
+        //    if (grainSampleElementBuffer.Length == 0)
+        //        return;
+
+        //    int startDSPIndex = dspTimer._CurrentDSPSample;
+        //    //Debug.Log("here2");
+        //    for (int i = 0; i < grainSampleElementBuffer.Length; i++)
+        //    {
+        //        int index = grainSampleElementBuffer[i].DSPSampleIndex - startDSPIndex;
+        //        outputBuffer[index] = new AudioRingBufferElement { Value = outputBuffer[index].Value + grainSampleElementBuffer[i].Value };
+        //    }
+        //})
+        //.ScheduleParallel(addGrainsToSpeakers);
+
+
+        //this.Dependency = aggregateGrainSamplesInSpeaker;
+
+        //// Make sure that the ECB system knows about our job
+        //_CommandBufferSystem.AddJobHandleForProducer(addGrainsToSpeakers);
     }
 }
