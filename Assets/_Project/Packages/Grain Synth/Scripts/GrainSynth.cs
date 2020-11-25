@@ -141,7 +141,7 @@ public class GrainSynth :  MonoBehaviour
 
 
         DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.GetBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
-
+       
         // Update audio listener position
         _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
         {
@@ -158,25 +158,27 @@ public class GrainSynth :  MonoBehaviour
 
             if (grainProcessor._SamplePopulated)
             {
-                GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
+                //GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
 
-                if (playbackData == null)
-                    break;
+                //if (playbackData == null)
+                //    break;
 
-                NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+                //NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
-                playbackData._IsPlaying = true;
-                playbackData._PlayheadIndex = 0;
-                playbackData._SizeInSamples = samples.Length;
-                playbackData._DSPStartTime = grainProcessor._DSPStartIndex;
-                playbackData._PlayheadPos = grainProcessor._PlayheadNorm;               
+                //playbackData._IsPlaying = true;
+                //playbackData._PlayheadIndex = 0;
+                //playbackData._SizeInSamples = samples.Length;
+                //playbackData._DSPStartTime = grainProcessor._DSPStartIndex;
+                //playbackData._PlayheadPos = grainProcessor._PlayheadNorm;
 
-                NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
+                //NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
+
+                //_GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
 
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(grainEntities[i]);
 
-                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
+               
             }
         }       
 

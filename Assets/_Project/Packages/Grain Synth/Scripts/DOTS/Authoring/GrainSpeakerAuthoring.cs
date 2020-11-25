@@ -124,7 +124,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
         dstManager.AddBuffer<AudioRingBufferElement>(entity);
         DynamicBuffer<AudioRingBufferElement> outputBuffer = dstManager.GetBuffer<AudioRingBufferElement>(entity);
-        for (int i = 0; i < AudioSettings.outputSampleRate * 2; i++)
+        for (int i = 0; i < AudioSettings.outputSampleRate; i++)
         {
             outputBuffer.Add(new AudioRingBufferElement { Value = 0 });
         }

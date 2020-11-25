@@ -236,25 +236,22 @@ public class GrainsToAudioBuffersSystem : SystemBase
 
 
 
-        // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
-        EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-        NativeArray<Entity> speakerEnts = GetEntityQuery(ComponentType.ReadOnly(typeof(GrainSpeakerComponent))).ToEntityArray(Allocator.TempJob);
+        //// Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
+        //EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+        //NativeArray<Entity> speakerEnts = GetEntityQuery(ComponentType.ReadOnly(typeof(GrainSpeakerComponent))).ToEntityArray(Allocator.TempJob);
 
-        JobHandle addGrainsToSpeakers = Entities.ForEach
-        ((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSampleBufferElement> grainOutputBuffer, ref GrainProcessor grain) =>
-        {
-            //--  If not attached to a speaker then return
-            if (grain._SpeakerIndex == int.MaxValue)
-                return;
+        ////---- ADD ALL GRAIN PROCESSOR SAMPLES TO THE ASSIGNED SPEAKER
+        //JobHandle addGrainsToSpeakers = Entities.ForEach
+        //((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSampleBufferElement> grainOutputBuffer, ref GrainProcessor grain) =>
+        //{
+        //    //--  If not attached to a speaker then return
+        //    if (grain._SpeakerIndex == int.MaxValue) return;
 
-            Entity speakerEntity = speakerEnts[grain._SpeakerIndex];
-
-            for (int i = 0; i < grainOutputBuffer.Length; i++)
-            {
-                entityCommandBuffer.AppendToBuffer(entityInQueryIndex, speakerEntity, new GrainSampleBufferElement { Value = grainOutputBuffer[i].Value, DSPSampleIndex = i });
-            }
-        }).WithDisposeOnCompletion(speakerEnts)
-        .ScheduleParallel(this.Dependency);
+        //    Entity speakerEntity = speakerEnts[grain._SpeakerIndex];
+        //    for (int i = 0; i < grainOutputBuffer.Length; i++)            
+        //        entityCommandBuffer.AppendToBuffer(entityInQueryIndex, speakerEntity, grainOutputBuffer[i] );            
+        //}).WithDisposeOnCompletion(speakerEnts)
+        //.ScheduleParallel(this.Dependency);
 
 
 
@@ -262,7 +259,7 @@ public class GrainsToAudioBuffersSystem : SystemBase
         //DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
 
         //JobHandle aggregateGrainSamplesInSpeaker = Entities.ForEach
-        //((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSampleElement> grainSampleElementBuffer, DynamicBuffer<AudioRingBufferElement> outputBuffer) =>
+        //((int entityInQueryIndex, Entity entity, DynamicBuffer<GrainSpeakerComponent> grainSampleElementBuffer, DynamicBuffer<AudioRingBufferElement> outputBuffer) =>
         //{
         //    //Debug.Log("here1");
         //    //--  If not attached to a speaker then return
@@ -283,6 +280,6 @@ public class GrainsToAudioBuffersSystem : SystemBase
         //this.Dependency = aggregateGrainSamplesInSpeaker;
 
         //// Make sure that the ECB system knows about our job
-        //_CommandBufferSystem.AddJobHandleForProducer(addGrainsToSpeakers);
+        //_CommandBufferSystem.AddJobHandleForProducer(Dependency);
     }
 }

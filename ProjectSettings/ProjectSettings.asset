@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: EthnoTekhV2
+  companyName: EthnoTekh
+  productName: GrainSynth
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -119,6 +119,7 @@ PlayerSettings:
   stadiaTargetFramerate: 0
   vulkanNumSwapchainBuffers: 2
   vulkanEnableSetSRGBWrite: 0
+  vulkanEnableLateAcquireNextImage: 0
   m_SupportedAspectRatios:
     4:3: 1
     5:4: 1
@@ -128,6 +129,9 @@ PlayerSettings:
   bundleVersion: 0.1
   preloadedAssets:
   - {fileID: 11400000, guid: 0bcbfb6adcddb4c40b7682bffe6030c1, type: 2}
+  - {fileID: 11400000, guid: b43362167a2dc684e9ffbaf0164bccae, type: 2}
+  - {fileID: 9120456570361195180, guid: d3bc0007cb80a654dbd778251c149bd8, type: 2}
+  - {fileID: 11400000, guid: d706ac39f2e2cdf458fe53385d06423c, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -172,7 +176,7 @@ PlayerSettings:
   applicationIdentifier: {}
   buildNumber: {}
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 19
+  AndroidMinSdkVersion: 23
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -325,7 +329,7 @@ PlayerSettings:
     m_APIs: 10000000
     m_Automatic: 0
   - m_BuildTarget: AndroidPlayer
-    m_APIs: 150000000b000000
+    m_APIs: 0b000000
     m_Automatic: 0
   - m_BuildTarget: WebGLSupport
     m_APIs: 0b000000

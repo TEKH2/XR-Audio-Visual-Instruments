@@ -4,7 +4,6 @@ using Unity.Transforms;
 using UnityEngine;
 using Unity.Collections;
 using System.Linq;
-using YamlDotNet.Core;
 using Unity.Jobs;
 
 // https://docs.unity3d.com/Packages/com.unity.entities@0.13/api/
