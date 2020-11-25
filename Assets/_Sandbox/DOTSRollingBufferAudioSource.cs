@@ -43,6 +43,7 @@ public class DOTSRollingBufferAudioSource : MonoBehaviour
 
     void OnAudioFilterRead(float[] data, int channels)
     {
+        print("Here");
         //----    TEST ROLLING BUFFER WORKING CORRECTLY
         //int currentDSPSample = GrainSynth.Instance._CurrentDSPSample;
         int rollingIndex;
