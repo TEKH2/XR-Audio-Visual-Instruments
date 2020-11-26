@@ -8,4 +8,3 @@ public class DSPBase : MonoBehaviour
         return new DSPParametersElement();
     }
 }
-
