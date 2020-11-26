@@ -105,6 +105,7 @@ public struct Dots_DSP_Filter : IComponentData
     public float b2;
 }
 
+
 public struct RingBufferFiller : IComponentData
 {
     public int _StartIndex;  
