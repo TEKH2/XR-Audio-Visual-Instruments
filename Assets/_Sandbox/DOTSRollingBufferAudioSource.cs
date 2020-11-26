@@ -23,23 +23,23 @@ public class DOTSRollingBufferAudioSource : MonoBehaviour
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _RollingAudioBufferEntity = _EntityManager.CreateEntity();
         _EntityManager.SetName(_RollingAudioBufferEntity, "Rolling audio buffer");
-        _EntityManager.AddComponentData(_RollingAudioBufferEntity, new RollingBufferFiller { _StartIndex = 0, _SampleCount = 400 });
-        _EntityManager.AddBuffer<AudioSampleBufferElement>(_RollingAudioBufferEntity);
+        _EntityManager.AddComponentData(_RollingAudioBufferEntity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 400 });
+        _EntityManager.AddBuffer<AudioRingBufferElement>(_RollingAudioBufferEntity);
 
         //--  Initialize buffers
         _RollingBuffer = new float[44100];
-        DynamicBuffer<AudioSampleBufferElement> buffer = _EntityManager.GetBuffer<AudioSampleBufferElement>(_RollingAudioBufferEntity);        
+        DynamicBuffer<AudioRingBufferElement> buffer = _EntityManager.GetBuffer<AudioRingBufferElement>(_RollingAudioBufferEntity);        
         for (int i = 0; i < 44100; i++)
         {
             _RollingBuffer[i] = 0;
-            buffer.Add(new AudioSampleBufferElement { Value = 0 });
+            buffer.Add(new AudioRingBufferElement { Value = 0 });
         }
     }
     
     void Update()
     {
         //----  Copy buffer from entity
-        NativeArray<float> samples = _EntityManager.GetBuffer<AudioSampleBufferElement>(_RollingAudioBufferEntity).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+        NativeArray<float> samples = _EntityManager.GetBuffer<AudioRingBufferElement>(_RollingAudioBufferEntity).Reinterpret<float>().ToNativeArray(Allocator.Temp);
         GrainSynth.NativeToManagedCopyMemory(_RollingBuffer, samples);       
     }
 
