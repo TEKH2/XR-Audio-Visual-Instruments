@@ -27,20 +27,22 @@ public class DSP_Filter : DSPBase
         DSPParametersElement dspBuffer = new DSPParametersElement();
         dspBuffer._DSPType = DSPTypes.Filter;
 
+        float cutoffFreq = AudioUtils.NormToFreq(Mathf.Clamp(_FilterCutoffNorm, 0f, 1f));
+        float gain = Mathf.Clamp(_FilterGain, 0.5f, 1f);
+        float q = Mathf.Clamp(_FilterQ, 0.1f, 5f);
+
         FilterCoefficients newCoefficients;
 
         if (_FilterType == FilterConstruction.FilterType.LowPass)
-            newCoefficients = LowPass(_FilterCutoffNorm, _FilterGain, _FilterQ);
+            newCoefficients = LowPass(cutoffFreq, gain, q);
         else if (_FilterType == FilterConstruction.FilterType.HiPass)
-            newCoefficients = HiPass(_FilterCutoffNorm, _FilterGain, _FilterQ);
+            newCoefficients = HiPass(cutoffFreq, gain, q);
         else if (_FilterType == FilterConstruction.FilterType.BandPass)
-            newCoefficients = BandPass(_FilterCutoffNorm, _FilterGain, _FilterQ);
+            newCoefficients = BandPass(cutoffFreq, gain, q);
         else if (_FilterType == FilterConstruction.FilterType.PeakNotch)
-            newCoefficients = PeakNotch(_FilterCutoffNorm, _FilterGain, _FilterQ);
+            newCoefficients = PeakNotch(cutoffFreq, gain, q);
         else
-            newCoefficients = AllPass(_FilterCutoffNorm, _FilterGain, _FilterQ);
-
-        // TO DO convert coefficients into dspBuffer array
+            newCoefficients = AllPass(cutoffFreq, gain, q);
 
         dspBuffer._Value0 = _Mix;
         dspBuffer._Value1 = newCoefficients.a0;
@@ -50,6 +52,43 @@ public class DSP_Filter : DSPBase
         dspBuffer._Value5 = newCoefficients.b2;
 
         return dspBuffer;
+    }
+
+    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
+    {
+        float[] outputBuffer = new float[sampleBuffer.Length];
+        float outputSample = 0;
+
+        float previousX1 = 0;
+        float previousX2 = 0;
+        float previousY1 = 0;
+        float previousY2 = 0;
+
+        for (int i = 0; i < sampleBuffer.Length; i++)
+        {
+            // Apply coefficients to input singal and history data
+            outputSample = (sampleBuffer[i].Value * dspParams._Value1 +
+                             previousX1 * dspParams._Value2 +
+                             previousX2 * dspParams._Value3) -
+                             (previousY1 * dspParams._Value4 +
+                             previousY2 * dspParams._Value5);
+
+            // Set history states for signal data
+            previousX2 = previousX1;
+            previousX1 = sampleBuffer[i].Value;
+            previousY2 = previousY1;
+            previousY1 = outputSample;
+
+            outputBuffer[i] = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0);
+        }
+
+        // Fill sample buffer element
+        // Kept this as a sepearate loop for consistancy in case future DSP effects require separate for loops
+        // to populate effect buffer vs populating the output buffer.. REVISE ONCE DONE
+        for (int i = 0; i < sampleBuffer.Length; i++)
+        {
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = outputBuffer[i] };
+        }
     }
 
     private static FilterCoefficients LowPass(float cutoff, float gain, float q)
@@ -161,43 +200,5 @@ public class DSP_Filter : DSPBase
         newFilterCoefficients.a2 = 1.0f;
 
         return newFilterCoefficients;
-    }
-
-
-    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
-    {
-        float[] outputBuffer = new float[sampleBuffer.Length];
-        float outputSample = 0;
-
-        float previousX1 = 0;
-        float previousX2 = 0;
-        float previousY1 = 0;
-        float previousY2 = 0;
-
-        for (int i = 0; i < sampleBuffer.Length; i++)
-        {
-            // Apply coefficients to input singal and history data
-            outputSample = (sampleBuffer[i].Value * dspParams._Value1 +
-                             previousX1 * dspParams._Value2 +
-                             previousX2 * dspParams._Value3) -
-                             (previousY1 * dspParams._Value4 +
-                             previousY2 * dspParams._Value5);
-
-            // Set history states for signal data
-            previousX2 = previousX1;
-            previousX1 = sampleBuffer[i].Value;
-            previousY2 = previousY1;
-            previousY1 = outputSample;
-
-            outputBuffer[i] = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0);
-        }
-
-        // Fill sample buffer element
-        // Kept this as a sepearate loop for consistancy in case future DSP effects require separate for loops
-        // to populate effect buffer vs populating the output buffer.. REVISE ONCE DONE
-        for (int i = 0; i < sampleBuffer.Length; i++)
-        {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = outputBuffer[i] };
-        }
     }
 }
