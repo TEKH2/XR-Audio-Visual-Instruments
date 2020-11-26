@@ -10440,7 +10440,7 @@ MonoBehaviour:
   _MaxGrainSpeakers: 2
   _GrainQueueInMS: 27.4
   _CurrentDSPSample: 0
-  _EmitterToListenerActivationRange: 3
+  _EmitterToListenerActivationRange: 2
   _EmitterToSpeakerAttachRadius: 1
 --- !u!82 &844739181
 AudioSource:

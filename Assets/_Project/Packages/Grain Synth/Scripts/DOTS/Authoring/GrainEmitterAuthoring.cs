@@ -199,7 +199,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
-
+    bool _InRangeTemp = false;
     void Update()
     {
         if (!_Initialized)
@@ -244,6 +244,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _EntityManager.SetComponentData(_EmitterEntity, data);
 
+        _InRangeTemp = data._InRange;
+
         _AttachedSpeakerIndex = data._SpeakerIndex;
         _AttachedToSpeaker = data._AttachedToSpeaker;
 
@@ -252,5 +254,11 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             Value = transform.position
         });
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = _InRangeTemp ? Color.yellow : Color.blue;
+        Gizmos.DrawSphere(transform.position, .1f);
     }
 }

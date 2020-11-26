@@ -17,20 +17,25 @@ public class RangeCheckSystem : SystemBase
     {
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
 
-        //----    EMITTERS RANGE CHECK
-        JobHandle emitterRangeCheck = Entities.WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
-        {
-            bool inRangeCurrent = math.distance(trans.Value, speakerManager._ListenerPos) < speakerManager._EmitterToListenerActivationRange;
+        //----    DETACH EMITTERS WHERE SPEAKERS ARE OUT OF RANGE
 
-            //--  If moving out of range
+        //----    EMITTERS RANGE CHECK
+        JobHandle emitterRangeCheck = Entities.WithoutBurst().WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
+        {
+            float dist = math.distance(trans.Value, speakerManager._ListenerPos);
+            bool inRangeCurrent = dist < speakerManager._EmitterToListenerActivationRange;
+
+            //--  If moving out of range, deactive
             if (emitter._InRange && !inRangeCurrent)
             {
-                DeactivateEmitter(emitter);
+                emitter._AttachedToSpeaker = false;
+                emitter._InRange = false;
+                emitter._SpeakerIndex = int.MaxValue;
             }
             //--  If moving into range
             else if (!emitter._InRange && inRangeCurrent)
             {
-                EmitterInRange(emitter);
+                emitter._InRange = true;
             }
         }).ScheduleParallel(this.Dependency);
 
@@ -39,7 +44,10 @@ public class RangeCheckSystem : SystemBase
         //----    SPEAKERS OUT OF RANGE CHECK
         JobHandle speakerRangeCheck = Entities.WithName("speakerRangeCheck").ForEach((ref PooledObjectComponent poolObj, in GrainSpeakerComponent speaker, in Translation trans ) =>
         {
-            bool inRangeCurrent = math.distance(trans.Value, speakerManager._ListenerPos) > speakerManager._EmitterToListenerActivationRange;
+            float dist = math.distance(trans.Value, speakerManager._ListenerPos);
+            bool inRangeCurrent = dist < speakerManager._EmitterToListenerActivationRange;
+
+            //Debug.Log("In range: " + inRangeCurrent + "  Dist: " + dist + " < " + speakerManager._EmitterToListenerActivationRange);
 
             //--  If moving out of range
             if (poolObj._State == PooledObjectState.Active && !inRangeCurrent)
@@ -48,10 +56,11 @@ public class RangeCheckSystem : SystemBase
             }
         }).ScheduleParallel(this.Dependency);
 
-        JobHandle rangeCheckDeps = JobHandle.CombineDependencies(emitterRangeCheck, speakerRangeCheck);
 
 
         //----     FIND ACTIVE SPEAKERS IN RANGE
+        JobHandle rangeCheckDeps = JobHandle.CombineDependencies(emitterRangeCheck, speakerRangeCheck);
+
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         NativeArray<Entity> speakerEnts = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(Translation)).ToEntityArray(Allocator.TempJob);
 
@@ -76,187 +85,71 @@ public class RangeCheckSystem : SystemBase
                     }
                 }
 
-                // If speaker in range is found then attach
-                if (closestSpeakerIndex != int.MaxValue)                
-                    AssignEmitterToSpeaker(emitter, closestSpeakerIndex, dspTimer._CurrentDSPSample);     
+                // If speaker in range is found then attach emitter to speaker
+                if (closestSpeakerIndex != int.MaxValue)
+                {
+                    emitter._AttachedToSpeaker = true;
+                    emitter._SpeakerIndex = closestSpeakerIndex;
+                    emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
+                } 
             }
         }).WithDisposeOnCompletion(speakerEnts)
         .ScheduleParallel(rangeCheckDeps);
 
-        this.Dependency = activeSpeakersInRange;
-    }
-
-     static void DeactivateEmitter(EmitterComponent emitter)
-    {
-        emitter._Playing = false;
-        emitter._AttachedToSpeaker = false;
-        emitter._InRange = false;
-        emitter._SpeakerIndex = int.MaxValue;
-    }
-
-    static void EmitterInRange(EmitterComponent emitter)
-    {
-        emitter._InRange = false;
-    }
-
-    public static void AssignEmitterToSpeaker(EmitterComponent emitter, int speakerIndex, int dspTimer)
-    {
-        emitter._Playing = true;
-        emitter._AttachedToSpeaker = true;
-        emitter._SpeakerIndex = speakerIndex;
-        emitter._LastGrainEmissionDSPIndex = dspTimer;
-    }
-}
 
 
-[UpdateAfter(typeof(RangeCheckSystem))]
-public class SpawnSpeakerSystem : SystemBase
-{
-    protected override void OnUpdate()
-    {
-        //----     IF THERE ARE EMITTERS WITHOUT A SPEAKER, SPAWN A POOLED SPEAKER ON AN EMITTER IN RANGE
-        DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
-        //NativeArray<EmitterComponent> emitters = GetEntityQuery(typeof(EmitterComponent), typeof(Translation)).ToComponentDataArray<EmitterComponent>(Allocator.TempJob);
+        //----     IF THERE ARE EMITTERS WITHOUT A SPEAKER, SPAWN A POOLED SPEAKER ON AN EMITTER IN RANGE    
+        EntityQuery emitterQuery = GetEntityQuery(typeof(EmitterComponent));
+        NativeArray<Entity> emitterEnts = emitterQuery.ToEntityArray(Allocator.TempJob);
+        NativeArray<EmitterComponent> emitters = GetEntityQuery(typeof(EmitterComponent)).ToComponentDataArray<EmitterComponent>(Allocator.TempJob);
 
-        //bool spawned = false;
-        //Entities.ForEach((ref PooledObjectComponent speakerPooled, in GrainSpeakerComponent speaker, in Translation trans) =>
-        //{
-        //    if (speakerPooled._State == PooledObjectState.Pooled && !spawned)
-        //    {
-        //        for (int i = 0; i < emitters.Length; i++)
-        //        {
-        //            if (emitters[i]._InRange && !emitters[i]._AttachedToSpeaker)
-        //            {
-        //                RangeCheckSystem.AssignEmitterToSpeaker(emitters[i], speaker._SpeakerIndex, dspTimer._CurrentDSPSample);
-        //                spawned = true;
-        //                return;
-        //            }
-        //        }
-        //    }
-        //}).Schedule();
-    }
-}
+        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent));
+        NativeArray<Entity> speakerEntities = speakerQuery.ToEntityArray(Allocator.TempJob);
+        NativeArray<PooledObjectComponent> pooledSpeakerStates = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);        
 
+        JobHandle speakerActivation = Job.WithName("speakerActivation").WithoutBurst().WithCode(() =>
+        {
+            bool spawned = false;
 
-[UpdateAfter(typeof(RangeCheckSystem))]
-public class SpeakerEmitterPairingSystem : SystemBase
-{
-    // Command buffer for removing tween componants once they are completed
-    private EndSimulationEntityCommandBufferSystem _CommandBufferSystem;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        _CommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-    }
-
-    protected override void OnUpdate()
-    {
-        //// Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
-        //EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-
-        //SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
-        //DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
-
-        //// ----    PAIR IN RANGE EMITTERS WITH IN RANGE SPEAKERS
-        //EntityQuery activeSpeakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(InListenerRangeTag), typeof(Translation));
-        //NativeArray<GrainSpeakerComponent> activeSpeakers = activeSpeakerQuery.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
-        //NativeArray<Translation> activeSpeakersTrans = activeSpeakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-      
-        //Entities.ForEach((int entityInQueryIndex, Entity entity, ref EmitterComponent emitter, in Translation emitterTrans, in InListenerRangeTag inRange) =>
-        //{
-        //    float closestDist = float.MaxValue;
-        //    int closestIndex = int.MaxValue;
-
-        //    for (int i = 0; i < activeSpeakers.Length; i++)
-        //    {
-        //        float dist = math.distance(emitterTrans.Value, activeSpeakersTrans[i].Value);
-        //        if (dist < speakerManager._EmitterToSpeakerAttachRadius)
-        //        {
-        //            closestDist = dist;
-        //            closestIndex = i;
-        //        }
-        //    }
-
-        //    // -- If an active speaker has been found within range
-        //    if (closestIndex != int.MaxValue)
-        //    {
-        //        emitter._Playing = true;
-        //        emitter._AttachedToSpeaker = true;
-        //        emitter._SpeakerIndex = closestIndex;
-        //        emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
-        //    }
-        //}).WithDisposeOnCompletion(activeSpeakers)
-        //.WithDisposeOnCompletion(activeSpeakersTrans)
-        //.ScheduleParallel();
+            // Look through each speaker to see if it's pooled
+            for (int s = 0; s < pooledSpeakerStates.Length; s++)
+            {
+                if (pooledSpeakerStates[s]._State == PooledObjectState.Pooled && !spawned)
+                {
+                    // Look through all emitters to find one in range but not attached to a speaker
+                    for (int e = 0; e < emitters.Length; e++)
+                    {
+                        if (emitters[e]._InRange && !emitters[e]._AttachedToSpeaker)
+                        {
+                            // Set emitter component
+                            EmitterComponent emitter = GetComponent<EmitterComponent>(emitterEnts[e]);
+                            emitter._AttachedToSpeaker = true;
+                            emitter._SpeakerIndex = GetComponent<GrainSpeakerComponent>(speakerEntities[s])._SpeakerIndex;
+                            emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
+                            SetComponent<EmitterComponent>(emitterEnts[e], emitter);
 
 
 
-        //// ----    PAIR IN RANGE EMITTER WITH INACTIVE SPEAKER
-        //var queryDesc = new EntityQueryDesc
-        //{
-        //    None = new ComponentType[] { typeof(InListenerRangeTag) },
-        //    All = new ComponentType[] { typeof(GrainSpeakerComponent), ComponentType.ReadOnly<Translation>() }
-        //};
-        //EntityQuery query = GetEntityQuery(queryDesc);
-        //NativeArray<Entity> inactiveSpeakerEnts = query.ToEntityArray(Allocator.TempJob);
-        //NativeArray<GrainSpeakerComponent> inactiveSpeakers = query.ToComponentDataArray<GrainSpeakerComponent>(Allocator.TempJob);
-        //int count = 0;
+                            // Set speaker translation
+                            Translation speakerTrans = GetComponent<Translation>(speakerEntities[s]);
+                            speakerTrans.Value = GetComponent<Translation>(emitterEnts[e]).Value;
+                            SetComponent<Translation>(speakerEntities[s], speakerTrans);
 
-        //Entities.ForEach((int entityInQueryIndex, Entity entity, ref EmitterComponent emitter, in Translation emitterTrans, in InListenerRangeTag inRange) =>
-        //{           
-        //    if (!emitter._AttachedToSpeaker && inactiveSpeakers.Length > 0 && count == 0)
-        //    { 
-        //        emitter._Playing = true;
-        //        emitter._AttachedToSpeaker = true;
-        //        emitter._SpeakerIndex = inactiveSpeakers[0]._SpeakerIndex;
-        //        emitter._LastGrainEmissionDSPIndex = dspTimer._CurrentDSPSample;
+                            // Set speaker pooled component
+                            PooledObjectComponent pooledObj = GetComponent<PooledObjectComponent>(speakerEntities[s]);
+                            pooledObj._State = PooledObjectState.Active;
+                            SetComponent<PooledObjectComponent>(speakerEntities[s], pooledObj);
 
-        //        entityCommandBuffer.SetComponent<Translation>(entityInQueryIndex, inactiveSpeakerEnts[0], new Translation { Value = emitterTrans.Value });
-        //        entityCommandBuffer.AddComponent<InListenerRangeTag>(entityInQueryIndex, inactiveSpeakerEnts[0], new InListenerRangeTag { });
-
-        //        //Debug.Log("index: " + emitter._SpeakerIndex);
-        //    }
-
-        //}).WithDisposeOnCompletion(inactiveSpeakers)
-        //.WithDisposeOnCompletion(inactiveSpeakerEnts)
-        //.ScheduleParallel();
+                            spawned = true;
+                        }
+                    }
+                }
+            }
+        }).WithDisposeOnCompletion(speakerEntities).WithDisposeOnCompletion(pooledSpeakerStates)
+        .WithDisposeOnCompletion(emitterEnts).WithDisposeOnCompletion(emitters)
+        .Schedule(activeSpeakersInRange);
 
 
-
-        //// Make sure that the ECB system knows about our job
-        //_CommandBufferSystem.AddJobHandleForProducer(Dependency);
-
-
-
-        //Debug.LogError("Pausing after Speaker emitter pairing " + GetEntityQuery(typeof(InListenerRangeTag)).CalculateEntityCount());
-
-
-
-
-
-
-
-
-
-
-
-      
-    }
-
-    public static void AttachEmitter(EmitterComponent emitter, int index)
-    {
-        emitter._Playing = true;
-        emitter._AttachedToSpeaker = true;
-        emitter._SpeakerIndex = index;
-    }
-
-    public static void DetachEmitter(EmitterComponent emitter)
-    {
-        emitter._Playing = false;
-        emitter._AttachedToSpeaker = false;
-        emitter._SpeakerIndex = int.MaxValue;
+        this.Dependency = speakerActivation;
     }
 }
-
-
