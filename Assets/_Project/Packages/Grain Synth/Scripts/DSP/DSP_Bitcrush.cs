@@ -5,7 +5,7 @@ public class DSP_Bitcrush : DSPBase
 {
     [Range(0f,1f)]
     [SerializeField]
-    public float _Mix;
+    public float _Mix = 1;
     [Range(0f, 50f)]
     [SerializeField]
     public float _CrushRatio;
