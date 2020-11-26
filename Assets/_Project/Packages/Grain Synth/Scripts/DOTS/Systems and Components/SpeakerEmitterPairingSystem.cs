@@ -26,28 +26,34 @@ public class RangeCheckSystem : SystemBase
             float distToListener = math.distance(trans.Value, speakerManager._ListenerPos);
             bool inRangeCurrent = distToListener < speakerManager._EmitterToListenerActivationRange;
 
-            //--  If moving out of range, deactive
+
+
+            //--  MOVING OUT OF RANGE, DEACTIVE EMITTER
             if (emitter._InRange && emitter._AttachedToSpeaker && !inRangeCurrent)
             {
-                emitter._AttachedToSpeaker = false;
-                emitter._InRange = false;
-                emitter._SpeakerIndex = int.MaxValue;
+                DetachEmitter(emitter);
+                //emitter._AttachedToSpeaker = false;
+                //emitter._InRange = false;
+                //emitter._SpeakerIndex = int.MaxValue;
             }
-            //--  If moving into range
+            //--  MOVING INTO RANGE
             else if (!emitter._InRange && inRangeCurrent)
             {
                 emitter._InRange = true;
             }
 
-            //--  If the assigned speaker is attached to a speaker that isn't active or out of range, deactivate
+
+
+            //---  OUT OF RANGE TO SPEAKER OR SPEAKER HAS BEEN DEACTIVATED - DETACH EMITTER
             if(emitter._AttachedToSpeaker)
             {
                 float distToSpeaker = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
                 if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || distToSpeaker > speakerManager._EmitterToSpeakerAttachRadius)
                 {
-                    emitter._AttachedToSpeaker = false;
-                    emitter._InRange = false;
-                    emitter._SpeakerIndex = int.MaxValue;
+                    DetachEmitter(emitter);
+                    //emitter._AttachedToSpeaker = false;
+                    //emitter._InRange = false;
+                    //emitter._SpeakerIndex = int.MaxValue;
                 }
             }
         }).WithDisposeOnCompletion(pooledSpeakers)
@@ -172,5 +178,12 @@ public class RangeCheckSystem : SystemBase
 
 
         this.Dependency = speakerActivation;
+    }
+
+    public static void DetachEmitter(EmitterComponent emitter)
+    {
+        emitter._AttachedToSpeaker = false;
+        emitter._InRange = false;
+        emitter._SpeakerIndex = int.MaxValue;
     }
 }
