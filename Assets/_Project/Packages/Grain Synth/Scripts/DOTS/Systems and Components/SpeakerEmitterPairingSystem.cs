@@ -26,6 +26,8 @@ public class RangeCheckSystem : SystemBase
         NativeArray<PooledObjectComponent> pooledSpeakers = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);
         NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
 
+        //Debug.Log("pooledSpeakers count: " + pooledSpeakers.Length);
+
         //----    EMITTERS RANGE CHECK
         JobHandle emitterRangeCheck = Entities.WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
         {
@@ -51,7 +53,7 @@ public class RangeCheckSystem : SystemBase
 
 
             //---  OUT OF RANGE TO SPEAKER OR SPEAKER HAS BEEN DEACTIVATED - DETACH EMITTER
-            if(emitter._AttachedToSpeaker)
+            if(emitter._AttachedToSpeaker && !emitter._StaticallyPaired)
             {
                 float distToSpeaker = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
                 if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || distToSpeaker > speakerManager._EmitterToSpeakerAttachRadius)
