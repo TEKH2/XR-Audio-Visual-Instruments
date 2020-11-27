@@ -216,7 +216,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 {
                     _GrainPlaybackDataArray[i]._Pooled = false;
                     _PooledGrainCount--;
-                    print("GetGrainPlaybackDataFromPool - Returnign grain at index: " + i);
+                    //print("GetGrainPlaybackDataFromPool - Returnign grain at index: " + i);
                     return _GrainPlaybackDataArray[i];
                 }
             }
@@ -240,7 +240,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         float cadence = (playbackData._DSPStartTime - _PrevStartSample) / (float)AudioSettings.outputSampleRate;
         float duration = playbackData._SizeInSamples / (float)AudioSettings.outputSampleRate;
         float DSPStartOffset = playbackData._DSPStartTime - _GrainSynth._CurrentDSPSample;
-        print("Current DSP offset: " + DSPStartOffset + "  duration  : " + duration + "  Cadence: " + cadence);
+        //print("Current DSP offset: " + DSPStartOffset + "  duration  : " + duration + "  Cadence: " + cadence);
 
         _PrevStartSample = playbackData._DSPStartTime;
 
