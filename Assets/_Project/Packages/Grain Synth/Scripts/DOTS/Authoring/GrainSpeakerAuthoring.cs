@@ -11,7 +11,6 @@ public class GrainPlaybackData
 {
     public bool _IsPlaying = true;
     public float[] _GrainSamples;
-    public float[] _TempSampleBuffer;
     public int _PlayheadIndex = 0;
     public int _SizeInSamples;
 
@@ -28,7 +27,7 @@ public class GrainPlaybackData
     {
         // instantiate the grain samples at a given maximum length
         _GrainSamples = new float[maxGrainSize];
-        _TempSampleBuffer = new float[maxGrainSize];
+        //Debug.Log("GrainPlaybackData created with samples size: " + _GrainSamples.Length);
     }
 }
 
@@ -81,6 +80,12 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
+        _AudioSource = gameObject.GetComponent<AudioSource>();
+        _SampleRate = AudioSettings.outputSampleRate;
+
+        print("---   CONVERT GRAIN SPEAKER...");
         //---   CREATE ENTITY, REGISTER AND NAME
         _Entity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
@@ -93,8 +98,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
         //---   ADD POOLING COMP IF NOT STATICALLY PAIRED TO EMITTER
-        if(!_StaticallyPairedToEmitter)
+        if (!_StaticallyPairedToEmitter)
+        {
             dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
+            print("- Adding pooled component for non statically paired speaker");
+        }
 
 
         //---   CREATE GRAIN PLAYBACK DATA ARRAY - CURRENT MAXIMUM LENGTH SET TO ONE SECOND OF SAMPLES (_SAMPLERATE)      
@@ -107,30 +115,21 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
 
-        //---   ADD RING BUFFER COMP AND INIT
-        dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
-        dstManager.AddBuffer<AudioRingBufferElement>(entity);
-        DynamicBuffer<AudioRingBufferElement> buffer = _EntityManager.GetBuffer<AudioRingBufferElement>(entity);
+        ////---   ADD RING BUFFER COMP AND INIT
+        //dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
+        //dstManager.AddBuffer<AudioRingBufferElement>(entity);
+        //DynamicBuffer<AudioRingBufferElement> buffer = _EntityManager.GetBuffer<AudioRingBufferElement>(entity);
 
-        for (int i = 0; i < AudioSettings.outputSampleRate; i++)        
-            buffer.Add(new AudioRingBufferElement { Value = 0 });
-        
+        //for (int i = 0; i < AudioSettings.outputSampleRate; i++)        
+        //    buffer.Add(new AudioRingBufferElement { Value = 0 });        
 
         _Initialized = true;
     }
 
     public int GetRegisterAndGetIndex()
     {
-        _GrainSynth.RegisterSpeaker(this);
+        GrainSynth.Instance.RegisterSpeaker(this);
         return _SpeakerIndex;
-    }
-
-    public void Start()
-    {
-        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        _MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
-        _AudioSource = gameObject.GetComponent<AudioSource>();
-        _SampleRate = AudioSettings.outputSampleRate;      
     }
 
     GrainPlaybackData CreateNewGrain()
@@ -190,6 +189,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     //---   FINDS A GRAIN PLAYBACK DATA THAT IS POOLED
     public GrainPlaybackData GetGrainPlaybackDataFromPool()
     {
+        if (!_Initialized)
+            return null;
+
+        
         //print("GetGrainPlaybackDataFromPool - _Pooled data count: " + _PooledGrainCount + "  Total data count: " + _GrainPlaybackDataArray.Length);
         // If pooled grains exist then find the first one
         if (_PooledGrainCount > 0)

@@ -71,6 +71,7 @@ public struct EmitterComponent : IComponentData
 {
     public bool _AttachedToSpeaker;
     public int _SpeakerIndex;
+    public bool _StaticallyPaired;
     public bool _InRange;
 
     public int _EmitterIndex;

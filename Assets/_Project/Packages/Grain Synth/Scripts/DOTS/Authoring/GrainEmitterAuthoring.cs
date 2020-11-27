@@ -178,6 +178,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
+            _StaticallyPaired = _StaticallyPaired,
             _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
             _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
             _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,

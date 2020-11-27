@@ -167,17 +167,19 @@ public class GrainSynth :  MonoBehaviour
 
                 //print("- Processing populated grain - Got playback data...");
 
-                NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(allGrainSampleEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+                NativeArray<float> processedSamples = _EntityManager.GetBuffer<GrainSampleBufferElement>(allGrainSampleEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
 
                 //print("- Processing populated grain - Reinterpereted buffer...");
 
                 playbackData._IsPlaying = true;
                 playbackData._PlayheadIndex = 0;
-                playbackData._SizeInSamples = samples.Length;
+                playbackData._SizeInSamples = processedSamples.Length;
                 playbackData._DSPStartTime = grainProcessor._DSPStartIndex;
-                playbackData._PlayheadPos = grainProcessor._PlayheadNorm;               
+                playbackData._PlayheadPos = grainProcessor._PlayheadNorm;
 
-                NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
+                //print("playbackData._GrainSamples: " + playbackData._GrainSamples.Length + "   processedSamples: " + processedSamples.Length);
+
+                NativeToManagedCopyMemory(playbackData._GrainSamples, processedSamples);
 
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(allGrainSampleEntities[i]);
