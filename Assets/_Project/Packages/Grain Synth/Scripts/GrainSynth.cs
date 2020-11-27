@@ -159,7 +159,7 @@ public class GrainSynth :  MonoBehaviour
 
             if (grainProcessor._SamplePopulated)
             {
-                print("- Processing populated grain - Start...");
+                //print("- Processing populated grain - Start...");
                 GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
 
                 if (playbackData == null)

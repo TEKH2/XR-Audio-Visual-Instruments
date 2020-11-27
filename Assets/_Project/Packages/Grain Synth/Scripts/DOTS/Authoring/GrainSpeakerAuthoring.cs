@@ -190,7 +190,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     //---   FINDS A GRAIN PLAYBACK DATA THAT IS POOLED
     public GrainPlaybackData GetGrainPlaybackDataFromPool()
     {
-        print("GetGrainPlaybackDataFromPool - _Pooled data count: " + _PooledGrainCount + "  Total data count: " + _GrainPlaybackDataArray.Length);
+        //print("GetGrainPlaybackDataFromPool - _Pooled data count: " + _PooledGrainCount + "  Total data count: " + _GrainPlaybackDataArray.Length);
         // If pooled grains exist then find the first one
         if (_PooledGrainCount > 0)
         {
