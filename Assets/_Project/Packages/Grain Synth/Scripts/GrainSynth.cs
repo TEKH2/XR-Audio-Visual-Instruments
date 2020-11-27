@@ -71,7 +71,7 @@ public class GrainSynth :  MonoBehaviour
         // ------------------------------------------------ CREATE SPEAKER MANAGER
         _Listener = FindObjectOfType<AudioListener>();
         _SpeakerManagerEntity = _EntityManager.CreateEntity();
-        DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.AddBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
+        //DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.AddBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
         _EntityManager.AddComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
         {
             _ListenerPos = _Listener.transform.position,
@@ -133,14 +133,16 @@ public class GrainSynth :  MonoBehaviour
 
     private void Update()
     {
+        //print("---   Grain Synth Update: " + Time.timeSinceLevelLoad);
         // Update DSP sample
         DSPTimerComponent dspTimer = _EntityManager.GetComponentData<DSPTimerComponent>(_DSPTimerEntity);
         _EntityManager.SetComponentData(_DSPTimerEntity, new DSPTimerComponent { _CurrentDSPSample = _CurrentDSPSample + (int)(Time.deltaTime * AudioSettings.outputSampleRate), _GrainQueueDuration = _GrainQueueDurationInSamples });
 
-        NativeArray<Entity> grainEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
+        NativeArray<Entity> allGrainSampleEntities = _GrainQuery.ToEntityArray(Allocator.TempJob);
 
+        //print("-   Grain Synth Update: Got allGrainSampleEntities - Count: " + allGrainSampleEntities.Length);
 
-        DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.GetBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
+        //DynamicBuffer<GrainSpeakerBufferElement> activeSpeakerBuffer = _EntityManager.GetBuffer<GrainSpeakerBufferElement>(_SpeakerManagerEntity);
         // Update audio listener position
         _EntityManager.SetComponentData(_SpeakerManagerEntity, new SpeakerManagerComponent
         {
@@ -151,18 +153,23 @@ public class GrainSynth :  MonoBehaviour
 
        
         //----    Loop through all grain processors and fill audio buffers of assigned speakers
-        for (int i = 0; i < grainEntities.Length; i++)
+        for (int i = 0; i < allGrainSampleEntities.Length; i++)
         {
-            GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(grainEntities[i]);
+            GrainProcessor grainProcessor = _EntityManager.GetComponentData<GrainProcessor>(allGrainSampleEntities[i]);
 
             if (grainProcessor._SamplePopulated)
             {
+                //print("- Processing populated grain - Start...");
                 GrainPlaybackData playbackData = _GrainSpeakers[grainProcessor._SpeakerIndex].GetGrainPlaybackDataFromPool();
 
                 if (playbackData == null)
                     break;
 
-                NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(grainEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+                //print("- Processing populated grain - Got playback data...");
+
+                NativeArray<float> samples = _EntityManager.GetBuffer<GrainSampleBufferElement>(allGrainSampleEntities[i]).Reinterpret<float>().ToNativeArray(Allocator.Temp);
+
+                //print("- Processing populated grain - Reinterpereted buffer...");
 
                 playbackData._IsPlaying = true;
                 playbackData._PlayheadIndex = 0;
@@ -173,13 +180,14 @@ public class GrainSynth :  MonoBehaviour
                 NativeToManagedCopyMemory(playbackData._GrainSamples, samples);
 
                 // Destroy entity once we have sapped it of it's samply goodness
-                _EntityManager.DestroyEntity(grainEntities[i]);
+                _EntityManager.DestroyEntity(allGrainSampleEntities[i]);
 
-                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackData(playbackData);
+                _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackDataToPool(playbackData);
+                //print("- Processing populated grain - FINISHED ");
             }
         }       
 
-        grainEntities.Dispose();
+        allGrainSampleEntities.Dispose();
     }
 
     public static unsafe void NativeToManagedCopyMemory(float[] targetArray, NativeArray<float> SourceNativeArray)
@@ -195,6 +203,9 @@ public class GrainSynth :  MonoBehaviour
 
     public void RegisterSpeaker(GrainSpeakerAuthoring speaker)
     {
+        if (speaker._Registered)
+            return;
+
         if (_GrainSpeakers.Contains(speaker))
             print("Speaker already regsitered.");
 

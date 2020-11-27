@@ -161,14 +161,18 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _PairedSpeaker = gameObject.GetComponent<GrainSpeakerAuthoring>();          
         }
 
+        int attachedSpeakerIndex = int.MaxValue;
         if(_PairedSpeaker != null)
         {
-            _PairedSpeaker._StaticallyPaired = true;
+            _PairedSpeaker._StaticallyPairedToEmitter = true;
             _StaticallyPaired = true;
             dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
+            attachedSpeakerIndex =_PairedSpeaker.GetRegisterAndGetIndex();
         }
 
         int index = GrainSynth.Instance.RegisterEmitter(entity);
+
+
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
@@ -182,8 +186,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = _EmissionProps.Volume,
             _DistanceAmplitude = 1,
             _AudioClipIndex = _EmissionProps._ClipIndex,
-            _SpeakerIndex = int.MaxValue,
-            _Index = index,
+            _SpeakerIndex = attachedSpeakerIndex,
+            _EmitterIndex = index,
             _PlayheadPosNormalized = _EmissionProps.Position,
         });
 

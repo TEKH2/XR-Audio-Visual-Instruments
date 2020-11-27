@@ -73,7 +73,7 @@ public struct EmitterComponent : IComponentData
     public int _SpeakerIndex;
     public bool _InRange;
 
-    public int _Index;
+    public int _EmitterIndex;
 
     public bool _Playing;   
 

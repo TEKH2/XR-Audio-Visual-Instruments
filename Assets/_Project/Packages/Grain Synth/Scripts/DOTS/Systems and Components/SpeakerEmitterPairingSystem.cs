@@ -16,7 +16,13 @@ public class RangeCheckSystem : SystemBase
     protected override void OnUpdate()
     {
         SpeakerManagerComponent speakerManager = GetSingleton<SpeakerManagerComponent>();
-        EntityQuery speakerQuery = GetEntityQuery(typeof(GrainSpeakerComponent), typeof(PooledObjectComponent), typeof(Translation));
+
+        EntityQueryDesc speakerQueryDesc = new EntityQueryDesc
+        {
+            All = new ComponentType[] { typeof(GrainSpeakerComponent), typeof(PooledObjectComponent), typeof(Translation) }
+        };
+
+        EntityQuery speakerQuery = GetEntityQuery(speakerQueryDesc);
         NativeArray<PooledObjectComponent> pooledSpeakers = speakerQuery.ToComponentDataArray<PooledObjectComponent>(Allocator.TempJob);
         NativeArray<Translation> speakerTranslations = speakerQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
 
