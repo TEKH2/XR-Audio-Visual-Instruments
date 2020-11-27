@@ -35,14 +35,10 @@ public class RangeCheckSystem : SystemBase
             bool inRangeCurrent = distToListener < speakerManager._EmitterToListenerActivationRange;
 
 
-
             //--  MOVING OUT OF RANGE, DEACTIVE EMITTER
             if (emitter._InRange && emitter._AttachedToSpeaker && !inRangeCurrent)
             {
                 DetachEmitter(emitter);
-                //emitter._AttachedToSpeaker = false;
-                //emitter._InRange = false;
-                //emitter._SpeakerIndex = int.MaxValue;
             }
             //--  MOVING INTO RANGE
             else if (!emitter._InRange && inRangeCurrent)
@@ -59,9 +55,6 @@ public class RangeCheckSystem : SystemBase
                 if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || distToSpeaker > speakerManager._EmitterToSpeakerAttachRadius)
                 {
                     DetachEmitter(emitter);
-                    //emitter._AttachedToSpeaker = false;
-                    //emitter._InRange = false;
-                    //emitter._SpeakerIndex = int.MaxValue;
                 }
             }
         }).WithDisposeOnCompletion(pooledSpeakers)
@@ -76,9 +69,7 @@ public class RangeCheckSystem : SystemBase
             float dist = math.distance(trans.Value, speakerManager._ListenerPos);
             bool inRangeCurrent = dist < speakerManager._EmitterToListenerActivationRange;
 
-            //Debug.Log("In range: " + inRangeCurrent + "  Dist: " + dist + " < " + speakerManager._EmitterToListenerActivationRange);
-
-            //--  If moving out of range
+            //--  IF MOVING OUT OF RANGE
             if (poolObj._State == PooledObjectState.Active && !inRangeCurrent)
             {
                 poolObj._State = PooledObjectState.Pooled;
@@ -94,7 +85,7 @@ public class RangeCheckSystem : SystemBase
 
         JobHandle activeSpeakersInRange = Entities.WithName("activeSpeakersInRange").ForEach((ref EmitterComponent emitter, in Translation emitterTrans) =>
         {
-            // if emitter is in range and not attached to a speaker then look for closest
+            //--- IF EMITTER IS IN RANGE AND NOT ATTACHED TO A SPEAKER THEN LOOK FOR CLOSEST
             if (emitter._InRange && !emitter._AttachedToSpeaker)
             {
                 float closestDist = float.MaxValue;
