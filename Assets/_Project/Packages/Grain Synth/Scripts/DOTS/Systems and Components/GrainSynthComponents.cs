@@ -156,6 +156,7 @@ public enum DSPTypes
     Bitcrush,
     Flange,
     Delay,
+    Filter
 }
 
 
