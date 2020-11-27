@@ -144,6 +144,8 @@ public struct GrainSpeakerBufferElement : IBufferElementData
 public struct DSPParametersElement : IBufferElementData
 {
     public DSPTypes _DSPType;
+    public int _SampleRate;
+    public float _Mix;
     public float _Value0;
     public float _Value1;
     public float _Value2;

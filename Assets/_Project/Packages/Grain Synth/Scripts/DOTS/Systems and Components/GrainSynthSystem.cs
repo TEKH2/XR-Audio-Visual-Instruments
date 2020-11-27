@@ -29,6 +29,8 @@ public class GrainSynthSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        int sampleRate = AudioSettings.outputSampleRate;
+
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
@@ -149,7 +151,7 @@ public class GrainSynthSystem : SystemBase
                     }
                     
                     // Populate one seconds worth of 0s into DSP processing buffer
-                    for (int i = 0; i < AudioSettings.outputSampleRate; i++)
+                    for (int i = 0; i < sampleRate; i++)
                     {
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
