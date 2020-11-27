@@ -530,6 +530,7 @@ public class FilterConstruction
         return newFilterCoefficients;
     }
 
+    // THIS DOESN'T SEEM TO BE WORKING - NEED TO CHECK ALGO
     private static FilterCoefficients PeakNotch (DSP_Properties fp)
     {
         FilterCoefficients newFilterCoefficients = new FilterCoefficients();

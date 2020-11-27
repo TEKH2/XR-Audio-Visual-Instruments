@@ -14812,7 +14812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070a2054bf4dec145baba520ba00fcd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Mix: 0
+  _Mix: 1
   _CrushRatio: 0
 --- !u!1001 &1164844052
 PrefabInstance:
@@ -17530,7 +17530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dd8375280b5324eb3d8912cd6158e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Mix: 0
+  _Mix: 1
   _FilterType: 0
   _FilterCutoffNorm: 0.5
   _FilterGain: 1

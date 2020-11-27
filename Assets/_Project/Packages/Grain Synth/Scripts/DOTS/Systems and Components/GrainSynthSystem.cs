@@ -171,6 +171,9 @@ public class GrainSynthSystem : SystemBase
                            case DSPTypes.Flange:
                                DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
                                break;
+                           case DSPTypes.Filter:
+                               DSP_Filter.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
+                               break;
                        }
                    }
                }

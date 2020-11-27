@@ -80,6 +80,8 @@ public class DSP_Filter : DSPBase
             previousY1 = outputSample;
 
             outputBuffer[i] = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0);
+
+            //outputBuffer[i] = sampleBuffer[i].Value;
         }
 
         // Fill sample buffer element
