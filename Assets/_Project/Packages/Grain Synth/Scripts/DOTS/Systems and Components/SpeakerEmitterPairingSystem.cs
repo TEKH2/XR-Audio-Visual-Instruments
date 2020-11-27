@@ -36,9 +36,9 @@ public class RangeCheckSystem : SystemBase
 
 
             //--  MOVING OUT OF RANGE, DEACTIVE EMITTER
-            if (emitter._InRange && emitter._AttachedToSpeaker && !inRangeCurrent)
+            if (emitter._InRange  && !inRangeCurrent)
             {
-                DetachEmitter(emitter);
+                emitter = DetachEmitter(emitter);
             }
             //--  MOVING INTO RANGE
             else if (!emitter._InRange && inRangeCurrent)
@@ -48,13 +48,14 @@ public class RangeCheckSystem : SystemBase
 
 
 
+
             //---  OUT OF RANGE TO SPEAKER OR SPEAKER HAS BEEN DEACTIVATED - DETACH EMITTER
             if(emitter._AttachedToSpeaker && !emitter._StaticallyPaired)
             {
-                float distToSpeaker = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
-                if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || distToSpeaker > speakerManager._EmitterToSpeakerAttachRadius)
+                float emitterToSpeakerDist = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
+                if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || emitterToSpeakerDist > speakerManager._EmitterToSpeakerAttachRadius)
                 {
-                    DetachEmitter(emitter);
+                    emitter = DetachEmitter(emitter);
                 }
             }
         }).WithDisposeOnCompletion(pooledSpeakers)
@@ -179,10 +180,12 @@ public class RangeCheckSystem : SystemBase
         this.Dependency = speakerActivation;
     }
 
-    public static void DetachEmitter(EmitterComponent emitter)
-    {
+    public static EmitterComponent DetachEmitter(EmitterComponent emitter)
+    { 
         emitter._AttachedToSpeaker = false;
         emitter._InRange = false;
         emitter._SpeakerIndex = int.MaxValue;
+
+        return emitter;
     }
 }

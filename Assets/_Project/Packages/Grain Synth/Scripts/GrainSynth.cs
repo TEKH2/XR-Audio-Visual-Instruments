@@ -224,7 +224,7 @@ public class GrainSynth :  MonoBehaviour
         int index = _AllEmitters.Count;
         _AllEmitters.Add(emitterEntity);
 
-        print("Registering emitter: " + index);
+        //print("Registering emitter: " + index);
 
         return index;
     }
