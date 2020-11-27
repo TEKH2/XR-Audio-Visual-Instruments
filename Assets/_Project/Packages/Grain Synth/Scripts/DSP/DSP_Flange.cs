@@ -10,7 +10,7 @@ public class DSP_Flange : DSPBase
 
     [Range(0f, 1000f)]
     [SerializeField]
-    float _Delay = 50f;
+    float _Offset = 50f;
 
     [Range(0.1f, 1000)]
     [SerializeField]
@@ -37,7 +37,7 @@ public class DSP_Flange : DSPBase
         dspParams._DSPType = DSPTypes.Flange;
         dspParams._SampleRate = _SampleRate;
         dspParams._Mix = _Mix;
-        dspParams._Value0 = _Delay;
+        dspParams._Value0 = _Offset;
         dspParams._Value1 = _Mod;
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
@@ -61,7 +61,7 @@ public class DSP_Flange : DSPBase
             float combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
             DSP_Utils_DOTS.BufferAddSample(dspBuffer, ref writeIndex, combined);
 
-            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(dspBuffer[i].Value, outputSample, dspParams._Mix) };
+            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(dspBuffer[i].Value, sampleBuffer[i].Value, dspParams._Mix) };
         }
 
         for (int i = 0; i < sampleBuffer.Length; i++)
