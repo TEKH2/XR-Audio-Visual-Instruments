@@ -54,9 +54,8 @@ public class DSP_Filter : DSPBase
         return dspBuffer;
     }
 
-    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
+    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
     {
-        float[] outputBuffer = new float[sampleBuffer.Length];
         float outputSample = 0;
 
         float previousX1 = 0;
@@ -79,7 +78,7 @@ public class DSP_Filter : DSPBase
             previousY2 = previousY1;
             previousY1 = outputSample;
 
-            outputBuffer[i] = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0);
+            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0) };
 
             //outputBuffer[i] = sampleBuffer[i].Value;
         }
@@ -89,7 +88,7 @@ public class DSP_Filter : DSPBase
         // to populate effect buffer vs populating the output buffer.. REVISE ONCE DONE
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = outputBuffer[i] };
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
         }
     }
 

@@ -73,9 +73,9 @@ public class GrainSynthSystem : SystemBase
                         });
 
 
-                        //-- Add sample buffer to grain processor
+                        //-- Add sample and DSP buffer to grain processor
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
-
+                        entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
                         //--    Add DSP Buffer
                         DynamicBuffer<DSPParametersElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
@@ -106,7 +106,7 @@ public class GrainSynthSystem : SystemBase
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         JobHandle processGrains = Entities.ForEach
         (
-            (DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+            (DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer, ref GrainProcessor grain) =>
             {
                 if (!grain._SamplePopulated)
                 {
@@ -146,6 +146,7 @@ public class GrainSynthSystem : SystemBase
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
                         sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
+                        dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
 
                     grain._SamplePopulated = true;
@@ -158,7 +159,7 @@ public class GrainSynthSystem : SystemBase
         //----    DSP CHAIN
         JobHandle dspGrains = Entities.ForEach
         (
-           (DynamicBuffer<DSPParametersElement> dspParamsBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+           (DynamicBuffer<DSPParametersElement> dspParamsBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DynamicBuffer < DSPSampleBufferElement > dspBuffer, ref GrainProcessor grain) =>
            {
                if (grain._SamplePopulated)
                {
@@ -167,15 +168,15 @@ public class GrainSynthSystem : SystemBase
                        switch (dspParamsBuffer[i]._DSPType)
                        {
                            case DSPTypes.Bitcrush:
-                               DSP_Bitcrush.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
+                               DSP_Bitcrush.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                            case DSPTypes.Delay:
                                break;
                            case DSPTypes.Flange:
-                               DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
+                               DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                            case DSPTypes.Filter:
-                               DSP_Filter.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer);
+                               DSP_Filter.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                        }
                    }

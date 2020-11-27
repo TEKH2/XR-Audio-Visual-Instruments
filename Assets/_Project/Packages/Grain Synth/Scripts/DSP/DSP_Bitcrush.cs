@@ -20,9 +20,9 @@ public class DSP_Bitcrush : DSPBase
         return dspBuffer;
     }
 
-    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer)
+    public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
     {
-        float[] outputBuffer = new float[sampleBuffer.Length];
+        //float[] outputBuffer = new float[sampleBuffer.Length];
         int count = 0;
         float previousSample = 0;
         float outputSample = 0;
@@ -41,7 +41,7 @@ public class DSP_Bitcrush : DSPBase
                 count++;
             }
 
-            outputBuffer[i] = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0);
+            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Value0) };
         }
 
         // Fill sample buffer element
@@ -49,7 +49,7 @@ public class DSP_Bitcrush : DSPBase
         // to populate effect buffer vs populating the output buffer.. REVISE ONCE DONE
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = outputBuffer[i] };
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
         }
     }
 }

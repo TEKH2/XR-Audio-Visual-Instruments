@@ -123,6 +123,11 @@ public struct GrainSampleBufferElement : IBufferElementData
     public float Value;
 }
 
+public struct DSPSampleBufferElement : IBufferElementData
+{
+    public float Value;
+}
+
 //[InternalBufferCapacity(44100)]
 public struct AudioRingBufferElement : IBufferElementData
 {
