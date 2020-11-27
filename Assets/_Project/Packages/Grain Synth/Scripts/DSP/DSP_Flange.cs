@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
+// Modulated delay mono chorus 
 public class DSP_Flange : DSPBase
 {
     [Range(0f, 1f)]

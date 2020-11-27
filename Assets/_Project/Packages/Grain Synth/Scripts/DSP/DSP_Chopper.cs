@@ -1,15 +1,14 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-// Sample and hold style bit reduction
-public class DSP_Bitcrush : DSPBase
+public class DSP_Chopper : DSPBase
 {
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     [SerializeField]
     public float _Mix = 1;
-    [Range(0f, 50f)]
+    [Range(-20f, 20f)]
     [SerializeField]
-    public float _CrushRatio;
+    public float _Rate = 1;
 
     int _SampleRate;
 
@@ -23,7 +22,7 @@ public class DSP_Bitcrush : DSPBase
         DSPParametersElement dspBuffer = new DSPParametersElement();
         dspBuffer._DSPType = DSPTypes.Bitcrush;
         dspBuffer._Mix = _Mix;
-        dspBuffer._Value0 = _CrushRatio;
+        dspBuffer._Value0 = _Rate;
 
         return dspBuffer;
     }
@@ -41,11 +40,6 @@ public class DSP_Bitcrush : DSPBase
                 outputSample = sampleBuffer[i].Value;
                 previousSample = outputSample;
                 count = 0;
-            }
-            else
-            {
-                outputSample = previousSample;
-                count++;
             }
 
             dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix) };
