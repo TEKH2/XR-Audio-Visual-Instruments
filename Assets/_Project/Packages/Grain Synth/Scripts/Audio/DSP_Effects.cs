@@ -547,10 +547,10 @@ public class FilterConstruction
 
         newFilterCoefficients.a0 = (1.0f + alpha * A) * b0;
         newFilterCoefficients.b1 = (-2.0f * cs) * b0;
-        newFilterCoefficients.a1 = newFilterCoefficients.b1;
-        newFilterCoefficients.a2 = (1.0f - alpha * A) * b0;
         newFilterCoefficients.b2 = (1.0f - alpha * one_over_A) * b0;
 
+        newFilterCoefficients.a1 = newFilterCoefficients.b1;
+        newFilterCoefficients.a2 = (1.0f - alpha * A) * b0;
         return newFilterCoefficients;
     }
 
