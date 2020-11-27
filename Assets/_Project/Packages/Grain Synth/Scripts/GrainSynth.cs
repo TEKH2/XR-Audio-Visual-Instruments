@@ -151,7 +151,7 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-       
+      
         //----    Loop through all grain processors and fill audio buffers of assigned speakers
         for (int i = 0; i < allGrainSampleEntities.Length; i++)
         {
@@ -177,9 +177,10 @@ public class GrainSynth :  MonoBehaviour
                 playbackData._DSPStartTime = grainProcessor._DSPStartIndex;
                 playbackData._PlayheadPos = grainProcessor._PlayheadNorm;
 
-                //print("playbackData._GrainSamples: " + playbackData._GrainSamples.Length + "   processedSamples: " + processedSamples.Length);
-
                 NativeToManagedCopyMemory(playbackData._GrainSamples, processedSamples);
+
+                
+
 
                 // Destroy entity once we have sapped it of it's samply goodness
                 _EntityManager.DestroyEntity(allGrainSampleEntities[i]);
@@ -191,6 +192,7 @@ public class GrainSynth :  MonoBehaviour
 
         allGrainSampleEntities.Dispose();
     }
+
 
     public static unsafe void NativeToManagedCopyMemory(float[] targetArray, NativeArray<float> SourceNativeArray)
     {

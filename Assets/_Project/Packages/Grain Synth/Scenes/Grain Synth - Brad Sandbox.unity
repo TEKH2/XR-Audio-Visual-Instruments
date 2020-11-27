@@ -10628,7 +10628,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 10
+  _MaxGrainSpeakers: 1
   _GrainQueueInMS: 27.4
   _CurrentDSPSample: 0
   _EmitterToListenerActivationRange: 2
@@ -12289,7 +12289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1009598027
 Transform:
   m_ObjectHideFlags: 0
@@ -33123,13 +33123,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
+      propertyPath: _EmissionProps._Cadence
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Duration
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead
+      value: 0.342
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
       propertyPath: _DSPChainParams.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._PlayheadRand
-      value: 0.064
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}

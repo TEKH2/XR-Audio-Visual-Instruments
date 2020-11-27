@@ -151,6 +151,19 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
 
 
+
+        //---   UPDATE POOLING
+        for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
+        {
+            if(!_GrainPlaybackDataArray[i]._IsPlaying && _GrainPlaybackDataArray[i]._PlayheadIndex >= _GrainPlaybackDataArray[i]._SizeInSamples)
+            {
+                _GrainPlaybackDataArray[i]._Pooled = true;
+                _PooledGrainCount++;
+            }
+        }
+
+
+
         #region ---   CHECK PAIRING TO EMITTERS       
         if (!_StaticallyPairedToEmitter)
         {
@@ -202,6 +215,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 if (_GrainPlaybackDataArray[i]._Pooled)
                 {
                     _GrainPlaybackDataArray[i]._Pooled = false;
+                    _PooledGrainCount--;
+                    print("GetGrainPlaybackDataFromPool - Returnign grain at index: " + i);
                     return _GrainPlaybackDataArray[i];
                 }
             }
@@ -214,16 +229,21 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         return null;
     }
 
-    //---   ADDS GRAIN PLAYBACK DATA BACK TO THE POOL
+    //---   ADDS GRAIN PLAYBACK DATA BACK TO THE POOL  
     public void AddGrainPlaybackDataToPool(GrainPlaybackData playbackData)
     {
         if (!_Initialized)
             return;
-       
-        playbackData._Pooled = true;        
-        _PooledGrainCount++;
+
+
+        //---   DEBUG
+        float cadence = (playbackData._DSPStartTime - _PrevStartSample) / (float)AudioSettings.outputSampleRate;
+        float duration = playbackData._SizeInSamples / (float)AudioSettings.outputSampleRate;
+        float DSPStartOffset = playbackData._DSPStartTime - _GrainSynth._CurrentDSPSample;
+        print("Current DSP offset: " + DSPStartOffset + "  duration  : " + duration + "  Cadence: " + cadence);
 
         _PrevStartSample = playbackData._DSPStartTime;
+
 
         // Fire event if hooked up
         OnGrainEmitted?.Invoke(playbackData, _GrainSynth._CurrentDSPSample);
@@ -285,7 +305,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // For length of audio buffer, populate with grain samples, maintaining index over successive buffers
         for (int dataIndex = 0; dataIndex < data.Length; dataIndex += channels)
         {          
-            for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
+            for (int i = 0; i < _GrainPlaybackDataArray.Length; i++) 
             {
                 if (!_GrainPlaybackDataArray[i]._IsPlaying)
                     continue;
@@ -293,22 +313,39 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 GrainPlaybackData grainData = _GrainPlaybackDataArray[i];
                 //print("playing grain " + i);
 
-                // If the grain's DSP start time has been reached
+                //---   GRAIN DSP START TIME HAS BEEN REACHED
                 if (_CurrentDSPSample >= grainData._DSPStartTime)
                 {
+                    int diff = (_CurrentDSPSample - grainData._PlayheadIndex) - grainData._DSPStartTime;
+                    
                     if (grainData._PlayheadIndex >= grainData._SizeInSamples)
                     {
                         grainData._IsPlaying = false;
+                        //print(" GRAIN NO LONGER PLAYING: _CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);
                     }
                     else
                     {
                         _SamplesPerRead++;
                         data[dataIndex] += grainData._GrainSamples[grainData._PlayheadIndex];
                         grainData._PlayheadIndex++;
+                        //print("_CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);
                     }
                 }
             }           
         }
+
+
+        //--- DEBUG
+        //int playingCount = 0;
+        //for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
+        //{
+        //    if (!_GrainPlaybackDataArray[i]._IsPlaying)
+        //        continue;
+
+        //    playingCount++;
+
+           
+        //}
 
         // ----------------------DEBUG
         float dt = (float)AudioSettings.dspTime - prevTime;
