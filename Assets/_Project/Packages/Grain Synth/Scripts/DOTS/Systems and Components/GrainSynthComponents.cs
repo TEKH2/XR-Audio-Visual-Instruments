@@ -92,20 +92,6 @@ public struct EmitterComponent : IComponentData
     public int _DebugCount;
 }
 
-public struct Dots_DSP_BitCrush : IComponentData
-{
-    public float downsampleFactor;
-}
-
-public struct Dots_DSP_Filter : IComponentData
-{
-    public float a0;
-    public float a1;
-    public float a2;
-    public float b1;
-    public float b2;
-}
-
 
 public struct RingBufferFiller : IComponentData
 {
@@ -164,7 +150,8 @@ public enum DSPTypes
     Bitcrush,
     Flange,
     Delay,
-    Filter
+    Filter,
+    Chopper
 }
 
 
