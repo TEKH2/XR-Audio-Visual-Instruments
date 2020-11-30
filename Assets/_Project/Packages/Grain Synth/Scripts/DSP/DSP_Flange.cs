@@ -14,19 +14,19 @@ public class DSP_Flange : DSPBase
     [SerializeField]
     public float _Mix = 1;
 
-    [Range(0f, 1000f)]
+    [Range(0f, 100f)]
     [SerializeField]
-    float _Offset = 50f;
+    float _Delay = 40f;
 
-    [Range(0.1f, 1000)]
+    [Range(0.1f, 1f)]
     [SerializeField]
-    float _Mod = 0.1f;
+    float _Depth = 0.1f;
 
-    [Range(0.1f, 300f)]
+    [Range(0.01f, 20f)]
     [SerializeField]
-    float _Frequency = 0.1f;
+    float _Frequency = 0.8f;
 
-    [Range(0.1f, 0.99f)]
+    [Range(0.1f, 0.999f)]
     [SerializeField]
     float _Feedback = 0.3f;
 
@@ -43,8 +43,8 @@ public class DSP_Flange : DSPBase
         dspParams._DSPType = DSPTypes.Flange;
         dspParams._SampleRate = _SampleRate;
         dspParams._Mix = _Mix;
-        dspParams._Value0 = _Offset;
-        dspParams._Value1 = _Mod;
+        dspParams._Value0 = _Delay;
+        dspParams._Value1 = _Depth * 1000;
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
 
@@ -57,7 +57,6 @@ public class DSP_Flange : DSPBase
         int writeIndex = 0;
         float readIndex = 0;
         float phase = 0;
-        float outputSample = 0;
 
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
