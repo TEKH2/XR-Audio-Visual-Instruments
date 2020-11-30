@@ -1,7 +1,6 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-
 // A classic biquad filter design
 public class DSP_Filter : DSPBase
 {

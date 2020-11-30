@@ -1,6 +1,12 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
+
+// TODO: For this effect to be... effective... we'll have to add samples to the end of each grain so the tail of
+// the chorus/flange effect (which is essentially a very short delay) can play out. Otherwise, it cuts off, and
+// makes the effect far less.... effective.
+
+
 // Modulated delay mono chorus 
 public class DSP_Flange : DSPBase
 {
@@ -61,7 +67,7 @@ public class DSP_Flange : DSPBase
             float combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
             DSP_Utils_DOTS.BufferAddSample(dspBuffer, ref writeIndex, combined);
 
-            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(dspBuffer[i].Value, sampleBuffer[i].Value, dspParams._Mix) };
+            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
         }
 
         for (int i = 0; i < sampleBuffer.Length; i++)

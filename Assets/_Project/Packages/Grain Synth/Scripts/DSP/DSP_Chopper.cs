@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
+// A wonderfully glitchy DSP effect
 public class DSP_Chopper : DSPBase
 {
     [Range(0f, 1f)]
