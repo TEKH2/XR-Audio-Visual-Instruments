@@ -42,6 +42,7 @@ public class DSP_Flange : DSPBase
         DSPParametersElement dspParams = new DSPParametersElement();
         dspParams._DSPType = DSPTypes.Flange;
         dspParams._SampleRate = _SampleRate;
+        dspParams._SampleTail = (int) (_Delay * _SampleRate * 2);
         dspParams._Mix = _Mix;
         dspParams._Value0 = _Delay;
         dspParams._Value1 = _Depth;

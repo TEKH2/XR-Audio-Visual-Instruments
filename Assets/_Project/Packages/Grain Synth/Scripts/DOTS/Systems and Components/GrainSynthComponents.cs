@@ -38,6 +38,8 @@ public struct GrainProcessor : IComponentData
 
     public int _DSPStartIndex;
     public bool _SamplePopulated;
+
+    public int _DSPEffectSampleTailLength;
 }
 
 public struct GrainSpeakerComponent : IComponentData
@@ -131,6 +133,7 @@ public struct DSPParametersElement : IBufferElementData
 {
     public DSPTypes _DSPType;
     public int _SampleRate;
+    public int _SampleTail;
     public float _Mix;
     public float _Value0;
     public float _Value1;

@@ -45,6 +45,8 @@ public class GrainSynthSystem : SystemBase
 
         //---   CREATES ENTITIES W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP SAMPLE BUFFER + DSP PARAMS BUFFER
         //---   TODO - CHRIS WE COULD GET OUR MAX LENGHT OF A DSP BUFFER HERE AND PASS THAT INFORMATION ALONG IN ONE OF THE COMPONENTS
+
+
         JobHandle emitGrains = Entities.ForEach
         (
             (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspEffectValues, ref EmitterComponent emitter) =>
@@ -56,9 +58,18 @@ public class GrainSynthSystem : SystemBase
                     int grainCount = 0;
 
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
+                    int dspTailLength = 0;
 
+                    //-- Add grain processor for each grain that fits within the grain queue
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
+                        for (int i = 0; i < dspEffectValues.Length; i++)
+                        {
+                            if (dspEffectValues[i]._DSPType == DSPTypes.Flange || dspEffectValues[i]._DSPType == DSPTypes.Delay)
+                                if (dspEffectValues[i]._SampleTail > dspTailLength)
+                                    dspTailLength = dspEffectValues[i]._SampleTail;
+                        }
+
                         //-- Create a new grain processor entity
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
@@ -73,11 +84,13 @@ public class GrainSynthSystem : SystemBase
 
                             _SpeakerIndex = emitter._SpeakerIndex,
                             _DSPStartIndex = sampleIndexNextGrainStart,
-                            _SamplePopulated = false
-                        });
+                            _SamplePopulated = false,
+
+                            _DSPEffectSampleTailLength = dspTailLength
+                        }); ;
 
 
-                        //-- Add sample and DSP buffer to grain processor
+                        //-- Add sample and DSP buffers to grain processor
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
                         entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
@@ -117,11 +130,6 @@ public class GrainSynthSystem : SystemBase
                     float sourceIndex = grain._PlayheadNorm * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                     float increment = grain._Pitch;
 
-
-                    // TODO: Add check for delay-based effects that extend the grain sample count beyond the input source.
-                    // Append the estimated sample count of those effects to the _SampleCount for loop
-
-
                     for (int i = 0; i < grain._SampleCount; i++)
                     {
                         // PING PONG
@@ -154,10 +162,16 @@ public class GrainSynthSystem : SystemBase
                         // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
-                        sampleOutputBuffer.Add(new   { Value = sourceValue });
+                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
 
+                    //-- Add additional samples to increase grain playback size based on DSP effect tail length
+                    //for (int i = 0; i < grain._DSPEffectSampleTailLength; i++)
+                    //{
+                    //    sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
+                    //    dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
+                    //}
 
                     grain._SamplePopulated = true; // TODO - SWAP THIS TO A TAG COMPONENT TO STOP HAVING TO USE GRAINM PROCESSOR AS A REF INPUT AND AVOID IF STATEMENTS IN THIS AND DSP JOB
                 }
@@ -183,9 +197,7 @@ public class GrainSynthSystem : SystemBase
                            case DSPTypes.Delay:
                                break;
                            case DSPTypes.Flange:
-
-                               // TODO: Modulate each grain to offset its frequency based on its play (trigger) time?
-
+                               // TODO: Modulate each grain to offset its phase based on its play (trigger) time for continuous oscillation over grains
                                DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                            case DSPTypes.Filter:
