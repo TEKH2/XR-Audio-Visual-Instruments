@@ -17530,7 +17530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dd8375280b5324eb3d8912cd6158e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Mix: 1
+  _Mix: 0
   _FilterType: 0
   _FilterCutoffNorm: 0.5
   _FilterGain: 1
@@ -23101,9 +23101,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Mix: 1
-  _Offset: 50
-  _Mod: 0.1
-  _Frequency: 0.1
+  _Delay: 40
+  _Depth: 0.1
+  _Frequency: 1
   _Feedback: 0.3
 --- !u!1001 &1481442911
 PrefabInstance:
@@ -33127,17 +33127,17 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Cadence
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Duration
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Playhead
-      value: 0.342
+      value: 0.223
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}

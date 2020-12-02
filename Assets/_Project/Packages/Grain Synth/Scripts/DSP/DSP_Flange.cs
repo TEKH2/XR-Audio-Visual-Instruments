@@ -44,7 +44,7 @@ public class DSP_Flange : DSPBase
         dspParams._SampleRate = _SampleRate;
         dspParams._Mix = _Mix;
         dspParams._Value0 = _Delay;
-        dspParams._Value1 = _Depth * 1000;
+        dspParams._Value1 = _Depth;
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
 
@@ -60,7 +60,10 @@ public class DSP_Flange : DSPBase
 
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
-            readIndex = dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1;
+            // 
+            // delayTime = delayTime * 200 + (delay = (ocillator next sample + 1.01) * modparams * 100) * 200 ) + 0.002
+            readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
+            
             delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
 
             float combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
@@ -75,3 +78,13 @@ public class DSP_Flange : DSPBase
         }
     }
 }
+
+
+ /* Some default chorus min/max ranges
+ * 
+ * rate 0 - 100
+ * depth 0 - 1
+ * centre_delay (offset, delay?) 1 - 100
+ * feedback -1 - 1
+ * mix 0 - 1
+ */

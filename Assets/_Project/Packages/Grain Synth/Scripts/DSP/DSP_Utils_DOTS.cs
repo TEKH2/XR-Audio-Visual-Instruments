@@ -29,12 +29,10 @@ public class DSP_Utils_DOTS : MonoBehaviour
     {
         float inc = freq * 2 * Mathf.PI / sampleRate;
         float value = Mathf.Sin(phase);
-        phase += inc;
 
+        phase += inc;
         while (phase >= Mathf.PI * 2)
-        {
             phase -= Mathf.PI * 2;
-        }
 
         return value;
     }

@@ -46,7 +46,7 @@ public class GrainSynthSystem : SystemBase
         // Process 
         JobHandle emitGrains = Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspTypeBuffer, ref EmitterComponent emitter) =>
+            (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspEffectValues, ref EmitterComponent emitter) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -55,6 +55,7 @@ public class GrainSynthSystem : SystemBase
                     int grainCount = 0;
 
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
+
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
                         //-- Create a new grain processor entity
@@ -70,24 +71,21 @@ public class GrainSynthSystem : SystemBase
                             _Volume = emitter._Volume * emitter._DistanceAmplitude,
 
                             _SpeakerIndex = emitter._SpeakerIndex,
-                            _DSPStartIndex = sampleIndexNextGrainStart,// + emitter._RandomOffsetInSamples,
+                            _DSPStartIndex = sampleIndexNextGrainStart,
                             _SamplePopulated = false
                         });
 
 
                         //-- Add sample and DSP buffer to grain processor
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
-
-
                         entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
                         //--    Add DSP Buffer
-                        DynamicBuffer<DSPParametersElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
-                        for (int i = 0; i < dspTypeBuffer.Length; i++)
+                        DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
+                        for (int i = 0; i < dspEffectValues.Length; i++)
                         {
-                            dspBuffer.Add(dspTypeBuffer[i]);
+                            dspParameters.Add(dspEffectValues[i]);
                         }
-
 
                         // Set last and next grain time
                         emitter._LastGrainEmissionDSPIndex = sampleIndexNextGrainStart;
@@ -116,6 +114,11 @@ public class GrainSynthSystem : SystemBase
                 {
                     float sourceIndex = grain._PlayheadNorm * grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
                     float increment = grain._Pitch;
+
+
+                    // TODO: Add check for delay-based effects that extend the grain sample count beyond the input source.
+                    // Append the estimated sample count of those effects to the _SampleCount for loop
+
 
                     for (int i = 0; i < grain._SampleCount; i++)
                     {
@@ -149,6 +152,7 @@ public class GrainSynthSystem : SystemBase
                         // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
+                        // Populate sample and DSP processing buffer with values to define sample input and array lengths
                         sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
@@ -178,6 +182,9 @@ public class GrainSynthSystem : SystemBase
                            case DSPTypes.Delay:
                                break;
                            case DSPTypes.Flange:
+
+                               // TODO: Modulate each grain to offset its frequency based on its play (trigger) time?
+
                                DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                            case DSPTypes.Filter:
