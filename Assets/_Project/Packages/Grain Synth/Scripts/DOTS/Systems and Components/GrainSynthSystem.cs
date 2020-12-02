@@ -43,7 +43,8 @@ public class GrainSynthSystem : SystemBase
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         float dt = Time.DeltaTime;
 
-        // Process 
+        //---   CREATES ENTITIES W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP SAMPLE BUFFER + DSP PARAMS BUFFER
+        //---   TODO - CHRIS WE COULD GET OUR MAX LENGHT OF A DSP BUFFER HERE AND PASS THAT INFORMATION ALONG IN ONE OF THE COMPONENTS
         JobHandle emitGrains = Entities.ForEach
         (
             (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspTypeBuffer, ref EmitterComponent emitter) =>
@@ -108,6 +109,7 @@ public class GrainSynthSystem : SystemBase
 
         #region POPULATE GRAIN & DSP
         // ----------------------------------- GRAIN PROCESSOR UPDATE
+        //---   TAKES GRAIN PROCESSOR INFORMATION AND FILLS THE SAMPLE BUFFER + DSP BUFFER (W/ 0s TO THE SAME LENGTH AS SAMPLE BUFFER)
         JobHandle processGrains = Entities.ForEach
         (
             (DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer, ref GrainProcessor grain) =>
@@ -149,12 +151,12 @@ public class GrainSynthSystem : SystemBase
                         // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
-                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
+                        sampleOutputBuffer.Add(new   { Value = sourceValue });
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
 
 
-                    grain._SamplePopulated = true;
+                    grain._SamplePopulated = true; // TODO - SWAP THIS TO A TAG COMPONENT TO STOP HAVING TO USE GRAINM PROCESSOR AS A REF INPUT AND AVOID IF STATEMENTS IN THIS AND DSP JOB
                 }
             }
         ).ScheduleParallel(emitGrains);
