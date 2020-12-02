@@ -38,8 +38,8 @@ public class GrainSynthSystem : SystemBase
         WindowingDataComponent windowingData = GetSingleton<WindowingDataComponent>();
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         float dt = Time.DeltaTime;
-
-        // Process 
+         
+        //---   EMITS ENTS W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP BUFFER 
         Entities.ForEach
         (
             (int entityInQueryIndex, DynamicBuffer < DSPParametersElement > dspTypeBuffer, ref EmitterComponent emitter ) =>
@@ -72,6 +72,7 @@ public class GrainSynthSystem : SystemBase
                         });
                                                 
                         // ----    Add DSP Buffer
+                        // TODO - Chris we could find the length of the sample + the additional length required by the DSP here and pass it along in another component
                         DynamicBuffer<DSPParametersElement> dspBuffer = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
                         for (int i = 0; i < dspTypeBuffer.Length; i++)
                         {
@@ -91,14 +92,17 @@ public class GrainSynthSystem : SystemBase
                     }
                 }
             }
-        ).WithDisposeOnCompletion(audioClipData).ScheduleParallel();
+        ).WithDisposeOnCompletion(audioClipData)
+        .ScheduleParallel();
 
 
 
-        // ----------------------------------- GRAIN PROCESSOR UPDATE
+        //----------------------------------- GRAIN PROCESSOR UPDATE
+        //---   POPULATES THE SAMPLE BUFFER BASED ON THE GAIN PREOCESSOR INFORMATION
+        // TODO - Chris we could even grab the DSP buffer here because they are attached the same entity as the grain processore/sample buffer
         Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
+            (int entityInQueryIndex, ref DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, ref GrainProcessor grain) =>
             {
                 if (!grain._SamplePopulated)
                 {
