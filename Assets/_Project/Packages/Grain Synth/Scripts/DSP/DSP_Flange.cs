@@ -26,7 +26,7 @@ public class DSP_Flange : DSPBase
     [SerializeField]
     float _Frequency = 0.8f;
 
-    [Range(0.1f, 0.999f)]
+    [Range(0.1f, 0.99f)]
     [SerializeField]
     float _Feedback = 0.3f;
 
@@ -42,9 +42,9 @@ public class DSP_Flange : DSPBase
         DSPParametersElement dspParams = new DSPParametersElement();
         dspParams._DSPType = DSPTypes.Flange;
         dspParams._SampleRate = _SampleRate;
-        dspParams._SampleTail = (int) (_Delay * _SampleRate * 2);
+        dspParams._SampleTail = (int) (_Delay * _SampleRate / 1000) * 2;
         dspParams._Mix = _Mix;
-        dspParams._Value0 = _Delay;
+        dspParams._Value0 = _Delay * _SampleRate / 1000;
         dspParams._Value1 = _Depth;
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
@@ -58,25 +58,59 @@ public class DSP_Flange : DSPBase
         int writeIndex = 0;
         float readIndex = 0;
         float phase = 0;
+        float delaySample = 0;
+        float modIndex = 0;
+
+        //Debug.Log("Delay: " + dspParams._Value0);
+        //Debug.Log("Depth: " + dspParams._Value1);
+        //Debug.Log("Sample Length: " + sampleBuffer.Length);
 
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
             // 
             // delayTime = delayTime * 200 + (delay = (ocillator next sample + 1.01) * modparams * 100) * 200 ) + 0.002
-            readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
+
+            //readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
+
+            //delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
+            //combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
+
+            // Modulation (delay offset) is a -1 to 1 sine wave, multiplied by the depth (0 to 1), scaled to the current sample delay offset parameter
+            modIndex = (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) * dspParams._Value1 * dspParams._Value0);
+
+            // Set delay index to current index, offset by the centre delay parameter and modulation value
+            writeIndex = (int)Mathf.Clamp(i + dspParams._Value0 + modIndex, 0, sampleBuffer.Length - 1);
+            //Debug.Log("Current Sample: " + i + "     Flange Mod: " + modIndex + "     Write Index: " + writeIndex);
+
+            // Create the delay sample
+            delaySample = dspBuffer[writeIndex].Value + sampleBuffer[i].Value * dspParams._Value3;
+
+            // Write the delayed sample
+            dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = delaySample };
+
+            // Add the current input sample to the current DSP buffer for output
+            dspBuffer[i] = new DSPSampleBufferElement { Value = sampleBuffer[i].Value + dspBuffer[i].Value };
+
+            // Mix current sample with DSP buffer combowombo
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, dspBuffer[i].Value, dspParams._Mix) };
             
-            delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
 
-            float combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
-            DSP_Utils_DOTS.BufferAddSample(dspBuffer, ref writeIndex, combined);
 
-            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
+
+            //dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
+
+            //dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
+
+
+            //DSP_Utils_DOTS.BufferAddSample(dspBuffer, ref writeIndex, combined);
+
+            //dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
         }
 
-        for (int i = 0; i < sampleBuffer.Length; i++)
-        {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
-        }
+        //for (int i = 0; i < sampleBuffer.Length; i++)
+        //{
+        //    sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
+        //}
     }
 }
 

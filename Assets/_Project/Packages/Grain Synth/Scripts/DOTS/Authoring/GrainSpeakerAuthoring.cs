@@ -327,6 +327,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                     {
                         _SamplesPerRead++;
                         data[dataIndex] += grainData._GrainSamples[grainData._PlayheadIndex];
+
                         grainData._PlayheadIndex++;
                         //print("_CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);
                     }

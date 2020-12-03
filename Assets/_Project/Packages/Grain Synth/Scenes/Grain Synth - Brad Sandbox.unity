@@ -23101,10 +23101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Mix: 1
-  _Delay: 40
-  _Depth: 0.1
-  _Frequency: 1
-  _Feedback: 0.3
+  _Delay: 10
+  _Depth: 1
+  _Frequency: 20
+  _Feedback: 0.999
 --- !u!1001 &1481442911
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33101,6 +33101,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
+      propertyPath: _EmissionProps._Volume
+      value: 1.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
       propertyPath: _DSPChain.Array.data[0]
       value: 1
       objectReference: {fileID: 0}
@@ -33132,12 +33137,12 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Duration
-      value: 1000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Playhead
-      value: 0.223
+      value: 0.474
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}

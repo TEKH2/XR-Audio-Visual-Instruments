@@ -91,6 +91,8 @@ public struct EmitterComponent : IComponentData
 
     public float _PlayheadPosNormalized;
 
+    public int _SampleRate;
+
     public int _DebugCount;
 }
 
@@ -134,6 +136,7 @@ public struct DSPParametersElement : IBufferElementData
     public DSPTypes _DSPType;
     public int _SampleRate;
     public int _SampleTail;
+    public int _SampleStartTime;
     public float _Mix;
     public float _Value0;
     public float _Value1;

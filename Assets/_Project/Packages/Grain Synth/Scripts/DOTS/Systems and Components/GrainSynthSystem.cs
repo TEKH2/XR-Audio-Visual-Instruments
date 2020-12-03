@@ -49,7 +49,7 @@ public class GrainSynthSystem : SystemBase
 
         JobHandle emitGrains = Entities.ForEach
         (
-            (int entityInQueryIndex, DynamicBuffer<DSPParametersElement> dspEffectValues, ref EmitterComponent emitter) =>
+            (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspParams, ref EmitterComponent emitter) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -60,17 +60,19 @@ public class GrainSynthSystem : SystemBase
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
                     int dspTailLength = 0;
 
-                    //-- Add grain processor for each grain that fits within the grain queue
+                    //-- Create grain processor entity
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
-                        for (int i = 0; i < dspEffectValues.Length; i++)
+                        
+                        for (int i = 0; i < dspParams.Length; i++)
                         {
-                            if (dspEffectValues[i]._DSPType == DSPTypes.Flange || dspEffectValues[i]._DSPType == DSPTypes.Delay)
-                                if (dspEffectValues[i]._SampleTail > dspTailLength)
-                                    dspTailLength = dspEffectValues[i]._SampleTail;
+                            //-- Find the largest DSP effect tail and limit it to max grain size
+                            if (dspParams[i]._DSPType == DSPTypes.Flange || dspParams[i]._DSPType == DSPTypes.Delay)
+                                if (dspParams[i]._SampleTail > dspTailLength)
+                                    dspTailLength = dspParams[i]._SampleTail;
                         }
+                        dspTailLength = Mathf.Clamp(dspTailLength, 0, emitter._SampleRate - emitter._DurationInSamples);
 
-                        //-- Create a new grain processor entity
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
@@ -94,11 +96,13 @@ public class GrainSynthSystem : SystemBase
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
                         entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
-                        //--    Add DSP Buffer
+                        //--    Add DSP Parameters
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
-                        for (int i = 0; i < dspEffectValues.Length; i++)
+                        for (int i = 0; i < dspParams.Length; i++)
                         {
-                            dspParameters.Add(dspEffectValues[i]);
+                            //dspParams[i]._SampleStartTime = sampleIndexNextGrainStart;
+                            dspParameters.Add(dspParams[i]);
+                            
                         }
 
                         // Set last and next grain time
@@ -166,12 +170,12 @@ public class GrainSynthSystem : SystemBase
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
 
-                    //-- Add additional samples to increase grain playback size based on DSP effect tail length
-                    //for (int i = 0; i < grain._DSPEffectSampleTailLength; i++)
-                    //{
-                    //    sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
-                    //    dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
-                    //}
+                    // --Add additional samples to increase grain playback size based on DSP effect tail length
+                    for (int i = 0; i < grain._DSPEffectSampleTailLength; i++)
+                    {
+                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
+                        dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
+                    }
 
                     grain._SamplePopulated = true; // TODO - SWAP THIS TO A TAG COMPONENT TO STOP HAVING TO USE GRAINM PROCESSOR AS A REF INPUT AND AVOID IF STATEMENTS IN THIS AND DSP JOB
                 }
