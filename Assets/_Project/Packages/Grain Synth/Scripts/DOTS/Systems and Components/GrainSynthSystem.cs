@@ -63,7 +63,6 @@ public class GrainSynthSystem : SystemBase
                     //-- Create grain processor entity
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
-                        
                         for (int i = 0; i < dspParams.Length; i++)
                         {
                             //-- Find the largest DSP effect tail and limit it to max grain size
@@ -100,9 +99,8 @@ public class GrainSynthSystem : SystemBase
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
                         for (int i = 0; i < dspParams.Length; i++)
                         {
-                            //dspParams[i]._SampleStartTime = sampleIndexNextGrainStart;
                             dspParameters.Add(dspParams[i]);
-                            
+                            //dspParameters[i]._SampleStartTime = sampleIndexNextGrainStart;
                         }
 
                         // Set last and next grain time
