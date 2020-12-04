@@ -61,6 +61,9 @@ public class DSP_Flange : DSPBase
         float delaySample = 0;
         float modIndex = 0;
 
+        //-- Set initial phase based on DSP time
+        //phase = Mathf.PI * 2 % dspParams._SampleStartTime * dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate;
+
         //Debug.Log("Delay: " + dspParams._Value0);
         //Debug.Log("Depth: " + dspParams._Value1);
         //Debug.Log("Sample Length: " + sampleBuffer.Length);

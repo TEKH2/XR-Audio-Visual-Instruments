@@ -23103,8 +23103,8 @@ MonoBehaviour:
   _Mix: 1
   _Delay: 10
   _Depth: 1
-  _Frequency: 20
-  _Feedback: 0.999
+  _Frequency: 2.5
+  _Feedback: 0.791
 --- !u!1001 &1481442911
 PrefabInstance:
   m_ObjectHideFlags: 0
