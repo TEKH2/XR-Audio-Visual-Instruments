@@ -22,7 +22,7 @@ public class DSP_Flange : DSPBase
     [SerializeField]
     float _Depth = 0.1f;
 
-    [Range(0.01f, 20f)]
+    [Range(0.01f, 50f)]
     [SerializeField]
     float _Frequency = 0.8f;
 
@@ -57,16 +57,14 @@ public class DSP_Flange : DSPBase
         float delayOutput = 0;
         int writeIndex = 0;
         float readIndex = 0;
-        float phase = 0;
         float delaySample = 0;
         float modIndex = 0;
 
         //-- Set initial phase based on DSP time
-        //phase = Mathf.PI * 2 % dspParams._SampleStartTime * dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate;
+        float phase = dspParams._SampleStartTime * (dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate);
+        while (phase >= Mathf.PI * 2)
+            phase -= Mathf.PI * 2;
 
-        //Debug.Log("Delay: " + dspParams._Value0);
-        //Debug.Log("Depth: " + dspParams._Value1);
-        //Debug.Log("Sample Length: " + sampleBuffer.Length);
 
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
