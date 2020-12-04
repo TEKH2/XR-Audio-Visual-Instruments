@@ -68,7 +68,7 @@ public class GrainSynthSystem : SystemBase
                             //-- Find the largest DSP effect tail and limit it to max grain size
                             if (dspParams[i]._DSPType == DSPTypes.Flange || dspParams[i]._DSPType == DSPTypes.Delay)
                                 if (dspParams[i]._SampleTail > dspTailLength)
-                                    dspTailLength = dspParams[i]._SampleTail;
+                                    dspTailLength = dspParams[i]._SampleTail + emitter._DurationInSamples;
                         }
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, emitter._SampleRate - emitter._DurationInSamples);
 

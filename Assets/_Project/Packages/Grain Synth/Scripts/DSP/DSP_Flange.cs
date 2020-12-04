@@ -68,14 +68,6 @@ public class DSP_Flange : DSPBase
 
         for (int i = 0; i < sampleBuffer.Length; i++)
         {
-            // 
-            // delayTime = delayTime * 200 + (delay = (ocillator next sample + 1.01) * modparams * 100) * 200 ) + 0.002
-
-            //readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
-
-            //delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
-            //combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
-
             // Modulation (delay offset) is a -1 to 1 sine wave, multiplied by the depth (0 to 1), scaled to the current sample delay offset parameter
             modIndex = (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) * dspParams._Value1 * dspParams._Value0);
 
@@ -94,10 +86,15 @@ public class DSP_Flange : DSPBase
 
             // Mix current sample with DSP buffer combowombo
             sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, dspBuffer[i].Value, dspParams._Mix) };
-            
 
 
 
+            // delayTime = delayTime * 200 + (delay = (ocillator next sample + 1.01) * modparams * 100) * 200 ) + 0.002
+
+            //readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
+
+            //delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
+            //combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
             //dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
 
             //dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
