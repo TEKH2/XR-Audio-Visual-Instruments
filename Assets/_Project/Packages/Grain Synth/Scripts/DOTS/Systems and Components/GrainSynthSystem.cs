@@ -99,7 +99,9 @@ public class GrainSynthSystem : SystemBase
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
                         for (int i = 0; i < dspParams.Length; i++)
                         {
-                            dspParameters.Add(dspParams[i]);
+                            DSPParametersElement newDSPParams = dspParameters[i];
+                            newDSPParams._SampleStartTime = sampleIndexNextGrainStart;
+                            dspParameters.Add(newDSPParams);
                             //dspParameters[i]._SampleStartTime = sampleIndexNextGrainStart;
                         }
 
