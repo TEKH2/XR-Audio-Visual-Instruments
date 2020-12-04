@@ -34,6 +34,10 @@ public class DSP_Flange : DSPBase
     [SerializeField]
     float _Feedback = 0.3f;
 
+    [Range(0f, 1f)]
+    [SerializeField]
+    float _PhaseDivergence = 1f;
+
     int _SampleRate;
 
     public void Start()
@@ -53,6 +57,7 @@ public class DSP_Flange : DSPBase
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
         dspParams._Value4 = _Original;
+        dspParams._Value5 = _PhaseDivergence;
 
         return dspParams;
     }
@@ -66,7 +71,8 @@ public class DSP_Flange : DSPBase
         float modIndex = 0;
 
         //-- Set initial phase based on DSP time
-        float phase = dspParams._SampleStartTime * (dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate);
+        float phase = dspParams._SampleStartTime * (dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate) * dspParams._Value5;
+
         while (phase >= Mathf.PI * 2)
             phase -= Mathf.PI * 2;
 
