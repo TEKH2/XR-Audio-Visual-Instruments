@@ -190,6 +190,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _SpeakerIndex = attachedSpeakerIndex,
             _EmitterIndex = index,
             _PlayheadPosNormalized = _EmissionProps.Position,
+            _SampleRate = AudioSettings.outputSampleRate
         });
 
         dstManager.SetName(entity, "Emitter");
