@@ -14,19 +14,23 @@ public class DSP_Flange : DSPBase
     [SerializeField]
     public float _Mix = 1;
 
-    [Range(0f, 100f)]
+    [Range(0f, 1f)]
     [SerializeField]
-    float _Delay = 40f;
+    public float _Original = 1;
 
-    [Range(0.1f, 1f)]
+    [Range(0.1f, 50f)]
+    [SerializeField]
+    float _Delay = 15f;
+
+    [Range(0.01f, 1f)]
     [SerializeField]
     float _Depth = 0.1f;
 
     [Range(0.01f, 50f)]
     [SerializeField]
-    float _Frequency = 0.8f;
+    float _Frequency = 5f;
 
-    [Range(0.1f, 0.99f)]
+    [Range(0f, 0.99f)]
     [SerializeField]
     float _Feedback = 0.3f;
 
@@ -42,12 +46,13 @@ public class DSP_Flange : DSPBase
         DSPParametersElement dspParams = new DSPParametersElement();
         dspParams._DSPType = DSPTypes.Flange;
         dspParams._SampleRate = _SampleRate;
-        dspParams._SampleTail = (int) (_Delay * _SampleRate / 1000) * 2;
+        dspParams._SampleTail = (int) (_Delay * _Depth * _SampleRate / 1000) * 2;
         dspParams._Mix = _Mix;
         dspParams._Value0 = _Delay * _SampleRate / 1000;
         dspParams._Value1 = _Depth;
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
+        dspParams._Value4 = _Original;
 
         return dspParams;
     }
@@ -75,14 +80,14 @@ public class DSP_Flange : DSPBase
             writeIndex = (int)Mathf.Clamp(i + dspParams._Value0 + modIndex, 0, sampleBuffer.Length - 1);
             //Debug.Log("Current Sample: " + i + "     Flange Mod: " + modIndex + "     Write Index: " + writeIndex);
 
-            // Create the delay sample
-            delaySample = dspBuffer[writeIndex].Value + sampleBuffer[i].Value * dspParams._Value3;
+            // Create the delay sample, and add it to the existing delay sample
+            delaySample = sampleBuffer[i].Value + dspBuffer[i].Value * dspParams._Value3 + dspBuffer[writeIndex].Value;
 
             // Write the delayed sample
             dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = delaySample };
 
             // Add the current input sample to the current DSP buffer for output
-            dspBuffer[i] = new DSPSampleBufferElement { Value = sampleBuffer[i].Value + dspBuffer[i].Value };
+            dspBuffer[i] = new DSPSampleBufferElement { Value = sampleBuffer[i].Value * dspParams._Value4 + dspBuffer[i].Value };
 
             // Mix current sample with DSP buffer combowombo
             sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, dspBuffer[i].Value, dspParams._Mix) };
