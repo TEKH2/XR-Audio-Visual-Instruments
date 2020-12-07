@@ -66,9 +66,13 @@ public class GrainSynthSystem : SystemBase
                         for (int i = 0; i < dspParams.Length; i++)
                         {
                             //-- Find the largest DSP effect tail
-                            if (dspParams[i]._DSPType == DSPTypes.Flange || dspParams[i]._DSPType == DSPTypes.Delay)
+                            if (dspParams[i]._DSPType == DSPTypes.Flange || dspParams[i]._DSPType == DSPTypes.Delay || dspParams[i]._DSPType == DSPTypes.Chopper)
+                            {
                                 if (dspParams[i]._SampleTail > dspTailLength)
-                                    dspTailLength = dspParams[i]._SampleTail + emitter._DurationInSamples;
+                                {
+                                    dspTailLength = dspParams[i]._SampleTail;
+                                }
+                            }
                         }
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, emitter._SampleRate - emitter._DurationInSamples);
 
@@ -200,11 +204,13 @@ public class GrainSynthSystem : SystemBase
                            case DSPTypes.Delay:
                                break;
                            case DSPTypes.Flange:
-                               // TODO: Modulate each grain to offset its phase based on its play (trigger) time for continuous oscillation over grains
                                DSP_Flange.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                            case DSPTypes.Filter:
                                DSP_Filter.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
+                               break;
+                           case DSPTypes.Chopper:
+                               DSP_Chopper.ProcessDSP(dspParamsBuffer[i], sampleOutputBuffer, dspBuffer);
                                break;
                        }
                    }

@@ -2,12 +2,7 @@
 using UnityEngine;
 
 
-// TODO: For this effect to be... effective... we'll have to add samples to the end of each grain so the tail of
-// the chorus/flange effect (which is essentially a very short delay) can play out. Otherwise, it cuts off, and
-// makes the effect far less.... effective.
-
-
-// Modulated delay mono chorus 
+// Modulated delay mono chorus/flange/garble effect
 public class DSP_Flange : DSPBase
 {
     [Range(0f, 1f)]
@@ -36,7 +31,7 @@ public class DSP_Flange : DSPBase
 
     [Range(0f, 1f)]
     [SerializeField]
-    float _PhaseDivergence = 1f;
+    float _PhaseSync = 1f;
 
     int _SampleRate;
 
@@ -57,22 +52,19 @@ public class DSP_Flange : DSPBase
         dspParams._Value2 = _Frequency;
         dspParams._Value3 = _Feedback;
         dspParams._Value4 = _Original;
-        dspParams._Value5 = _PhaseDivergence;
+        dspParams._Value5 = _PhaseSync;
 
         return dspParams;
     }
 
     public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
     {
-        float delayOutput = 0;
         int writeIndex = 0;
-        float readIndex = 0;
         float delaySample = 0;
         float modIndex = 0;
 
-        //-- Set initial phase based on DSP time
+        //-- Set initial phase based on DSP time to sync effect between grains
         float phase = dspParams._SampleStartTime * (dspParams._Value2 * 2 * Mathf.PI / dspParams._SampleRate) * dspParams._Value5;
-
         while (phase >= Mathf.PI * 2)
             phase -= Mathf.PI * 2;
 
@@ -86,8 +78,8 @@ public class DSP_Flange : DSPBase
             writeIndex = (int)Mathf.Clamp(i + dspParams._Value0 + modIndex, 0, sampleBuffer.Length - 1);
             //Debug.Log("Current Sample: " + i + "     Flange Mod: " + modIndex + "     Write Index: " + writeIndex);
 
-            // Create the delay sample, and add it to the existing delay sample
-            delaySample = sampleBuffer[i].Value + dspBuffer[i].Value * dspParams._Value3 + dspBuffer[writeIndex].Value;
+            // Combine sample in delayed buffer with current pos original sample and current pos delay sample multipled by "feedback" value
+            delaySample = dspBuffer[writeIndex].Value + sampleBuffer[i].Value + dspBuffer[i].Value * dspParams._Value3;
 
             // Write the delayed sample
             dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = delaySample };
@@ -97,38 +89,6 @@ public class DSP_Flange : DSPBase
 
             // Mix current sample with DSP buffer combowombo
             sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, dspBuffer[i].Value, dspParams._Mix) };
-
-
-
-            // delayTime = delayTime * 200 + (delay = (ocillator next sample + 1.01) * modparams * 100) * 200 ) + 0.002
-
-            //readIndex = Mathf.Clamp(dspParams._Value0 + (DSP_Utils_DOTS.SineOcillator(ref phase, dspParams._Value2, dspParams._SampleRate) + 1.01f) * dspParams._Value1, 0, sampleBuffer.Length);
-
-            //delayOutput = DSP_Utils_DOTS.BufferGetSample(dspBuffer, writeIndex, readIndex);
-            //combined = sampleBuffer[i].Value + delayOutput * dspParams._Value3;
-            //dspBuffer[writeIndex] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
-
-            //dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
-
-
-            //DSP_Utils_DOTS.BufferAddSample(dspBuffer, ref writeIndex, combined);
-
-            //dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, combined, dspParams._Mix) };
         }
-
-        //for (int i = 0; i < sampleBuffer.Length; i++)
-        //{
-        //    sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
-        //}
     }
 }
-
-
- /* Some default chorus min/max ranges
- * 
- * rate 0 - 100
- * depth 0 - 1
- * centre_delay (offset, delay?) 1 - 100
- * feedback -1 - 1
- * mix 0 - 1
- */

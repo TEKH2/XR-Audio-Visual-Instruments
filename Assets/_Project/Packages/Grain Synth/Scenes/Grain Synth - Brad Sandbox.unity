@@ -125,6 +125,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4052231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4052232}
+  - component: {fileID: 4052233}
+  m_Layer: 0
+  m_Name: DSP Chopper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4052232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4052231}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1117447067}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4052233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4052231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a00d38c8668ea94bbfae036e5997869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Mix: 1
+  _Crossings: 2
+  _MaxSegmentLength: 2048
+  _MinSegmentLength: 128
+  _Repeats: 1
+  _PlayMode: 0
+  _PitchedMode: 0
+  _Frequency: 220
+  _Rate: 1
 --- !u!1001 &28533437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10628,11 +10680,11 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 1
+  _MaxGrainSpeakers: 20
   _GrainQueueInMS: 27.4
   _CurrentDSPSample: 0
-  _EmitterToListenerActivationRange: 2
-  _EmitterToSpeakerAttachRadius: 2
+  _EmitterToListenerActivationRange: 4
+  _EmitterToSpeakerAttachRadius: 1
 --- !u!82 &844739181
 AudioSource:
   m_ObjectHideFlags: 0
@@ -23101,10 +23153,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Mix: 1
-  _Delay: 10
-  _Depth: 1
-  _Frequency: 2.5
-  _Feedback: 0.791
+  _Original: 1
+  _Delay: 15.6
+  _Depth: 0.116
+  _Frequency: 11.2
+  _Feedback: 0.368
+  _PhaseSync: 1
 --- !u!1001 &1481442911
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33102,7 +33156,7 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Volume
-      value: 1.68
+      value: 1.02
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -33132,12 +33186,12 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Cadence
-      value: 25
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Duration
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -33163,7 +33217,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _DSPChainParams.Array.data[1]
       value: 
-      objectReference: {fileID: 1370260815}
+      objectReference: {fileID: 4052233}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _DSPChainParams.Array.data[2]
@@ -33229,6 +33283,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _GrainSynth
+      value: 
+      objectReference: {fileID: 844739180}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00b2617a196ae2348bba494a0af8c43b, type: 3}
 --- !u!224 &5492063689395732868

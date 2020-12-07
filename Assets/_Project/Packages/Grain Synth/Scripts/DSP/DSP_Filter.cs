@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-// A classic biquad filter design
+// A classic bi-quad filter design
 public class DSP_Filter : DSPBase
 {
     [Range(0f, 1f)]
@@ -32,13 +32,15 @@ public class DSP_Filter : DSPBase
 
     public override DSPParametersElement GetDSPBufferElement()
     {
-        DSPParametersElement dspBuffer = new DSPParametersElement();
-        dspBuffer._DSPType = DSPTypes.Filter;
+        DSPParametersElement dspParams = new DSPParametersElement();
+        dspParams._DSPType = DSPTypes.Filter;
 
         float cutoffFreq = AudioUtils.NormToFreq(Mathf.Clamp(_FilterCutoffNorm, 0f, 1f));
         float gain = Mathf.Clamp(_FilterGain, 0.5f, 1f);
         float q = Mathf.Clamp(_FilterQ, 0.1f, 5f);
 
+
+        //--  Construct bi-quad filter coefficents
         FilterCoefficients newCoefficients;
 
         if (_FilterType == FilterConstruction.FilterType.LowPass)
@@ -52,15 +54,15 @@ public class DSP_Filter : DSPBase
         else
             newCoefficients = AllPass(cutoffFreq, gain, q, _SampleRate);
 
-        dspBuffer._SampleRate = _SampleRate;
-        dspBuffer._Mix = _Mix;
-        dspBuffer._Value0 = newCoefficients.a0;
-        dspBuffer._Value1 = newCoefficients.a1;
-        dspBuffer._Value2 = newCoefficients.a2;
-        dspBuffer._Value3 = newCoefficients.b1;
-        dspBuffer._Value4 = newCoefficients.b2;
+        dspParams._SampleRate = _SampleRate;
+        dspParams._Mix = _Mix;
+        dspParams._Value0 = newCoefficients.a0;
+        dspParams._Value1 = newCoefficients.a1;
+        dspParams._Value2 = newCoefficients.a2;
+        dspParams._Value3 = newCoefficients.b1;
+        dspParams._Value4 = newCoefficients.b2;
 
-        return dspBuffer;
+        return dspParams;
     }
 
     public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
@@ -87,14 +89,7 @@ public class DSP_Filter : DSPBase
             previousY2 = previousY1;
             previousY1 = outputSample;
 
-            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix) };
-
-            //outputBuffer[i] = sampleBuffer[i].Value;
-        }
-
-        for (int i = 0; i < sampleBuffer.Length; i++)
-        {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix) };
         }
     }
 

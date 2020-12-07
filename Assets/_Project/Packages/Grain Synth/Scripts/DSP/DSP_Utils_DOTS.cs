@@ -48,4 +48,15 @@ public class DSP_Utils_DOTS : MonoBehaviour
 
         return (dspBuffer[upper].Value * difference) + (dspBuffer[lower].Value * (1 - difference));
     }
+
+    public static float UnbiasedInput(float inputSample, float previousInput, float previousOutput)
+    {
+        return inputSample - previousInput + previousOutput * 0.99997f;
+    }
+
+    public static bool IsCrossing(float inputSample, float previousSample)
+    {
+        return (inputSample > 0 && previousSample <= 0);
+    }
+
 }

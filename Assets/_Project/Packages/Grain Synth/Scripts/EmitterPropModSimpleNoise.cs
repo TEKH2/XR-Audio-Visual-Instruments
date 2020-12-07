@@ -9,29 +9,29 @@ using YamlDotNet.Core;
 public class AutomationData
 {
     public EmitterPropModSimpleNoise.Automation Type = EmitterPropModSimpleNoise.Automation.Off;
-    public float Speed = 1;
-    public Vector2 Range = new Vector2(0, 1);
-    private float Phase = 0;
-    private GrainSynth GrainSynth;
-    private GrainEmissionProps Props;
+    public float _Speed = 1;
+    public Vector2 _Range = new Vector2(0, 1);
+    private float _Phase = 0;
+    private GrainSynth _GrainSynth;
+    private GrainEmissionProps _Props;
     private bool LinkedPhase = false;
 
     public void SetData(GrainSynth grainSynth, GrainEmissionProps props)
     {
-        GrainSynth = grainSynth;
-        Props = props;
-        Phase = UnityEngine.Random.value * 123.74f;
+        _GrainSynth = grainSynth;
+        _Props = props;
+        _Phase = UnityEngine.Random.value * 123.74f;
     }
 
     public void SetLinkedPhase(float phase)
     {
-        Phase = phase;
+        _Phase = phase;
     }
 
     public float UpdatePhase()
     {
-        Phase += Time.deltaTime * Speed / ( GrainSynth._AudioClips[Props._ClipIndex].length / GrainSynth._AudioClips[Props._ClipIndex].channels);
-        return Phase;
+        _Phase += Time.deltaTime * _Speed / ( _GrainSynth._AudioClips[_Props._ClipIndex].length / _GrainSynth._AudioClips[_Props._ClipIndex].channels);
+        return _Phase;
     }
 
     public float Process()
@@ -43,19 +43,19 @@ public class AutomationData
             case EmitterPropModSimpleNoise.Automation.Off:
                 break;
             case EmitterPropModSimpleNoise.Automation.Perlin:
-                output = Mathf.Lerp(Range.x, Range.y, Mathf.PerlinNoise(Phase, Phase * 0.5f));
+                output = Mathf.Lerp(_Range.x, _Range.y, Mathf.PerlinNoise(_Phase, _Phase * 0.5f));
                 break;
             case EmitterPropModSimpleNoise.Automation.Straight:
-                output = GrainSynthSystem.Map((Phase % 1), 0, 1, Range.x, Range.y);
+                output = GrainSynthSystem.Map((_Phase % 1), 0, 1, _Range.x, _Range.y);
                 break;
             case EmitterPropModSimpleNoise.Automation.PingPong:
-                if ((int)(Phase % 2) == 0)
-                    output = Mathf.Lerp(Range.x, Range.y, Phase % 1);
+                if ((int)(_Phase % 2) == 0)
+                    output = Mathf.Lerp(_Range.x, _Range.y, _Phase % 1);
                 else
-                    output = 1 - Mathf.Lerp(Range.x, Range.y, Phase % 1);
+                    output = 1 - Mathf.Lerp(_Range.x, _Range.y, _Phase % 1);
                 break;
             case EmitterPropModSimpleNoise.Automation.Sine:
-                output = Mathf.Lerp(Range.x, Range.y, (1 + Mathf.Sin(Phase * 2)) / 2);
+                output = Mathf.Lerp(_Range.x, _Range.y, (1 + Mathf.Sin(_Phase * 2)) / 2);
                 break;
             default:
                 break;

@@ -20,12 +20,12 @@ public class DSP_Bitcrush : DSPBase
 
     public override DSPParametersElement GetDSPBufferElement()
     {
-        DSPParametersElement dspBuffer = new DSPParametersElement();
-        dspBuffer._DSPType = DSPTypes.Bitcrush;
-        dspBuffer._Mix = _Mix;
-        dspBuffer._Value0 = _CrushRatio;
+        DSPParametersElement dspParams = new DSPParametersElement();
+        dspParams._DSPType = DSPTypes.Bitcrush;
+        dspParams._Mix = _Mix;
+        dspParams._Value0 = _CrushRatio;
 
-        return dspBuffer;
+        return dspParams;
     }
 
     public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
@@ -48,12 +48,7 @@ public class DSP_Bitcrush : DSPBase
                 count++;
             }
 
-            dspBuffer[i] = new DSPSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix) };
-        }
-
-        for (int i = 0; i < sampleBuffer.Length; i++)
-        {
-            sampleBuffer[i] = new GrainSampleBufferElement { Value = dspBuffer[i].Value };
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, outputSample, dspParams._Mix) };
         }
     }
 }
