@@ -67,7 +67,7 @@ public class DSP_Chopper : DSPBase
         DSPParametersElement dspParams = new DSPParametersElement();
         dspParams._DSPType = DSPTypes.Chopper;
         dspParams._SampleRate = _SampleRate;
-        dspParams._SampleTail = _NumSegments * 3;
+        dspParams._SampleTail = _NumSegments * 2;
         dspParams._Mix = _Mix;
         dspParams._Value0 = _Crossings;
         dspParams._Value1 = _MaxSegmentLength;
@@ -85,12 +85,9 @@ public class DSP_Chopper : DSPBase
 
     public static void ProcessDSP(DSPParametersElement dspParams, DynamicBuffer<GrainSampleBufferElement> sampleBuffer, DynamicBuffer<DSPSampleBufferElement> dspBuffer)
     {
-        int writeSegment = 0;   // Segment currently being written to
         int sampleIndexInSegment = 0;     // Number of samples since last capture
         int crossingCount = 0;  // Number of rising zero-crossings since last capture
-        float prevInput = 0;    // Used to create smooth overlaps
         float energySum = 0;    // Used to accumulate segment energy total
-        int totalLength = 0;    // Total length of all segments
 
         const int _MinLength = 100;
         const int _MaxSegmentLength = 2000;
@@ -99,50 +96,27 @@ public class DSP_Chopper : DSPBase
 
         int numSegments = (int)dspParams._Value8;
 
-        // NOTE: The DSP buffer size is extended by samples to include segment length, offset and RMS data values.
-
-        //Debug.Log("DSP Size: " + dspBuffer.Length);
-        //Debug.Log("Sample Size: " + sampleBuffer.Length); // - 1 + 2 * numSegments + numSegments - 1);
-        //Debug.Log("Segment Data Size: " + numSegments * 3);
-
+        // NOTE: The DSP buffer size is extended by samples to include segment length and offset.
 
         float inputCurrent = 0;
         float inputPrevious = 0;
         float unbiasedCurrent = 0;
         float unbiasedPrevious = 0;
-        int offsetCurrent = 0;
-        int offsetPrevious = 0;
-        int lengthCurrent = 0;
-        int lengthPrevious = 0;
-        int previousLength = 0;
 
-        float unbiasedInput = 0;
-        float previousUnbiasedSample = 0;
-        
-
-        int[] lengths = new int[dspParams._SampleTail];
-
+        int segmentCurrent = 0;
+       
         //-- RECORDING SECTION
         for (int i = 0; i < segmentDataStartIndex; i++)
         {
-            // unbiased_input = dcblock(in1); dcblock : A one-pole high-pass filter to remove DC components. Equivalent to the GenExpr: History x1, y1; y = in1 - x1 + y1*0.9997; x1 = in1; y1 = y; out1 = y;
-            //
-
-
             inputCurrent = sampleBuffer[i].Value;
             unbiasedCurrent = inputCurrent - inputPrevious + unbiasedPrevious * 0.999997f;
 
-            unbiasedPrevious = unbiasedCurrent;
             inputPrevious = inputCurrent;
 
             dspBuffer[i] = new DSPSampleBufferElement { Value = unbiasedCurrent };
 
-            //unbiasedInput = DSP_Utils_DOTS.UnbiasedInput(sampleBuffer[i].Value, sampleBuffer[Mathf.Clamp(i-1, 0, segmentDataStartIndex)].Value, prevInput);
-            //dspBuffer[i] = new DSPSampleBufferElement { Value = unbiasedInput };
-
             energySum = energySum + unbiasedCurrent * unbiasedCurrent;
             
-
             // Is sample rising and crossing zero?
             if (DSP_Utils_DOTS.IsCrossing(unbiasedCurrent, unbiasedPrevious))
             {
@@ -158,61 +132,43 @@ public class DSP_Chopper : DSPBase
                     // If segment is complete
                     if (crossingCount > dspParams._Value0 && sampleIndexInSegment >= _MinLength)
                     {
-                        //float offset = prevInput / (prevInput - unbiasedInput);
-                        //previousOffset = GetSegmentData(1, writeSegment);
+                        //-- Set length
+                        SetSegmentData(0, segmentCurrent, sampleIndexInSegment);
+                        //-- Set offset
+                        SetSegmentData(1, segmentCurrent, i - sampleIndexInSegment);
 
-                        offsetPrevious = offsetCurrent;
-                        offsetCurrent = i;
-
-                        offset = i;
-
-                        //int length = sampleIndexInSegment + offset - previousOffset - 1;
-                        int segmentLength = sampleIndexInSegment;
-
-                        //if (segmentLength + offset >= dspBuffer.Length - dspParams._SampleTail)
-                        //    segmentLength = (int)Mathf.Clamp(segmentLength, 0, dspBuffer.Length - dspParams._SampleTail - offset);
-
-                        totalLength = totalLength - previousLength + segmentLength;
-                        SetSegmentData(0, writeSegment, segmentLength);
-                        previousLength = segmentLength;
-
-                        int currentSegmentLength = GetSegmentData(0, writeSegment);
-                        lengths[writeSegment] = segmentLength;
-                        //float rms = Mathf.Sqrt(energySum / Mathf.Floor(length));
-                        //SetSegmentData(2, writeSegment, rms);
-
+                        //-- Reset countters, and increment segment
                         crossingCount = 0;
-                        energySum = 0;
+                        sampleIndexInSegment = 0;
 
-                        writeSegment++;
-                        writeSegment = writeSegment % numSegments;
-
-                        SetSegmentData(1, writeSegment, offset);
-                        sampleIndexInSegment = 1;
+                        segmentCurrent++;
+                        segmentCurrent = (int)Mathf.Repeat(segmentCurrent, numSegments - 1);
                     }
                 }
             }
+            else
+                sampleIndexInSegment++;
 
-            sampleIndexInSegment++;
+            unbiasedPrevious = unbiasedCurrent;
         }
+
+        // Once the recording section is complete, update segment number to ACTUAL number of segements recorded
+        numSegments = segmentCurrent;
 
         float rate = dspParams._Value7;
 
         float playIndex = 0;
-        int playSegment = 0;    // Segment currently being played
-        int playOffset = 0;     // Offset of playing segment
+        int playSegment = 0;
+        int playOffset = 0;
         int playLength = GetSegmentData(0, playSegment);
-        
 
-        //Debug.Log(playLength);
-
-        //-- PLAYBACK SECTIOn
-        for (int i = 0; i < dspBuffer.Length - dspParams._SampleTail - 2; i++)
+        //-- PLAYBACK SECTION
+        for (int i = 0; i < segmentDataStartIndex; i++)
         {
             // Normal pitch mode
             if (dspParams._Value5 == 0)
             {
-
+                // Maintain default playback rate
             }
             // Ascending pitch mode
             else if (dspParams._Value5 == 1)
@@ -232,42 +188,25 @@ public class DSP_Chopper : DSPBase
                 rate = dspParams._Value6 * playLength / (dspParams._SampleRate * dspParams._Value0);
             }
 
-
-            //Debug.Log("Rate: " + rate);
-
-            //Debug.Log("Play Index: " + playIndex);
-            //Debug.Log("Offset: " + GetSegmentData(1, (int)playSegment));
-
-
-            // Generate play index
+            // Increase playback index by playback rate
             playIndex += rate;
 
-            int actualPlayIndex = (int)playIndex % playLength;
-            //while (actualPlayIndex >= playLength)
-            //    actualPlayIndex -= playLength;
-            int sampleToPlay = (int)(playOffset + actualPlayIndex); // + GetSegmentData(1, playSegment));
+            // Keep segment playback index within size of current segment
+            float sampleInSegment = Mathf.Repeat(playIndex, playLength - 1);
 
-             if (sampleToPlay > dspBuffer.Length - dspParams._SampleTail - 1)
-                Debug.Log("TOO LONG!");
+            // Ensure samples are only read from the grain sample area of the DSP buffer
+            int sampleToPlay = (int)Mathf.Repeat(playOffset + sampleInSegment, segmentDataStartIndex - 1);
 
-            float outputSample = dspBuffer[sampleToPlay].Value;
+            // Populate output sample with interpolated DSP sample
+            sampleBuffer[i] = new GrainSampleBufferElement { Value = Mathf.Lerp(sampleBuffer[i].Value, DSP_Utils_DOTS.LinearInterpolate(dspBuffer, sampleToPlay), dspParams._Mix) };
 
-            //Debug.Log(outputSample);
-
-
-            //-- Populate output sample with interpolated DSP sample
-            
-            //sampleBuffer[i] = new GrainSampleBufferElement { Value = outputSample };
-            //sampleBuffer[i] = new GrainSampleBufferElement { Value = DSP_Utils_DOTS.LinearInterpolate(dspBuffer, playOffset + actualPlayIndex + GetSegmentData(1, (int)playSegment)) };
-
-
-
+            // Prepare phase for noise mode
             float phase = i / (dspBuffer.Length - dspParams._SampleTail);
 
             //-- Switch to a new playback segment?
             if (playIndex >= playLength * Mathf.Floor(dspParams._Value3))
             {
-                playIndex = actualPlayIndex;
+                playIndex = sampleInSegment;
 
                 // Forward
                 if (dspParams._Value4 == 0)
@@ -292,30 +231,29 @@ public class DSP_Chopper : DSPBase
                     playSegment += direction;
                 }
 
-                while (playSegment > numSegments)
-                    playSegment += playSegment;
-                while (playSegment < 0)
-                    playSegment += playSegment;
+                // Ensure new playback segment is within stored segments
+                playSegment = (int)Mathf.Repeat(playSegment, numSegments - 1);
+
+                // Get new lenght and offset for next playback sample
+                playLength = GetSegmentData(0, playSegment);
+                playOffset = GetSegmentData(1, playSegment);
+
+
+                //Debug.Log("NEW SEGMENT: " + playSegment + "    NEW OFFSET: " + playOffset + "    NEW LENGTH: " + playLength);
+                //playRMS = GetSegmentData(2, playSegment);
             }
-
-            playLength = GetSegmentData(0, playSegment);
-            playOffset = GetSegmentData(1, playSegment);
-            //playRMS = GetSegmentData(2, playSegment);
-
-
         }
 
 
-        // Segment types are: 0 = Length, 1 = Offset, 2 = RMS
+        // Segment types are: 0 = Length, 1 = Offset
         void SetSegmentData(int type, int segment, int input)
         {
-            int index = dspBuffer.Length - dspParams._SampleTail - 1;
-            dspBuffer[dspBuffer.Length - dspParams._SampleTail - 1 + type * numSegments + segment] = new DSPSampleBufferElement { Value = input};
+            dspBuffer[segmentDataStartIndex + type + segment * 2] = new DSPSampleBufferElement { Value = input};
         }
 
         int GetSegmentData(int type, int segment)
         {
-            return (int)dspBuffer[dspBuffer.Length - dspParams._SampleTail - 1 + type * numSegments + segment].Value;
+            return (int)dspBuffer[segmentDataStartIndex + type + segment * 2].Value;
         }
     }
 }

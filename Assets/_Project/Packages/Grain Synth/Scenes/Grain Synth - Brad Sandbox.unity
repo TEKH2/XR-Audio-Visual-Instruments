@@ -33186,22 +33186,22 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Cadence
-      value: 500
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Duration
-      value: 10
+      value: 866
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Playhead
-      value: 0.474
+      value: 0.212
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _DSPChainParams.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -33212,7 +33212,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _DSPChainParams.Array.data[0]
       value: 
-      objectReference: {fileID: 1473132786}
+      objectReference: {fileID: 4052233}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _DSPChainParams.Array.data[1]
