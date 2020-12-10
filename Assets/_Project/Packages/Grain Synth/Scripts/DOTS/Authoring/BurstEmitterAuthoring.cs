@@ -108,11 +108,15 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
 
+    bool _InRangeTemp = false;
+    bool _Triggered = false;
+
+    Collision _Collision;
+
     public DSPBase[] _DSPChainParams;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
-    float _Timer = 0;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -173,70 +177,70 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
-    bool _InRangeTemp = false;
+
+    void OnCollisionEnter(Collision collision)
+    {
+        _Collision = collision;
+        _Triggered = true;
+    }
+
     void Update()
     {
         if (!_Initialized)
             return;
 
-        _Timer += Time.deltaTime;
-
-
-        // ----   Update DSP chain  // TODO Check if changed
-        DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-        dspTypes.Clear();
-        for (int i = 0; i < _DSPChainParams.Length; i++)
+        if (_Triggered)
         {
-            dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
+            // ----   Update DSP chain
+            DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+            dspTypes.Clear();
+            for (int i = 0; i < _DSPChainParams.Length; i++)
+            {
+                dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
+            }
+
+            BurstEmitterComponent data = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
+
+            int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
+            float distanceAmplitude = 1;
+            if (data._AttachedToSpeaker)
+            {
+                distanceAmplitude = AudioUtils.DistanceAttenuation(
+                    _HeadPosition.position,
+                    GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
+                    transform.position);
+            }
+
+            data._Playing = _BurstEmissionProps._Playing;
+            data._SpeakerIndex = attachedSpeakerIndex;
+            data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
+            data._BurstCount = _BurstEmissionProps._BurstCount;
+            data._BurstDuration = (int)(_BurstEmissionProps._BurstDuration * AudioSettings.outputSampleRate * .001f);
+            data._BurstShape = _BurstEmissionProps._BurstShape;
+            data._DurationStart = (int)(_BurstEmissionProps._DurationStart * AudioSettings.outputSampleRate * .001f);
+            data._DurationEnd = (int)(_BurstEmissionProps._DurationEnd * AudioSettings.outputSampleRate * .001f);
+            data._PitchStart = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeStart);
+            data._PitchEnd = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeEnd);
+            data._VolumeStart = _BurstEmissionProps._VolumeStart;
+            data._VolumeEnd = _BurstEmissionProps._VolumeEnd;
+            data._DistanceAmplitude = distanceAmplitude;
+            data._PlayheadPosNormalized = _BurstEmissionProps.Position;
+
+            _EntityManager.SetComponentData(_EmitterEntity, data);
+
+            _InRangeTemp = data._InRange;
+
+            _AttachedSpeakerIndex = data._SpeakerIndex;
+            _AttachedToSpeaker = data._AttachedToSpeaker;
+
+            Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
+            _EntityManager.SetComponentData(_EmitterEntity, new Translation
+            {
+                Value = transform.position
+            });
+
+            _Triggered = false;
         }
-
-        
-
-        // BRAD - TO MAKE THIS A TRIGGERABLE ENTITIY, DO WE NEED TO SET SOME KIND OF COLLISION OR TRIGGER DETECTION IN THIS UPDATE CALL?
-        // THEN HAVE A CONDITIONAL THAT ONLY CREATES A BURST ENTITY WHEN THE FLAG IS UP, THEN IMMEDIATELY TURN IT OFF?
-
-
-        BurstEmitterComponent data = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
-
-        int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
-        float distanceAmplitude = 1;
-        if (data._AttachedToSpeaker)
-        {
-            distanceAmplitude = AudioUtils.DistanceAttenuation(
-                _HeadPosition.position,
-                GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-                transform.position);
-        }
-
-        BurstEmitterComponent burstEmitter = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
-
-        data._Playing = _BurstEmissionProps._Playing;
-        data._SpeakerIndex = attachedSpeakerIndex;
-        data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
-        data._BurstCount = _BurstEmissionProps._BurstCount;
-        data._BurstDuration = (int)(_BurstEmissionProps._BurstDuration * AudioSettings.outputSampleRate * .001f);
-        data._BurstShape = _BurstEmissionProps._BurstShape;
-        data._DurationStart = (int)(_BurstEmissionProps._DurationStart * AudioSettings.outputSampleRate * .001f);
-        data._DurationEnd = (int)(_BurstEmissionProps._DurationEnd * AudioSettings.outputSampleRate * .001f);
-        data._PitchStart = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeStart);
-        data._PitchEnd = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeEnd);
-        data._VolumeStart = _BurstEmissionProps._VolumeStart;
-        data._VolumeEnd = _BurstEmissionProps._VolumeEnd;
-        data._DistanceAmplitude = distanceAmplitude;
-        data._PlayheadPosNormalized = _BurstEmissionProps.Position;
-
-        _EntityManager.SetComponentData(_EmitterEntity, data);
-
-        _InRangeTemp = data._InRange;
-
-        _AttachedSpeakerIndex = data._SpeakerIndex;
-        _AttachedToSpeaker = data._AttachedToSpeaker;
-
-        Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
-        _EntityManager.SetComponentData(_EmitterEntity, new Translation
-        {
-            Value = transform.position
-        });
     }
 
     void OnDrawGizmos()

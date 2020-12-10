@@ -44,8 +44,6 @@ public class GrainSynthSystem : SystemBase
         float dt = Time.DeltaTime;
 
         //---   CREATES ENTITIES W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP SAMPLE BUFFER + DSP PARAMS BUFFER
-        //---   TODO - CHRIS WE COULD GET OUR MAX LENGHT OF A DSP BUFFER HERE AND PASS THAT INFORMATION ALONG IN ONE OF THE COMPONENTS
-
 
         JobHandle emitGrains = Entities.ForEach
         (
@@ -115,8 +113,12 @@ public class GrainSynthSystem : SystemBase
                     }
                 }
             }
-        ).WithDisposeOnCompletion(audioClipData)
-        .ScheduleParallel(this.Dependency);
+        ).ScheduleParallel(this.Dependency);
+        //.WithDisposeOnCompletion(audioClipData)
+
+
+        // Make sure that the ECB system knows about our job
+        _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
 
         JobHandle emitBurst = Entities.ForEach
         (
@@ -186,11 +188,11 @@ public class GrainSynthSystem : SystemBase
                 }
             }
         ).WithDisposeOnCompletion(audioClipData)
-        .ScheduleParallel(this.Dependency);
+        .ScheduleParallel(emitGrains);
 
 
         // Make sure that the ECB system knows about our job
-        _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
+        _CommandBufferSystem.AddJobHandleForProducer(emitBurst);
         #endregion
 
 
@@ -253,7 +255,7 @@ public class GrainSynthSystem : SystemBase
                     grain._SamplePopulated = true; // TODO - SWAP THIS TO A TAG COMPONENT TO STOP HAVING TO USE GRAINM PROCESSOR AS A REF INPUT AND AVOID IF STATEMENTS IN THIS AND DSP JOB
                 }
             }
-        ).ScheduleParallel(emitGrains);
+        ).ScheduleParallel(emitBurst);
 
 
 
