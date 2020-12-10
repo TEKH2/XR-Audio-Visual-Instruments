@@ -96,6 +96,37 @@ public struct EmitterComponent : IComponentData
     public int _DebugCount;
 }
 
+public struct BurstEmitterComponent : IComponentData
+{
+    public bool _AttachedToSpeaker;
+    public int _SpeakerIndex;
+    public bool _StaticallyPaired;
+    public bool _InRange;
+
+    public int _EmitterIndex;
+
+    public bool _Playing;
+
+    public int _AudioClipIndex;
+    public int _CadenceStart;
+    public int _CadenceEnd;
+    public int _DurationStart;
+    public int _DurationEnd;
+    public int _LastGrainEmissionDSPIndex;
+    public int _RandomOffsetInSamples;
+    public float _PitchStart;
+    public float _PitchEnd;
+    public float _VolumeStart;
+    public float _VolumeEnd;
+    public float _DistanceAmplitude;
+
+    public float _PlayheadPosNormalized;
+
+    public int _SampleRate;
+
+    public int _DebugCount;
+}
+
 
 public struct RingBufferFiller : IComponentData
 {
