@@ -33225,8 +33225,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
       propertyPath: _DSPChainParams.Array.data[0]._Value0
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.data[1].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.data[0].inSlope
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceCurve.m_CurveMax.m_Curve.Array.data[0].outSlope
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
