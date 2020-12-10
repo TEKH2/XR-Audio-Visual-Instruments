@@ -120,50 +120,56 @@ public class GrainSynthSystem : SystemBase
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
 
+
+        //
+        // BRAD: Not sure if I've set up the job dependencies or audio clip disposal correctly
+        //
+
         JobHandle emitBurst = Entities.ForEach
         (
-            (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspParams, ref BurstEmitterComponent burstEmitter) =>
+            (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
-                if (burstEmitter._AttachedToSpeaker && burstEmitter._Playing)
+                if (burst._AttachedToSpeaker && burst._Playing)
                 {
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     
                     int dspTailLength = 0;
 
                     // Create and queue every grain for the burst event --- probably need to revise
-                    for (int i = 0; i < burstEmitter._BurstCount; i++)
+                    for (int i = 0; i < burst._BurstCount; i++)
                     {
-                        int offset = (int)Map(i, 0, burstEmitter._BurstCount, 0, burstEmitter._BurstDuration, burstEmitter._BurstShape);
-                        int duration = (int)Map(i, 0, burstEmitter._BurstCount, burstEmitter._DurationStart, burstEmitter._DurationEnd, burstEmitter._BurstShape);
-                        float pitch = (int)Map(i, 0, burstEmitter._BurstCount, burstEmitter._PitchStart, burstEmitter._PitchEnd, burstEmitter._BurstShape);
-                        float volume = (int)Map(i, 0, burstEmitter._BurstCount, burstEmitter._VolumeStart, burstEmitter._VolumeEnd, burstEmitter._BurstShape);
+                        // Create grain processor properties based on burst shape and target duration
+                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
+                        int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
+                        float pitch = (int)Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
+                        float volume = (int)Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
 
-                        for (int j = 0; j < dspParams.Length; j++)
+                        for (int j = 0; j < dspChain.Length; j++)
                         {
                             //-- Find the largest DSP effect tail
-                            if (dspParams[j]._DSPType == DSPTypes.Flange || dspParams[j]._DSPType == DSPTypes.Delay || dspParams[j]._DSPType == DSPTypes.Chopper)
+                            if (dspChain[j]._DSPType == DSPTypes.Flange || dspChain[j]._DSPType == DSPTypes.Delay || dspChain[j]._DSPType == DSPTypes.Chopper)
                             {
-                                if (dspParams[j]._SampleTail > dspTailLength)
+                                if (dspChain[j]._SampleTail > dspTailLength)
                                 {
-                                    dspTailLength = dspParams[j]._SampleTail;
+                                    dspTailLength = dspChain[j]._SampleTail;
                                 }
                             }
                         }
 
-                        dspTailLength = Mathf.Clamp(dspTailLength, 0, burstEmitter._SampleRate - duration);
+                        dspTailLength = Mathf.Clamp(dspTailLength, 0, burst._SampleRate - duration);
 
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
-                            _AudioClipDataComponent = audioClipData[burstEmitter._AudioClipIndex],
+                            _AudioClipDataComponent = audioClipData[burst._AudioClipIndex],
 
-                            _PlayheadNorm = burstEmitter._PlayheadPosNormalized,
+                            _PlayheadNorm = burst._PlayheadPosNormalized,
                             _SampleCount = duration,
 
                             _Pitch = pitch,
-                            _Volume = volume * burstEmitter._DistanceAmplitude,
+                            _Volume = volume * burst._DistanceAmplitude,
 
-                            _SpeakerIndex = burstEmitter._SpeakerIndex,
+                            _SpeakerIndex = burst._SpeakerIndex,
                             _DSPStartIndex = currentDSPTime + offset,
                             _SamplePopulated = false,
 
@@ -178,9 +184,9 @@ public class GrainSynthSystem : SystemBase
                         //--    Add DSP Parameters
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
 
-                        for (int j = 0; j < dspParams.Length; j++)
+                        for (int j = 0; j < dspChain.Length; j++)
                         {
-                            DSPParametersElement tempParams = dspParams[j];
+                            DSPParametersElement tempParams = dspChain[j];
                             tempParams._SampleStartTime = currentDSPTime;
                             dspParameters.Add(tempParams);
                         }

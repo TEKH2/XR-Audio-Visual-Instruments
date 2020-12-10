@@ -93,27 +93,30 @@ public class BurstEmissionProps
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
-{  
+{
+    [Header("Debug")]
+    public bool _AttachedToSpeaker = false;
+    public int _AttachedSpeakerIndex;
+    public bool _Triggered = false;
+    public GrainSpeakerAuthoring _PairedSpeaker;
+    public Transform _HeadPosition;
+
+    [Header("Properties")]
     public BurstEmissionProps _BurstEmissionProps;
+
+    [Header("DSP Effects")]
+    public DSPBase[] _DSPChainParams;
 
     Entity _EmitterEntity;
     EntityManager _EntityManager;
 
     bool _Initialized = false;
     bool _StaticallyPaired = false;
-    public GrainSpeakerAuthoring _PairedSpeaker;
-
-    public Transform _HeadPosition;
-
-    public bool _AttachedToSpeaker = false;
-    int _AttachedSpeakerIndex;
-
     bool _InRangeTemp = false;
-    bool _Triggered = false;
-
+    
     Collision _Collision;
 
-    public DSPBase[] _DSPChainParams;
+
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
@@ -178,6 +181,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
 
+    // BRAD: Is this possible to detect collisions on a script with IConvertGameObjectToEntity and "Convert to Entity" component?
     void OnCollisionEnter(Collision collision)
     {
         _Collision = collision;

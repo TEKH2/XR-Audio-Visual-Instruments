@@ -27983,7 +27983,7 @@ GameObject:
   - component: {fileID: 1828402475}
   - component: {fileID: 1828402478}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: CollisionEmitterSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28093,6 +28093,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c831bc9c2d0ed4c8b24fdcc05fce3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _AttachedToSpeaker: 0
+  _AttachedSpeakerIndex: 0
+  _Triggered: 0
+  _PairedSpeaker: {fileID: 0}
+  _HeadPosition: {fileID: 0}
   _BurstEmissionProps:
     _Playing: 1
     _ClipIndex: 0
@@ -28107,9 +28112,6 @@ MonoBehaviour:
     _TransposeEnd: 0
     _VolumeStart: 1
     _VolumeEnd: 1
-  _PairedSpeaker: {fileID: 0}
-  _HeadPosition: {fileID: 0}
-  _AttachedToSpeaker: 0
   _DSPChainParams: []
 --- !u!114 &1828402480
 MonoBehaviour:
