@@ -235,12 +235,17 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (!_Initialized)
             return;
 
+        
 
         //---   DEBUG
         float cadence = (playbackData._DSPStartTime - _PrevStartSample) / (float)AudioSettings.outputSampleRate;
         float duration = playbackData._SizeInSamples / (float)AudioSettings.outputSampleRate;
         float DSPStartOffset = playbackData._DSPStartTime - _GrainSynth._CurrentDSPSample;
         //print("Current DSP offset: " + DSPStartOffset + "  duration  : " + duration + "  Cadence: " + cadence);
+
+
+        Debug.Log("ADDING GRAIN AT DSP OFFSET: " + DSPStartOffset);
+
 
         _PrevStartSample = playbackData._DSPStartTime;
 

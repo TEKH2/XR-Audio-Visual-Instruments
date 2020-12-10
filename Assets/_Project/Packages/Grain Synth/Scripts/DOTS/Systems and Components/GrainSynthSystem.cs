@@ -131,6 +131,7 @@ public class GrainSynthSystem : SystemBase
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
+                    Debug.Log("---------------------------------------------------");
                     Debug.Log("Bursting.....");
 
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
@@ -141,10 +142,13 @@ public class GrainSynthSystem : SystemBase
                     for (int i = 0; i < burst._BurstCount; i++)
                     {
                         // Create grain processor properties based on burst shape and target duration
-                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
+                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration);
                         int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
                         float pitch = (int)Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
                         float volume = (int)Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
+
+                        Debug.Log("DSP TIME: " + currentDSPTime + "    OFFSET: " + offset + "    TARGET DSP TIME: " + (currentDSPTime + offset));
+
 
                         for (int j = 0; j < dspChain.Length; j++)
                         {
@@ -172,7 +176,7 @@ public class GrainSynthSystem : SystemBase
                             _Volume = volume * burst._DistanceAmplitude,
 
                             _SpeakerIndex = burst._SpeakerIndex,
-                            _DSPStartIndex = currentDSPTime + offset,
+                            _DSPStartIndex = offset + currentDSPTime,
                             _SamplePopulated = false,
 
                             _DSPEffectSampleTailLength = dspTailLength

@@ -27980,6 +27980,7 @@ GameObject:
   - component: {fileID: 1828402476}
   - component: {fileID: 1828402479}
   - component: {fileID: 1828402480}
+  - component: {fileID: 1828402481}
   - component: {fileID: 1828402475}
   - component: {fileID: 1828402478}
   m_Layer: 0
@@ -28103,8 +28104,8 @@ MonoBehaviour:
     _ClipIndex: 0
     _Playhead: 0.13
     _PlayheadRand: 0.021
-    _BurstCount: 20
-    _BurstDuration: 491
+    _BurstCount: 10
+    _BurstDuration: 100
     _BurstShape: 1
     _DurationStart: 50
     _DurationEnd: 50
@@ -28126,6 +28127,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 1
+--- !u!114 &1828402481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828402473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SpeakerIndex: 2147483647
+  _Registered: 0
+  _StaticallyPairedToEmitter: 0
+  _DebugLog: 0
 --- !u!1 &1833669668
 GameObject:
   m_ObjectHideFlags: 0
