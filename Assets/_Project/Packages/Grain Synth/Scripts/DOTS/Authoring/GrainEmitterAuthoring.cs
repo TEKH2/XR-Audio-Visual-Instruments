@@ -213,14 +213,14 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _Timer += Time.deltaTime;
 
-
-        // ----   Update DSP chain  // TODO Check if changed
-        DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-        dspTypes.Clear();
-        for (int i = 0; i < _DSPChainParams.Length; i++)
-        {
-            dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
-        }
+         
+        // ----   Update DSP chain  // TODO Check if changed  // TODO dont think this is used
+        //DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+        //dspTypes.Clear();
+        //for (int i = 0; i < _DSPChainParams.Length; i++)
+        //{
+        //    dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
+        //}
 
         //Debug.Log(AudioUtils.DistanceAttenuation(_HeadPosition.position, _PairedSpeaker.gameObject.transform.position, transform.position));
 

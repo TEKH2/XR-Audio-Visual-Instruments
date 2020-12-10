@@ -125,12 +125,14 @@ public class GrainSynthSystem : SystemBase
         // BRAD: Not sure if I've set up the job dependencies or audio clip disposal correctly
         //
 
-        JobHandle emitBurst = Entities.ForEach
+        JobHandle emitBurst = Entities.WithoutBurst().ForEach
         (
             (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
+                    Debug.Log("Bursting.....");
+
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     
                     int dspTailLength = 0;
@@ -191,6 +193,8 @@ public class GrainSynthSystem : SystemBase
                             dspParameters.Add(tempParams);
                         }
                     }
+
+                    burst._Playing = false;
                 }
             }
         ).WithDisposeOnCompletion(audioClipData)

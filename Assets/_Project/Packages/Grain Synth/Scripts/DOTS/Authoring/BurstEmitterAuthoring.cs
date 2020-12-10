@@ -146,7 +146,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new BurstEmitterComponent
         {
-            _Playing = _BurstEmissionProps._Playing,
+            _Playing = false,
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
             _BurstCount = _BurstEmissionProps._BurstCount,
@@ -195,13 +195,13 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         if (_Triggered)
         {
-            // ----   Update DSP chain
-            DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-            dspTypes.Clear();
-            for (int i = 0; i < _DSPChainParams.Length; i++)
-            {
-                dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
-            }
+            // ----   Update DSP chain  // TODO dont think this is used
+            //DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+            //dspTypes.Clear();
+            //for (int i = 0; i < _DSPChainParams.Length; i++)
+            //{
+            //    dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
+            //}
 
             BurstEmitterComponent data = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
@@ -215,7 +215,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                     transform.position);
             }
 
-            data._Playing = _BurstEmissionProps._Playing;
+            data._Playing = true;
             data._SpeakerIndex = attachedSpeakerIndex;
             data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
             data._BurstCount = _BurstEmissionProps._BurstCount;
