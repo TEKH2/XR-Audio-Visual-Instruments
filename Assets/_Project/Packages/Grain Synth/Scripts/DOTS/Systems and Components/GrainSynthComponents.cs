@@ -96,6 +96,15 @@ public struct EmitterComponent : IComponentData
     public int _DebugCount;
 }
 
+public struct ModulateParameterComponent : IComponentData
+{
+    public float _StartValue;
+    public float _EndValue;
+    public float _Random;
+    public float _Shape;
+    public float _InteractionAmt;
+}
+
 public struct BurstEmitterComponent : IComponentData
 {
     public bool _AttachedToSpeaker;
@@ -106,6 +115,11 @@ public struct BurstEmitterComponent : IComponentData
     public int _EmitterIndex;
 
     public bool _Playing;
+
+    public ModulateParameterComponent _Playhead;
+    public ModulateParameterComponent _Duration;
+    public ModulateParameterComponent _Transpose;
+    public ModulateParameterComponent _Volume;
 
     public float _PlayheadStart;
     public float _PlayheadEnd;

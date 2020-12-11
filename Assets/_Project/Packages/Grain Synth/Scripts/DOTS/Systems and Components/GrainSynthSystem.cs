@@ -137,29 +137,23 @@ public class GrainSynthSystem : SystemBase
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
 
-                    Debug.Log("PITCH START: " + burst._PitchStart);
-                    Debug.Log("PITCH END: " + burst._PitchEnd);
-
-
 
                     // Create and queue every grain for the burst event --- probably need to revise
                     for (int i = 0; i < burst._BurstCount; i++)
                     {
-                        // Create grain processor properties based on burst shape and target duration
+                        // Prepare grain values for grain processor entity
                         int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
-                        int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
-                        float pitch = Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
-                        float volume = Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
+                        int duration = (int)Map(i, 0, burst._BurstCount, burst._Duration._StartValue, burst._Duration._EndValue, burst._Duration._Shape);
+                        float playhead = Map(i, 0, burst._BurstCount, burst._Playhead._StartValue, burst._Playhead._EndValue, burst._Playhead._Shape);
+                        float volume = Map(i, 0, burst._BurstCount, burst._Volume._StartValue, burst._Volume._EndValue, burst._Volume._Shape);
+                        float transpose = Map(i, 0, burst._BurstCount, burst._Transpose._StartValue, burst._Transpose._EndValue, burst._Transpose._Shape);
 
+                        // Convert transpose value to playback rate, "pitch"
+                        float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
 
-
-                        Debug.Log("GRAIN PITCH: " + pitch);
-                        //Debug.Log("ADJUST FOR DSP: " + (offset + currentDSPTime));
-
-
+                        // Find the largest DSP effect tail in the chain so that the tail can be added to the sample and DSP buffers
                         for (int j = 0; j < dspChain.Length; j++)
                         {
-                            //-- Find the largest DSP effect tail
                             if (dspChain[j]._DSPType == DSPTypes.Flange || dspChain[j]._DSPType == DSPTypes.Delay || dspChain[j]._DSPType == DSPTypes.Chopper)
                             {
                                 if (dspChain[j]._SampleTail > dspTailLength)
@@ -169,6 +163,7 @@ public class GrainSynthSystem : SystemBase
                             }
                         }
 
+                        // Ensure tail doesn't make the grain exceed the maximum grain size of one second
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, burst._SampleRate - duration);
 
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
@@ -176,7 +171,8 @@ public class GrainSynthSystem : SystemBase
                         {
                             _AudioClipDataComponent = audioClipData[burst._AudioClipIndex],
 
-                            _PlayheadNorm = burst._PlayheadPosNormalized,
+                            //_PlayheadNorm = burst._PlayheadPosNormalized,
+                            _PlayheadNorm = playhead,
                             _SampleCount = duration,
 
                             _Pitch = pitch,

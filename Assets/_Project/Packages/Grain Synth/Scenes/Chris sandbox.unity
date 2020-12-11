@@ -28230,17 +28230,31 @@ MonoBehaviour:
   _BurstEmissionProps:
     _Playing: 1
     _ClipIndex: 0
-    _Playhead: 0.13
-    _PlayheadRand: 0.021
-    _BurstCount: 10
-    _BurstDuration: 100
-    _BurstShape: 1
+    _BurstCount: 15
+    _BurstDuration: 250
+    _BurstRandom: 0
+    _BurstShape: 2
+    _BurstInteraction: 0
+    _PlayheadStart: 0
+    _PlayheadEnd: 0.03
+    _PlayheadRandom: 0
+    _PlayheadShape: 2
+    _PlayheadInteraction: 0
     _DurationStart: 50
-    _DurationEnd: 50
-    _TransposeStart: 0
-    _TransposeEnd: 0
+    _DurationEnd: 150
+    _DurationRandom: 0
+    _DurationShape: 2
+    _DurationInteraction: 0
+    _TransposeStart: 0.5
+    _TransposeEnd: 0.5
+    _TransposeRandom: 0
+    _TransposeShape: 2
+    _TransposeInteraction: 0
     _VolumeStart: 1
-    _VolumeEnd: 1
+    _VolumeEnd: 0.5
+    _VolumeRandom: 0
+    _VolumeShape: 2
+    _VolumeInteraction: 0
   _DSPChainParams: []
 --- !u!114 &1828402480
 MonoBehaviour:
