@@ -9,7 +9,7 @@ using UnityEngine.Profiling;
 
 public class GrainPlaybackData
 {
-    public bool _IsPlaying = true;
+    public bool _IsPlaying = false;
     public float[] _GrainSamples;
     public int _PlayheadIndex = 0;
     public int _SizeInSamples;
