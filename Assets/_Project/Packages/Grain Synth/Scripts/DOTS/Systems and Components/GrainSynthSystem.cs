@@ -131,23 +131,28 @@ public class GrainSynthSystem : SystemBase
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
-                    Debug.Log("---------------------------------------------------");
-                    Debug.Log("Bursting.....");
+                    //Debug.Log("---------------------------------------------------");
+                    //Debug.Log("Bursting.....");
 
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
-                    
                     int dspTailLength = 0;
+
+                    //Debug.Log("CURRENT DSP TIME: " + currentDSPTime);
+                    //Debug.Log("BURST DURATION: " + burst._BurstDuration);
 
                     // Create and queue every grain for the burst event --- probably need to revise
                     for (int i = 0; i < burst._BurstCount; i++)
                     {
                         // Create grain processor properties based on burst shape and target duration
-                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration);
+                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
                         int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
                         float pitch = (int)Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
                         float volume = (int)Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
 
-                        Debug.Log("DSP TIME: " + currentDSPTime + "    OFFSET: " + offset + "    TARGET DSP TIME: " + (currentDSPTime + offset));
+
+
+                        //Debug.Log("GRAIN OFFSET: " + offset);
+                        //Debug.Log("ADJUST FOR DSP: " + (offset + currentDSPTime));
 
 
                         for (int j = 0; j < dspChain.Length; j++)
@@ -345,7 +350,7 @@ public class GrainSynthSystem : SystemBase
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax, float exp)
     {
-        return Mathf.Pow((val - inMin) * (inMax - inMin), exp) * (outMax - outMin) + outMin;
+        return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
 }
 
