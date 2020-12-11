@@ -28251,7 +28251,7 @@ MonoBehaviour:
     _TransposeShape: 2
     _TransposeInteraction: 0
     _VolumeStart: 1
-    _VolumeEnd: 0.5
+    _VolumeEnd: 0
     _VolumeRandom: 0
     _VolumeShape: 2
     _VolumeInteraction: 0

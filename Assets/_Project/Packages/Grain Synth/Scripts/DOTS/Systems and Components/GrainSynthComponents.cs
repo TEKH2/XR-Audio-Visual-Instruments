@@ -101,6 +101,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _StartValue;
     public float _EndValue;
     public float _Random;
+    public float _RandomScale;
     public float _Shape;
     public float _InteractionAmt;
 }
@@ -111,33 +112,17 @@ public struct BurstEmitterComponent : IComponentData
     public int _SpeakerIndex;
     public bool _StaticallyPaired;
     public bool _InRange;
-
     public int _EmitterIndex;
-
     public bool _Playing;
-
-    public ModulateParameterComponent _Playhead;
-    public ModulateParameterComponent _Duration;
-    public ModulateParameterComponent _Transpose;
-    public ModulateParameterComponent _Volume;
-
-    public float _PlayheadStart;
-    public float _PlayheadEnd;
-    public float _PlayheadRandom;
     public int _AudioClipIndex;
     public int _BurstCount;
     public int _BurstDuration;
     public float _BurstShape;
     public float _BurstRandom;
-    public int _DurationStart;
-    public int _DurationEnd;
-    public float _DurationRandom;
-    public float _PitchStart;
-    public float _PitchEnd;
-    public float _PitchRandom;
-    public float _VolumeStart;
-    public float _VolumeEnd;
-    public float _VolumeRandom;
+    public ModulateParameterComponent _Playhead;
+    public ModulateParameterComponent _Duration;
+    public ModulateParameterComponent _Transpose;
+    public ModulateParameterComponent _Volume;
 
     public float _DistanceAmplitude;
 

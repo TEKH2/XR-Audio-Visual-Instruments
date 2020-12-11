@@ -350,6 +350,16 @@ public class GrainSynthSystem : SystemBase
     {
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
+
+    public static float ComputeParameter(ModulateParameterComponent mod, int grain, int burstSize)
+    {
+        float test = 0f;
+
+        float normRaisedInput = Mathf.Pow(grain / burstSize, mod._Shape);
+        float random = Random.Range(-mod._Random, mod._Random) / 2;
+
+        return test;
+    }
 }
 
 

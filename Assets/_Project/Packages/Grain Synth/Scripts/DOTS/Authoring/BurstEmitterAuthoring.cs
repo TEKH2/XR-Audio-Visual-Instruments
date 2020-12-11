@@ -46,6 +46,8 @@ public class BurstEmissionProps
     [SerializeField]
     public float _PlayheadInteraction = 0f;
 
+    const float _PlayheadRandomScale = 0.1f;
+
     [Header("Duration")]
     [Range(2.0f, 1000f)]
     [SerializeField]
@@ -62,6 +64,8 @@ public class BurstEmissionProps
     [Range(-1.0f, 1.0f)]
     [SerializeField]
     public float _DurationInteraction = 0f;
+
+    const float _DurationRandomScale = 200f;
 
     [Header("Transpose")]
     [Range(-3f, 3f)]
@@ -80,6 +84,8 @@ public class BurstEmissionProps
     [SerializeField]
     public float _TransposeInteraction = 0f;
 
+    const float _TransposeRandomScale = 3f;
+
     [Header("Volume")]
     [Range(0.0f, 2.0f)]
     [SerializeField]
@@ -97,6 +103,7 @@ public class BurstEmissionProps
     [SerializeField]
     public float _VolumeInteraction = 0f;
 
+    const float _VolumeRandomScale = 1f;
 
 
     public float TransposeToPitch(float transpose)
