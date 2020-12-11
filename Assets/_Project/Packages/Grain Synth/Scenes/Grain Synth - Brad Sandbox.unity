@@ -10680,7 +10680,7 @@ MonoBehaviour:
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
-  _MaxGrainSpeakers: 20
+  _MaxGrainSpeakers: 1
   _GrainQueueInMS: 27.4
   _CurrentDSPSample: 0
   _EmitterToListenerActivationRange: 4
@@ -33403,7 +33403,7 @@ PrefabInstance:
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: _EmissionProps._Playhead
-      value: 0.212
+      value: 0.636
       objectReference: {fileID: 0}
     - target: {fileID: 405554466996523601, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
@@ -33528,6 +33528,11 @@ PrefabInstance:
     - target: {fileID: 4782732327630959903, guid: 00b2617a196ae2348bba494a0af8c43b,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974125177847436799, guid: 00b2617a196ae2348bba494a0af8c43b,
