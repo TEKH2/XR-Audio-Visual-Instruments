@@ -244,7 +244,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         //print("Current DSP offset: " + DSPStartOffset + "  duration  : " + duration + "  Cadence: " + cadence);
 
 
-        Debug.Log("ADDING GRAIN AT DSP OFFSET: " + DSPStartOffset);
+        //Debug.Log("ADDING GRAIN AT DSP OFFSET: " + DSPStartOffset);
 
 
         _PrevStartSample = playbackData._DSPStartTime;
@@ -330,8 +330,12 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                     }
                     else
                     {
-                        _SamplesPerRead++;
-                        data[dataIndex] += grainData._GrainSamples[grainData._PlayheadIndex];
+                        for (int chan = 0; chan < channels; chan++)
+                        {
+                            _SamplesPerRead++;
+                            data[dataIndex + chan] += grainData._GrainSamples[grainData._PlayheadIndex];
+                        }
+
 
                         grainData._PlayheadIndex++;
                         //print("_CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);

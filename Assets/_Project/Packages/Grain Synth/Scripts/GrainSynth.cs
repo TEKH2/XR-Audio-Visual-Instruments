@@ -151,8 +151,6 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-        if (allGrainSampleEntities.Length > 0)
-            Debug.Log("NUMBER OF GRAINS: " + allGrainSampleEntities.Length);
       
         //----    Loop through all grain processors and fill audio buffers of assigned speakers
         for (int i = 0; i < allGrainSampleEntities.Length; i++)
@@ -188,7 +186,7 @@ public class GrainSynth :  MonoBehaviour
                 _EntityManager.DestroyEntity(allGrainSampleEntities[i]);
 
                 _GrainSpeakers[grainProcessor._SpeakerIndex].AddGrainPlaybackDataToPool(playbackData);
-                Debug.Log("- Processing populated grain - FINISHED ");
+                //Debug.Log("- Processing populated grain - FINISHED ");
             }
         }       
 
