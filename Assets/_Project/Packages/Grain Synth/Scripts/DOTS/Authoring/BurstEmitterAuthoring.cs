@@ -188,6 +188,12 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Triggered = true;
     }
 
+    public void Collided(Collision collision)
+    {
+        _Collision = collision;
+        _Triggered = true;
+    }
+
     void Update()
     {
         if (!_Initialized)
