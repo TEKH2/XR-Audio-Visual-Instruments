@@ -32,6 +32,17 @@ public class BurstEmissionProps
         }
     }
 
+    [Header("Playhead")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    public float _PlayheadStart = 0;
+    [Range(0.0f, 2.0f)]
+    [SerializeField]
+    public float _PlayheadEnd = 0.1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _PlayheadRandom = 0.01f;
+
     [Header("Burst")]
     [Range(1, 100)]
     [SerializeField]
@@ -42,6 +53,9 @@ public class BurstEmissionProps
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _BurstShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _BurstRandom = 0.01f;
 
     [Header("Duration")]
     [Range(2.0f, 1000f)]
@@ -50,14 +64,20 @@ public class BurstEmissionProps
     [Range(2.0f, 1000f)]
     [SerializeField]
     public float _DurationEnd = 50f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _DurationRandom = 0.01f;
 
-    [Header("Pitch")]
+    [Header("Transpose")]
     [Range(-3f, 3f)]
     [SerializeField]
     public float _TransposeStart = 0;
     [Range(-3f, 3f)]
     [SerializeField]
     public float _TransposeEnd = 0;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _TransposeRandom = 0.01f;
 
     [Header("Volume")]
     [Range(0.0f, 2.0f)]
@@ -66,6 +86,9 @@ public class BurstEmissionProps
     [Range(0.0f, 2.0f)]
     [SerializeField]
     public float _VolumeEnd = 1;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _VolumeRandom = 0.01f;
 
 
 
@@ -149,15 +172,22 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Playing = false,
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
+            _PlayheadStart = _BurstEmissionProps._PlayheadStart,
+            _PlayheadEnd = _BurstEmissionProps._PlayheadEnd,
+            _PlayheadRandom = _BurstEmissionProps._PlayheadRandom,
             _BurstCount = _BurstEmissionProps._BurstCount,
             _BurstDuration = (int)(_BurstEmissionProps._BurstDuration * AudioSettings.outputSampleRate * .001f),
             _BurstShape = _BurstEmissionProps._BurstShape,
+            _BurstRandom = _BurstEmissionProps._BurstRandom,
             _DurationStart = (int)(_BurstEmissionProps._DurationStart * AudioSettings.outputSampleRate * .001f),
             _DurationEnd = (int)(_BurstEmissionProps._DurationEnd * AudioSettings.outputSampleRate * .001f),
+            _DurationRandom = _BurstEmissionProps._DurationRandom,
             _PitchStart = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeStart),
             _PitchEnd = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeEnd),
+            _PitchRandom = _BurstEmissionProps._TransposeRandom,
             _VolumeStart = _BurstEmissionProps._VolumeStart,
             _VolumeEnd = _BurstEmissionProps._VolumeEnd,
+            _VolumeRandom = _BurstEmissionProps._VolumeRandom,
             _DistanceAmplitude = 1,
             _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
             _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
@@ -224,15 +254,22 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             data._Playing = true;
             data._SpeakerIndex = attachedSpeakerIndex;
             data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
+            data._PlayheadStart = _BurstEmissionProps._PlayheadStart;
+            data._PlayheadEnd = _BurstEmissionProps._PlayheadEnd;
+            data._PlayheadRandom = _BurstEmissionProps._PlayheadRandom;
             data._BurstCount = _BurstEmissionProps._BurstCount;
             data._BurstDuration = (int)(_BurstEmissionProps._BurstDuration * AudioSettings.outputSampleRate * .001f);
             data._BurstShape = _BurstEmissionProps._BurstShape;
+            data._BurstRandom = _BurstEmissionProps._BurstRandom;
             data._DurationStart = (int)(_BurstEmissionProps._DurationStart * AudioSettings.outputSampleRate * .001f);
             data._DurationEnd = (int)(_BurstEmissionProps._DurationEnd * AudioSettings.outputSampleRate * .001f);
+            data._DurationRandom = _BurstEmissionProps._DurationRandom;
             data._PitchStart = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeStart);
             data._PitchEnd = _BurstEmissionProps.TransposeToPitch(_BurstEmissionProps._TransposeEnd);
+            data._PitchRandom = _BurstEmissionProps._TransposeRandom;
             data._VolumeStart = _BurstEmissionProps._VolumeStart;
             data._VolumeEnd = _BurstEmissionProps._VolumeEnd;
+            data._VolumeRandom = _BurstEmissionProps._VolumeRandom;
             data._DistanceAmplitude = distanceAmplitude;
             data._PlayheadPosNormalized = _BurstEmissionProps.Position;
 
