@@ -71,7 +71,7 @@ public class BurstEmissionProps
 
     public float TransposeToPitch(float transpose)
     {
-        return Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
+        return Mathf.Clamp(Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f)), 0.06f, 16f);
     }
 
 

@@ -137,8 +137,10 @@ public class GrainSynthSystem : SystemBase
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
 
-                    //Debug.Log("CURRENT DSP TIME: " + currentDSPTime);
-                    //Debug.Log("BURST DURATION: " + burst._BurstDuration);
+                    Debug.Log("PITCH START: " + burst._PitchStart);
+                    Debug.Log("PITCH END: " + burst._PitchEnd);
+
+
 
                     // Create and queue every grain for the burst event --- probably need to revise
                     for (int i = 0; i < burst._BurstCount; i++)
@@ -146,12 +148,12 @@ public class GrainSynthSystem : SystemBase
                         // Create grain processor properties based on burst shape and target duration
                         int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
                         int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
-                        float pitch = (int)Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
-                        float volume = (int)Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
+                        float pitch = Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
+                        float volume = Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
 
 
 
-                        //Debug.Log("GRAIN OFFSET: " + offset);
+                        Debug.Log("GRAIN PITCH: " + pitch);
                         //Debug.Log("ADJUST FOR DSP: " + (offset + currentDSPTime));
 
 
