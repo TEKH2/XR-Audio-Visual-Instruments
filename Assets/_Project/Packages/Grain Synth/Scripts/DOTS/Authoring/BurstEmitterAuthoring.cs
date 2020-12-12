@@ -79,7 +79,7 @@ public class BurstEmissionProps
     [Range(-3f, 3f)]
     [SerializeField]
     public float _TransposeStart = 0;
-    [Range(3f, 3f)]
+    [Range(-3f, 3f)]
     [SerializeField]
     public float _TransposeEnd = 0;
     [Range(0.5f, 5.0f)]
@@ -190,7 +190,9 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _BurstShape = _BurstEmissionProps._BurstShape,
             _BurstRandom = _BurstEmissionProps._BurstRandom,
 
-            _Playhead = new ModulateParameterComponent
+            _InteractionInput = 0f,
+
+        _Playhead = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._PlayheadStart,
                 _EndValue = _BurstEmissionProps._PlayheadEnd,
@@ -284,7 +286,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             data._SpeakerIndex = attachedSpeakerIndex;
             data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
 
-            data._InteractionInput = _Collision.relativeVelocity.magnitude;
+            data._InteractionInput = Mathf.Clamp(_Collision.relativeVelocity.magnitude / 10f, 0f, 1f);
 
             data._BurstCount = _BurstEmissionProps._BurstCount;
             data._BurstDuration = (int)(_BurstEmissionProps._BurstDuration * samplesPerMS);
@@ -297,31 +299,39 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _EndValue = _BurstEmissionProps._PlayheadEnd,
                 _Shape = _BurstEmissionProps._PlayheadShape,
                 _Random = _BurstEmissionProps._PlayheadRandom,
-                _Interaction = _BurstEmissionProps._PlayheadInteraction
+                _Interaction = _BurstEmissionProps._PlayheadInteraction,
+                _Min = _BurstEmissionProps._PlayheadMin,
+                _Max = _BurstEmissionProps._PlayheadMax
             };
             data._Duration = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._DurationStart * samplesPerMS,
                 _EndValue = _BurstEmissionProps._DurationEnd * samplesPerMS,
-                _Random = _BurstEmissionProps._DurationRandom,
                 _Shape = _BurstEmissionProps._DurationShape,
-                _Interaction = _BurstEmissionProps._DurationInteraction
+                _Random = _BurstEmissionProps._DurationRandom,
+                _Interaction = _BurstEmissionProps._DurationInteraction,
+                _Min = _BurstEmissionProps._DurationMin * samplesPerMS,
+                _Max = _BurstEmissionProps._DurationMax * samplesPerMS
             };
             data._Transpose = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._TransposeStart,
                 _EndValue = _BurstEmissionProps._TransposeEnd,
-                _Random = _BurstEmissionProps._TransposeRandom,
                 _Shape = _BurstEmissionProps._TransposeShape,
-                _Interaction = _BurstEmissionProps._TransposeInteraction
+                _Random = _BurstEmissionProps._TransposeRandom,
+                _Interaction = _BurstEmissionProps._TransposeInteraction,
+                _Min = _BurstEmissionProps._TransposeMin,
+                _Max = _BurstEmissionProps._TransposeMax
             };
             data._Volume = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._VolumeStart,
                 _EndValue = _BurstEmissionProps._VolumeEnd,
-                _Random = _BurstEmissionProps._VolumeRandom,
                 _Shape = _BurstEmissionProps._VolumeShape,
-                _Interaction = _BurstEmissionProps._VolumeInteraction
+                _Random = _BurstEmissionProps._VolumeRandom,
+                _Interaction = _BurstEmissionProps._VolumeInteraction,
+                _Min = _BurstEmissionProps._VolumeMin,
+                _Max = _BurstEmissionProps._VolumeMax
             };
 
 

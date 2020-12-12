@@ -28227,34 +28227,45 @@ MonoBehaviour:
   _Triggered: 0
   _PairedSpeaker: {fileID: 206739745}
   _HeadPosition: {fileID: 0}
+  _CollisionImpact: 0
   _BurstEmissionProps:
     _Playing: 1
     _ClipIndex: 0
     _BurstCount: 15
     _BurstDuration: 250
-    _BurstRandom: 0
     _BurstShape: 2
+    _BurstRandom: 0
     _BurstInteraction: 0
+    _BurstMin: 10
+    _BurstMax: 1000
     _PlayheadStart: 0
     _PlayheadEnd: 0.03
-    _PlayheadRandom: 0
     _PlayheadShape: 2
+    _PlayheadRandom: 0
     _PlayheadInteraction: 0
+    _PlayheadMin: 0
+    _PlayheadMax: 1
     _DurationStart: 50
     _DurationEnd: 150
-    _DurationRandom: 0
     _DurationShape: 2
+    _DurationRandom: 0
     _DurationInteraction: 0
-    _TransposeStart: 0.5
-    _TransposeEnd: 0.5
-    _TransposeRandom: 0
+    _DurationMin: 2
+    _DurationMax: 500
+    _TransposeStart: 0
+    _TransposeEnd: 0
     _TransposeShape: 2
+    _TransposeRandom: 0
     _TransposeInteraction: 0
+    _TransposeMin: -3
+    _TransposeMax: 3
     _VolumeStart: 1
     _VolumeEnd: 0
-    _VolumeRandom: 0
     _VolumeShape: 2
+    _VolumeRandom: 0
     _VolumeInteraction: 0
+    _VolumeMin: 0
+    _VolumeMax: 2
   _DSPChainParams: []
 --- !u!114 &1828402480
 MonoBehaviour:

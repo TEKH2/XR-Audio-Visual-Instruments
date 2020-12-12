@@ -143,10 +143,12 @@ public class GrainSynthSystem : SystemBase
                     {
                         // Prepare grain values for grain processor entity
                         int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
-                        int duration = (int)ComputeParameter(burst._Playhead, i, burst._BurstCount, burst._InteractionInput);
+                        int duration = (int)ComputeParameter(burst._Duration, i, burst._BurstCount, burst._InteractionInput);
                         float playhead = ComputeParameter(burst._Playhead, i, burst._BurstCount, burst._InteractionInput);
                         float volume = ComputeParameter(burst._Volume, i, burst._BurstCount, burst._InteractionInput);
                         float transpose = ComputeParameter(burst._Transpose, i, burst._BurstCount, burst._InteractionInput);
+
+                        Debug.Log("OFFSET: " + offset + "   DURATION: " + duration + "   PLAYHEAD: " + playhead + "   VOLUME: " + volume + "   TRANSPOSE: " + transpose);
 
                         //int duration = (int)Map(i, 0, burst._BurstCount, burst._Duration._StartValue, burst._Duration._EndValue, burst._Duration._Shape);
                         //float playhead = Map(i, 0, burst._BurstCount, burst._Playhead._StartValue, burst._Playhead._EndValue, burst._Playhead._Shape);
@@ -355,13 +357,13 @@ public class GrainSynthSystem : SystemBase
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
 
-    public static float ComputeParameter(ModulateParameterComponent mod, int t, int n, float x)
+    public static float ComputeParameter(ModulateParameterComponent mod, float t, float n, float x)
     {
         float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
-        var random = new Unity.Mathematics.Random(4124);
+        var random = new Unity.Mathematics.Random(4124 + (uint)t);
         float interaction = mod._Interaction * x;
 
-        return Mathf.Clamp(shapedInput + (random.NextFloat(-mod._Random, mod._Random) + interaction) * (mod._Max - mod._Min), mod._Min, mod._Max);
+        return Mathf.Clamp(shapedInput + (random.NextFloat(-mod._Random, mod._Random) + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
     }
     #endregion
 }
