@@ -101,9 +101,10 @@ public struct ModulateParameterComponent : IComponentData
     public float _StartValue;
     public float _EndValue;
     public float _Random;
-    public float _RandomScale;
     public float _Shape;
-    public float _InteractionAmt;
+    public float _Interaction;
+    public float _Min;
+    public float _Max;
 }
 
 public struct BurstEmitterComponent : IComponentData
@@ -115,6 +116,7 @@ public struct BurstEmitterComponent : IComponentData
     public int _EmitterIndex;
     public bool _Playing;
     public int _AudioClipIndex;
+    public float _InteractionInput;
     public int _BurstCount;
     public int _BurstDuration;
     public float _BurstShape;
