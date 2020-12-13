@@ -14,6 +14,30 @@ using Unity.Entities.UniversalDelegates;
 using Unity.Entities.CodeGeneratedJobForEach;
 using Random = UnityEngine.Random;
 using System.ComponentModel;
+using Unity.Jobs.LowLevel.Unsafe;
+
+
+[UpdateInGroup(typeof(InitializationSystemGroup))]
+class RandomSystem : ComponentSystem
+{
+    public NativeArray<Unity.Mathematics.Random> RandomArray { get; private set; }
+
+    protected override void OnCreate()
+    {
+        var randomArray = new Unity.Mathematics.Random[JobsUtility.MaxJobThreadCount];
+        var seed = new System.Random();
+
+        for (int i = 0; i < JobsUtility.MaxJobThreadCount; ++i)
+            randomArray[i] = new Unity.Mathematics.Random((uint)seed.Next());
+
+        RandomArray = new NativeArray<Unity.Mathematics.Random>(randomArray, Allocator.Persistent);
+    }
+
+    protected override void OnDestroy()
+        => RandomArray.Dispose();
+
+    protected override void OnUpdate() { }
+}
 
 [UpdateAfter(typeof(RangeCheckSystem))]
 public class GrainSynthSystem : SystemBase
@@ -34,15 +58,16 @@ public class GrainSynthSystem : SystemBase
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-
-        #region EMIT GRAINS
+        
         // ----------------------------------- EMITTER UPDATE
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
         WindowingDataComponent windowingData = GetSingleton<WindowingDataComponent>();
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         float dt = Time.DeltaTime;
+        var randomArray = World.GetExistingSystem<RandomSystem>().RandomArray;
 
+        #region EMIT GRAINS
         //---   CREATES ENTITIES W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP SAMPLE BUFFER + DSP PARAMS BUFFER
 
         JobHandle emitGrains = Entities.ForEach
@@ -116,18 +141,14 @@ public class GrainSynthSystem : SystemBase
         ).ScheduleParallel(this.Dependency);
         //.WithDisposeOnCompletion(audioClipData)
 
-
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
+        #endregion
 
-
-        //
-        // BRAD: Not sure if I've set up the job dependencies or audio clip disposal correctly
-        //
-
-        JobHandle emitBurst = Entities.WithoutBurst().ForEach
+        #region BURST GRAINS
+        JobHandle emitBurst = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (
-            (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
+            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
@@ -136,24 +157,26 @@ public class GrainSynthSystem : SystemBase
 
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
-
+                    var randomGen = randomArray[nativeThreadIndex];
 
                     // Create and queue every grain for the burst event --- probably need to revise
                     for (int i = 0; i < burst._BurstCount; i++)
                     {
+                        var randomDuration = randomGen.NextFloat(-1, 1);
+                        var randomPlayhead = randomGen.NextFloat(-1, 1);
+                        var randomVolume = randomGen.NextFloat(-1, 1);
+                        var randomTranspose = randomGen.NextFloat(-1, 1);
+                        randomArray[nativeThreadIndex] = randomGen;
+
+
                         // Prepare grain values for grain processor entity
                         int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
-                        int duration = (int)ComputeParameter(burst._Duration, i, burst._BurstCount, burst._InteractionInput);
-                        float playhead = ComputeParameter(burst._Playhead, i, burst._BurstCount, burst._InteractionInput);
-                        float volume = ComputeParameter(burst._Volume, i, burst._BurstCount, burst._InteractionInput);
-                        float transpose = ComputeParameter(burst._Transpose, i, burst._BurstCount, burst._InteractionInput);
+                        int duration = (int)ComputeParameter(burst._Duration, i, burst._BurstCount, burst._InteractionInput, randomDuration);
+                        float playhead = ComputeParameter(burst._Playhead, i, burst._BurstCount, burst._InteractionInput, randomPlayhead);
+                        float volume = ComputeParameter(burst._Volume, i, burst._BurstCount, burst._InteractionInput, randomVolume);
+                        float transpose = ComputeParameter(burst._Transpose, i, burst._BurstCount, burst._InteractionInput, randomTranspose);
 
-                        Debug.Log("OFFSET: " + offset + "   DURATION: " + duration + "   PLAYHEAD: " + playhead + "   VOLUME: " + volume + "   TRANSPOSE: " + transpose);
-
-                        //int duration = (int)Map(i, 0, burst._BurstCount, burst._Duration._StartValue, burst._Duration._EndValue, burst._Duration._Shape);
-                        //float playhead = Map(i, 0, burst._BurstCount, burst._Playhead._StartValue, burst._Playhead._EndValue, burst._Playhead._Shape);
-                        //float volume = Map(i, 0, burst._BurstCount, burst._Volume._StartValue, burst._Volume._EndValue, burst._Volume._Shape);
-                        //float transpose = Map(i, 0, burst._BurstCount, burst._Transpose._StartValue, burst._Transpose._EndValue, burst._Transpose._Shape);
+                        //Debug.Log("OFFSET: " + offset + "   DURATION: " + duration + "   PLAYHEAD: " + playhead + "   VOLUME: " + volume + "   TRANSPOSE: " + transpose);
 
                         // Convert transpose value to playback rate, "pitch"
                         float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
@@ -217,6 +240,7 @@ public class GrainSynthSystem : SystemBase
 
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitBurst);
+
         #endregion
 
 
@@ -357,13 +381,12 @@ public class GrainSynthSystem : SystemBase
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
 
-    public static float ComputeParameter(ModulateParameterComponent mod, float t, float n, float x)
+    public static float ComputeParameter(ModulateParameterComponent mod, float t, float n, float x, float random)
     {
         float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
-        var random = new Unity.Mathematics.Random(4124 + (uint)t);
         float interaction = mod._Interaction * x;
 
-        return Mathf.Clamp(shapedInput + (random.NextFloat(-mod._Random, mod._Random) + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
+        return Mathf.Clamp(shapedInput + (random * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
     }
     #endregion
 }
