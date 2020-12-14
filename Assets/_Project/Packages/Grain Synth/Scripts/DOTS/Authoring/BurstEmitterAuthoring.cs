@@ -233,8 +233,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Shape = _BurstEmissionProps._DurationShape,
                 _Random = _BurstEmissionProps._DurationRandom,
                 _Interaction = _BurstEmissionProps._DurationInteraction,
-                _Min = _BurstEmissionProps._DurationMin,
-                _Max = _BurstEmissionProps._DurationMax
+                _Min = _BurstEmissionProps._DurationMin * samplesPerMS,
+                _Max = _BurstEmissionProps._DurationMax * samplesPerMS
             },
             _Transpose = new ModulateParameterComponent
             {

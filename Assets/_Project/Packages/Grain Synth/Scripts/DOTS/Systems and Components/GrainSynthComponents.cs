@@ -174,6 +174,7 @@ public struct GrainSpeakerBufferElement : IBufferElementData
 public struct DSPParametersElement : IBufferElementData
 {
     public DSPTypes _DSPType;
+    public bool _DelayBasedEffect;
     public int _SampleRate;
     public int _SampleTail;
     public int _SampleStartTime;

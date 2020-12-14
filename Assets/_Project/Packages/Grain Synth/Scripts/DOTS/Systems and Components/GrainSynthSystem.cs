@@ -150,13 +150,11 @@ public class GrainSynthSystem : SystemBase
         (
             (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
-            if (burst._AttachedToSpeaker && burst._Playing)
-            {
-                int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
-                int dspTailLength = 0;
-                var randomGen = randomArray[nativeThreadIndex];
-
-                    //int burstCount = (int)(burst._Density._StartValue + randomGen.NextFloat(-1.0f, 1f) * burst._Density._Min);
+                if (burst._AttachedToSpeaker && burst._Playing)
+                {
+                    int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
+                    int dspTailLength = 0;
+                    var randomGen = randomArray[nativeThreadIndex];
 
                     // Prepare burst count value
                     int burstCount = (int)(Mathf.Clamp(burst._Density._StartValue + (randomGen.NextFloat(-1 , 1) *
@@ -183,7 +181,7 @@ public class GrainSynthSystem : SystemBase
                             Map(Math.Max(i - 1, 0), 0, burstCount, 0, burstDuration, burst._Timing._Shape) -
                             Map(Math.Min(i + 1, burstCount - 1), 0, burstCount, 0, burstDuration, burst._Timing._Shape) / 2);
 
-                        // Finally get genearted grain parameters
+                        // Build genearated grain parameters
                         int offset = (int)Map(i, 0, burstCount, 0, burstDuration, burst._Timing._Shape) + (int)(randomTiming * grainTimingDifference);
                         int duration = (int)ComputeParameter(burst._Duration, i, burstCount, burst._InteractionInput, randomDuration);
                         float playhead = ComputeParameter(burst._Playhead, i, burstCount, burst._InteractionInput, randomPlayhead);
@@ -193,10 +191,10 @@ public class GrainSynthSystem : SystemBase
                         // Convert transpose value to playback rate, "pitch"
                         float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
 
-                        // Find the largest DSP effect tail in the chain so that the tail can be added to the sample and DSP buffers
+                        // Find the largest delay DSP effect tail in the chain so that the tail can be added to the sample and DSP buffers
                         for (int j = 0; j < dspChain.Length; j++)
                         {
-                            if (dspChain[j]._DSPType == DSPTypes.Flange || dspChain[j]._DSPType == DSPTypes.Delay || dspChain[j]._DSPType == DSPTypes.Chopper)
+                            if (dspChain[j]._DelayBasedEffect)
                             {
                                 if (dspChain[j]._SampleTail > dspTailLength)
                                 {
