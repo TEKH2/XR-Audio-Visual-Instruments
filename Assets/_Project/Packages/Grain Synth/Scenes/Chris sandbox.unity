@@ -28231,13 +28231,17 @@ MonoBehaviour:
   _BurstEmissionProps:
     _Playing: 1
     _ClipIndex: 0
-    _BurstCount: 15
-    _BurstDuration: 250
+    _BurstCount: 7
+    _BurstCountRandom: 0
+    _CountInteraction: 0
+    _CountMin: 1
+    _CountMax: 100
+    _BurstDuration: 1000
     _BurstShape: 2
-    _BurstRandom: 0
-    _BurstInteraction: 0
-    _BurstMin: 10
-    _BurstMax: 1000
+    _TimingRandom: 0.01
+    _TimingInteraction: 0
+    _TimingMin: 10
+    _TimingMax: 1000
     _PlayheadStart: 0
     _PlayheadEnd: 0.03
     _PlayheadShape: 2

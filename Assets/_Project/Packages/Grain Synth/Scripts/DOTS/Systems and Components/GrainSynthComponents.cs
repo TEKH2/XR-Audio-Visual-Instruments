@@ -117,10 +117,8 @@ public struct BurstEmitterComponent : IComponentData
     public bool _Playing;
     public int _AudioClipIndex;
     public float _InteractionInput;
-    public int _BurstCount;
-    public int _BurstDuration;
-    public float _BurstShape;
-    public float _BurstRandom;
+    public ModulateParameterComponent _Density;
+    public ModulateParameterComponent _Timing;
     public ModulateParameterComponent _Playhead;
     public ModulateParameterComponent _Duration;
     public ModulateParameterComponent _Transpose;

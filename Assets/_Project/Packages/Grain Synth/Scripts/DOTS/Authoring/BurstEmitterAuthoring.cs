@@ -12,26 +12,38 @@ public class BurstEmissionProps
     [Header("Clip")]
     public int _ClipIndex = 0;
 
-    [Header("Burst")]
+    [Header("Burst Density")]
     [Range(1, 100)]
     [SerializeField]
     public int _BurstCount = 10;
-    [Range(10, 1000)]
+    [Range(0f, 1f)]
     [SerializeField]
-    public float _BurstDuration = 100f;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _BurstShape = 2f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _BurstRandom = 0.01f;
+    public float _BurstCountRandom = 0f;
     [Range(-1.0f, 1.0f)]
     [SerializeField]
-    public float _BurstInteraction = 0;
+    public float _CountInteraction = 0f;
     [HideInInspector]
-    public float _BurstMin = 10f;
+    public int _CountMin = 1;
     [HideInInspector]
-    public float _BurstMax = 1000f;
+    public int _CountMax = 100;
+
+    [Header("Burst Timing")]
+    [Range(10f, 1000f)]
+    [SerializeField]
+    public float _BurstDuration = 250f;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _BurstShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _TimingRandom = 0.01f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _TimingInteraction = 0f;
+    [HideInInspector]
+    public float _TimingMin = 10f;
+    [HideInInspector]
+    public float _TimingMax = 1000f;
 
     [Header("Playhead")]
     [Range(0f, 1f)]
@@ -54,7 +66,7 @@ public class BurstEmissionProps
     [HideInInspector]
     public float _PlayheadMax = 1f;
 
-    [Header("Duration")]
+    [Header("Grain Duration")]
     [Range(2f, 500f)]
     [SerializeField]
     public float _DurationStart = 20f;
@@ -185,14 +197,26 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
 
-            _BurstCount = _BurstEmissionProps._BurstCount,
-            _BurstDuration = (int)(_BurstEmissionProps._BurstDuration * samplesPerMS),
-            _BurstShape = _BurstEmissionProps._BurstShape,
-            _BurstRandom = _BurstEmissionProps._BurstRandom,
-
             _InteractionInput = 0f,
 
-        _Playhead = new ModulateParameterComponent
+            _Density = new ModulateParameterComponent
+            {
+                _StartValue = _BurstEmissionProps._BurstCount,
+                _Random = _BurstEmissionProps._BurstCountRandom,
+                _Interaction = _BurstEmissionProps._CountInteraction,
+                _Min = _BurstEmissionProps._CountMin,
+                _Max = _BurstEmissionProps._CountMax
+            },
+            _Timing = new ModulateParameterComponent
+            {
+                _StartValue = _BurstEmissionProps._BurstDuration * samplesPerMS,
+                _Shape = _BurstEmissionProps._BurstShape,
+                _Random = _BurstEmissionProps._TimingRandom,
+                _Interaction = _BurstEmissionProps._TimingInteraction,
+                _Min = _BurstEmissionProps._TimingMin * samplesPerMS,
+                _Max = _BurstEmissionProps._TimingMax * samplesPerMS
+            },
+            _Playhead = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._PlayheadStart,
                 _EndValue = _BurstEmissionProps._PlayheadEnd,
@@ -288,11 +312,23 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             data._InteractionInput = Mathf.Clamp(_Collision.relativeVelocity.magnitude / 10f, 0f, 1f);
 
-            data._BurstCount = _BurstEmissionProps._BurstCount;
-            data._BurstDuration = (int)(_BurstEmissionProps._BurstDuration * samplesPerMS);
-            data._BurstShape = _BurstEmissionProps._BurstShape;
-            data._BurstRandom = _BurstEmissionProps._BurstRandom;
-
+            data._Density = new ModulateParameterComponent
+            {
+                _StartValue = _BurstEmissionProps._BurstCount,
+                _Random = _BurstEmissionProps._BurstCountRandom,
+                _Interaction = _BurstEmissionProps._CountInteraction,
+                _Min = _BurstEmissionProps._CountMin,
+                _Max = _BurstEmissionProps._CountMax
+            };
+            data._Timing = new ModulateParameterComponent
+            {
+                _StartValue = _BurstEmissionProps._BurstDuration * samplesPerMS,
+                _Shape = _BurstEmissionProps._BurstShape,
+                _Random = _BurstEmissionProps._TimingRandom,
+                _Interaction = _BurstEmissionProps._TimingInteraction,
+                _Min = _BurstEmissionProps._TimingMin * samplesPerMS,
+                _Max = _BurstEmissionProps._TimingMax * samplesPerMS
+            };
             data._Playhead = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._PlayheadStart,

@@ -150,33 +150,45 @@ public class GrainSynthSystem : SystemBase
         (
             (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
-                if (burst._AttachedToSpeaker && burst._Playing)
-                {
-                    //Debug.Log("---------------------------------------------------");
-                    //Debug.Log("Bursting.....");
+            if (burst._AttachedToSpeaker && burst._Playing)
+            {
+                int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
+                int dspTailLength = 0;
+                var randomGen = randomArray[nativeThreadIndex];
 
-                    int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
-                    int dspTailLength = 0;
-                    var randomGen = randomArray[nativeThreadIndex];
+                    //int burstCount = (int)(burst._Density._StartValue + randomGen.NextFloat(-1.0f, 1f) * burst._Density._Min);
 
-                    // Create and queue every grain for the burst event --- probably need to revise
-                    for (int i = 0; i < burst._BurstCount; i++)
+                    // Prepare burst count value
+                    int burstCount = (int)(Mathf.Clamp(burst._Density._StartValue + (randomGen.NextFloat(-1 , 1) *
+                        burst._Density._Random + burst._Density._Interaction) *
+                        Mathf.Abs(burst._Density._Max - burst._Density._Min), burst._Density._Min, burst._Density._Max));
+
+                    int burstDuration = (int)Mathf.Clamp(burst._Timing._StartValue + burst._Timing._Interaction *
+                        burst._InteractionInput * (burst._Timing._Max - burst._Timing._Min),
+                        burst._Timing._Min, burst._Timing._Max);
+
+                    // Create and queue every grain for the burst event
+                    for (int i = 0; i < burstCount; i++)
                     {
-                        var randomDuration = randomGen.NextFloat(-1, 1);
-                        var randomPlayhead = randomGen.NextFloat(-1, 1);
-                        var randomVolume = randomGen.NextFloat(-1, 1);
-                        var randomTranspose = randomGen.NextFloat(-1, 1);
+                        // Generate randoms
+                        float randomTiming = randomGen.NextFloat(-1, 1);
+                        float randomDuration = randomGen.NextFloat(-1, 1);
+                        float randomPlayhead = randomGen.NextFloat(-1, 1);
+                        float randomVolume = randomGen.NextFloat(-1, 1);
+                        float randomTranspose = randomGen.NextFloat(-1, 1);
                         randomArray[nativeThreadIndex] = randomGen;
 
+                        // Estimate half the difference between the previous and next grain timing for current grain timing randomisation
+                        int grainTimingDifference = (int)(
+                            Map(Math.Max(i - 1, 0), 0, burstCount, 0, burstDuration, burst._Timing._Shape) -
+                            Map(Math.Min(i + 1, burstCount - 1), 0, burstCount, 0, burstDuration, burst._Timing._Shape) / 2);
 
-                        // Prepare grain values for grain processor entity
-                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
-                        int duration = (int)ComputeParameter(burst._Duration, i, burst._BurstCount, burst._InteractionInput, randomDuration);
-                        float playhead = ComputeParameter(burst._Playhead, i, burst._BurstCount, burst._InteractionInput, randomPlayhead);
-                        float volume = ComputeParameter(burst._Volume, i, burst._BurstCount, burst._InteractionInput, randomVolume);
-                        float transpose = ComputeParameter(burst._Transpose, i, burst._BurstCount, burst._InteractionInput, randomTranspose);
-
-                        //Debug.Log("OFFSET: " + offset + "   DURATION: " + duration + "   PLAYHEAD: " + playhead + "   VOLUME: " + volume + "   TRANSPOSE: " + transpose);
+                        // Finally get genearted grain parameters
+                        int offset = (int)Map(i, 0, burstCount, 0, burstDuration, burst._Timing._Shape) + (int)(randomTiming * grainTimingDifference);
+                        int duration = (int)ComputeParameter(burst._Duration, i, burstCount, burst._InteractionInput, randomDuration);
+                        float playhead = ComputeParameter(burst._Playhead, i, burstCount, burst._InteractionInput, randomPlayhead);
+                        float volume = ComputeParameter(burst._Volume, i, burstCount, burst._InteractionInput, randomVolume);
+                        float transpose = ComputeParameter(burst._Transpose, i, burstCount, burst._InteractionInput, randomTranspose);
 
                         // Convert transpose value to playback rate, "pitch"
                         float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
@@ -196,12 +208,12 @@ public class GrainSynthSystem : SystemBase
                         // Ensure tail doesn't make the grain exceed the maximum grain size of one second
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, burst._SampleRate - duration);
 
+                        // Pack the grain up
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
                             _AudioClipDataComponent = audioClipData[burst._AudioClipIndex],
 
-                            //_PlayheadNorm = burst._PlayheadPosNormalized,
                             _PlayheadNorm = playhead,
                             _SampleCount = duration,
 
@@ -216,11 +228,11 @@ public class GrainSynthSystem : SystemBase
                         });
 
 
-                        //-- Add sample and DSP buffers to grain processor
+                        // Add sample and DSP buffers to grain processor
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
                         entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
-                        //--    Add DSP Parameters
+                        // Add DSP Parameters
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
 
                         for (int j = 0; j < dspChain.Length; j++)
