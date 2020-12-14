@@ -128,11 +128,6 @@ public class BurstEmissionProps
     public float _VolumeMin = 0f;
     [HideInInspector]
     public float _VolumeMax = 2f;
-
-    public float TransposeToPitch(float transpose)
-    {
-        return Mathf.Clamp(Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f)), 0.06f, 16f);
-    }
 }
 
 
