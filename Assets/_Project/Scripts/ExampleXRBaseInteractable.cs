@@ -5,11 +5,11 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ExampleXRBaseInteractable : XRBaseInteractable
 {
-    protected override void OnSelectEnter(XRBaseInteractor interactor)
+    protected override void OnSelectEntered(XRBaseInteractor interactor)
     {
         if (!interactor)
             return;
-        base.OnSelectEnter(interactor);
+        base.OnSelectEntered(interactor);
 
         transform.position += Random.insideUnitSphere;
     }

@@ -14,7 +14,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
     [AddComponentMenu("XR/XR Proximity Interactor")]
     public class XRProximityInteractor : XRBaseControllerInteractor
     {
-        protected override List<XRBaseInteractable> ValidTargets { get { return m_ValidTargets; } }
+        protected override List<XRBaseInteractable> validTargets { get { return m_ValidTargets; } }
 
         // reusable list of valid targets
         List<XRBaseInteractable> m_ValidTargets = new List<XRBaseInteractable>();
