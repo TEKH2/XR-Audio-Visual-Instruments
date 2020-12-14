@@ -14,6 +14,30 @@ using Unity.Entities.UniversalDelegates;
 using Unity.Entities.CodeGeneratedJobForEach;
 using Random = UnityEngine.Random;
 using System.ComponentModel;
+using Unity.Jobs.LowLevel.Unsafe;
+
+
+[UpdateInGroup(typeof(InitializationSystemGroup))]
+class RandomSystem : ComponentSystem
+{
+    public NativeArray<Unity.Mathematics.Random> RandomArray { get; private set; }
+
+    protected override void OnCreate()
+    {
+        var randomArray = new Unity.Mathematics.Random[JobsUtility.MaxJobThreadCount];
+        var seed = new System.Random();
+
+        for (int i = 0; i < JobsUtility.MaxJobThreadCount; ++i)
+            randomArray[i] = new Unity.Mathematics.Random((uint)seed.Next());
+
+        RandomArray = new NativeArray<Unity.Mathematics.Random>(randomArray, Allocator.Persistent);
+    }
+
+    protected override void OnDestroy()
+        => RandomArray.Dispose();
+
+    protected override void OnUpdate() { }
+}
 
 [UpdateAfter(typeof(RangeCheckSystem))]
 public class GrainSynthSystem : SystemBase
@@ -34,15 +58,16 @@ public class GrainSynthSystem : SystemBase
         // Acquire an ECB and convert it to a concurrent one to be able to use it from a parallel job.
         EntityCommandBuffer.ParallelWriter entityCommandBuffer = _CommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-
-        #region EMIT GRAINS
+        
         // ----------------------------------- EMITTER UPDATE
         // Get all audio clip data componenets
         NativeArray<AudioClipDataComponent> audioClipData = GetEntityQuery(typeof(AudioClipDataComponent)).ToComponentDataArray<AudioClipDataComponent>(Allocator.TempJob);
         WindowingDataComponent windowingData = GetSingleton<WindowingDataComponent>();
         DSPTimerComponent dspTimer = GetSingleton<DSPTimerComponent>();
         float dt = Time.DeltaTime;
+        var randomArray = World.GetExistingSystem<RandomSystem>().RandomArray;
 
+        #region EMIT GRAINS
         //---   CREATES ENTITIES W/ GRAIN PROCESSOR + GRAIN SAMPLE BUFFER + DSP SAMPLE BUFFER + DSP PARAMS BUFFER
 
         JobHandle emitGrains = Entities.ForEach
@@ -116,51 +141,60 @@ public class GrainSynthSystem : SystemBase
         ).ScheduleParallel(this.Dependency);
         //.WithDisposeOnCompletion(audioClipData)
 
-
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
+        #endregion
 
-
-        //
-        // BRAD: Not sure if I've set up the job dependencies or audio clip disposal correctly
-        //
-
-        JobHandle emitBurst = Entities.WithoutBurst().ForEach
+        #region BURST GRAINS
+        JobHandle emitBurst = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (
-            (int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
+            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
-                    //Debug.Log("---------------------------------------------------");
-                    //Debug.Log("Bursting.....");
-
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
+                    var randomGen = randomArray[nativeThreadIndex];
 
-                    Debug.Log("PITCH START: " + burst._PitchStart);
-                    Debug.Log("PITCH END: " + burst._PitchEnd);
+                    // Prepare burst count value
+                    int burstCount = (int)(Mathf.Clamp(burst._Density._StartValue + (randomGen.NextFloat(-1 , 1) *
+                        burst._Density._Random + burst._Density._Interaction) *
+                        Mathf.Abs(burst._Density._Max - burst._Density._Min), burst._Density._Min, burst._Density._Max));
 
+                    int burstDuration = (int)Mathf.Clamp(burst._Timing._StartValue + burst._Timing._Interaction *
+                        burst._InteractionInput * (burst._Timing._Max - burst._Timing._Min),
+                        burst._Timing._Min, burst._Timing._Max);
 
-
-                    // Create and queue every grain for the burst event --- probably need to revise
-                    for (int i = 0; i < burst._BurstCount; i++)
+                    // Create and queue every grain for the burst event
+                    for (int i = 0; i < burstCount; i++)
                     {
-                        // Create grain processor properties based on burst shape and target duration
-                        int offset = (int)Map(i, 0, burst._BurstCount, 0, burst._BurstDuration, burst._BurstShape);
-                        int duration = (int)Map(i, 0, burst._BurstCount, burst._DurationStart, burst._DurationEnd, burst._BurstShape);
-                        float pitch = Map(i, 0, burst._BurstCount, burst._PitchStart, burst._PitchEnd, burst._BurstShape);
-                        float volume = Map(i, 0, burst._BurstCount, burst._VolumeStart, burst._VolumeEnd, burst._BurstShape);
+                        // Generate randoms
+                        float randomTiming = randomGen.NextFloat(-1, 1);
+                        float randomDuration = randomGen.NextFloat(-1, 1);
+                        float randomPlayhead = randomGen.NextFloat(-1, 1);
+                        float randomVolume = randomGen.NextFloat(-1, 1);
+                        float randomTranspose = randomGen.NextFloat(-1, 1);
+                        randomArray[nativeThreadIndex] = randomGen;
 
+                        // Estimate half the difference between the previous and next grain timing for current grain timing randomisation
+                        int grainTimingDifference = (int)(
+                            Map(Math.Max(i - 1, 0), 0, burstCount, 0, burstDuration, burst._Timing._Shape) -
+                            Map(Math.Min(i + 1, burstCount - 1), 0, burstCount, 0, burstDuration, burst._Timing._Shape) / 2);
 
+                        // Build genearated grain parameters
+                        int offset = (int)Map(i, 0, burstCount, 0, burstDuration, burst._Timing._Shape) + (int)(randomTiming * grainTimingDifference);
+                        int duration = (int)ComputeParameter(burst._Duration, i, burstCount, burst._InteractionInput, randomDuration);
+                        float playhead = ComputeParameter(burst._Playhead, i, burstCount, burst._InteractionInput, randomPlayhead);
+                        float volume = ComputeParameter(burst._Volume, i, burstCount, burst._InteractionInput, randomVolume);
+                        float transpose = ComputeParameter(burst._Transpose, i, burstCount, burst._InteractionInput, randomTranspose);
 
-                        Debug.Log("GRAIN PITCH: " + pitch);
-                        //Debug.Log("ADJUST FOR DSP: " + (offset + currentDSPTime));
+                        // Convert transpose value to playback rate, "pitch"
+                        float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
 
-
+                        // Find the largest delay DSP effect tail in the chain so that the tail can be added to the sample and DSP buffers
                         for (int j = 0; j < dspChain.Length; j++)
                         {
-                            //-- Find the largest DSP effect tail
-                            if (dspChain[j]._DSPType == DSPTypes.Flange || dspChain[j]._DSPType == DSPTypes.Delay || dspChain[j]._DSPType == DSPTypes.Chopper)
+                            if (dspChain[j]._DelayBasedEffect)
                             {
                                 if (dspChain[j]._SampleTail > dspTailLength)
                                 {
@@ -169,14 +203,16 @@ public class GrainSynthSystem : SystemBase
                             }
                         }
 
+                        // Ensure tail doesn't make the grain exceed the maximum grain size of one second
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, burst._SampleRate - duration);
 
+                        // Pack the grain up
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
                             _AudioClipDataComponent = audioClipData[burst._AudioClipIndex],
 
-                            _PlayheadNorm = burst._PlayheadPosNormalized,
+                            _PlayheadNorm = playhead,
                             _SampleCount = duration,
 
                             _Pitch = pitch,
@@ -190,11 +226,11 @@ public class GrainSynthSystem : SystemBase
                         });
 
 
-                        //-- Add sample and DSP buffers to grain processor
+                        // Add sample and DSP buffers to grain processor
                         entityCommandBuffer.AddBuffer<GrainSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
                         entityCommandBuffer.AddBuffer<DSPSampleBufferElement>(entityInQueryIndex, grainProcessorEntity);
 
-                        //--    Add DSP Parameters
+                        // Add DSP Parameters
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
 
                         for (int j = 0; j < dspChain.Length; j++)
@@ -214,11 +250,12 @@ public class GrainSynthSystem : SystemBase
 
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitBurst);
+
         #endregion
 
 
 
-        #region POPULATE GRAIN & DSP
+        #region POPULATE GRAINS
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         //---   TAKES GRAIN PROCESSOR INFORMATION AND FILLS THE SAMPLE BUFFER + DSP BUFFER (W/ 0s TO THE SAME LENGTH AS SAMPLE BUFFER)
         JobHandle processGrains = Entities.ForEach
@@ -277,10 +314,10 @@ public class GrainSynthSystem : SystemBase
                 }
             }
         ).ScheduleParallel(emitBurst);
+        #endregion
 
 
-
-        //----    DSP CHAIN
+        #region DSP CHAIN
         JobHandle dspGrains = Entities.ForEach
         (
            (DynamicBuffer<DSPParametersElement> dspParamsBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DynamicBuffer < DSPSampleBufferElement > dspBuffer, ref GrainProcessor grain) =>
@@ -333,10 +370,9 @@ public class GrainSynthSystem : SystemBase
 
 
         this.Dependency = dspGrains;
-
-        
     }
 
+    #region HELPERS
     public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DSPParametersElement dsp)
     {
         for (int s = 0; s < sampleOutputBuffer.Length; s++)
@@ -354,6 +390,15 @@ public class GrainSynthSystem : SystemBase
     {
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
+
+    public static float ComputeParameter(ModulateParameterComponent mod, float t, float n, float x, float random)
+    {
+        float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
+        float interaction = mod._Interaction * x;
+
+        return Mathf.Clamp(shapedInput + (random * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
+    }
+    #endregion
 }
 
 

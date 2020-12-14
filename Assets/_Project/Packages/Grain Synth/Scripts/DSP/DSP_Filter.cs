@@ -33,12 +33,10 @@ public class DSP_Filter : DSPBase
     public override DSPParametersElement GetDSPBufferElement()
     {
         DSPParametersElement dspParams = new DSPParametersElement();
-        dspParams._DSPType = DSPTypes.Filter;
 
         float cutoffFreq = AudioUtils.NormToFreq(Mathf.Clamp(_FilterCutoffNorm, 0f, 1f));
         float gain = Mathf.Clamp(_FilterGain, 0.5f, 1f);
         float q = Mathf.Clamp(_FilterQ, 0.1f, 5f);
-
 
         //--  Construct bi-quad filter coefficents
         FilterCoefficients newCoefficients;
@@ -54,6 +52,7 @@ public class DSP_Filter : DSPBase
         else
             newCoefficients = AllPass(cutoffFreq, gain, q, _SampleRate);
 
+        dspParams._DSPType = DSPTypes.Filter;
         dspParams._SampleRate = _SampleRate;
         dspParams._Mix = _Mix;
         dspParams._Value0 = newCoefficients.a0;

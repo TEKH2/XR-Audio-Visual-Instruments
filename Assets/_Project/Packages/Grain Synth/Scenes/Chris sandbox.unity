@@ -14107,7 +14107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1114566062}
   m_Layer: 0
-  m_Name: BounceBurst
+  m_Name: BurstSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28227,20 +28227,49 @@ MonoBehaviour:
   _Triggered: 0
   _PairedSpeaker: {fileID: 206739745}
   _HeadPosition: {fileID: 0}
+  _CollisionImpact: 0
   _BurstEmissionProps:
     _Playing: 1
-    _ClipIndex: 0
-    _Playhead: 0.13
-    _PlayheadRand: 0.021
-    _BurstCount: 10
-    _BurstDuration: 100
-    _BurstShape: 1
-    _DurationStart: 50
-    _DurationEnd: 50
+    _ClipIndex: 10
+    _BurstCount: 7
+    _BurstCountRandom: 0
+    _CountInteraction: 0.44
+    _CountMin: 1
+    _CountMax: 100
+    _BurstDuration: 107
+    _BurstShape: 2
+    _TimingRandom: 0.01
+    _TimingInteraction: 0.117
+    _TimingMin: 10
+    _TimingMax: 1000
+    _PlayheadStart: 0.35
+    _PlayheadEnd: 0.478
+    _PlayheadShape: 2
+    _PlayheadRandom: 0.032
+    _PlayheadInteraction: 0
+    _PlayheadMin: 0
+    _PlayheadMax: 1
+    _DurationStart: 18
+    _DurationEnd: 93
+    _DurationShape: 2
+    _DurationRandom: 0.022
+    _DurationInteraction: 0.677
+    _DurationMin: 2
+    _DurationMax: 500
     _TransposeStart: 0
-    _TransposeEnd: 0
-    _VolumeStart: 1
-    _VolumeEnd: 1
+    _TransposeEnd: -0.27
+    _TransposeShape: 2
+    _TransposeRandom: 0
+    _TransposeInteraction: 0
+    _TransposeMin: -3
+    _TransposeMax: 3
+    _VolumeStart: 0
+    _VolumeEnd: 0
+    _VolumeShape: 2
+    _VolumeRandom: 0.014
+    _VolumeInteraction: 0.383
+    _VolumeMin: 0
+    _VolumeMax: 2
   _DSPChainParams: []
 --- !u!114 &1828402480
 MonoBehaviour:

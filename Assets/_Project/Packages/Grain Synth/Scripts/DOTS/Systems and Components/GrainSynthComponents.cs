@@ -96,34 +96,33 @@ public struct EmitterComponent : IComponentData
     public int _DebugCount;
 }
 
+public struct ModulateParameterComponent : IComponentData
+{
+    public float _StartValue;
+    public float _EndValue;
+    public float _Random;
+    public float _Shape;
+    public float _Interaction;
+    public float _Min;
+    public float _Max;
+}
+
 public struct BurstEmitterComponent : IComponentData
 {
     public bool _AttachedToSpeaker;
     public int _SpeakerIndex;
     public bool _StaticallyPaired;
     public bool _InRange;
-
     public int _EmitterIndex;
-
     public bool _Playing;
-
-    public float _PlayheadStart;
-    public float _PlayheadEnd;
-    public float _PlayheadRandom;
     public int _AudioClipIndex;
-    public int _BurstCount;
-    public int _BurstDuration;
-    public float _BurstShape;
-    public float _BurstRandom;
-    public int _DurationStart;
-    public int _DurationEnd;
-    public float _DurationRandom;
-    public float _PitchStart;
-    public float _PitchEnd;
-    public float _PitchRandom;
-    public float _VolumeStart;
-    public float _VolumeEnd;
-    public float _VolumeRandom;
+    public float _InteractionInput;
+    public ModulateParameterComponent _Density;
+    public ModulateParameterComponent _Timing;
+    public ModulateParameterComponent _Playhead;
+    public ModulateParameterComponent _Duration;
+    public ModulateParameterComponent _Transpose;
+    public ModulateParameterComponent _Volume;
 
     public float _DistanceAmplitude;
 
@@ -175,6 +174,7 @@ public struct GrainSpeakerBufferElement : IBufferElementData
 public struct DSPParametersElement : IBufferElementData
 {
     public DSPTypes _DSPType;
+    public bool _DelayBasedEffect;
     public int _SampleRate;
     public int _SampleTail;
     public int _SampleStartTime;

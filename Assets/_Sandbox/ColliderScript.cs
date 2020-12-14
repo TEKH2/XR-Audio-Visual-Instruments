@@ -8,7 +8,7 @@ public class ColliderScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        print("ColliderScript hit");
+        //print("ColliderScript hit");
         _BurstEmitter.Collided(collision);
     }
 }

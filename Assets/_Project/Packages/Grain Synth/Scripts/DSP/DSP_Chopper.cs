@@ -66,6 +66,7 @@ public class DSP_Chopper : DSPBase
     {
         DSPParametersElement dspParams = new DSPParametersElement();
         dspParams._DSPType = DSPTypes.Chopper;
+        dspParams._DelayBasedEffect = true;
         dspParams._SampleRate = _SampleRate;
         dspParams._SampleTail = _NumSegments * 2;
         dspParams._Mix = _Mix;
