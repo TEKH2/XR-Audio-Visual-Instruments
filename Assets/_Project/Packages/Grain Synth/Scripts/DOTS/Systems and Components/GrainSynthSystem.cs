@@ -95,6 +95,7 @@ public class GrainSynthSystem : SystemBase
                     //-- Create grain processor entity
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
+
                         float randomDuration = randomGen.NextFloat(-1, 1);
                         float randomPlayhead = randomGen.NextFloat(-1, 1);
                         float randomVolume = randomGen.NextFloat(-1, 1);

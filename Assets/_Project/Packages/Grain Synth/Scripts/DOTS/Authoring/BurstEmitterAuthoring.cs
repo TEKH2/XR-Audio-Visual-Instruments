@@ -138,12 +138,12 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     [Header("Debug")]
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
-    public bool _Triggered = false;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
     public float _CollisionImpact = 0f;
+    public bool _Triggered = false;
 
-    [Header("Properties")]
+    [Header("Burst Properties")]
     public BurstEmissionProps _BurstEmissionProps;
 
     [Header("DSP Effects")]
@@ -158,10 +158,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     
     Collision _Collision;
 
-
-
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
-
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -174,6 +171,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         int attachedSpeakerIndex = int.MaxValue;
+
         if(_PairedSpeaker != null)
         {
             _PairedSpeaker._StaticallyPairedToEmitter = true;
