@@ -23,8 +23,8 @@ public class GrainEmitterPS : MonoBehaviour
     {
         if (_GrainEmitter._AttachedToSpeaker)
         {
-            _Main.startLifetime = _GrainEmitter._EmissionProps.Duration * .001f;
-            _Emission.rateOverTime = 1000f / _GrainEmitter._EmissionProps.Cadence;
+            //_Main.startLifetime = _GrainEmitter._EmissionProps.Duration * .001f;
+            //_Emission.rateOverTime = 1000f / _GrainEmitter._EmissionProps.Cadence;
         }
         else
         {

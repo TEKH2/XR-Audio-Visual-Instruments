@@ -68,34 +68,6 @@ public struct DSPTimerComponent : IComponentData
     public int _GrainQueueDuration;
 }
 
-
-public struct EmitterComponent : IComponentData
-{
-    public bool _AttachedToSpeaker;
-    public int _SpeakerIndex;
-    public bool _StaticallyPaired;
-    public bool _InRange;
-
-    public int _EmitterIndex;
-
-    public bool _Playing;   
-
-    public int _AudioClipIndex;
-    public int _CadenceInSamples;
-    public int _DurationInSamples;
-    public int _LastGrainEmissionDSPIndex;
-    public int _RandomOffsetInSamples;
-    public float _Pitch;
-    public float _Volume;
-    public float _DistanceAmplitude;
-
-    public float _PlayheadPosNormalized;
-
-    public int _SampleRate;
-
-    public int _DebugCount;
-}
-
 public struct ModulateParameterComponent : IComponentData
 {
     public float _StartValue;
@@ -105,6 +77,33 @@ public struct ModulateParameterComponent : IComponentData
     public float _Interaction;
     public float _Min;
     public float _Max;
+}
+
+public struct EmitterComponent : IComponentData
+{
+    public bool _AttachedToSpeaker;
+    public int _SpeakerIndex;
+    public bool _StaticallyPaired;
+    public bool _InRange;
+    public int _EmitterIndex;
+    public bool _Playing;   
+    public int _AudioClipIndex;
+    public float _InteractionInput;
+
+    public ModulateParameterComponent _Cadence;
+    public ModulateParameterComponent _Playhead;
+    public ModulateParameterComponent _Duration;
+    public ModulateParameterComponent _Transpose;
+    public ModulateParameterComponent _Volume;
+
+    public float _DistanceAmplitude;
+
+    public int _LastGrainEmissionDSPIndex;
+    public float _PlayheadPosNormalized;
+
+    public int _SampleRate;
+
+    public int _DebugCount;
 }
 
 public struct BurstEmitterComponent : IComponentData
@@ -128,8 +127,6 @@ public struct BurstEmitterComponent : IComponentData
 
     public int _LastGrainEmissionDSPIndex;
     public int _RandomOffsetInSamples;
-
-    public float _PlayheadPosNormalized;
 
     public int _SampleRate;
 

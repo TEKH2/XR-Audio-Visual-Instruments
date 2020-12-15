@@ -56,20 +56,20 @@ public class EmissionPropertiesUI : MonoBehaviour
 
 
         // Hook up events
-        _Playhead.onValueChanged.AddListener((float f) => _EmissionProps._Playhead = f);
-        _PlayheadRand.onValueChanged.AddListener((float f) => _EmissionProps._PlayheadRand = f);
+        //_Playhead.onValueChanged.AddListener((float f) => _EmissionProps._Playhead = f);
+        //_PlayheadRand.onValueChanged.AddListener((float f) => _EmissionProps._PlayheadRand = f);
 
-        _Cadence.onValueChanged.AddListener((float f) => _EmissionProps._Cadence = (int)f);
-        _CadenceRand.onValueChanged.AddListener((float f) => _EmissionProps._CadenceRandom = (int)f);
+        //_Cadence.onValueChanged.AddListener((float f) => _EmissionProps._Cadence = (int)f);
+        //_CadenceRand.onValueChanged.AddListener((float f) => _EmissionProps._CadenceRandom = (int)f);
 
-        _Duration.onValueChanged.AddListener((float f) => _EmissionProps._Duration = (int)f);
-        _DurationRand.onValueChanged.AddListener((float f) => _EmissionProps._DurationRandom = (int)f);
+        //_Duration.onValueChanged.AddListener((float f) => _EmissionProps._Duration = (int)f);
+        //_DurationRand.onValueChanged.AddListener((float f) => _EmissionProps._DurationRandom = (int)f);
 
-        _Volume.onValueChanged.AddListener((float f) => _EmissionProps._Volume = f);
-        _VolumeRand.onValueChanged.AddListener((float f) => _EmissionProps._VolumeRandom = f);
+        //_Volume.onValueChanged.AddListener((float f) => _EmissionProps._Volume = f);
+        //_VolumeRand.onValueChanged.AddListener((float f) => _EmissionProps._VolumeRandom = f);
 
-        _Transpose.onValueChanged.AddListener((float f) => _EmissionProps._Transpose = f);
-        _TransposeRand.onValueChanged.AddListener((float f) => _EmissionProps._TransposeRandom = f);
+        //_Transpose.onValueChanged.AddListener((float f) => _EmissionProps._Transpose = f);
+        //_TransposeRand.onValueChanged.AddListener((float f) => _EmissionProps._TransposeRandom = f);
 
         // Set emission props
         if (_GrainEmitterAuthoring)
@@ -89,20 +89,20 @@ public class EmissionPropertiesUI : MonoBehaviour
 
     void UpdateSliderValues()
     {
-        _Playhead.SetValueWithoutNotify(_EmissionProps._Playhead);
-        _PlayheadRand.SetValueWithoutNotify(_EmissionProps._PlayheadRand);
+        //_Playhead.SetValueWithoutNotify(_EmissionProps._Playhead);
+        //_PlayheadRand.SetValueWithoutNotify(_EmissionProps._PlayheadRand);
 
-        _Cadence.SetValueWithoutNotify(_EmissionProps._Cadence);
-        _CadenceRand.SetValueWithoutNotify(_EmissionProps._CadenceRandom);
+        //_Cadence.SetValueWithoutNotify(_EmissionProps._Cadence);
+        //_CadenceRand.SetValueWithoutNotify(_EmissionProps._CadenceRandom);
 
-        _Duration.SetValueWithoutNotify(_EmissionProps._Duration);
-        _DurationRand.SetValueWithoutNotify(_EmissionProps._DurationRandom);
+        //_Duration.SetValueWithoutNotify(_EmissionProps._Duration);
+        //_DurationRand.SetValueWithoutNotify(_EmissionProps._DurationRandom);
 
-        _Volume.SetValueWithoutNotify(_EmissionProps._Volume);
-        _VolumeRand.SetValueWithoutNotify(_EmissionProps._VolumeRandom);
+        //_Volume.SetValueWithoutNotify(_EmissionProps._Volume);
+        //_VolumeRand.SetValueWithoutNotify(_EmissionProps._VolumeRandom);
 
-        _Transpose.SetValueWithoutNotify(_EmissionProps._Transpose);
-        _TransposeRand.SetValueWithoutNotify(_EmissionProps._TransposeRandom);
+        //_Transpose.SetValueWithoutNotify(_EmissionProps._Transpose);
+        //_TransposeRand.SetValueWithoutNotify(_EmissionProps._TransposeRandom);
     }
 
 

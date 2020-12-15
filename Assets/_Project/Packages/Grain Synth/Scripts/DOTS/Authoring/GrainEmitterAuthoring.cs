@@ -12,118 +12,112 @@ public class GrainEmissionProps
     [Header("Clip")]
     public int _ClipIndex = 0;
 
-    // Position (normalised)
-    //---------------------------------------------------------------------
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    public float _Playhead = 0;
-    [Range(0.0f, 1f)]
-    [SerializeField]
-    public float _PlayheadRand = 0;
-    public float Position
-    {
-        get
-        {
-            return Mathf.Clamp(_Playhead + Random.Range(0, _PlayheadRand), 0f, 1f);
-        }
-        set
-        {
-            _Playhead = Mathf.Clamp(value, 0f, 1f);
-        }
-    }
+    public GameObject _InteractionObject;
 
-    [Header("Timing")]
-    [Range(3.0f, 1000f)]
-    public float _Cadence = 20;             // ms
-    [Range(0f, 1000f)]
-    public float _CadenceRandom = 0;        // ms
-    public float Cadence
-    {
-        get
-        {
-            return Mathf.Clamp(_Cadence + Random.Range(0, _CadenceRandom), 3f, 1000f);
-        }
-        set
-        {
-            _Cadence = Mathf.Clamp(value, 3f, 1000f);
-        }
-    }
-
-
-
-    // Duration (ms)
-    //---------------------------------------------------------------------
-    [Range(2.0f, 1000f)]
+    [Header("Cadence")]
+    [Range(4f, 500f)]
     [SerializeField]
-    public float _Duration = 100;
-    [Range(0.0f, 500f)]
+    public float _CadenceStart = 20f;
+    [Range(4f, 500f)]
     [SerializeField]
-    public float _DurationRandom = 0;
-    public float Duration
-    {
-        get
-        {
-            return Mathf.Clamp(_Duration + Random.Range(0, _DurationRandom), 2, 1000);
-        }
-        set
-        {
-            _Duration = Mathf.Clamp(value, 2, 1000);
-        }
-    }
+    public float _CadenceEnd = 50f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _CadenceRandom = 0f;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _CadenceShape = 1f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _CadenceInteraction = 0f;
+    [HideInInspector]
+    public float _CadenceMin = 10f;
+    [HideInInspector]
+    public float _CadenceMax = 1000f;
 
-    [Header("Effects")]
-    // Volume
-    //---------------------------------------------------------------------
-    [Range(0.0f, 2.0f)]
-    [SerializeField]
-    public float _Volume = 1;          // from 0 > 1
-    [Range(0.0f, 1.0f)]
-    [SerializeField]
-    public float _VolumeRandom = 0;      // from 0 > 1
-    public float Volume
-    {
-        get
-        {
-            return Mathf.Clamp(_Volume + Random.Range(-_VolumeRandom, _VolumeRandom), 0f, 3f);
-        }
-        set
-        {
-            _Volume = Mathf.Clamp(value, 0f, 3f);
-        }
-    }
-
-
-    // Transpose
-    //---------------------------------------------------------------------
-    [Range(-3f, 3f)]
-    [SerializeField]
-    public float _Transpose = 0;
+    [Header("Playhead")]
     [Range(0f, 1f)]
     [SerializeField]
-    public float _TransposeRandom = 0;
+    public float _PlayheadStart = 0;
+    [Range(0f, 1f)]
+    [SerializeField]
+    public float _PlayheadEnd = 0.1f;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _PlayheadShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _PlayheadRandom = 0.01f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _PlayheadInteraction = 0f;
+    [HideInInspector]
+    public float _PlayheadMin = 0f;
+    [HideInInspector]
+    public float _PlayheadMax = 1f;
 
-    float _Pitch = 1;
-    public float Pitch
-    {
-        get
-        {
-            _Pitch = Mathf.Pow(2, Mathf.Clamp(_Transpose + Random.Range(-_TransposeRandom, _TransposeRandom), -4f, 4f));
-            return Mathf.Clamp(_Pitch, 0.06f, 16f);
-        }
-    }
+    [Header("Grain Duration")]
+    [Range(2f, 500f)]
+    [SerializeField]
+    public float _DurationStart = 20f;
+    [Range(2f, 500f)]
+    [SerializeField]
+    public float _DurationEnd = 50f;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _DurationShape = 2f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _DurationRandom = 0.01f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _DurationInteraction = 0f;
+    [HideInInspector]
+    public float _DurationMin = 2f;
+    [HideInInspector]
+    public float _DurationMax = 500f;
 
-    public GrainEmissionProps(float pos, int duration, float pitch, float volume,
-        float posRand = 0, int durationRand = 0, float pitchRand = 0, float volumeRand = 0)
-    {
-        _Playhead = pos;
-        _Duration = duration;
-        _Pitch = pitch;
-        _Volume = volume;
+    [Header("Transpose")]
+    [Range(-3f, 3f)]
+    [SerializeField]
+    public float _TransposeStart = 0;
+    [Range(-3f, 3f)]
+    [SerializeField]
+    public float _TransposeEnd = 0;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _TransposeShape = 2f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _TransposeRandom = 0.01f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _TransposeInteraction = 0f;
+    [HideInInspector]
+    public float _TransposeMin = -3f;
+    [HideInInspector]
+    public float _TransposeMax = 3f;
 
-        _PlayheadRand = posRand;
-        _DurationRandom = durationRand;
-        _VolumeRandom = volumeRand;
-    }
+    [Header("Volume")]
+    [Range(0f, 2f)]
+    [SerializeField]
+    public float _VolumeStart = 1;
+    [Range(0f, 2f)]
+    [SerializeField]
+    public float _VolumeEnd = 1;
+    [Range(0.5f, 5.0f)]
+    [SerializeField]
+    public float _VolumeShape = 2f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _VolumeRandom = 0.01f;
+    [Range(-1.0f, 1.0f)]
+    [SerializeField]
+    public float _VolumeInteraction = 0f;
+    [HideInInspector]
+    public float _VolumeMin = 0f;
+    [HideInInspector]
+    public float _VolumeMax = 2f;
 }
 
 
@@ -141,6 +135,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public GrainSpeakerAuthoring _PairedSpeaker;
 
     public Transform _HeadPosition;
+    public Rigidbody _RigidBody;
 
     public bool _AttachedToSpeaker = false;
     int _AttachedSpeakerIndex;
@@ -171,7 +166,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         int index = GrainSynth.Instance.RegisterEmitter(entity);
-
+        int samplesPerMS = (int)(AudioSettings.outputSampleRate * .001f);
 
         // Add emitter component
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
@@ -179,17 +174,63 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
-            _CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f),
-            _DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f),
-            _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
-            _RandomOffsetInSamples = (int)(AudioSettings.outputSampleRate * UnityEngine.Random.Range(0, .05f)),
-            _Pitch = _EmissionProps.Pitch,
-            _Volume = _EmissionProps.Volume,
+            _InteractionInput = 0f,
+
+            _Cadence = new ModulateParameterComponent
+            {
+                _StartValue = _EmissionProps._CadenceStart * samplesPerMS,
+                _EndValue = _EmissionProps._CadenceEnd * samplesPerMS,
+                _Shape = _EmissionProps._CadenceShape,
+                _Random = _EmissionProps._CadenceRandom,
+                _Interaction = _EmissionProps._CadenceInteraction,
+                _Min = _EmissionProps._CadenceMin * samplesPerMS,
+                _Max = _EmissionProps._CadenceMax * samplesPerMS
+            },
+            _Playhead = new ModulateParameterComponent
+            {
+                _StartValue = _EmissionProps._PlayheadStart,
+                _EndValue = _EmissionProps._PlayheadEnd,
+                _Shape = _EmissionProps._PlayheadShape,
+                _Random = _EmissionProps._PlayheadRandom,
+                _Interaction = _EmissionProps._PlayheadInteraction,
+                _Min = _EmissionProps._PlayheadMin,
+                _Max = _EmissionProps._PlayheadMax
+            },
+            _Duration = new ModulateParameterComponent
+            {
+                _StartValue = _EmissionProps._DurationStart * samplesPerMS,
+                _EndValue = _EmissionProps._DurationEnd * samplesPerMS,
+                _Shape = _EmissionProps._DurationShape,
+                _Random = _EmissionProps._DurationRandom,
+                _Interaction = _EmissionProps._DurationInteraction,
+                _Min = _EmissionProps._DurationMin * samplesPerMS,
+                _Max = _EmissionProps._DurationMax * samplesPerMS
+            },
+            _Transpose = new ModulateParameterComponent
+            {
+                _StartValue = _EmissionProps._TransposeStart,
+                _EndValue = _EmissionProps._TransposeEnd,
+                _Shape = _EmissionProps._TransposeShape,
+                _Random = _EmissionProps._TransposeRandom,
+                _Interaction = _EmissionProps._TransposeInteraction,
+                _Min = _EmissionProps._TransposeMin,
+                _Max = _EmissionProps._TransposeMax
+            },
+            _Volume = new ModulateParameterComponent
+            {
+                _StartValue = _EmissionProps._VolumeStart,
+                _EndValue = _EmissionProps._VolumeEnd,
+                _Shape = _EmissionProps._VolumeShape,
+                _Random = _EmissionProps._VolumeRandom,
+                _Interaction = _EmissionProps._VolumeInteraction,
+                _Min = _EmissionProps._VolumeMin,
+                _Max = _EmissionProps._VolumeMax
+            },
+
             _DistanceAmplitude = 1,
             _AudioClipIndex = _EmissionProps._ClipIndex,
             _SpeakerIndex = attachedSpeakerIndex,
             _EmitterIndex = index,
-            _PlayheadPosNormalized = _EmissionProps.Position,
             _SampleRate = AudioSettings.outputSampleRate
         });
 
@@ -204,6 +245,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
+        _RigidBody = _EmissionProps._InteractionObject.GetComponent<Rigidbody>();
     }
     bool _InRangeTemp = false;
     void Update()
@@ -212,17 +254,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             return;
 
         _Timer += Time.deltaTime;
-
-         
-        // ----   Update DSP chain  // TODO Check if changed  // TODO dont think this is used
-        //DynamicBuffer<DSPParametersElement> dspTypes = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-        //dspTypes.Clear();
-        //for (int i = 0; i < _DSPChainParams.Length; i++)
-        //{
-        //    dspTypes.Add(_DSPChainParams[i].GetDSPBufferElement());
-        //}
-
-        //Debug.Log(AudioUtils.DistanceAttenuation(_HeadPosition.position, _PairedSpeaker.gameObject.transform.position, transform.position));
+        float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
@@ -241,12 +273,64 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         data._Playing = _EmissionProps._Playing;
         data._SpeakerIndex = attachedSpeakerIndex;
         data._AudioClipIndex = _EmissionProps._ClipIndex;
-        data._CadenceInSamples = (int)(_EmissionProps.Cadence * AudioSettings.outputSampleRate * .001f);
-        data._DurationInSamples = (int)(_EmissionProps.Duration * AudioSettings.outputSampleRate * .001f);
-        data._Pitch = _EmissionProps.Pitch;
-        data._Volume = _EmissionProps.Volume;
+
+        if (_RigidBody != null)
+            data._InteractionInput = Mathf.Clamp(_RigidBody.velocity.magnitude / 10f, 0f, 1f);
+        else
+            data._InteractionInput = 0f;
+
+        data._Cadence = new ModulateParameterComponent
+        {
+            _StartValue = _EmissionProps._CadenceStart * samplesPerMS,
+            _EndValue = _EmissionProps._CadenceEnd * samplesPerMS,
+            _Shape = _EmissionProps._CadenceShape,
+            _Random = _EmissionProps._CadenceRandom,
+            _Interaction = _EmissionProps._CadenceInteraction,
+            _Min = _EmissionProps._CadenceMin * samplesPerMS,
+            _Max = _EmissionProps._CadenceMax * samplesPerMS
+        };
+        data._Playhead = new ModulateParameterComponent
+        {
+            _StartValue = _EmissionProps._PlayheadStart,
+            _EndValue = _EmissionProps._PlayheadEnd,
+            _Shape = _EmissionProps._PlayheadShape,
+            _Random = _EmissionProps._PlayheadRandom,
+            _Interaction = _EmissionProps._PlayheadInteraction,
+            _Min = _EmissionProps._PlayheadMin,
+            _Max = _EmissionProps._PlayheadMax
+        };
+        data._Duration = new ModulateParameterComponent
+        {
+            _StartValue = _EmissionProps._DurationStart * samplesPerMS,
+            _EndValue = _EmissionProps._DurationEnd * samplesPerMS,
+            _Shape = _EmissionProps._DurationShape,
+            _Random = _EmissionProps._DurationRandom,
+            _Interaction = _EmissionProps._DurationInteraction,
+            _Min = _EmissionProps._DurationMin * samplesPerMS,
+            _Max = _EmissionProps._DurationMax * samplesPerMS
+        };
+        data._Transpose = new ModulateParameterComponent
+        {
+            _StartValue = _EmissionProps._TransposeStart,
+            _EndValue = _EmissionProps._TransposeEnd,
+            _Shape = _EmissionProps._TransposeShape,
+            _Random = _EmissionProps._TransposeRandom,
+            _Interaction = _EmissionProps._TransposeInteraction,
+            _Min = _EmissionProps._TransposeMin,
+            _Max = _EmissionProps._TransposeMax
+        };
+        data._Volume = new ModulateParameterComponent
+        {
+            _StartValue = _EmissionProps._VolumeStart,
+            _EndValue = _EmissionProps._VolumeEnd,
+            _Shape = _EmissionProps._VolumeShape,
+            _Random = _EmissionProps._VolumeRandom,
+            _Interaction = _EmissionProps._VolumeInteraction,
+            _Min = _EmissionProps._VolumeMin,
+            _Max = _EmissionProps._VolumeMax
+        };
+
         data._DistanceAmplitude = distanceAmplitude;
-        data._PlayheadPosNormalized = _EmissionProps.Position;
 
         _EntityManager.SetComponentData(_EmitterEntity, data);
 

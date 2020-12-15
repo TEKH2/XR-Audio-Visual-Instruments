@@ -168,31 +168,31 @@ public class GrainSynthVisualizer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_DrawWavefrom)
-        {
-            // Waveform       
-            float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
+        //if (_DrawWavefrom)
+        //{
+        //    // Waveform       
+        //    float playheadWidth = Mathf.Max(.005f, _Emitter._EmissionProps._PlayheadRand);
 
 
-            float startPos = _Emitter._EmissionProps._Playhead - .005f;
-            for (int i = 0; i < _PlayheadLine.positionCount; i++)
-            {
-                float norm = i / (float)(_PlayheadLine.positionCount - 1);
-                float playheadPos = startPos + (playheadWidth * norm);
-                playheadPos = Mathf.Clamp01(playheadPos);
-                _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
-            }
+        //    float startPos = _Emitter._EmissionProps._Playhead - .005f;
+        //    for (int i = 0; i < _PlayheadLine.positionCount; i++)
+        //    {
+        //        float norm = i / (float)(_PlayheadLine.positionCount - 1);
+        //        float playheadPos = startPos + (playheadWidth * norm);
+        //        playheadPos = Mathf.Clamp01(playheadPos);
+        //        _PlayheadLine.SetPosition(i, GetPositionOnArc(playheadPos, 0, _PlayheadZOffset));
+        //    }
 
-            for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
-            {
-                if (_WaveformVizGrainPool[i].gameObject.activeSelf)
-                {
-                    _WaveformVizGrainPool[i]._Lifetime -= Time.deltaTime;
-                    if (_WaveformVizGrainPool[i]._Lifetime <= 0)
-                        _WaveformVizGrainPool[i].gameObject.SetActive(false);
-                }
-            }
-        }
+        //    for (int i = 0; i < _WaveformVizGrainPool.Length; i++)
+        //    {
+        //        if (_WaveformVizGrainPool[i].gameObject.activeSelf)
+        //        {
+        //            _WaveformVizGrainPool[i]._Lifetime -= Time.deltaTime;
+        //            if (_WaveformVizGrainPool[i]._Lifetime <= 0)
+        //                _WaveformVizGrainPool[i].gameObject.SetActive(false);
+        //        }
+        //    }
+        //}
 
 
         if (_DrawTimeline)

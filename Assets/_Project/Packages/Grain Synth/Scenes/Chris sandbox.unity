@@ -23340,6 +23340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1465753453}
+  - component: {fileID: 1465753454}
   m_Layer: 0
   m_Name: GrainEmitter
   m_TagString: Untagged
@@ -23361,6 +23362,62 @@ Transform:
   m_Father: {fileID: 2069955617}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1465753454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465753452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _EmissionProps:
+    _Playing: 0
+    _ClipIndex: 0
+    _InteractionObject: {fileID: 2069955613}
+    _CadenceStart: 20
+    _CadenceEnd: 50
+    _CadenceRandom: 0
+    _CadenceShape: 1
+    _CadenceInteraction: 0
+    _CadenceMin: 10
+    _CadenceMax: 1000
+    _PlayheadStart: 0
+    _PlayheadEnd: 0.1
+    _PlayheadShape: 1
+    _PlayheadRandom: 0.01
+    _PlayheadInteraction: 0
+    _PlayheadMin: 0
+    _PlayheadMax: 1
+    _DurationStart: 20
+    _DurationEnd: 50
+    _DurationShape: 2
+    _DurationRandom: 0
+    _DurationInteraction: 0
+    _DurationMin: 2
+    _DurationMax: 500
+    _TransposeStart: 0
+    _TransposeEnd: 0
+    _TransposeShape: 2
+    _TransposeRandom: 0
+    _TransposeInteraction: 0
+    _TransposeMin: -3
+    _TransposeMax: 3
+    _VolumeStart: 1
+    _VolumeEnd: 1
+    _VolumeShape: 2
+    _VolumeRandom: 0
+    _VolumeInteraction: 0
+    _VolumeMin: 0
+    _VolumeMax: 2
+  _PairedSpeaker: {fileID: 0}
+  _HeadPosition: {fileID: 0}
+  _RigidBody: {fileID: 0}
+  _AttachedToSpeaker: 0
+  _DSPChainParams: []
 --- !u!1 &1473132784
 GameObject:
   m_ObjectHideFlags: 0
@@ -28200,7 +28257,6 @@ GameObject:
   - component: {fileID: 1828402477}
   - component: {fileID: 1828402476}
   - component: {fileID: 1828402479}
-  - component: {fileID: 1828402475}
   - component: {fileID: 1828402480}
   m_Layer: 0
   m_Name: CollisionEmitter
@@ -28223,35 +28279,6 @@ Transform:
   m_Father: {fileID: 2069955617}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1828402475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828402473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _EmissionProps:
-    _Playing: 0
-    _ClipIndex: 0
-    _Playhead: 0.326
-    _PlayheadRand: 0.026
-    _Cadence: 39
-    _CadenceRandom: 0
-    _Duration: 126
-    _DurationRandom: 0
-    _Volume: 0.821
-    _VolumeRandom: 0
-    _Transpose: 0
-    _TransposeRandom: 0
-  _PairedSpeaker: {fileID: 0}
-  _HeadPosition: {fileID: 0}
-  _AttachedToSpeaker: 0
-  _DSPChainParams: []
 --- !u!23 &1828402476
 MeshRenderer:
   m_ObjectHideFlags: 0

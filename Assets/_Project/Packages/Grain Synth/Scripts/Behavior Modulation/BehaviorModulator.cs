@@ -97,24 +97,24 @@ namespace Tekh2
             {
                 _PropertieCurves[i]._TimeNormAlongCurve = _TimerNorm;
 
-                switch (_PropertieCurves[i]._PropertyType)
-                {
-                    case EmitPropertyType.Cadence:
-                        _Emitter._EmissionProps.Cadence = _PropertieCurves[i].GetMinMaxValue();
-                        break;
-                    case EmitPropertyType.Duration:
-                        _Emitter._EmissionProps.Duration = _PropertieCurves[i].GetMinMaxValue();
-                        break;
-                    case EmitPropertyType.Playhead:
-                        _Emitter._EmissionProps._Playhead = _PropertieCurves[i].GetMinMaxValue();
-                        break;
-                    case EmitPropertyType.Transpose:
-                        _Emitter._EmissionProps._Transpose = _PropertieCurves[i].GetMinMaxValue();
-                        break;
-                    case EmitPropertyType.Volume:
-                        _Emitter._EmissionProps.Volume = _PropertieCurves[i].GetMinMaxValue();
-                        break;
-                }
+                //switch (_PropertieCurves[i]._PropertyType)
+                //{
+                //    case EmitPropertyType.Cadence:
+                //        _Emitter._EmissionProps.Cadence = _PropertieCurves[i].GetMinMaxValue();
+                //        break;
+                //    case EmitPropertyType.Duration:
+                //        _Emitter._EmissionProps.Duration = _PropertieCurves[i].GetMinMaxValue();
+                //        break;
+                //    case EmitPropertyType.Playhead:
+                //        _Emitter._EmissionProps._Playhead = _PropertieCurves[i].GetMinMaxValue();
+                //        break;
+                //    case EmitPropertyType.Transpose:
+                //        _Emitter._EmissionProps._Transpose = _PropertieCurves[i].GetMinMaxValue();
+                //        break;
+                //    case EmitPropertyType.Volume:
+                //        _Emitter._EmissionProps.Volume = _PropertieCurves[i].GetMinMaxValue();
+                //        break;
+                //}
             }
         }
 

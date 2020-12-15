@@ -99,39 +99,39 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
 
     private void Update()
     {
-        _EmissionProps = _Emitter._EmissionProps;
+        //_EmissionProps = _Emitter._EmissionProps;
 
-        if (_Playhead.Type != Automation.Off)
-        {
-            _Playhead.UpdatePhase();
-            _EmissionProps._Playhead = _Playhead.Process();
-        }
+        //if (_Playhead.Type != Automation.Off)
+        //{
+        //    _Playhead.UpdatePhase();
+        //    _EmissionProps._Playhead = _Playhead.Process();
+        //}
 
-        if (_Transpose.Type != Automation.Off)
-        {
-            _Transpose.UpdatePhase();
-            _EmissionProps._Transpose = _Transpose.Process();
-        }
+        //if (_Transpose.Type != Automation.Off)
+        //{
+        //    _Transpose.UpdatePhase();
+        //    _EmissionProps._Transpose = _Transpose.Process();
+        //}
 
-        if (_LinkTiming && _Cadence.Type != Automation.Off)
-        {
-            _Duration.SetLinkedPhase(_Cadence.UpdatePhase());
-            _EmissionProps._Cadence = _Cadence.Process();
-            _EmissionProps._Duration = _Duration.Process();
-        }
-        else
-        {
-            if (_Cadence.Type != Automation.Off)
-            {
-                _Cadence.UpdatePhase();
-                _EmissionProps._Cadence = _Cadence.Process();
-            }
-            if (_Duration.Type != Automation.Off)
-            {
-                _Duration.UpdatePhase();
-                _EmissionProps._Duration = _Duration.Process();
-            }
-        }
+        //if (_LinkTiming && _Cadence.Type != Automation.Off)
+        //{
+        //    _Duration.SetLinkedPhase(_Cadence.UpdatePhase());
+        //    _EmissionProps._Cadence = _Cadence.Process();
+        //    _EmissionProps._Duration = _Duration.Process();
+        //}
+        //else
+        //{
+        //    if (_Cadence.Type != Automation.Off)
+        //    {
+        //        _Cadence.UpdatePhase();
+        //        _EmissionProps._Cadence = _Cadence.Process();
+        //    }
+        //    if (_Duration.Type != Automation.Off)
+        //    {
+        //        _Duration.UpdatePhase();
+        //        _EmissionProps._Duration = _Duration.Process();
+        //    }
+        //}
 
         _Emitter._EmissionProps = _EmissionProps;
     }
