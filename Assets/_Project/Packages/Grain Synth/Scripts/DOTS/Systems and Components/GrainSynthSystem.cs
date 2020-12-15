@@ -279,7 +279,6 @@ public class GrainSynthSystem : SystemBase
         #endregion
 
 
-
         #region POPULATE GRAINS
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         //---   TAKES GRAIN PROCESSOR INFORMATION AND FILLS THE SAMPLE BUFFER + DSP BUFFER (W/ 0s TO THE SAME LENGTH AS SAMPLE BUFFER)
@@ -375,6 +374,7 @@ public class GrainSynthSystem : SystemBase
         #endregion
 
 
+        #region ROLLING BUFFER
 
         //// ----------------------------------- AUDIO SAMPLE BUFFER TEST
         //Entities.ForEach((ref DynamicBuffer<AudioSampleBufferElement> audioBuffer, in RollingBufferFiller rollingBufferFiller) =>
@@ -393,6 +393,7 @@ public class GrainSynthSystem : SystemBase
         //    }
         //}).ScheduleParallel();
 
+        #endregion
 
         this.Dependency = dspGrains;
     }
@@ -410,24 +411,23 @@ public class GrainSynthSystem : SystemBase
     {
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
     }
-
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax, float exp)
     {
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
-
-    public static float ComputeBurstParameter(ModulateParameterComponent mod, float t, float n, float x, float random)
+    public static float ComputeBurstParameter(ModulateParameterComponent mod, float t, float n, float x, float r)
     {
         float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
         float interaction = mod._Interaction * x;
 
-        return Mathf.Clamp(shapedInput + (random * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
+        return Mathf.Clamp(shapedInput + (r * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
     }
-    public static float ComputeEmitterParameter(ModulateParameterComponent mod, float x, float random)
+    public static float ComputeEmitterParameter(ModulateParameterComponent mod, float x, float r)
     {
-        float interaction = Mathf.Pow(x / 1, mod._Shape) * mod._Interaction;
+        float interaction = Mathf.Pow(x / 1, mod._Shape) * mod._Interaction * (mod._EndValue - mod._StartValue);
+        float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
 
-        return Mathf.Clamp(mod._StartValue + (random * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
+        return Mathf.Clamp(mod._StartValue + interaction + random, mod._Min, mod._Max);
     }
     #endregion
 }

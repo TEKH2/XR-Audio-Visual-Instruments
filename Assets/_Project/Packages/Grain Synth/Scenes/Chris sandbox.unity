@@ -10621,44 +10621,45 @@ MonoBehaviour:
   _PairedSpeaker: {fileID: 206739745}
   _HeadPosition: {fileID: 0}
   _RigidBody: {fileID: 2069955619}
+  _InteractionSmoothing: 0.5
   _ObjectSpeed: 0
   _EmissionProps:
     _Playing: 1
     _ClipIndex: 0
     _InteractionObject: {fileID: 2069955613}
-    _CadenceStart: 148
-    _CadenceEnd: 58
-    _CadenceRandom: 0
+    _CadenceStart: 101
+    _CadenceEnd: 21
     _CadenceShape: 1
-    _CadenceInteraction: 0.303
+    _CadenceInteraction: 0
+    _CadenceRandom: 0
     _CadenceMin: 10
     _CadenceMax: 1000
     _PlayheadStart: 0
     _PlayheadEnd: 0.1
     _PlayheadShape: 1
-    _PlayheadRandom: 0.01
     _PlayheadInteraction: 0
+    _PlayheadRandom: 0.01
     _PlayheadMin: 0
     _PlayheadMax: 1
     _DurationStart: 76
     _DurationEnd: 105
-    _DurationShape: 2
-    _DurationRandom: 0
+    _DurationShape: 1
     _DurationInteraction: 0
+    _DurationRandom: 0
     _DurationMin: 2
     _DurationMax: 500
     _TransposeStart: 0
     _TransposeEnd: 0
-    _TransposeShape: 2
-    _TransposeRandom: 0
+    _TransposeShape: 1
     _TransposeInteraction: 0
+    _TransposeRandom: 0
     _TransposeMin: -3
     _TransposeMax: 3
-    _VolumeStart: 1
+    _VolumeStart: 0
     _VolumeEnd: 1
-    _VolumeShape: 2
+    _VolumeShape: 1
+    _VolumeInteraction: 1
     _VolumeRandom: 0
-    _VolumeInteraction: 0
     _VolumeMin: 0
     _VolumeMax: 2
   _DSPChainParams: []

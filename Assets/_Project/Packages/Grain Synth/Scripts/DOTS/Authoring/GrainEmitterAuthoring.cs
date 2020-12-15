@@ -21,19 +21,19 @@ public class GrainEmissionProps
     [Range(4f, 500f)]
     [SerializeField]
     public float _CadenceEnd = 50f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _CadenceRandom = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _CadenceShape = 1f;
-    [Range(-1.0f, 1.0f)]
+    [Range(0f, 1.0f)]
     [SerializeField]
     public float _CadenceInteraction = 0f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _CadenceRandom = 0f;
     [HideInInspector]
     public float _CadenceMin = 10f;
     [HideInInspector]
-    public float _CadenceMax = 1000f;
+    public float _CadenceMax = 500f;
 
     [Header("Playhead")]
     [Range(0f, 1f)]
@@ -47,10 +47,10 @@ public class GrainEmissionProps
     public float _PlayheadShape = 1f;
     [Range(0f, 1.0f)]
     [SerializeField]
-    public float _PlayheadRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
     public float _PlayheadInteraction = 0f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _PlayheadRandom = 0.01f;
     [HideInInspector]
     public float _PlayheadMin = 0f;
     [HideInInspector]
@@ -65,13 +65,13 @@ public class GrainEmissionProps
     public float _DurationEnd = 50f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
-    public float _DurationShape = 2f;
+    public float _DurationShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _DurationInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _DurationRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _DurationInteraction = 0f;
     [HideInInspector]
     public float _DurationMin = 2f;
     [HideInInspector]
@@ -86,13 +86,13 @@ public class GrainEmissionProps
     public float _TransposeEnd = 0;
     [Range(0.5f, 5.0f)]
     [SerializeField]
-    public float _TransposeShape = 2f;
+    public float _TransposeShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _TransposeInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _TransposeRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _TransposeInteraction = 0f;
     [HideInInspector]
     public float _TransposeMin = -3f;
     [HideInInspector]
@@ -107,13 +107,13 @@ public class GrainEmissionProps
     public float _VolumeEnd = 1;
     [Range(0.5f, 5.0f)]
     [SerializeField]
-    public float _VolumeShape = 2f;
+    public float _VolumeShape = 1f;
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _VolumeInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _VolumeRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _VolumeInteraction = 0f;
     [HideInInspector]
     public float _VolumeMin = 0f;
     [HideInInspector]
@@ -131,8 +131,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
     public Rigidbody _RigidBody;
-    public float _ObjectSpeed;
-    
+    [Range(0, 1)]
+    public float _InteractionSmoothing = 0.5f;
+    public float _ObjectSpeed = 0f;
+
     [Header("Emission Properties")]
     public GrainEmissionProps _EmissionProps;
 
@@ -259,6 +261,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
+        float dt = Time.deltaTime;
+        _ObjectSpeed = Mathf.Lerp(_ObjectSpeed, _RigidBody.velocity.magnitude / 4f, dt * 1 / _InteractionSmoothing);
+
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
@@ -279,11 +284,9 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         data._AudioClipIndex = _EmissionProps._ClipIndex;
 
         if (_RigidBody != null)
-            data._InteractionInput = Mathf.Clamp(_RigidBody.velocity.magnitude / 2f, 0f, 1f);
+            data._InteractionInput = Mathf.Clamp(_ObjectSpeed, 0f, 1f);
         else
             data._InteractionInput = 0f;
-
-        _ObjectSpeed = data._InteractionInput;
 
         data._Cadence = new ModulateParameterComponent
         {
