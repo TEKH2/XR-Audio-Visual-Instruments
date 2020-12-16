@@ -246,9 +246,12 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
         // Get object speed and smooth
-        _ObjectSpeed = Mathf.Lerp(_ObjectSpeed, _RigidBody.velocity.magnitude / 8f, Time.deltaTime * _InteractionSmoothing);
-        if (Mathf.Abs(_ObjectSpeed - _RigidBody.velocity.magnitude / 8f) < .005f)
-            _ObjectSpeed = _RigidBody.velocity.magnitude / 8f;
+        if (_RigidBody != null)
+        {
+            _ObjectSpeed = Mathf.Lerp(_ObjectSpeed, _RigidBody.velocity.magnitude / 8f, Time.deltaTime * _InteractionSmoothing);
+            if (Mathf.Abs(_ObjectSpeed - _RigidBody.velocity.magnitude / 8f) < .005f)
+                _ObjectSpeed = _RigidBody.velocity.magnitude / 8f;
+        }
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 

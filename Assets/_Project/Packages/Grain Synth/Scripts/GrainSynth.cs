@@ -151,7 +151,8 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
-      
+        //Debug.Log("Grain Entities: " + allGrainSampleEntities.Length);
+
         //----    Loop through all grain processors and fill audio buffers of assigned speakers
         for (int i = 0; i < allGrainSampleEntities.Length; i++)
         {

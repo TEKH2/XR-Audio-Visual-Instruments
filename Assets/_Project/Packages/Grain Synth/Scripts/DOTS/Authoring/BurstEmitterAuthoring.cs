@@ -141,8 +141,6 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
-    public GameObject _InteractionObject;
-    private Rigidbody _RigidBody;
     public float _CollisionImpact = 0f;
     public bool _Triggered = false;
 
@@ -278,11 +276,6 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
-
-        if (_InteractionObject == null)
-            _InteractionObject = gameObject;
-
-        _RigidBody = _InteractionObject.GetComponent<Rigidbody>();
     }
 
     public void Collided(Collision collision)
@@ -305,6 +298,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
             float distanceAmplitude = 1;
+
             if (data._AttachedToSpeaker)
             {
                 distanceAmplitude = AudioUtils.DistanceAttenuation(
