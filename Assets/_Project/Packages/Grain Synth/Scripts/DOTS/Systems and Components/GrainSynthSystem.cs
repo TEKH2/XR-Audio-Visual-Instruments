@@ -83,19 +83,15 @@ public class GrainSynthSystem : SystemBase
                     //int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + emitter._CadenceInSamples;
                     int dspTailLength = 0;
 
-                    // GENERATE NEXT GRAIN DSP TIME
-                    // ADD TO PREVIOUS GRAIN DSP TIME
-
-                    // WHILE 
+                    // Prep new initial values for timing
                     var randomGen = randomArray[nativeThreadIndex];
                     float randomCadence = randomGen.NextFloat(-1, 1);
                     int offset = (int)ComputeEmitterParameter(emitter._Cadence, emitter._InteractionInput, randomCadence);
                     int sampleIndexNextGrainStart = emitter._LastGrainEmissionDSPIndex + offset;
 
-                    //-- Create grain processor entity
+                    // Create new grain
                     while (sampleIndexNextGrainStart <= dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration && grainCount < maxGrains)
                     {
-
                         float randomDuration = randomGen.NextFloat(-1, 1);
                         float randomPlayhead = randomGen.NextFloat(-1, 1);
                         float randomVolume = randomGen.NextFloat(-1, 1);
@@ -124,12 +120,13 @@ public class GrainSynthSystem : SystemBase
 
                         dspTailLength = Mathf.Clamp(dspTailLength, 0, emitter._SampleRate - duration);
 
+                        // Build grain processor entity
                         Entity grainProcessorEntity = entityCommandBuffer.CreateEntity(entityInQueryIndex);
                         entityCommandBuffer.AddComponent(entityInQueryIndex, grainProcessorEntity, new GrainProcessor
                         {
                             _AudioClipDataComponent = audioClipData[emitter._AudioClipIndex],
 
-                            _PlayheadNorm = emitter._PlayheadPosNormalized,
+                            _PlayheadNorm = playhead,
                             _SampleCount = duration,
 
                             _Pitch = pitch,
@@ -140,7 +137,7 @@ public class GrainSynthSystem : SystemBase
                             _SamplePopulated = false,
 
                             _DSPEffectSampleTailLength = dspTailLength
-                        }); ;
+                        });
 
 
                         //-- Add sample and DSP buffers to grain processor
@@ -399,14 +396,6 @@ public class GrainSynthSystem : SystemBase
     }
 
     #region HELPERS
-    public static void TestHalfVolSynth(DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DSPParametersElement dsp)
-    {
-        for (int s = 0; s < sampleOutputBuffer.Length; s++)
-        {
-            sampleOutputBuffer[s] = new GrainSampleBufferElement { Value = sampleOutputBuffer[s].Value * dsp._Value0 };
-        }
-    }
-
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
@@ -424,7 +413,7 @@ public class GrainSynthSystem : SystemBase
     }
     public static float ComputeEmitterParameter(ModulateParameterComponent mod, float x, float r)
     {
-        float interaction = Mathf.Pow(x / 1, mod._Shape) * mod._Interaction * (mod._EndValue - mod._StartValue);
+        float interaction = Mathf.Pow(x / 1, mod._Shape) * mod._EndValue;
         float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
 
         return Mathf.Clamp(mod._StartValue + interaction + random, mod._Min, mod._Max);

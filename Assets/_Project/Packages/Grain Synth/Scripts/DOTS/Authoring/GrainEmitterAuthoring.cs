@@ -17,16 +17,13 @@ public class GrainEmissionProps
     [Header("Cadence")]
     [Range(4f, 500f)]
     [SerializeField]
-    public float _CadenceStart = 20f;
-    [Range(4f, 500f)]
+    public float _CadenceIdle = 20f;
+    [Range(-496f, 496f)]
     [SerializeField]
-    public float _CadenceEnd = 50f;
+    public float _CadenceInteraction = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _CadenceShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _CadenceInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _CadenceRandom = 0f;
@@ -38,16 +35,13 @@ public class GrainEmissionProps
     [Header("Playhead")]
     [Range(0f, 1f)]
     [SerializeField]
-    public float _PlayheadStart = 0;
-    [Range(0f, 1f)]
+    public float _PlayheadIdle = 0f;
+    [Range(-1f, 1f)]
     [SerializeField]
-    public float _PlayheadEnd = 0.1f;
+    public float _PlayheadInteraction = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _PlayheadShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _PlayheadInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _PlayheadRandom = 0.01f;
@@ -59,16 +53,13 @@ public class GrainEmissionProps
     [Header("Grain Duration")]
     [Range(2f, 500f)]
     [SerializeField]
-    public float _DurationStart = 20f;
-    [Range(2f, 500f)]
+    public float _DurationIdle = 50f;
+    [Range(-502f, 502f)]
     [SerializeField]
-    public float _DurationEnd = 50f;
+    public float _DurationInteraction = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _DurationShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _DurationInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _DurationRandom = 0.01f;
@@ -80,16 +71,13 @@ public class GrainEmissionProps
     [Header("Transpose")]
     [Range(-3f, 3f)]
     [SerializeField]
-    public float _TransposeStart = 0;
-    [Range(-3f, 3f)]
+    public float _TransposeIdle = 0;
+    [Range(-6f, 6f)]
     [SerializeField]
-    public float _TransposeEnd = 0;
+    public float _TransposeInteraction = 0;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _TransposeShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _TransposeInteraction = 0f;
     [Range(0f, 1.0f)]
     [SerializeField]
     public float _TransposeRandom = 0.01f;
@@ -101,19 +89,16 @@ public class GrainEmissionProps
     [Header("Volume")]
     [Range(0f, 2f)]
     [SerializeField]
-    public float _VolumeStart = 1;
-    [Range(0f, 2f)]
+    public float _VolumeIdle = 1;
+    [Range(-2f, 2f)]
     [SerializeField]
-    public float _VolumeEnd = 1;
+    public float _VolumeInteraction = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _VolumeShape = 1f;
     [Range(0f, 1.0f)]
     [SerializeField]
-    public float _VolumeInteraction = 0f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _VolumeRandom = 0.01f;
+    public float _VolumeRandom = 0f;
     [HideInInspector]
     public float _VolumeMin = 0f;
     [HideInInspector]
@@ -131,8 +116,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
     public Rigidbody _RigidBody;
-    [Range(0, 1)]
-    public float _InteractionSmoothing = 0.5f;
+    [Range(0, 10)]
+    public float _InteractionSmoothing = 4f;
     public float _ObjectSpeed = 0f;
 
     [Header("Emission Properties")]
@@ -184,38 +169,35 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             _Cadence = new ModulateParameterComponent
             {
-                _StartValue = _EmissionProps._CadenceStart * samplesPerMS,
-                _EndValue = _EmissionProps._CadenceEnd * samplesPerMS,
+                _StartValue = _EmissionProps._CadenceIdle * samplesPerMS,
+                _EndValue = _EmissionProps._CadenceInteraction * samplesPerMS,
                 _Shape = _EmissionProps._CadenceShape,
                 _Random = _EmissionProps._CadenceRandom,
-                _Interaction = _EmissionProps._CadenceInteraction,
                 _Min = _EmissionProps._CadenceMin * samplesPerMS,
                 _Max = _EmissionProps._CadenceMax * samplesPerMS
             },
             _Playhead = new ModulateParameterComponent
             {
-                _StartValue = _EmissionProps._PlayheadStart,
-                _EndValue = _EmissionProps._PlayheadEnd,
+                _StartValue = _EmissionProps._PlayheadIdle,
+                _EndValue = _EmissionProps._PlayheadInteraction,
                 _Shape = _EmissionProps._PlayheadShape,
                 _Random = _EmissionProps._PlayheadRandom,
-                _Interaction = _EmissionProps._PlayheadInteraction,
                 _Min = _EmissionProps._PlayheadMin,
                 _Max = _EmissionProps._PlayheadMax
             },
             _Duration = new ModulateParameterComponent
             {
-                _StartValue = _EmissionProps._DurationStart * samplesPerMS,
-                _EndValue = _EmissionProps._DurationEnd * samplesPerMS,
+                _StartValue = _EmissionProps._DurationIdle * samplesPerMS,
+                _EndValue = _EmissionProps._DurationInteraction * samplesPerMS,
                 _Shape = _EmissionProps._DurationShape,
                 _Random = _EmissionProps._DurationRandom,
-                _Interaction = _EmissionProps._DurationInteraction,
                 _Min = _EmissionProps._DurationMin * samplesPerMS,
                 _Max = _EmissionProps._DurationMax * samplesPerMS
             },
             _Transpose = new ModulateParameterComponent
             {
-                _StartValue = _EmissionProps._TransposeStart,
-                _EndValue = _EmissionProps._TransposeEnd,
+                _StartValue = _EmissionProps._TransposeIdle,
+                _EndValue = _EmissionProps._TransposeInteraction,
                 _Shape = _EmissionProps._TransposeShape,
                 _Random = _EmissionProps._TransposeRandom,
                 _Interaction = _EmissionProps._TransposeInteraction,
@@ -224,11 +206,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             },
             _Volume = new ModulateParameterComponent
             {
-                _StartValue = _EmissionProps._VolumeStart,
-                _EndValue = _EmissionProps._VolumeEnd,
+                _StartValue = _EmissionProps._VolumeIdle,
+                _EndValue = _EmissionProps._VolumeInteraction,
                 _Shape = _EmissionProps._VolumeShape,
                 _Random = _EmissionProps._VolumeRandom,
-                _Interaction = _EmissionProps._VolumeInteraction,
                 _Min = _EmissionProps._VolumeMin,
                 _Max = _EmissionProps._VolumeMax
             },
@@ -261,8 +242,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
-        float dt = Time.deltaTime;
-        _ObjectSpeed = Mathf.Lerp(_ObjectSpeed, _RigidBody.velocity.magnitude / 4f, dt * 1 / _InteractionSmoothing);
+        // Get object speed and smooth
+        _ObjectSpeed = Mathf.Lerp(_ObjectSpeed, _RigidBody.velocity.magnitude / 8f, Time.deltaTime * _InteractionSmoothing);
+        if (Mathf.Abs(_ObjectSpeed - _RigidBody.velocity.magnitude / 8f) < .005f)
+            _ObjectSpeed = _RigidBody.velocity.magnitude / 8f;
 
         EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
@@ -290,51 +273,46 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         data._Cadence = new ModulateParameterComponent
         {
-            _StartValue = _EmissionProps._CadenceStart * samplesPerMS,
-            _EndValue = _EmissionProps._CadenceEnd * samplesPerMS,
+            _StartValue = _EmissionProps._CadenceIdle * samplesPerMS,
+            _EndValue = _EmissionProps._CadenceInteraction * samplesPerMS,
             _Shape = _EmissionProps._CadenceShape,
             _Random = _EmissionProps._CadenceRandom,
-            _Interaction = _EmissionProps._CadenceInteraction,
             _Min = _EmissionProps._CadenceMin * samplesPerMS,
             _Max = _EmissionProps._CadenceMax * samplesPerMS
         };
         data._Playhead = new ModulateParameterComponent
         {
-            _StartValue = _EmissionProps._PlayheadStart,
-            _EndValue = _EmissionProps._PlayheadEnd,
+            _StartValue = _EmissionProps._PlayheadIdle,
+            _EndValue = _EmissionProps._PlayheadInteraction,
             _Shape = _EmissionProps._PlayheadShape,
             _Random = _EmissionProps._PlayheadRandom,
-            _Interaction = _EmissionProps._PlayheadInteraction,
             _Min = _EmissionProps._PlayheadMin,
             _Max = _EmissionProps._PlayheadMax
         };
         data._Duration = new ModulateParameterComponent
         {
-            _StartValue = _EmissionProps._DurationStart * samplesPerMS,
-            _EndValue = _EmissionProps._DurationEnd * samplesPerMS,
+            _StartValue = _EmissionProps._DurationIdle * samplesPerMS,
+            _EndValue = _EmissionProps._DurationInteraction * samplesPerMS,
             _Shape = _EmissionProps._DurationShape,
             _Random = _EmissionProps._DurationRandom,
-            _Interaction = _EmissionProps._DurationInteraction,
             _Min = _EmissionProps._DurationMin * samplesPerMS,
             _Max = _EmissionProps._DurationMax * samplesPerMS
         };
         data._Transpose = new ModulateParameterComponent
         {
-            _StartValue = _EmissionProps._TransposeStart,
-            _EndValue = _EmissionProps._TransposeEnd,
+            _StartValue = _EmissionProps._TransposeIdle,
+            _EndValue = _EmissionProps._TransposeInteraction,
             _Shape = _EmissionProps._TransposeShape,
             _Random = _EmissionProps._TransposeRandom,
-            _Interaction = _EmissionProps._TransposeInteraction,
             _Min = _EmissionProps._TransposeMin,
             _Max = _EmissionProps._TransposeMax
         };
         data._Volume = new ModulateParameterComponent
         {
-            _StartValue = _EmissionProps._VolumeStart,
-            _EndValue = _EmissionProps._VolumeEnd,
+            _StartValue = _EmissionProps._VolumeIdle,
+            _EndValue = _EmissionProps._VolumeInteraction,
             _Shape = _EmissionProps._VolumeShape,
             _Random = _EmissionProps._VolumeRandom,
-            _Interaction = _EmissionProps._VolumeInteraction,
             _Min = _EmissionProps._VolumeMin,
             _Max = _EmissionProps._VolumeMax
         };
