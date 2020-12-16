@@ -31,31 +31,32 @@ public class RangeCheckSystem : SystemBase
         //----    EMITTERS RANGE CHECK
         JobHandle emitterRangeCheck = Entities.WithName("emitterRangeCheck").ForEach((ref EmitterComponent emitter, in Translation trans) =>
         {
-            float distToListener = math.distance(trans.Value, speakerManager._ListenerPos);
-            bool inRangeCurrent = distToListener < speakerManager._EmitterToListenerActivationRange;
-
-
-            //--  MOVING OUT OF RANGE, DEACTIVE EMITTER
-            if (emitter._InRange  && !inRangeCurrent)
+            if (!emitter._StaticallyPaired)
             {
-                emitter = DetachEmitter(emitter);
-            }
-            //--  MOVING INTO RANGE
-            else if (!emitter._InRange && inRangeCurrent)
-            {
-                emitter._InRange = true;
-            }
+                float distToListener = math.distance(trans.Value, speakerManager._ListenerPos);
+                bool inRangeCurrent = distToListener < speakerManager._EmitterToListenerActivationRange;
 
-
-
-
-            //---  OUT OF RANGE TO SPEAKER OR SPEAKER HAS BEEN DEACTIVATED - DETACH EMITTER
-            if(emitter._AttachedToSpeaker && !emitter._StaticallyPaired)
-            {
-                float emitterToSpeakerDist = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
-                if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || emitterToSpeakerDist > speakerManager._EmitterToSpeakerAttachRadius)
+         
+                //--  MOVING OUT OF RANGE, DEACTIVE EMITTER
+                if (emitter._InRange && !inRangeCurrent)
                 {
                     emitter = DetachEmitter(emitter);
+                }
+                //--  MOVING INTO RANGE
+                else if (!emitter._InRange && inRangeCurrent)
+                {
+                    emitter._InRange = true;
+                }
+
+
+                //---  OUT OF RANGE TO SPEAKER OR SPEAKER HAS BEEN DEACTIVATED - DETACH EMITTER
+                if (emitter._AttachedToSpeaker)
+                {
+                    float emitterToSpeakerDist = math.distance(trans.Value, speakerTranslations[emitter._SpeakerIndex].Value);
+                    if (pooledSpeakers[emitter._SpeakerIndex]._State == PooledObjectState.Pooled || emitterToSpeakerDist > speakerManager._EmitterToSpeakerAttachRadius)
+                    {
+                        emitter = DetachEmitter(emitter);
+                    }
                 }
             }
         }).WithDisposeOnCompletion(pooledSpeakers)
