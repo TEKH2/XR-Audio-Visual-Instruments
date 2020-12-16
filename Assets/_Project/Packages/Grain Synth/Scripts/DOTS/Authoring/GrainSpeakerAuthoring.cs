@@ -12,7 +12,7 @@ public class GrainPlaybackData
     public bool _IsPlaying = false;
     public float[] _GrainSamples;
     public int _PlayheadIndex = 0;
-    public int _SizeInSamples;
+    public int _SizeInSamples = -1;
 
     // Used for visualizing the grain
     public float _PlayheadPos;
@@ -25,9 +25,8 @@ public class GrainPlaybackData
 
     public GrainPlaybackData(int maxGrainSize)
     {
-        // instantiate the grain samples at a given maximum length
+        // Instantiate the playback data with max grain samples
         _GrainSamples = new float[maxGrainSize];
-        //Debug.Log("GrainPlaybackData created with samples size: " + _GrainSamples.Length);
     }
 }
 
@@ -44,14 +43,13 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     MeshRenderer _MeshRenderer;
 
-    GrainSynth _GrainSynth;
+    public GrainSynth _GrainSynth;
     public int _SpeakerIndex = int.MaxValue;
 
     private int _SampleRate;
 
-    List<GrainPlaybackData> _ActiveGrainPlaybackData = new List<GrainPlaybackData>();
     GrainPlaybackData[] _GrainPlaybackDataArray;   
-    int _PooledGrainCount = 0;
+    public int _PooledGrainCount = 0;
     int ActiveGrainPlaybackDataCount { get { return _GrainPlaybackDataArray.Length - _PooledGrainCount; } }
 
     int _GrainPlaybackDataToPool = 100;
@@ -113,7 +111,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _PooledGrainCount = _GrainPlaybackDataArray.Length;
 
-
+        Debug.Log(_PooledGrainCount);
 
         ////---   ADD RING BUFFER COMP AND INIT
         //dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
@@ -152,7 +150,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
 
-        //---   UPDATE POOLING
+        //---   Put playback data object after its previous grain has reached the end of its playhead
         for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
         {
             if(!_GrainPlaybackDataArray[i]._IsPlaying && _GrainPlaybackDataArray[i]._PlayheadIndex >= _GrainPlaybackDataArray[i]._SizeInSamples)
@@ -161,8 +159,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _PooledGrainCount++;
             }
         }
-
-
 
         #region ---   CHECK PAIRING TO EMITTERS       
         if (!_StaticallyPairedToEmitter)
@@ -205,8 +201,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (!_Initialized)
             return null;
 
-        
-        //print("GetGrainPlaybackDataFromPool - _Pooled data count: " + _PooledGrainCount + "  Total data count: " + _GrainPlaybackDataArray.Length);
         // If pooled grains exist then find the first one
         if (_PooledGrainCount > 0)
         {
@@ -326,7 +320,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                     if (grainData._PlayheadIndex >= grainData._SizeInSamples)
                     {
                         grainData._IsPlaying = false;
-                        //print(" GRAIN NO LONGER PLAYING: _CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);
                     }
                     else
                     {
@@ -335,10 +328,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                             _SamplesPerRead++;
                             data[dataIndex + chan] += grainData._GrainSamples[grainData._PlayheadIndex];
                         }
-
-
                         grainData._PlayheadIndex++;
-                        //print("_CurrentDSPSample: " + _CurrentDSPSample + "  grainData._DSPStartTime: " + grainData._DSPStartTime + "   _PlayheadIndex: " + grainData._PlayheadIndex + " / _SizeInSamples: " + grainData._SizeInSamples);
                     }
                 }
             }           
