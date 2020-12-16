@@ -77,6 +77,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _Interaction;
     public float _Min;
     public float _Max;
+    public bool _LockEndValue;
 }
 
 public struct EmitterComponent : IComponentData

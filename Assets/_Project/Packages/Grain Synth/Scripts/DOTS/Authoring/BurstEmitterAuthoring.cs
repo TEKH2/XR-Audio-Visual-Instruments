@@ -109,6 +109,7 @@ public class BurstEmissionProps
     public float _TransposeMax = 3f;
 
     [Header("Volume")]
+    public bool _VolumeLockEndValue = true;
     [Range(0f, 2f)]
     [SerializeField]
     public float _VolumeStart = 1;
@@ -140,6 +141,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
+    public GameObject _InteractionObject;
+    private Rigidbody _RigidBody;
     public float _CollisionImpact = 0f;
     public bool _Triggered = false;
 
@@ -198,7 +201,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._BurstCountRandom,
                 _Interaction = _BurstEmissionProps._CountInteraction,
                 _Min = _BurstEmissionProps._CountMin,
-                _Max = _BurstEmissionProps._CountMax
+                _Max = _BurstEmissionProps._CountMax,
+                _LockEndValue = false
             },
             _Timing = new ModulateParameterComponent
             {
@@ -207,7 +211,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._TimingRandom,
                 _Interaction = _BurstEmissionProps._TimingInteraction,
                 _Min = _BurstEmissionProps._TimingMin * samplesPerMS,
-                _Max = _BurstEmissionProps._TimingMax * samplesPerMS
+                _Max = _BurstEmissionProps._TimingMax * samplesPerMS,
+                _LockEndValue = false
             },
             _Playhead = new ModulateParameterComponent
             {
@@ -217,7 +222,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._PlayheadRandom,
                 _Interaction = _BurstEmissionProps._PlayheadInteraction,
                 _Min = _BurstEmissionProps._PlayheadMin,
-                _Max = _BurstEmissionProps._PlayheadMax
+                _Max = _BurstEmissionProps._PlayheadMax,
+                _LockEndValue = false
             },
             _Duration = new ModulateParameterComponent
             {
@@ -227,7 +233,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._DurationRandom,
                 _Interaction = _BurstEmissionProps._DurationInteraction,
                 _Min = _BurstEmissionProps._DurationMin * samplesPerMS,
-                _Max = _BurstEmissionProps._DurationMax * samplesPerMS
+                _Max = _BurstEmissionProps._DurationMax * samplesPerMS,
+                _LockEndValue = false
             },
             _Transpose = new ModulateParameterComponent
             {
@@ -237,7 +244,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._TransposeRandom,
                 _Interaction = _BurstEmissionProps._TransposeInteraction,
                 _Min = _BurstEmissionProps._TransposeMin,
-                _Max = _BurstEmissionProps._TransposeMax
+                _Max = _BurstEmissionProps._TransposeMax,
+                _LockEndValue = false
             },
             _Volume = new ModulateParameterComponent
             {
@@ -247,7 +255,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._VolumeRandom,
                 _Interaction = _BurstEmissionProps._VolumeInteraction,
                 _Min = _BurstEmissionProps._VolumeMin,
-                _Max = _BurstEmissionProps._VolumeMax
+                _Max = _BurstEmissionProps._VolumeMax,
+                _LockEndValue = _BurstEmissionProps._VolumeLockEndValue
             },
 
 
@@ -269,6 +278,11 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
+
+        if (_InteractionObject == null)
+            _InteractionObject = gameObject;
+
+        _RigidBody = _InteractionObject.GetComponent<Rigidbody>();
     }
 
     public void Collided(Collision collision)
@@ -360,7 +374,8 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Random = _BurstEmissionProps._VolumeRandom,
                 _Interaction = _BurstEmissionProps._VolumeInteraction,
                 _Min = _BurstEmissionProps._VolumeMin,
-                _Max = _BurstEmissionProps._VolumeMax
+                _Max = _BurstEmissionProps._VolumeMax,
+                _LockEndValue = _BurstEmissionProps._VolumeLockEndValue
             };
 
 

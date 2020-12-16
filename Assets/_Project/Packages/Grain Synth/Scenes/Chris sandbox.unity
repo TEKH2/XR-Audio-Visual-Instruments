@@ -10620,13 +10620,12 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 206739745}
   _HeadPosition: {fileID: 1821086925}
-  _RigidBody: {fileID: 2069955619}
+  _InteractionObject: {fileID: 2069955613}
   _InteractionSmoothing: 5.85
   _ObjectSpeed: 0.5650411
   _EmissionProps:
     _Playing: 1
     _ClipIndex: 6
-    _InteractionObject: {fileID: 2069955613}
     _CadenceIdle: 100
     _CadenceInteraction: -75
     _CadenceShape: 2.72
@@ -28327,7 +28326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1828402474
 Transform:
   m_ObjectHideFlags: 0
@@ -28406,12 +28405,13 @@ MonoBehaviour:
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 206739745}
-  _HeadPosition: {fileID: 0}
-  _CollisionImpact: 0
+  _HeadPosition: {fileID: 1821086925}
+  _InteractionObject: {fileID: 1828402473}
+  _CollisionImpact: 8.852845
   _Triggered: 0
   _BurstEmissionProps:
     _Playing: 1
-    _ClipIndex: 10
+    _ClipIndex: 4
     _BurstCount: 7
     _BurstCountRandom: 0
     _CountInteraction: 0.44
@@ -28420,25 +28420,25 @@ MonoBehaviour:
     _BurstDuration: 107
     _BurstShape: 2
     _TimingRandom: 0.01
-    _TimingInteraction: 0.117
+    _TimingInteraction: 0.073
     _TimingMin: 10
     _TimingMax: 1000
-    _PlayheadStart: 0.411
-    _PlayheadEnd: 0.54
+    _PlayheadStart: 0.264
+    _PlayheadEnd: 0.282
     _PlayheadShape: 2
     _PlayheadRandom: 0.032
     _PlayheadInteraction: 0
     _PlayheadMin: 0
     _PlayheadMax: 1
     _DurationStart: 18
-    _DurationEnd: 93
+    _DurationEnd: 60
     _DurationShape: 2
     _DurationRandom: 0.022
-    _DurationInteraction: 0.677
+    _DurationInteraction: 0.505
     _DurationMin: 2
     _DurationMax: 500
     _TransposeStart: 0
-    _TransposeEnd: -0.3
+    _TransposeEnd: 0
     _TransposeShape: 5
     _TransposeRandom: 0
     _TransposeInteraction: 0
@@ -28448,7 +28448,7 @@ MonoBehaviour:
     _VolumeEnd: 0
     _VolumeShape: 2
     _VolumeRandom: 0.014
-    _VolumeInteraction: 0.383
+    _VolumeInteraction: 0.074
     _VolumeMin: 0
     _VolumeMax: 2
   _DSPChainParams: []
@@ -32154,7 +32154,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2069955613}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f80833c898a398044acba185ddf20985, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _BurstEmitter: {fileID: 1828402479}

@@ -407,7 +407,12 @@ public class GrainSynthSystem : SystemBase
     public static float ComputeBurstParameter(ModulateParameterComponent mod, float t, float n, float x, float r)
     {
         float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
-        float interaction = mod._Interaction * x;
+
+        float interaction;
+        if (mod._LockEndValue)
+            interaction = Mathf.Pow(1 - t / n, mod._Shape) * mod._Interaction * x;
+        else
+            interaction = mod._Interaction * x;
 
         return Mathf.Clamp(shapedInput + (r * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
     }

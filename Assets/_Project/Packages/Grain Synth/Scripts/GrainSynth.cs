@@ -215,7 +215,7 @@ public class GrainSynth :  MonoBehaviour
 
         speaker._SpeakerIndex = _GrainSpeakers.Count;
         speaker._Registered = true;
-        speaker.name = "Speaker " + _GrainSpeakers.Count;
+        speaker.name = speaker.name + " - Speaker " + _GrainSpeakers.Count;
         _GrainSpeakers.Add(speaker);
     }
 

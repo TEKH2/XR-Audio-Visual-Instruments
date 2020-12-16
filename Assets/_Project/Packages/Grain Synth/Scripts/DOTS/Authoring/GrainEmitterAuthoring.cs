@@ -12,8 +12,6 @@ public class GrainEmissionProps
     [Header("Clip")]
     public int _ClipIndex = 0;
 
-    public GameObject _InteractionObject;
-
     [Header("Cadence")]
     [Range(4f, 500f)]
     [SerializeField]
@@ -111,11 +109,12 @@ public class GrainEmissionProps
 public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     [Header("Debug")]
-    public bool _AttachedToSpeaker = false;
+    public bool _AttachedToSpeaker;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
-    public Rigidbody _RigidBody;
+    public GameObject _InteractionObject;
+    private Rigidbody _RigidBody;
     [Range(0, 10)]
     public float _InteractionSmoothing = 4f;
     public float _ObjectSpeed = 0f;
@@ -232,7 +231,11 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
-        _RigidBody = _EmissionProps._InteractionObject.GetComponent<Rigidbody>();
+
+        if (_InteractionObject == null)
+            _InteractionObject = gameObject;
+
+        _RigidBody = _InteractionObject.GetComponent<Rigidbody>();
     }
 
     void Update()
