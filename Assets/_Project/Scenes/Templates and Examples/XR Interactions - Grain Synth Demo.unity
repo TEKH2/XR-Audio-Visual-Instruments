@@ -5021,6 +5021,7 @@ GameObject:
   - component: {fileID: 1223576462}
   - component: {fileID: 1223576461}
   - component: {fileID: 1223576466}
+  - component: {fileID: 1223576467}
   m_Layer: 0
   m_Name: Interactable - Sphere (Large)
   m_TagString: Untagged
@@ -5040,6 +5041,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 2102819752}
+  - {fileID: 1979199690}
   m_Father: {fileID: 305272043}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5215,6 +5217,19 @@ MonoBehaviour:
   _BoundingObject: {fileID: 1147341870}
   _Radius: 30
   _HeightLimit: 20
+--- !u!114 &1223576467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223576459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _BurstEmitter: {fileID: 1979199692}
 --- !u!1 &1258155831
 GameObject:
   m_ObjectHideFlags: 0
@@ -7327,6 +7342,229 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
+--- !u!1 &1979199689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1979199690}
+  - component: {fileID: 1979199693}
+  - component: {fileID: 1979199692}
+  - component: {fileID: 1979199691}
+  - component: {fileID: 1979199694}
+  m_Layer: 0
+  m_Name: Collision Emitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1979199690
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979199689}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1223576460}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1979199691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979199689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _GrainSynth: {fileID: 0}
+  _SpeakerIndex: 2147483647
+  _PooledGrainCount: 0
+  _Registered: 0
+  _StaticallyPairedToEmitter: 0
+  _DebugLog: 0
+--- !u!114 &1979199692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979199689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c831bc9c2d0ed4c8b24fdcc05fce3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _AttachedToSpeaker: 1
+  _AttachedSpeakerIndex: 0
+  _PairedSpeaker: {fileID: 1979199691}
+  _HeadPosition: {fileID: 938742047}
+  _CollisionImpact: 8.362286
+  _Triggered: 0
+  _BurstEmissionProps:
+    _Playing: 1
+    _ClipIndex: 0
+    _BurstCount: 6
+    _BurstCountRandom: 0
+    _CountInteraction: 0.419
+    _CountMin: 1
+    _CountMax: 100
+    _BurstDuration: 161
+    _BurstShape: 3.13
+    _TimingRandom: 0.01
+    _TimingInteraction: 0.363
+    _TimingMin: 10
+    _TimingMax: 1000
+    _PlayheadStart: 0
+    _PlayheadEnd: 0.817
+    _PlayheadShape: 2.05
+    _PlayheadRandom: 0.01
+    _PlayheadInteraction: -0.001
+    _PlayheadMin: 0
+    _PlayheadMax: 1
+    _DurationStart: 48
+    _DurationEnd: 143
+    _DurationShape: 2
+    _DurationRandom: 0.01
+    _DurationInteraction: 0.213
+    _DurationMin: 2
+    _DurationMax: 500
+    _TransposeStart: 0
+    _TransposeEnd: 0
+    _TransposeShape: 2.64
+    _TransposeRandom: 0.01
+    _TransposeInteraction: 0.129
+    _TransposeMin: -3
+    _TransposeMax: 3
+    _VolumeLockEndValue: 1
+    _VolumeStart: 0
+    _VolumeEnd: 0
+    _VolumeShape: 3.27
+    _VolumeRandom: 0.01
+    _VolumeInteraction: 0.392
+    _VolumeMin: 0
+    _VolumeMax: 2
+  _DSPChainParams: []
+--- !u!82 &1979199693
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979199689}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &1979199694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979199689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
 --- !u!1 &2060866324
 GameObject:
   m_ObjectHideFlags: 0
@@ -7469,42 +7707,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AttachedToSpeaker: 1
-  _AttachedSpeakerIndex: 0
+  _AttachedSpeakerIndex: 2
   _PairedSpeaker: {fileID: 2102819756}
-  _HeadPosition: {fileID: 0}
+  _HeadPosition: {fileID: 938742047}
   _InteractionObject: {fileID: 1223576459}
-  _InteractionSmoothing: 4
-  _ObjectSpeed: 0
+  _InteractionSmoothing: 8.54
+  _ObjectSpeed: 0.38743618
   _EmissionProps:
     _Playing: 1
-    _ClipIndex: 0
-    _CadenceIdle: 20
-    _CadenceInteraction: 0
-    _CadenceShape: 1
+    _ClipIndex: 1
+    _CadenceIdle: 117
+    _CadenceInteraction: -90
+    _CadenceShape: 2.94
     _CadenceRandom: 0
     _CadenceMin: 10
     _CadenceMax: 500
-    _PlayheadIdle: 0
-    _PlayheadInteraction: 0
-    _PlayheadShape: 1
-    _PlayheadRandom: 0.01
+    _PlayheadIdle: 0.043
+    _PlayheadInteraction: 0.338
+    _PlayheadShape: 2.97
+    _PlayheadRandom: 0
     _PlayheadMin: 0
     _PlayheadMax: 1
-    _DurationIdle: 50
-    _DurationInteraction: 0
-    _DurationShape: 1
+    _DurationIdle: 225
+    _DurationInteraction: -87
+    _DurationShape: 2.9
     _DurationRandom: 0.01
     _DurationMin: 2
     _DurationMax: 500
-    _TransposeIdle: 0
-    _TransposeInteraction: 0
-    _TransposeShape: 1
+    _TransposeIdle: -1.37
+    _TransposeInteraction: 2.08
+    _TransposeShape: 3.67
     _TransposeRandom: 0.01
     _TransposeMin: -3
     _TransposeMax: 3
-    _VolumeIdle: 1
-    _VolumeInteraction: 0
-    _VolumeShape: 1
+    _VolumeIdle: 0
+    _VolumeInteraction: 0.85
+    _VolumeShape: 1.45
     _VolumeRandom: 0
     _VolumeMin: 0
     _VolumeMax: 2
