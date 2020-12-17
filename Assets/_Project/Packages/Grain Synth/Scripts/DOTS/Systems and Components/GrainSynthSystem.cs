@@ -146,6 +146,7 @@ public class GrainSynthSystem : SystemBase
 
                         //--    Add DSP Parameters
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
+
                         for (int i = 0; i < dspChain.Length; i++)
                         {
                             DSPParametersElement tempParams = dspChain[i];
@@ -338,7 +339,7 @@ public class GrainSynthSystem : SystemBase
         #endregion
 
 
-        #region DSP CHAIN
+        #region DSP CHAIN        
         JobHandle dspGrains = Entities.ForEach
         (
            (DynamicBuffer<DSPParametersElement> dspParamsBuffer, DynamicBuffer<GrainSampleBufferElement> sampleOutputBuffer, DynamicBuffer < DSPSampleBufferElement > dspBuffer, ref GrainProcessor grain) =>

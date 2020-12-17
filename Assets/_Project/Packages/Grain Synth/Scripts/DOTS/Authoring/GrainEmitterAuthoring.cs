@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
 using Random = UnityEngine.Random;
+using System;
 
 [System.Serializable]
 public class GrainEmissionProps
@@ -221,7 +222,14 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         });
 
         dstManager.SetName(entity, "Emitter");
+
+
+        //---   DSP CHAIN
         dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
+        DynamicBuffer<DSPParametersElement> dspBuffer = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+        for (int i = 0; i < _DSPChainParams.Length; i++)        
+            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());     
+
         dstManager.AddComponentData(entity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Emitter });
 
         _Initialized = true;
@@ -327,6 +335,10 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _EntityManager.SetComponentData(_EmitterEntity, data);
 
+
+        //---   DSP CHAIN        
+        UpdateDSPBuffer();
+
         _InRangeTemp = data._InRange;
 
         _AttachedSpeakerIndex = data._SpeakerIndex;
@@ -337,6 +349,21 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         {
             Value = transform.position
         });
+    }
+
+    void UpdateDSPBuffer(bool clear = true)
+    {
+       // Debug.Log("UpdateDSPBuffer...");
+        //--- TODO not sure if clearing and adding again is the best way to do this
+        DynamicBuffer<DSPParametersElement> dspBuffer = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+        
+        if(clear) dspBuffer.Clear();
+
+        for (int i = 0; i < _DSPChainParams.Length; i++)
+        {
+            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
+        }
+        //Debug.Log("...UpdateDSPBuffer complete.");
     }
 
     void OnDrawGizmos()

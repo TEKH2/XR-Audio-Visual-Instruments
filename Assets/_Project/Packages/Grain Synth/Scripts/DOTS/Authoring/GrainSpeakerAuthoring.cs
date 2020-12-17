@@ -145,8 +145,11 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             ReportGrainsDebug("");
 
 
-        //---   UPDATE TRANSLATION COMPONENT
-        transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
+        //---   UPDATE TRANSLATION COMPONENT 
+        if (!_StaticallyPairedToEmitter)
+        {
+            transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
+        }
 
 
 
