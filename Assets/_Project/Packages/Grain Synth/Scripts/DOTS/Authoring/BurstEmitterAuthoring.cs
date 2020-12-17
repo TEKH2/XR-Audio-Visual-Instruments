@@ -184,7 +184,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         int index = GrainSynth.Instance.RegisterEmitter(entity);
         int samplesPerMS = (int)(AudioSettings.outputSampleRate * .001f);
 
-        // Add emitter component
+        #region ADD EMITTER COMPONENT
         dstManager.AddComponentData(_BurstEntity, new BurstEmitterComponent
         {
             _Playing = false,
@@ -266,7 +266,16 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         });
 
         dstManager.SetName(entity, "Emitter");
+        #endregion
+
+
         dstManager.AddBuffer<DSPParametersElement>(_BurstEntity);
+        DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_BurstEntity);
+        for (int i = 0; i < _DSPChainParams.Length; i++)
+        {
+            dspParams.Add(_DSPChainParams[i].GetDSPBufferElement());
+        }
+
         dstManager.AddComponentData(entity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Emitter });
 
         _Initialized = true;
@@ -294,12 +303,12 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         if (_Triggered)
         {
-            BurstEmitterComponent data = _EntityManager.GetComponentData<BurstEmitterComponent>(_BurstEntity);
+            BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_BurstEntity);
 
-            int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
+            int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
             float distanceAmplitude = 1;
 
-            if (data._AttachedToSpeaker)
+            if (burstData._AttachedToSpeaker)
             {
                 distanceAmplitude = AudioUtils.DistanceAttenuation(
                     _HeadPosition.position,
@@ -307,13 +316,13 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                     transform.position);
             }
 
-            data._Playing = true;
-            data._SpeakerIndex = attachedSpeakerIndex;
-            data._AudioClipIndex = _BurstEmissionProps._ClipIndex;
+            burstData._Playing = true;
+            burstData._SpeakerIndex = attachedSpeakerIndex;
+            burstData._AudioClipIndex = _BurstEmissionProps._ClipIndex;
 
-            data._InteractionInput = Mathf.Clamp(_Collision.relativeVelocity.magnitude / 10f, 0f, 1f);
+            burstData._InteractionInput = Mathf.Clamp(_Collision.relativeVelocity.magnitude / 10f, 0f, 1f);
 
-            data._Density = new ModulateParameterComponent
+            burstData._Density = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._BurstCount,
                 _Random = _BurstEmissionProps._BurstCountRandom,
@@ -321,7 +330,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Min = _BurstEmissionProps._CountMin,
                 _Max = _BurstEmissionProps._CountMax
             };
-            data._Timing = new ModulateParameterComponent
+            burstData._Timing = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._BurstDuration * samplesPerMS,
                 _Shape = _BurstEmissionProps._BurstShape,
@@ -330,7 +339,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Min = _BurstEmissionProps._TimingMin * samplesPerMS,
                 _Max = _BurstEmissionProps._TimingMax * samplesPerMS
             };
-            data._Playhead = new ModulateParameterComponent
+            burstData._Playhead = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._PlayheadStart,
                 _EndValue = _BurstEmissionProps._PlayheadEnd,
@@ -340,7 +349,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Min = _BurstEmissionProps._PlayheadMin,
                 _Max = _BurstEmissionProps._PlayheadMax
             };
-            data._Duration = new ModulateParameterComponent
+            burstData._Duration = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._DurationStart * samplesPerMS,
                 _EndValue = _BurstEmissionProps._DurationEnd * samplesPerMS,
@@ -350,7 +359,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Min = _BurstEmissionProps._DurationMin * samplesPerMS,
                 _Max = _BurstEmissionProps._DurationMax * samplesPerMS
             };
-            data._Transpose = new ModulateParameterComponent
+            burstData._Transpose = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._TransposeStart,
                 _EndValue = _BurstEmissionProps._TransposeEnd,
@@ -360,7 +369,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _Min = _BurstEmissionProps._TransposeMin,
                 _Max = _BurstEmissionProps._TransposeMax
             };
-            data._Volume = new ModulateParameterComponent
+            burstData._Volume = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._VolumeStart,
                 _EndValue = _BurstEmissionProps._VolumeEnd,
@@ -373,14 +382,17 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             };
 
 
-            data._DistanceAmplitude = distanceAmplitude;
+            burstData._DistanceAmplitude = distanceAmplitude;
 
-            _EntityManager.SetComponentData(_BurstEntity, data);
+            _EntityManager.SetComponentData(_BurstEntity, burstData);
 
-            _InRangeTemp = data._InRange;
+            //---   DSP CHAIN        
+            UpdateDSPBuffer();
 
-            _AttachedSpeakerIndex = data._SpeakerIndex;
-            _AttachedToSpeaker = data._AttachedToSpeaker;
+            _InRangeTemp = burstData._InRange;
+
+            _AttachedSpeakerIndex = burstData._SpeakerIndex;
+            _AttachedToSpeaker = burstData._AttachedToSpeaker;
 
             Translation trans = _EntityManager.GetComponentData<Translation>(_BurstEntity);
             _EntityManager.SetComponentData(_BurstEntity, new Translation
@@ -389,6 +401,19 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             });
 
             _Triggered = false;
+        }
+    }
+
+    void UpdateDSPBuffer(bool clear = true)
+    {
+        //--- TODO not sure if clearing and adding again is the best way to do this
+        DynamicBuffer<DSPParametersElement> dspBuffer = _EntityManager.GetBuffer<DSPParametersElement>(_BurstEntity);
+
+        if (clear) dspBuffer.Clear();
+
+        for (int i = 0; i < _DSPChainParams.Length; i++)
+        {
+            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
     }
 

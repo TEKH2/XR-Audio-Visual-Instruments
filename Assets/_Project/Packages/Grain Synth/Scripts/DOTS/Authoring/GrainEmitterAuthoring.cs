@@ -227,10 +227,12 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         //---   DSP CHAIN
         dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
-        DynamicBuffer<DSPParametersElement> dspBuffer = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-        for (int i = 0; i < _DSPChainParams.Length; i++)        
-            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());     
-
+        DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
+        for (int i = 0; i < _DSPChainParams.Length; i++)
+        {
+            dspParams.Add(_DSPChainParams[i].GetDSPBufferElement());
+        }
+            
         dstManager.AddComponentData(entity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Emitter });
 
         _Initialized = true;
@@ -286,6 +288,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         else
             emitterData._InteractionInput = 0f;
 
+        #region UPDATE EMITTER COMPONENT
         emitterData._Cadence = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._CadenceIdle * samplesPerMS,
@@ -333,9 +336,8 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         };
 
         emitterData._DistanceAmplitude = distanceAmplitude;
-
         _EntityManager.SetComponentData(_EmitterEntity, emitterData);
-
+        #endregion
 
         //---   DSP CHAIN        
         UpdateDSPBuffer();
@@ -354,17 +356,15 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     void UpdateDSPBuffer(bool clear = true)
     {
-       // Debug.Log("UpdateDSPBuffer...");
         //--- TODO not sure if clearing and adding again is the best way to do this
         DynamicBuffer<DSPParametersElement> dspBuffer = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
         
-        if(clear) dspBuffer.Clear();
+        if (clear) dspBuffer.Clear();
 
         for (int i = 0; i < _DSPChainParams.Length; i++)
         {
             dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
-        //Debug.Log("...UpdateDSPBuffer complete.");
     }
 
     void OnDrawGizmos()
