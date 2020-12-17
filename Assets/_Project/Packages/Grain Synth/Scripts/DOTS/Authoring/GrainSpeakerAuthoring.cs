@@ -64,13 +64,18 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     float _TargetVolume = 0;
 
-    bool _ConnectedToEmitter = false;
+  
 
 
     public bool _Registered = false;
 
     [HideInInspector]
-    public bool _StaticallyPairedToEmitter = false;
+    public bool StaticallyPairedToEmitter { get { return _StaticallyPairedEmitters.Count > 0; } }
+    public List<GameObject> _StaticallyPairedEmitters = new List<GameObject>();
+
+
+    // TODO - Change to state?
+    bool _ConnectedToEmitter = false;
 
     public bool _DebugLog = false;
     #endregion
@@ -96,7 +101,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
         //---   ADD POOLING COMP IF NOT STATICALLY PAIRED TO EMITTER
-        if (!_StaticallyPairedToEmitter)
+        if (!StaticallyPairedToEmitter)
         {
             dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
             print("- Adding pooled component for non statically paired speaker");
@@ -124,8 +129,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Initialized = true;
     }
 
-    public int GetRegisterAndGetIndex()
+    public void AddPairedEmitter(GameObject emitterGO)
     {
+        _StaticallyPairedEmitters.Add(emitterGO);
+    }
+
+  
+    public int GetRegisterAndGetIndex()
+    {     
         GrainSynth.Instance.RegisterSpeaker(this);
         return _SpeakerIndex;
     }
@@ -146,7 +157,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
         //---   UPDATE TRANSLATION COMPONENT 
-        if (!_StaticallyPairedToEmitter)
+        if (!StaticallyPairedToEmitter)
         {
             transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
         }
@@ -164,7 +175,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         #region ---   CHECK PAIRING TO EMITTERS       
-        if (!_StaticallyPairedToEmitter)
+        if (!StaticallyPairedToEmitter)
         {
             //---   CLEAR PLAYBACK DATA IF NOT CONNECTED TOO EMITTERS
             _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);

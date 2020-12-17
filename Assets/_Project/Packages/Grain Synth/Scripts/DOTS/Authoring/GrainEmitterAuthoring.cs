@@ -149,7 +149,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         if(_PairedSpeaker != null)
         {
-            _PairedSpeaker._StaticallyPairedToEmitter = true;
+            _PairedSpeaker.AddPairedEmitter(gameObject);
             _StaticallyPaired = true;
             dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
             attachedSpeakerIndex =_PairedSpeaker.GetRegisterAndGetIndex();
@@ -158,7 +158,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         int index = GrainSynth.Instance.RegisterEmitter(entity);
         int samplesPerMS = (int)(AudioSettings.outputSampleRate * .001f);
 
-        // Add emitter component
+        #region ADD EMITTER COMPONENT
         dstManager.AddComponentData(_EmitterEntity, new EmitterComponent
         {
             _Playing = _EmissionProps._Playing,
@@ -222,6 +222,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         });
 
         dstManager.SetName(entity, "Emitter");
+        #endregion
 
 
         //---   DSP CHAIN
@@ -261,12 +262,12 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _ObjectSpeed = _RigidBody.velocity.magnitude / 8f;
         }
 
-        EmitterComponent data = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
+        EmitterComponent emitterData = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
-        int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : data._SpeakerIndex;
+        int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : emitterData._SpeakerIndex;
         float distanceAmplitude = 1;
 
-        if (data._AttachedToSpeaker)
+        if (emitterData._AttachedToSpeaker)
         {
             distanceAmplitude = AudioUtils.DistanceAttenuation(
                 _HeadPosition.position,
@@ -276,16 +277,16 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
-        data._Playing = _EmissionProps._Playing;
-        data._SpeakerIndex = attachedSpeakerIndex;
-        data._AudioClipIndex = _EmissionProps._ClipIndex;
+        emitterData._Playing = _EmissionProps._Playing;
+        emitterData._SpeakerIndex = attachedSpeakerIndex;
+        emitterData._AudioClipIndex = _EmissionProps._ClipIndex;
 
         if (_RigidBody != null)
-            data._InteractionInput = Mathf.Clamp(_ObjectSpeed, 0f, 1f);
+            emitterData._InteractionInput = Mathf.Clamp(_ObjectSpeed, 0f, 1f);
         else
-            data._InteractionInput = 0f;
+            emitterData._InteractionInput = 0f;
 
-        data._Cadence = new ModulateParameterComponent
+        emitterData._Cadence = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._CadenceIdle * samplesPerMS,
             _EndValue = _EmissionProps._CadenceInteraction * samplesPerMS,
@@ -294,7 +295,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Min = _EmissionProps._CadenceMin * samplesPerMS,
             _Max = _EmissionProps._CadenceMax * samplesPerMS
         };
-        data._Playhead = new ModulateParameterComponent
+        emitterData._Playhead = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._PlayheadIdle,
             _EndValue = _EmissionProps._PlayheadInteraction,
@@ -303,7 +304,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Min = _EmissionProps._PlayheadMin,
             _Max = _EmissionProps._PlayheadMax
         };
-        data._Duration = new ModulateParameterComponent
+        emitterData._Duration = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._DurationIdle * samplesPerMS,
             _EndValue = _EmissionProps._DurationInteraction * samplesPerMS,
@@ -312,7 +313,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Min = _EmissionProps._DurationMin * samplesPerMS,
             _Max = _EmissionProps._DurationMax * samplesPerMS
         };
-        data._Transpose = new ModulateParameterComponent
+        emitterData._Transpose = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._TransposeIdle,
             _EndValue = _EmissionProps._TransposeInteraction,
@@ -321,7 +322,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Min = _EmissionProps._TransposeMin,
             _Max = _EmissionProps._TransposeMax
         };
-        data._Volume = new ModulateParameterComponent
+        emitterData._Volume = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._VolumeIdle,
             _EndValue = _EmissionProps._VolumeInteraction,
@@ -331,18 +332,18 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Max = _EmissionProps._VolumeMax
         };
 
-        data._DistanceAmplitude = distanceAmplitude;
+        emitterData._DistanceAmplitude = distanceAmplitude;
 
-        _EntityManager.SetComponentData(_EmitterEntity, data);
+        _EntityManager.SetComponentData(_EmitterEntity, emitterData);
 
 
         //---   DSP CHAIN        
         UpdateDSPBuffer();
 
-        _InRangeTemp = data._InRange;
+        _InRangeTemp = emitterData._InRange;
 
-        _AttachedSpeakerIndex = data._SpeakerIndex;
-        _AttachedToSpeaker = data._AttachedToSpeaker;
+        _AttachedSpeakerIndex = emitterData._SpeakerIndex;
+        _AttachedToSpeaker = emitterData._AttachedToSpeaker;
 
         Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
         _EntityManager.SetComponentData(_EmitterEntity, new Translation

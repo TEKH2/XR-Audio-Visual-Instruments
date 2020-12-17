@@ -193,12 +193,13 @@ public class GrainSynth :  MonoBehaviour
 
     public void RegisterSpeaker(GrainSpeakerAuthoring speaker)
     {
-        if (speaker._Registered)
-            return;
-
-        if (_GrainSpeakers.Contains(speaker))
+        if (speaker._Registered || _GrainSpeakers.Contains(speaker))
+        {
             print("Speaker already regsitered.");
+            return;
+        }
 
+        print("Registering speaker. Index: " + _GrainSpeakers.Count + "     Name: " + speaker.name);
         speaker._SpeakerIndex = _GrainSpeakers.Count;
         speaker._Registered = true;
         speaker.name = speaker.name + " - Speaker " + _GrainSpeakers.Count;

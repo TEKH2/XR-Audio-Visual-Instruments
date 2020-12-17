@@ -175,7 +175,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         if(_PairedSpeaker != null)
         {
-            _PairedSpeaker._StaticallyPairedToEmitter = true;
+            _PairedSpeaker.AddPairedEmitter(gameObject);
             _StaticallyPaired = true;
             dstManager.AddComponentData(_BurstEntity, new StaticallyPairedTag { });
             attachedSpeakerIndex =_PairedSpeaker.GetRegisterAndGetIndex();
