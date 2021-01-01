@@ -1000,6 +1000,7 @@ Transform:
   m_Children:
   - {fileID: 118665129}
   - {fileID: 859464196}
+  - {fileID: 2023868418}
   - {fileID: 863653783}
   - {fileID: 1223576460}
   m_Father: {fileID: 0}
@@ -2783,10 +2784,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interactable - Sphere (Medium)
       objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158778, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2796,7 +2817,7 @@ PrefabInstance:
     - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.417
+      value: 2.84
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2841,12 +2862,57 @@ PrefabInstance:
     - target: {fileID: 1808889446535714070, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _ObjectSpeed
+      value: 0.09641294
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._ClipIndex
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceIdle
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._VolumeShape
+      value: 2.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceShape
+      value: 3.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationIdle
+      value: 111
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadIdle
+      value: 0.054
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceInteraction
+      value: 83
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationInteraction
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563128, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2861,7 +2927,7 @@ PrefabInstance:
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _CollisionImpact
-      value: 8.676568
+      value: 9.161367
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2881,22 +2947,22 @@ PrefabInstance:
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._BurstShape
-      value: 2.28
+      value: 2.15
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._DurationEnd
-      value: 288
+      value: 98
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._PlayheadEnd
-      value: 0.247
+      value: 0.586
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._VolumeShape
-      value: 2.9
+      value: 2.1
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2916,37 +2982,37 @@ PrefabInstance:
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._BurstDuration
-      value: 17
+      value: 111
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._DurationShape
-      value: 3.12
+      value: 3.01
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._DurationStart
-      value: 40
+      value: 94
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._PlayheadShape
-      value: 2.69
+      value: 2.84
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._PlayheadStart
-      value: 0.106
+      value: 0.148
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._PlayheadRandom
-      value: 0.017
+      value: 0.015
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._TransposeShape
-      value: 1.63
+      value: 2.41
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -2956,22 +3022,27 @@ PrefabInstance:
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._CountInteraction
-      value: 0.272
+      value: 0.446
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._TimingInteraction
-      value: 0.305
+      value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._VolumeInteraction
-      value: 0.388
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _BurstEmissionProps._DurationInteraction
       value: 0.197
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._PlayheadInteraction
+      value: -0.018
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6174,6 +6245,286 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
+--- !u!1001 &2023868417
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 305272043}
+    m_Modifications:
+    - target: {fileID: 1808889446340158778, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_Name
+      value: Interactable - Sphere (Small)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.417
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.827
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _ObjectSpeed
+      value: 0.08744458
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _InteractionSmoothing
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._ClipIndex
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceIdle
+      value: 101
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._VolumeShape
+      value: 3.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceShape
+      value: 1.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationIdle
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadIdle
+      value: 0.148
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceRandom
+      value: 0.035
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationShape
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadShape
+      value: 1.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._TransposeIdle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationRandom
+      value: 0.038
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadRandom
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._TransposeRandom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._CadenceInteraction
+      value: -53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._DurationInteraction
+      value: -89
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadInteraction
+      value: 0.419
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._TransposeInteraction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _CollisionImpact
+      value: 8.376885
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _DSPChainParams.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._ClipIndex
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._DurationEnd
+      value: 189
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._PlayheadEnd
+      value: 0.545
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._VolumeShape
+      value: 4.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._TransposeEnd
+      value: 2.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration
+      value: 123
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._DurationShape
+      value: 2.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._DurationStart
+      value: 146
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._PlayheadStart
+      value: 0.048
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._TransposeShape
+      value: 1.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._TransposeStart
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._CountInteraction
+      value: 0.239
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._VolumeInteraction
+      value: 0.123
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._TransposeInteraction
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f1b1436ddd020184b97794197f36526f, type: 3}
+--- !u!4 &2023868418 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2023868417}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2060866324
 GameObject:
   m_ObjectHideFlags: 0
@@ -6448,6 +6799,11 @@ PrefabInstance:
       propertyPath: _HeadPosition
       value: 
       objectReference: {fileID: 938742047}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._PlayheadIdle
+      value: 0.038
+      objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _HeadPosition
