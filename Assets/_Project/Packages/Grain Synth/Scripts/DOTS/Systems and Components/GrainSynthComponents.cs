@@ -78,6 +78,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _Min;
     public float _Max;
     public bool _LockEndValue;
+    public float _InteractionInput;
 }
 
 public struct EmitterComponent : IComponentData
@@ -89,10 +90,9 @@ public struct EmitterComponent : IComponentData
     public int _EmitterIndex;
     public bool _Playing;   
     public int _AudioClipIndex;
-    public float _InteractionInput;
 
-    public ModulateParameterComponent _Cadence;
     public ModulateParameterComponent _Playhead;
+    public ModulateParameterComponent _Density;
     public ModulateParameterComponent _Duration;
     public ModulateParameterComponent _Transpose;
     public ModulateParameterComponent _Volume;
@@ -100,6 +100,7 @@ public struct EmitterComponent : IComponentData
     public float _DistanceAmplitude;
 
     public int _LastGrainEmissionDSPIndex;
+    public int _LastGrainDuration;
     public float _PlayheadPosNormalized;
 
     public int _SampleRate;

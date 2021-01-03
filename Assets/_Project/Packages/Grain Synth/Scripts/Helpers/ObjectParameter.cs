@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ObjectParameter : MonoBehaviour
 {
     public GameObject _SourceObject;
@@ -10,7 +11,9 @@ public class ObjectParameter : MonoBehaviour
     public enum SourceParameter
     {
         Speed,
+        AccelerationAbsolute,
         Acceleration,
+        Deacceleration,
         Scale,
         CollisionForce,
         CollisionPoint,
@@ -36,12 +39,15 @@ public class ObjectParameter : MonoBehaviour
         if (_SourceObject == null)
             _SourceObject = gameObject;
 
+        if (_SourceObject.GetComponent<Rigidbody>() == null)
+            _SourceObject = this.transform.parent.gameObject;
+
         _RigidBody = _SourceObject.GetComponent<Rigidbody>();
     }
 
     public float GetValue()
     {
-        return _OutputValue;
+        return Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
     void Update()
@@ -51,13 +57,25 @@ public class ObjectParameter : MonoBehaviour
 
     private void FixedUpdate()
     {
+        float currentValue;
         switch (_SourceParameter)
         {
             case SourceParameter.Speed:
                 UpdateOutputValue(_RigidBody.velocity.magnitude);
                 break;
+            case SourceParameter.AccelerationAbsolute:
+                currentValue = Mathf.Abs((_RigidBody.velocity.magnitude - _PreviousInputValue) / Time.deltaTime);
+                UpdateOutputValue(currentValue);
+                _PreviousInputValue = _RigidBody.velocity.magnitude;
+                break;
             case SourceParameter.Acceleration:
-                UpdateOutputValue((_RigidBody.velocity.magnitude - _PreviousInputValue) / Time.deltaTime);
+                currentValue = Mathf.Max((_RigidBody.velocity.magnitude - _PreviousInputValue) / Time.deltaTime, 0f);
+                UpdateOutputValue(currentValue);
+                _PreviousInputValue = _RigidBody.velocity.magnitude;
+                break;
+            case SourceParameter.Deacceleration:
+                currentValue = Mathf.Abs(Mathf.Min((_RigidBody.velocity.magnitude - _PreviousInputValue) / Time.deltaTime, 0f));
+                UpdateOutputValue(currentValue);
                 _PreviousInputValue = _RigidBody.velocity.magnitude;
                 break;
             case SourceParameter.Scale:

@@ -9,7 +9,7 @@ public class ReturnLostInteractable : MonoBehaviour
     public GameObject _BoundingObject;
     private Rigidbody _RigidBody;
     public float _Radius = 30f;
-    public float _HeightLimit = 20f;
+    public float _HeightLimit = 50f;
 
     void Start()
     {
@@ -25,6 +25,7 @@ public class ReturnLostInteractable : MonoBehaviour
     void Update()
     {
         Vector3 objectPlanePosition = new Vector3(this.transform.position.x, 0, this.transform.position.z);
+
         if (objectPlanePosition.magnitude > _Radius || this.transform.position.y > _HeightLimit || this.transform.position.y < -_HeightLimit)
         {
             if (_RigidBody != null)
