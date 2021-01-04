@@ -77,6 +77,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _Interaction;
     public float _Min;
     public float _Max;
+    public bool _LockStartValue;
     public bool _LockEndValue;
     public float _InteractionInput;
 }
@@ -117,11 +118,10 @@ public struct BurstEmitterComponent : IComponentData
     public int _EmitterIndex;
     public bool _Playing;
     public int _AudioClipIndex;
-    public float _InteractionInput;
+    public ModulateParameterComponent _BurstDuration;
     public ModulateParameterComponent _Density;
-    public ModulateParameterComponent _Timing;
     public ModulateParameterComponent _Playhead;
-    public ModulateParameterComponent _Duration;
+    public ModulateParameterComponent _GrainDuration;
     public ModulateParameterComponent _Transpose;
     public ModulateParameterComponent _Volume;
 

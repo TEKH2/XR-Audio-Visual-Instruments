@@ -185,6 +185,8 @@ public class GrainSynthSystem : SystemBase
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
+
+                    // TODO - CHECK IF THIS NEEDS TO HAVE GRAIN QUEUE DURATION ADDED, POSSIBLE CAUSE OF UNESSESSARY LATENCY ON BURST TRIGGER
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
                     var randomGen = randomArray[nativeThreadIndex];
@@ -194,12 +196,21 @@ public class GrainSynthSystem : SystemBase
                     // NEW SYSTEM
 
                     // Determine burst duration (base value, plus random, plus interaction)
-                    
+
                     // While samplecount < burst duration
                     // Iterate the creation of a new grain
 
+                    int offset = 0;
+                    int currentSampleCount = 0;
 
+                    float randomBurstDuration = randomGen.NextFloat(1, 1);
+                    //int totalBurstSampleCount = burst._BurstDuration._StartValue + (int)Map(i, 0, burstCount, 0, burst._BurstDuration., burst._BurstDuration._Shape);
 
+                    int totalBurstSampleCount = (int)(Mathf.Clamp(burst._BurstDuration._StartValue +
+                        (burst._BurstDuration._InteractionInput + burst._BurstDuration._Random) * (burst._BurstDuration._Max - burst._BurstDuration._Min),
+                        burst._BurstDuration._Min, burst._BurstDuration._Max));
+
+                    while (currentSampleCount < burst.)
 
 
 
@@ -230,7 +241,7 @@ public class GrainSynthSystem : SystemBase
 
                         // Build genearated grain parameters
                         int offset = (int)Map(i, 0, burstCount, 0, burstDuration, burst._Timing._Shape) + (int)(randomTiming * grainTimingDifference);
-                        int duration = (int)ComputeBurstParameter(burst._Duration, i, burstCount, burst._InteractionInput, randomDuration);
+                        int duration = (int)ComputeBurstParameter(burst._BurstDuration, i, burstCount, burst._InteractionInput, randomDuration);
                         float playhead = ComputeBurstParameter(burst._Playhead, i, burstCount, burst._InteractionInput, randomPlayhead);
                         float volume = ComputeBurstParameter(burst._Volume, i, burstCount, burst._InteractionInput, randomVolume);
                         float transpose = ComputeBurstParameter(burst._Transpose, i, burstCount, burst._InteractionInput, randomTranspose);
