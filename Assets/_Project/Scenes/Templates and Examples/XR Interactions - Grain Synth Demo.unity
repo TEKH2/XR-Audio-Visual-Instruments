@@ -6875,6 +6875,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
+      propertyPath: _BurstEmissionProps._Volume._End
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
       propertyPath: _BurstEmissionProps._VolumeShape
       value: 4.72
       objectReference: {fileID: 0}

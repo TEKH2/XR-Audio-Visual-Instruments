@@ -193,7 +193,7 @@ public class GrainSynthSystem : SystemBase
 
                     int burstDurationRange = (int)(burst._BurstDuration._Max - burst._BurstDuration._Min);
                     int burstDurationInteraction = (int)Map(burst._BurstDuration._InteractionAmount * burst._BurstDuration._InteractionInput, -1, 1, -1, 1, burst._BurstDuration._Shape) * burstDurationRange;
-                    int burstDurationRandom = (int)(randomGen.NextFloat(1, 1) * burst._BurstDuration._Random * burstDurationRange);
+                    int burstDurationRandom = (int)(randomGen.NextFloat(-1, 1) * burst._BurstDuration._Random * burstDurationRange);
 
                     int totalBurstSampleCount = (int)(Mathf.Clamp(burst._BurstDuration._StartValue + burstDurationInteraction + burstDurationRandom,
                         burst._BurstDuration._Min, burst._BurstDuration._Max));
@@ -215,7 +215,7 @@ public class GrainSynthSystem : SystemBase
 
                     int offset = 0;
 
-                    while (sampleIndexNextGrainStart < totalBurstSampleCount)
+                    while (sampleIndexNextGrainStart < currentDSPTime + totalBurstSampleCount)
                     {
                         // Convert transpose value to playback rate, "pitch"
                         float pitch = Mathf.Pow(2, Mathf.Clamp(transpose, -4f, 4f));
@@ -270,10 +270,10 @@ public class GrainSynthSystem : SystemBase
                         randomArray[nativeThreadIndex] = randomGen;
 
                         // Compute grain values for next iteration
+                        density = ComputeBurstParameter(burst._Density, offset, totalBurstSampleCount, randomDensity);
                         offset = (int)(grainDuration / density);
                         playhead = ComputeBurstParameter(burst._Playhead, offset, totalBurstSampleCount, randomPlayhead);
                         grainDuration = (int)ComputeBurstParameter(burst._GrainDuration, offset, totalBurstSampleCount, randomGrainDuration);
-                        density = ComputeBurstParameter(burst._Density, offset, totalBurstSampleCount, randomDensity);
                         transpose = ComputeBurstParameter(burst._Transpose, offset, totalBurstSampleCount, randomTranspose);
                         volume = ComputeBurstParameter(burst._Volume, offset, totalBurstSampleCount, randomVolume);
 
@@ -420,24 +420,28 @@ public class GrainSynthSystem : SystemBase
     {
         return Mathf.Pow((val - inMin) / (inMax - inMin), exp) * (outMax - outMin) + outMin;
     }
-    public static float ComputeBurstParameter(ModulateParameterComponent mod, float t, float n, float r)
-    {
-        float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue) + mod._StartValue;
-
-        float interaction;
-        if (mod._LockEndValue)
-            interaction = Mathf.Pow(1 - t / n, mod._Shape) * mod._InteractionAmount * mod._InteractionInput;
-        else
-            interaction = mod._InteractionAmount * mod._InteractionInput;
-
-        return Mathf.Clamp(shapedInput + (r * mod._Random + interaction) * Mathf.Abs(mod._Max - mod._Min), mod._Min, mod._Max);
-    }
     public static float ComputeEmitterParameter(ModulateParameterComponent mod, float r)
     {
-        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape) * mod._EndValue;
+        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape) * mod._InteractionAmount;
         float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
 
         return Mathf.Clamp(mod._StartValue + interaction + random, mod._Min, mod._Max);
+    }
+    public static float ComputeBurstParameter(ModulateParameterComponent mod, float t, float n, float r)
+    {
+        float shapedInput = Mathf.Pow(t / n, mod._Shape) * (mod._EndValue - mod._StartValue);
+
+        float interaction;
+        if (mod._LockStartValue)
+            interaction = Mathf.Pow(t / n, mod._Shape) * mod._InteractionAmount * mod._InteractionInput;
+        else if (mod._LockEndValue)
+            interaction = Mathf.Pow(1 - (t / n), mod._Shape) * mod._InteractionAmount * mod._InteractionInput;
+        else
+            interaction = mod._InteractionAmount * mod._InteractionInput;
+
+        float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
+
+        return Mathf.Clamp(mod._StartValue + shapedInput + interaction + random, mod._Min, mod._Max);
     }
     #endregion
 }

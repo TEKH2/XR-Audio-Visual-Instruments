@@ -73,7 +73,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Playhead = new ModulateParameterComponent
             {
                 _StartValue = _EmissionProps._Playhead._Idle,
-                _EndValue = _EmissionProps._Playhead._InteractionAmount,
+                _InteractionAmount = _EmissionProps._Playhead._InteractionAmount,
                 _Shape = _EmissionProps._Playhead._InteractionShape,
                 _Random = _EmissionProps._Playhead._Random,
                 _Min = _EmissionProps._Playhead._Min,
@@ -82,7 +82,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Density = new ModulateParameterComponent
             {
                 _StartValue = _EmissionProps._Density._Idle,
-                _EndValue = _EmissionProps._Density._InteractionAmount,
+                _InteractionAmount = _EmissionProps._Density._InteractionAmount,
                 _Shape = _EmissionProps._Density._InteractionShape,
                 _Random = _EmissionProps._Density._Random,
                 _Min = _EmissionProps._Density._Min,
@@ -91,7 +91,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Duration = new ModulateParameterComponent
             {
                 _StartValue = _EmissionProps._GrainDuration._Idle * samplesPerMS,
-                _EndValue = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
+                _InteractionAmount = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
                 _Shape = _EmissionProps._GrainDuration._InteractionShape,
                 _Random = _EmissionProps._GrainDuration._Random,
                 _Min = _EmissionProps._GrainDuration._Min * samplesPerMS,
@@ -100,7 +100,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Transpose = new ModulateParameterComponent
             {
                 _StartValue = _EmissionProps._Transpose._Idle,
-                _EndValue = _EmissionProps._Transpose._InteractionAmount,
+                _InteractionAmount = _EmissionProps._Transpose._InteractionAmount,
                 _Shape = _EmissionProps._Transpose._InteractionShape,
                 _Random = _EmissionProps._Transpose._Random,
                 _Min = _EmissionProps._Transpose._Min,
@@ -109,7 +109,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _Volume = new ModulateParameterComponent
             {
                 _StartValue = _EmissionProps._Volume._Idle,
-                _EndValue = _EmissionProps._Volume._InteractionAmount,
+                _InteractionAmount = _EmissionProps._Volume._InteractionAmount,
                 _Shape = _EmissionProps._Volume._InteractionShape,
                 _Random = _EmissionProps._Volume._Random,
                 _Min = _EmissionProps._Volume._Min,
@@ -185,7 +185,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         emitterData._Playhead = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._Playhead._Idle,
-            _EndValue = _EmissionProps._Playhead._InteractionAmount,
+            _InteractionAmount = _EmissionProps._Playhead._InteractionAmount,
             _Shape = _EmissionProps._Playhead._InteractionShape,
             _Random = _EmissionProps._Playhead._Random,
             _Min = _EmissionProps._Playhead._Min,
@@ -195,7 +195,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         emitterData._Density = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._Density._Idle,
-            _EndValue = _EmissionProps._Density._InteractionAmount,
+            _InteractionAmount = _EmissionProps._Density._InteractionAmount,
             _Shape = _EmissionProps._Density._InteractionShape,
             _Random = _EmissionProps._Density._Random,
             _Min = _EmissionProps._Density._Min,
@@ -205,7 +205,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         emitterData._Duration = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._GrainDuration._Idle * samplesPerMS,
-            _EndValue = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
+            _InteractionAmount = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
             _Shape = _EmissionProps._GrainDuration._InteractionShape,
             _Random = _EmissionProps._GrainDuration._Random,
             _Min = _EmissionProps._GrainDuration._Min * samplesPerMS,
@@ -215,7 +215,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         emitterData._Transpose = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._Transpose._Idle,
-            _EndValue = _EmissionProps._Transpose._InteractionAmount,
+            _InteractionAmount = _EmissionProps._Transpose._InteractionAmount,
             _Shape = _EmissionProps._Transpose._InteractionShape,
             _Random = _EmissionProps._Transpose._Random,
             _Min = _EmissionProps._Transpose._Min,
@@ -225,7 +225,7 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         emitterData._Volume = new ModulateParameterComponent
         {
             _StartValue = _EmissionProps._Volume._Idle,
-            _EndValue = _EmissionProps._Volume._InteractionAmount,
+            _InteractionAmount = _EmissionProps._Volume._InteractionAmount,
             _Shape = _EmissionProps._Volume._InteractionShape,
             _Random = _EmissionProps._Volume._Random,
             _Min = _EmissionProps._Volume._Min,

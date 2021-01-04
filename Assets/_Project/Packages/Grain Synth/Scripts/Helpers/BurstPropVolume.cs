@@ -5,10 +5,10 @@ using UnityEngine;
 [System.Serializable]
 public class BurstPropVolume : EmitterPropBase
 {
-    [Range(0.1f, 10f)]
+    [Range(0f, 1f)]
     [SerializeField]
     public float _Start = 0f;
-    [Range(0.1f, 10f)]
+    [Range(0f, 1f)]
     [SerializeField]
     public float _End = 0f;
     [SerializeField]
