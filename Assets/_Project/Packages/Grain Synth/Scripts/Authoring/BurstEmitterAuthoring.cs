@@ -8,127 +8,14 @@ using Random = UnityEngine.Random;
 public class BurstEmissionProps
 {
     public bool _Playing = true;
-
-    [Header("Clip")]
     public int _ClipIndex = 0;
 
-    [Header("Burst Density")]
-    [Range(1, 100)]
-    [SerializeField]
-    public int _BurstCount = 10;
-    [Range(0f, 1f)]
-    [SerializeField]
-    public float _BurstCountRandom = 0f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _CountInteraction = 0f;
-    [HideInInspector]
-    public int _CountMin = 1;
-    [HideInInspector]
-    public int _CountMax = 100;
-
-    [Header("Burst Timing")]
-    [Range(10f, 1000f)]
-    [SerializeField]
-    public float _BurstDuration = 250f;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _BurstShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _TimingRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _TimingInteraction = 0f;
-    [HideInInspector]
-    public float _TimingMin = 10f;
-    [HideInInspector]
-    public float _TimingMax = 1000f;
-
-    [Header("Playhead")]
-    [Range(0f, 1f)]
-    [SerializeField]
-    public float _PlayheadStart = 0;
-    [Range(0f, 1f)]
-    [SerializeField]
-    public float _PlayheadEnd = 0.1f;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _PlayheadShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _PlayheadRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _PlayheadInteraction = 0f;
-    [HideInInspector]
-    public float _PlayheadMin = 0f;
-    [HideInInspector]
-    public float _PlayheadMax = 1f;
-
-    [Header("Grain Duration")]
-    [Range(2f, 500f)]
-    [SerializeField]
-    public float _DurationStart = 20f;
-    [Range(2f, 500f)]
-    [SerializeField]
-    public float _DurationEnd = 50f;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _DurationShape = 2f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _DurationRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _DurationInteraction = 0f;
-    [HideInInspector]
-    public float _DurationMin = 2f;
-    [HideInInspector]
-    public float _DurationMax = 500f;
-
-    [Header("Transpose")]
-    [Range(-3f, 3f)]
-    [SerializeField]
-    public float _TransposeStart = 0;
-    [Range(-3f, 3f)]
-    [SerializeField]
-    public float _TransposeEnd = 0;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _TransposeShape = 2f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _TransposeRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _TransposeInteraction = 0f;
-    [HideInInspector]
-    public float _TransposeMin = -3f;
-    [HideInInspector]
-    public float _TransposeMax = 3f;
-
-    [Header("Volume")]
-    public bool _VolumeLockEndValue = true;
-    [Range(0f, 2f)]
-    [SerializeField]
-    public float _VolumeStart = 1;
-    [Range(0f, 2f)]
-    [SerializeField]
-    public float _VolumeEnd = 1;
-    [Range(0.5f, 5.0f)]
-    [SerializeField]
-    public float _VolumeShape = 2f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _VolumeRandom = 0.01f;
-    [Range(-1.0f, 1.0f)]
-    [SerializeField]
-    public float _VolumeInteraction = 0f;
-    [HideInInspector]
-    public float _VolumeMin = 0f;
-    [HideInInspector]
-    public float _VolumeMax = 2f;
+    public BurstPropPlayhead _Playhead;
+    public BurstPropDuration _BurstDuration;
+    public BurstPropDensity _Density;
+    public BurstPropGrainDuration _GrainDuration;
+    public BurstPropTranspose _Transpose;
+    public BurstPropVolume _Volume;
 }
 
 
@@ -292,6 +179,13 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _Collision = collision;
         _Triggered = true;
         _CollisionImpact = collision.relativeVelocity.magnitude;
+
+        _BurstEmissionProps._Playhead._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._Duration._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._Density._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._Transpose._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._Volume._InteractionInput.CollisionData(collision);
     }
 
     void Update()

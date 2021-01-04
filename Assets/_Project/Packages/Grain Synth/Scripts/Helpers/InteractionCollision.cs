@@ -13,7 +13,7 @@ public class InteractionCollision : InteractionBase
 
     public InteractionCollisionType _SourceParameter;
 
-    public void CollisionData(Collision collision)
+    public override void CollisionData(Collision collision)
     {
         switch (_SourceParameter)
         {

@@ -146,6 +146,15 @@ public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
 
+    public void Collided(Collision collision)
+    {
+        _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
+        _EmissionProps._Density._InteractionInput.CollisionData(collision);
+        _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
+        _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
+        _EmissionProps._Volume._InteractionInput.CollisionData(collision);
+}
+
     void Update()
     {
         if (!_Initialized)

@@ -27,6 +27,8 @@ public class InteractionBase : MonoBehaviour
         return Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
+    public virtual void CollisionData(Collision collision) {}
+
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
