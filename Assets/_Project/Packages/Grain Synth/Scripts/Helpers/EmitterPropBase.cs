@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EmitterPropBase
 {
-    public InteractionParameter _InteractionInput;
+    public InteractionBase _InteractionInput;
 
     public float GetInteractionValue()
     {

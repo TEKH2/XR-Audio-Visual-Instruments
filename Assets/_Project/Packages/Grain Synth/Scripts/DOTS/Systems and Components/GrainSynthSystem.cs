@@ -173,7 +173,6 @@ public class GrainSynthSystem : SystemBase
                 }
             }
         ).ScheduleParallel(this.Dependency);
-        //.WithDisposeOnCompletion(audioClipData)
 
         // Make sure that the ECB system knows about our job
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
@@ -189,6 +188,20 @@ public class GrainSynthSystem : SystemBase
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
                     int dspTailLength = 0;
                     var randomGen = randomArray[nativeThreadIndex];
+
+
+
+                    // NEW SYSTEM
+
+                    // Determine burst duration (base value, plus random, plus interaction)
+                    
+                    // While samplecount < burst duration
+                    // Iterate the creation of a new grain
+
+
+
+
+
 
                     // Prepare burst count value
                     int burstCount = (int)(Mathf.Clamp(burst._Density._StartValue + (randomGen.NextFloat(-1 , 1) *
