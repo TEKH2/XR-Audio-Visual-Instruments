@@ -15,7 +15,7 @@ public class BurstPropTranspose : EmitterPropBase
     public bool _LockEndValue = true;
     [Range(-3f, 3f)]
     [SerializeField]
-    public float _InteractionAmount = 1f;
+    public float _InteractionAmount = 0f;
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;

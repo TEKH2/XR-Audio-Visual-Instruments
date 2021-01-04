@@ -74,7 +74,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _EndValue;
     public float _Random;
     public float _Shape;
-    public float _Interaction;
+    public float _InteractionAmount;
     public float _Min;
     public float _Max;
     public bool _LockStartValue;

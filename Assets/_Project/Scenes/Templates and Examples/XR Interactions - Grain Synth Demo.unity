@@ -314,55 +314,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 22238394}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &47820736
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 47820737}
-  - component: {fileID: 47820738}
-  m_Layer: 0
-  m_Name: Impact
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &47820737
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 47820736}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2023868418}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &47820738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 47820736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac38bc9eb0958540bae7a9593d81a97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _SourceObject: {fileID: 1229022595}
-  _SourceParameter: 5
-  _InputMin: 0
-  _InputMax: 10
-  _Smoothing: 0.2
-  _OutputValue: 0
 --- !u!1 &106805989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1901,11 +1852,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 1229022595}
-  _SourceParameter: 2
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.474
   _OutputValue: 0
+  _SourceParameter: 2
+  _Smoothing: 0.474
 --- !u!1 &614162126
 GameObject:
   m_ObjectHideFlags: 0
@@ -2232,6 +2183,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &701576416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 701576417}
+  - component: {fileID: 701576418}
+  m_Layer: 0
+  m_Name: Impact
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &701576417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701576416}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2023868418}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &701576418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701576416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64847be3d40a91744bbbef99655446cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SourceObject: {fileID: 1229022595}
+  _InputMin: 0
+  _InputMax: 20
+  _OutputValue: 0
+  _SourceParameter: 0
 --- !u!1 &734370366
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,46 +2468,62 @@ MonoBehaviour:
   _BurstEmissionProps:
     _Playing: 1
     _ClipIndex: 6
-    _BurstCount: 14
-    _BurstCountRandom: 0
-    _CountInteraction: 0.302
-    _CountMin: 1
-    _CountMax: 100
-    _BurstDuration: 189
-    _BurstShape: 1.07
-    _TimingRandom: 0
-    _TimingInteraction: 0.719
-    _TimingMin: 10
-    _TimingMax: 1000
-    _PlayheadStart: 0
-    _PlayheadEnd: 0.668
-    _PlayheadShape: 1.63
-    _PlayheadRandom: 0
-    _PlayheadInteraction: 0.12
-    _PlayheadMin: 0
-    _PlayheadMax: 1
-    _DurationStart: 134
-    _DurationEnd: 221
-    _DurationShape: 3.63
-    _DurationRandom: 0
-    _DurationInteraction: 0.379
-    _DurationMin: 2
-    _DurationMax: 500
-    _TransposeStart: 0
-    _TransposeEnd: 0
-    _TransposeShape: 2
-    _TransposeRandom: 0.041
-    _TransposeInteraction: 0.115
-    _TransposeMin: -3
-    _TransposeMax: 3
-    _VolumeLockEndValue: 1
-    _VolumeStart: 0
-    _VolumeEnd: 0
-    _VolumeShape: 3.19
-    _VolumeRandom: 0.01
-    _VolumeInteraction: 0.26
-    _VolumeMin: 0
-    _VolumeMax: 2
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Start: 0
+      _LockStartValue: 1
+      _End: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Random: 0
+      _Min: 0
+      _Max: 1
+    _BurstDuration:
+      _InteractionInput: {fileID: 0}
+      _Default: 100
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Random: 0
+      _Min: 10
+      _Max: 1000
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Start: 2
+      _End: 2
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Random: 0
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Start: 20
+      _End: 20
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Random: 0
+      _Min: 5
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 1
+      _InteractionShape: 1
+      _Random: 0
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 1
+      _InteractionShape: 1
+      _Random: 0
+      _Min: 0
+      _Max: 2
   _DSPChainParams: []
 --- !u!1 &788102768
 GameObject:
@@ -4187,11 +4202,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 1229022595}
-  _SourceParameter: 3
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.393
   _OutputValue: 0
+  _SourceParameter: 3
+  _Smoothing: 0.393
 --- !u!1 &1213244504
 GameObject:
   m_ObjectHideFlags: 0
@@ -5914,7 +5929,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2023868418}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1853161494
 MonoBehaviour:
@@ -5929,11 +5944,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 1229022595}
-  _SourceParameter: 4
   _InputMin: 0.15
   _InputMax: 0.5
-  _Smoothing: 0.2
   _OutputValue: 0
+  _SourceParameter: 4
+  _Smoothing: 0.2
 --- !u!1 &1891555374
 GameObject:
   m_ObjectHideFlags: 0
@@ -6491,11 +6506,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 1229022595}
-  _SourceParameter: 0
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.387
   _OutputValue: 0
+  _SourceParameter: 0
+  _Smoothing: 0.387
 --- !u!1001 &2023868417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6581,6 +6596,11 @@ PrefabInstance:
     - target: {fileID: 1808889446340158781, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714070, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
@@ -6908,6 +6928,36 @@ PrefabInstance:
       propertyPath: _BurstEmissionProps._TransposeInteraction
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Volume._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._InteractionAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
     - target: {fileID: 1808889447514750693, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: MaxDistance

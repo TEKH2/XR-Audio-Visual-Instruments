@@ -81,7 +81,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _BurstDuration = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._BurstDuration._Default * samplesPerMS,
-                _Interaction = _BurstEmissionProps._BurstDuration._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._BurstDuration._InteractionAmount,
                 _Shape = _BurstEmissionProps._BurstDuration._InteractionShape,
                 _Random = _BurstEmissionProps._BurstDuration._Random,
                 _Min = _BurstEmissionProps._BurstDuration._Min * samplesPerMS,
@@ -93,7 +93,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._Playhead._Start,
                 _EndValue = _BurstEmissionProps._Playhead._End,                
-                _Interaction = _BurstEmissionProps._Playhead._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Playhead._InteractionAmount,
                 _Shape = _BurstEmissionProps._Playhead._InteractionShape,
                 _Random = _BurstEmissionProps._Playhead._Random,
                 _Min = _BurstEmissionProps._Playhead._Min,
@@ -106,7 +106,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _StartValue = _BurstEmissionProps._Density._Start,
                 _EndValue = _BurstEmissionProps._Density._End,
                 _Random = _BurstEmissionProps._Density._Random,
-                _Interaction = _BurstEmissionProps._Density._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Density._InteractionAmount,
                 _Min = _BurstEmissionProps._Density._Min,
                 _Max = _BurstEmissionProps._Density._Max,
                 _LockStartValue = false,
@@ -116,7 +116,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._GrainDuration._Start * samplesPerMS,
                 _EndValue = _BurstEmissionProps._GrainDuration._End * samplesPerMS,                
-                _Interaction = _BurstEmissionProps._GrainDuration._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._GrainDuration._InteractionAmount,
                 _Shape = _BurstEmissionProps._GrainDuration._InteractionShape,
                 _Random = _BurstEmissionProps._GrainDuration._Random,
                 _Min = _BurstEmissionProps._GrainDuration._Min * samplesPerMS,
@@ -128,7 +128,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._Transpose._Start,
                 _EndValue = _BurstEmissionProps._Transpose._End,
-                _Interaction = _BurstEmissionProps._Transpose._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Transpose._InteractionAmount,
                 _Shape = _BurstEmissionProps._Transpose._InteractionShape,
                 _Random = _BurstEmissionProps._Transpose._Random,
                 _Min = _BurstEmissionProps._Transpose._Min,
@@ -142,7 +142,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _EndValue = _BurstEmissionProps._Volume._End,
                 _Shape = _BurstEmissionProps._Volume._InteractionShape,
                 _Random = _BurstEmissionProps._Volume._Random,
-                _Interaction = _BurstEmissionProps._Volume._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Volume._InteractionAmount,
                 _Min = _BurstEmissionProps._Volume._Min,
                 _Max = _BurstEmissionProps._Volume._Max,
                 _LockStartValue = false,
@@ -222,7 +222,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             burstData._BurstDuration = new ModulateParameterComponent
             {
                 _StartValue = _BurstEmissionProps._BurstDuration._Default * samplesPerMS,
-                _Interaction = _BurstEmissionProps._BurstDuration._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._BurstDuration._InteractionAmount,
                 _Shape = _BurstEmissionProps._BurstDuration._InteractionShape,
                 _Random = _BurstEmissionProps._BurstDuration._Random,
                 _Min = _BurstEmissionProps._BurstDuration._Min * samplesPerMS,
@@ -235,7 +235,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._Playhead._Start,
                 _EndValue = _BurstEmissionProps._Playhead._End,
-                _Interaction = _BurstEmissionProps._Playhead._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Playhead._InteractionAmount,
                 _Shape = _BurstEmissionProps._Playhead._InteractionShape,
                 _Random = _BurstEmissionProps._Playhead._Random,
                 _Min = _BurstEmissionProps._Playhead._Min,
@@ -249,7 +249,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _StartValue = _BurstEmissionProps._Density._Start,
                 _EndValue = _BurstEmissionProps._Density._End,
                 _Random = _BurstEmissionProps._Density._Random,
-                _Interaction = _BurstEmissionProps._Density._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Density._InteractionAmount,
                 _Min = _BurstEmissionProps._Density._Min,
                 _Max = _BurstEmissionProps._Density._Max,
                 _LockStartValue = false,
@@ -260,7 +260,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._GrainDuration._Start * samplesPerMS,
                 _EndValue = _BurstEmissionProps._GrainDuration._End * samplesPerMS,
-                _Interaction = _BurstEmissionProps._GrainDuration._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._GrainDuration._InteractionAmount,
                 _Shape = _BurstEmissionProps._GrainDuration._InteractionShape,
                 _Random = _BurstEmissionProps._GrainDuration._Random,
                 _Min = _BurstEmissionProps._GrainDuration._Min * samplesPerMS,
@@ -273,7 +273,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             {
                 _StartValue = _BurstEmissionProps._Transpose._Start,
                 _EndValue = _BurstEmissionProps._Transpose._End,
-                _Interaction = _BurstEmissionProps._Transpose._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Transpose._InteractionAmount,
                 _Shape = _BurstEmissionProps._Transpose._InteractionShape,
                 _Random = _BurstEmissionProps._Transpose._Random,
                 _Min = _BurstEmissionProps._Transpose._Min,
@@ -288,7 +288,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
                 _EndValue = _BurstEmissionProps._Volume._End,
                 _Shape = _BurstEmissionProps._Volume._InteractionShape,
                 _Random = _BurstEmissionProps._Volume._Random,
-                _Interaction = _BurstEmissionProps._Volume._InteractionAmount,
+                _InteractionAmount = _BurstEmissionProps._Volume._InteractionAmount,
                 _Min = _BurstEmissionProps._Volume._Min,
                 _Max = _BurstEmissionProps._Volume._Max,
                 _LockStartValue = false,
