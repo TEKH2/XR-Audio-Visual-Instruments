@@ -6955,6 +6955,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._InteractionInput
+      value: 
+      objectReference: {fileID: 701576418}
+    - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
       propertyPath: _BurstEmissionProps._GrainDuration._InteractionInput
       value: 
       objectReference: {fileID: 701576418}
