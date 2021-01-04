@@ -76,18 +76,14 @@ public class GrainSynthSystem : SystemBase
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
-                    //-- Max grains to stop it getting stuck in a while loop
-                    int maxGrains = 30;
+                    // Max grains to stop it getting stuck in a while loop
+                    int maxGrains = 50;
                     int grainCount = 0;
 
                     int dspTailLength = 0;
 
-                    // Prep new initial values for timing
-                    var randomGen = randomArray[nativeThreadIndex];
-                    float randomCadence = randomGen.NextFloat(-1, 1);
-                    //int offset = (int)ComputeEmitterParameter(emitter._Cadence, randomCadence);
-
                     // Get new random values
+                    var randomGen = randomArray[nativeThreadIndex];
                     float randomDuration = randomGen.NextFloat(-1, 1);
                     float randomDensity = randomGen.NextFloat(-1, 1);
                     float randomPlayhead = randomGen.NextFloat(-1, 1);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ObjectParameter : MonoBehaviour
+public class InteractionParameter : MonoBehaviour
 {
     public GameObject _SourceObject;
     private Rigidbody _RigidBody;

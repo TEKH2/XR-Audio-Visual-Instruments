@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1808889446340158755}
   - component: {fileID: 1808889446340158754}
   m_Layer: 0
-  m_Name: Interactable - Sphere (Large)
+  m_Name: Interactable - Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -273,44 +273,51 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 1808889447514750692}
   _HeadPosition: {fileID: 0}
-  _InteractionObject: {fileID: 1808889446340158778}
-  _InteractionSmoothing: 8.54
-  _ObjectSpeed: 0.69104266
   _EmissionProps:
     _Playing: 1
     _ClipIndex: 1
-    _CadenceIdle: 62
-    _CadenceInteraction: -29
-    _CadenceShape: 2.94
-    _CadenceRandom: 0
-    _CadenceMin: 10
-    _CadenceMax: 500
-    _PlayheadIdle: 0
-    _PlayheadInteraction: 0.338
-    _PlayheadShape: 2.97
-    _PlayheadRandom: 0
-    _PlayheadMin: 0
-    _PlayheadMax: 1
-    _DurationIdle: 225
-    _DurationInteraction: -87
-    _DurationShape: 2.9
-    _DurationRandom: 0.01
-    _DurationMin: 2
-    _DurationMax: 500
-    _TransposeIdle: -0.31
-    _TransposeInteraction: 2.08
-    _TransposeShape: 3.67
-    _TransposeRandom: 0.01
-    _TransposeMin: -3
-    _TransposeMax: 3
-    _VolumeIdle: 0
-    _VolumeInteraction: 0.36
-    _VolumeShape: 1.45
-    _VolumeRandom: 0
-    _VolumeMin: 0
-    _VolumeMax: 2
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Idle: 0
+      _Random: 0.01
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Idle: 2
+      _Random: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Idle: 50
+      _Random: 0.01
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Idle: 1
+      _Random: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Idle: 1
+      _Random: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 2
   _DSPChainParams:
-  - {fileID: 1808889446659563130}
+  - {fileID: 0}
 --- !u!114 &1808889446535714075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +342,6 @@ GameObject:
   - component: {fileID: 1808889446659563131}
   - component: {fileID: 1808889446659563133}
   - component: {fileID: 1808889446659563135}
-  - component: {fileID: 1808889446659563130}
   m_Layer: 0
   m_Name: Collision Emitter
   m_TagString: Untagged
@@ -419,7 +425,7 @@ MonoBehaviour:
     _VolumeMin: 0
     _VolumeMax: 2
   _DSPChainParams:
-  - {fileID: 1808889446659563130}
+  - {fileID: 0}
 --- !u!114 &1808889446659563135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,23 +439,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 1
---- !u!114 &1808889446659563130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1808889446659563128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27dd8375280b5324eb3d8912cd6158e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _Mix: 1
-  _FilterType: 0
-  _FilterCutoffNorm: 0.495
-  _FilterGain: 0.05
-  _FilterQ: 0.83
 --- !u!1 &1808889447514750688
 GameObject:
   m_ObjectHideFlags: 0

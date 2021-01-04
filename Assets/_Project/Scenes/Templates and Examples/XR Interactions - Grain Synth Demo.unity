@@ -360,7 +360,7 @@ MonoBehaviour:
   _SourceObject: {fileID: 1229022595}
   _SourceParameter: 5
   _InputMin: 0
-  _InputMax: 1
+  _InputMax: 10
   _Smoothing: 0.2
   _OutputValue: 0
 --- !u!1 &106805989
@@ -1904,7 +1904,7 @@ MonoBehaviour:
   _SourceParameter: 2
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.2
+  _Smoothing: 0.474
   _OutputValue: 0
 --- !u!1 &614162126
 GameObject:
@@ -4190,7 +4190,7 @@ MonoBehaviour:
   _SourceParameter: 3
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.2
+  _Smoothing: 0.393
   _OutputValue: 0
 --- !u!1 &1213244504
 GameObject:
@@ -6494,7 +6494,7 @@ MonoBehaviour:
   _SourceParameter: 0
   _InputMin: 0
   _InputMax: 10
-  _Smoothing: 0.2
+  _Smoothing: 0.387
   _OutputValue: 0
 --- !u!1001 &2023868417
 PrefabInstance:
@@ -6601,7 +6601,12 @@ PrefabInstance:
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._ClipIndex
-      value: 2
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _DSPChainParams.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6641,7 +6646,7 @@ PrefabInstance:
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Density._Idle
-      value: 1.29
+      value: 5.91
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6665,12 +6670,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
+      propertyPath: _EmissionProps._Playhead._Idle
+      value: 0.062
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
       propertyPath: _EmissionProps._PlayheadRandom
       value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
+      propertyPath: _EmissionProps._Transpose._Idle
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
       propertyPath: _EmissionProps._TransposeRandom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._Random
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._Transpose._Random
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
@@ -6686,7 +6711,7 @@ PrefabInstance:
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._GrainDuration._Idle
-      value: 202
+      value: 182
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6711,32 +6736,42 @@ PrefabInstance:
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Volume._InteractionShape
-      value: 2.17
+      value: 2.21
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Density._InteractionInput
       value: 
-      objectReference: {fileID: 526372201}
+      objectReference: {fileID: 1194013253}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Density._InteractionShape
-      value: 1.84
+      value: 3.62
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Volume._InteractionAmount
-      value: 0.97
+      value: 1.05
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Density._InteractionAmount
-      value: 0.85
+      value: -5.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionInput
+      value: 
+      objectReference: {fileID: 1947045900}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionShape
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._Playhead._InteractionAmount
-      value: 0.005
+      value: 0.324
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6750,8 +6785,13 @@ PrefabInstance:
       objectReference: {fileID: 1853161494}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
+      propertyPath: _EmissionProps._Transpose._InteractionShape
+      value: 2.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
       propertyPath: _EmissionProps._Transpose._InteractionAmount
-      value: -1
+      value: -3.79
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
@@ -6761,17 +6801,22 @@ PrefabInstance:
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._GrainDuration._InteractionShape
-      value: 2.48
+      value: 2.49
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446535714072, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: _EmissionProps._GrainDuration._InteractionAmount
-      value: -189
+      value: -161
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808889446659563128, guid: f1b1436ddd020184b97794197f36526f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1808889446659563133, guid: f1b1436ddd020184b97794197f36526f,
         type: 3}
