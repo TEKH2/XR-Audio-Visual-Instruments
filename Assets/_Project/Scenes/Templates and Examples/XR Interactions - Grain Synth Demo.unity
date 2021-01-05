@@ -4221,7 +4221,7 @@ PrefabInstance:
     - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: _BurstEmissionProps._Volume._InteractionAmount
-      value: 2
+      value: 1.22
       objectReference: {fileID: 0}
     - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
@@ -4277,6 +4277,61 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._ClipIndex
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Density._Idle
+      value: 4.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._Idle
+      value: 0.296
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._Random
+      value: 0.015
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._GrainDuration._Idle
+      value: 74
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume._InteractionAmount
+      value: 1.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Density._InteractionAmount
+      value: -3.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionShape
+      value: 2.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionAmount
+      value: 0.224
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._GrainDuration._InteractionAmount
+      value: -48
       objectReference: {fileID: 0}
     - target: {fileID: 8081842699598398682, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
@@ -4336,12 +4391,17 @@ PrefabInstance:
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_Name
-      value: Interactable - Default Moving Object
+      value: Interactable - Billard Ball
       objectReference: {fileID: 0}
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842700572876546, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
@@ -5530,7 +5590,7 @@ PrefabInstance:
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
@@ -6839,7 +6899,7 @@ PrefabInstance:
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ColliderScript : MonoBehaviour
 {
-    public List<BaseEmitterClass> _Emitters;
+    public BaseEmitterClass[] _Emitters;
 
     private void Start()
     {
-        
+        _Emitters = Helper.FindComponentsInChildrenWithTag<BaseEmitterClass>(this.gameObject, "Emitter", true);
     }
 
     void OnCollisionEnter(Collision collision)
