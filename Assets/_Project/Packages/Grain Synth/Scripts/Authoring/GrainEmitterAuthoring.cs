@@ -20,7 +20,7 @@ public class GrainEmissionProps
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class GrainEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
 {
     [Header("Debug")]
     public bool _AttachedToSpeaker;

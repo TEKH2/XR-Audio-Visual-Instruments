@@ -21,7 +21,7 @@ public class BurstEmissionProps
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
 {
     [Header("Debug")]
     public bool _AttachedToSpeaker = false;
@@ -180,7 +180,7 @@ public class BurstEmitterAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
 
-    public void Collided(Collision collision)
+    public override void Collided(Collision collision)
     {
         _Collision = collision;
         _Triggered = true;

@@ -533,7 +533,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 305272043}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &118665130
 MonoBehaviour:
@@ -911,9 +911,9 @@ Transform:
   m_Children:
   - {fileID: 1441807696}
   - {fileID: 1785717865}
+  - {fileID: 1808889447827057980}
   - {fileID: 118665129}
   - {fileID: 859464196}
-  - {fileID: 1808889447827057980}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2281,7 +2281,7 @@ MonoBehaviour:
   _Triggered: 0
   _BurstEmissionProps:
     _Playing: 1
-    _ClipIndex: 6
+    _ClipIndex: 0
     _Playhead:
       _InteractionInput: {fileID: 0}
       _Start: 0
@@ -2323,7 +2323,7 @@ MonoBehaviour:
       _Start: 0
       _End: 0
       _LockEndValue: 1
-      _InteractionAmount: 1
+      _InteractionAmount: 0
       _InteractionShape: 1
       _Random: 0
       _Min: -3
@@ -2692,7 +2692,7 @@ RectTransform:
   - {fileID: 487667452}
   - {fileID: 867851172}
   m_Father: {fileID: 305272043}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4123,6 +4123,161 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 305272043}
     m_Modifications:
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _CollisionImpact
+      value: 9.421065
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._ClipIndex
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._End
+      value: 2.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._End
+      value: 0.932
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._Start
+      value: 4.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._End
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._Random
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._Start
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._Random
+      value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._Start
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._Random
+      value: 0.031
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._End
+      value: 132
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._Start
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._Random
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._Default
+      value: 122
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._LockEndValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Volume._InteractionShape
+      value: 1.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._InteractionShape
+      value: 1.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Volume._InteractionAmount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._InteractionShape
+      value: 2.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._InteractionAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._InteractionShape
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._InteractionAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._InteractionShape
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._InteractionShape
+      value: 3.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._InteractionAmount
+      value: 157
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._InteractionAmount
+      value: -13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580511, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725937, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725937, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
     - target: {fileID: 8081842699598398682, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_RootOrder
@@ -4182,6 +4337,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Interactable - Default Moving Object
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Speaker
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e96fa036e65d94244bf4adc73b77bd8b, type: 3}
@@ -4306,7 +4471,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3a4a808b48f5c0748b6f81b8ef81ba44, type: 3}
   - {fileID: 8300000, guid: abe084a7921c2df43abf313ccd74b59f, type: 3}
   - {fileID: 8300000, guid: 513c39f813216dd4085d569ee295b3b4, type: 3}
-  - {fileID: 8300000, guid: 294214c2b904bc743bc5318f05dce25e, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
+  - {fileID: 8300000, guid: 402d87b8600ddf8418b18ca3b9efdd99, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
+  - {fileID: 8300000, guid: 8aba0a0d7d1a3234ca8ac6081e095833, type: 3}
   _SpeakerPrefab: {fileID: 2519325204652697373, guid: b46de1e33c7c38647882c6d1451339fd,
     type: 3}
   _GrainSpeakers: []
@@ -4630,7 +4801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BurstEmitter: {fileID: 766282978}
+  _Emitters: []
 --- !u!1 &1588916672
 GameObject:
   m_ObjectHideFlags: 0
@@ -5126,6 +5297,176 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 305272043}
     m_Modifications:
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _CollisionImpact
+      value: 8.780891
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._ClipIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._End
+      value: 3.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._End
+      value: 0.468
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Density._Start
+      value: 3.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._End
+      value: 1.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._Start
+      value: 0.178
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._Start
+      value: 2.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._End
+      value: 345
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._Start
+      value: 119
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._Default
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Volume._InteractionShape
+      value: 3.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Volume._InteractionAmount
+      value: 0.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Playhead._InteractionAmount
+      value: 0.335
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._Transpose._InteractionAmount
+      value: -0.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._BurstDuration._InteractionAmount
+      value: 635
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580506, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _BurstEmissionProps._GrainDuration._InteractionAmount
+      value: -41
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699280580511, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725937, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 886637732}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._ClipIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Density._Idle
+      value: 3.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._Idle
+      value: 0.324
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Transpose._Idle
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._Random
+      value: 0.115
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._GrainDuration._Idle
+      value: 294
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume._InteractionShape
+      value: 2.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Volume._InteractionAmount
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Density._InteractionAmount
+      value: -2.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionShape
+      value: 2.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionAmount
+      value: 0.581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._GrainDuration._InteractionShape
+      value: 2.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: _EmissionProps._GrainDuration._InteractionAmount
+      value: -265
+      objectReference: {fileID: 0}
     - target: {fileID: 8081842699598398682, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_RootOrder
@@ -5184,7 +5525,17 @@ PrefabInstance:
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_Name
-      value: Interactable - Default Moving Object (1)
+      value: Interactable - Fire
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Speaker
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e96fa036e65d94244bf4adc73b77bd8b, type: 3}
@@ -6225,6 +6576,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1743748008}
     m_Modifications:
+    - target: {fileID: 1400935971898002405, guid: 071c661a3f7b0ac44a250d8b99fa0281,
+        type: 3}
+      propertyPath: m_TagString
+      value: Speaker
+      objectReference: {fileID: 0}
     - target: {fileID: 1400935971898002410, guid: 071c661a3f7b0ac44a250d8b99fa0281,
         type: 3}
       propertyPath: MaxDistance
@@ -6368,7 +6724,7 @@ PrefabInstance:
     - target: {fileID: 1400935973622671640, guid: 071c661a3f7b0ac44a250d8b99fa0281,
         type: 3}
       propertyPath: _BurstEmissionProps._Volume._InteractionAmount
-      value: 0.38
+      value: 0.24
       objectReference: {fileID: 0}
     - target: {fileID: 1400935973622671640, guid: 071c661a3f7b0ac44a250d8b99fa0281,
         type: 3}
@@ -6379,6 +6735,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _BurstEmissionProps._Playhead._InteractionAmount
       value: -0.161
+      objectReference: {fileID: 0}
+    - target: {fileID: 1400935973622671643, guid: 071c661a3f7b0ac44a250d8b99fa0281,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 071c661a3f7b0ac44a250d8b99fa0281, type: 3}
@@ -6400,6 +6761,16 @@ PrefabInstance:
       propertyPath: _HeadPosition
       value: 
       objectReference: {fileID: 886637732}
+    - target: {fileID: 8081842699280580511, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699421725937, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Emitter
+      objectReference: {fileID: 0}
     - target: {fileID: 8081842699421725951, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: _HeadPosition
@@ -6408,7 +6779,7 @@ PrefabInstance:
     - target: {fileID: 8081842699598398682, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8081842699598398682, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
@@ -6463,7 +6834,17 @@ PrefabInstance:
     - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
         type: 3}
       propertyPath: m_Name
-      value: Interactable - Sphere (Small)
+      value: Interactable - Metal
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842699598398685, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081842700572876551, guid: e96fa036e65d94244bf4adc73b77bd8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Speaker
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e96fa036e65d94244bf4adc73b77bd8b, type: 3}

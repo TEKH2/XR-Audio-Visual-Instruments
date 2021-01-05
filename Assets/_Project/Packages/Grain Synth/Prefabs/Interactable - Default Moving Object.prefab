@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 8081842699280580504}
   m_Layer: 0
   m_Name: Collision Emitter
-  m_TagString: Untagged
+  m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 8081842699421725948}
   m_Layer: 0
   m_Name: Movement Emitter
-  m_TagString: Untagged
+  m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -489,7 +489,7 @@ GameObject:
   - component: {fileID: 8081842699598398660}
   - component: {fileID: 8081842699598398661}
   m_Layer: 0
-  m_Name: Interactable - Sphere (Small)
+  m_Name: Interactable - Default Moving Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BurstEmitter: {fileID: 8081842699280580506}
+  _Emitters: []
 --- !u!1 &8081842700572876551
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,7 +716,7 @@ GameObject:
   - component: {fileID: 8081842700572876549}
   m_Layer: 0
   m_Name: Speaker
-  m_TagString: Untagged
+  m_TagString: Speaker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

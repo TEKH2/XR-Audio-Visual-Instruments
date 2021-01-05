@@ -63,7 +63,7 @@ GameObject:
   - component: {fileID: 1400935971898002411}
   m_Layer: 0
   m_Name: Speaker
-  m_TagString: Untagged
+  m_TagString: Speaker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 1400935973238572329}
   - component: {fileID: 1400935973238572334}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Interactable - Default Metal Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,7 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BurstEmitter: {fileID: 1400935973622671640}
+  _Emitters: []
 --- !u!1 &1400935973269727561
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,7 +420,7 @@ GameObject:
   - component: {fileID: 1400935973622671641}
   m_Layer: 0
   m_Name: Collision Emitter
-  m_TagString: Untagged
+  m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

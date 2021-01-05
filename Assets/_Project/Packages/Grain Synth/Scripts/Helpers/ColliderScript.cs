@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class ColliderScript : MonoBehaviour
 {
-    public BurstEmitterAuthoring _BurstEmitter;
+    public List<BaseEmitterClass> _Emitters;
 
     private void Start()
     {
-        if (_BurstEmitter == null)
-            _BurstEmitter = GetComponent<BurstEmitterAuthoring>();
+        
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (_BurstEmitter != null)
-            _BurstEmitter.Collided(collision);
+        foreach (var emitter in _Emitters)
+        {
+            if (emitter != null && emitter.enabled)
+                emitter.Collided(collision);
+        }
     }
 }
