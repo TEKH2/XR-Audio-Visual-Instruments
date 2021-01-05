@@ -1,49 +1,36 @@
-# Ethnotekhv2_baseproject
+# XR-Audio-Visual-Instruments
+by TEKH:2
 
-<img src="http://www.ethnotekh.com/wp-content/uploads/2014/09/ET-No-Eveil2.jpg">
-
-We're getting the band back together, starting with a funded period from Creative Victoria's Creator's Fund grant program. Our aim is to research and develop audio/visual instrument concepts for VR performance.
-
-The entire process is open-sourced, which anyone will be able to test and contribute to. Towards mid-2020, Brad and Chris will host workshops that reflect on the research period, discuss our findings, and provide a friendly introduction to using the open-source software.
+![header](https://tekh.chrisvik.com/wp-content/uploads/2020/07/ET_bio_no_evil.png)
 
 <p>&nbsp</p>
 
-This project currently does nothing. Stay tuned!
+[Development Blog](https://tekh.chrisvik.com/)
+**Current Unity version:** 2020.1.0f1
+
+### Note: This project is still in experimental development with regular framework redesigns.
+
 
 <p>&nbsp</p>
 
-<strong>Current Unity version:</strong> 2019.3.5f
+## Links
 
-<p>&nbsp</p>
+- [Discord](https://discord.com/invite/J4UDwHR)
+- Twitter: [TEKH:2](https://twitter.com/2_tekh) | [Chris](https://twitter.com/MaxVram) | [Brad](https://twitter.com/xy01)
 
-<strong>Our Links</strong>
-<ul>
-  <li>Discord: https://discord.gg/xP7tHmq</li>
-  <li>Twitter: https://twitter.com/ethnotekh | https://twitter.com/MaxVram | https://twitter.com/xy01
-  <li>Tasks: https://github.com/XY01/Ethnotekhv2_baseproject/tree/master#zenhub</li>
-  <li>Doco/Ideation: https://app.milanote.com/1JgTf01GCDBtbA/et-v2 </li>
-</ul>
+## Current Dependencies
 
-<p>&nbsp</p>
+- [VR Interaction Toolkit](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@latest)
+- [Oculus Satializer](https://developer.oculus.com/downloads/package/oculus-spatializer-unity)
+- [Stella3d/OscCore](https://github.com/stella3d/OscCore)
 
-<strong>Framework/Dependencies</strong>
-<ul>
-  <li>XR Interaction Toolkit: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@latest</li>
-  <li>Stella3d/OscCore: https://github.com/stella3d/OscCore</li>
-</ul>
+## Discarded Dependencies
 
-<p>&nbsp</p>
+- [JUCE](https://juce.com)
+- [Maximilian C++ Audio and Music DSP Library](https://github.com/micknoise/Maximilian)
 
-<strong>Discarded Dependencies</strong>
-<ul>
-  <li>JUCE: https://juce.com/</li>
-  <li>Maximilian C++ Audio and Music DSP Library: https://github.com/micknoise/Maximilian</li>
-</ul>
+## Inspiration
 
-<p>&nbsp</p>
-
-<strong>Inspiration</strong>
-<ul>
-  <li>Soundstage VR Git: https://github.com/googlearchive/soundstagevr</li>
-  <li>Keijiro Takahashi Git: https://github.com/keijiro</li>
-</ul>
+- [Soundstage VR](https://github.com/googlearchive/soundstagevr)
+- [Keijiro Takahashi](https://github.com/keijiro)
+- [Axel Mulder's](https://scholar.google.com/citations?user=h4LiTPsAAAAJ&hl=en&oi=ao) work on virtual 3D instruments
