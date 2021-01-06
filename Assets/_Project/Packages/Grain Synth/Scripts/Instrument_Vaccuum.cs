@@ -4,48 +4,58 @@ using UnityEngine;
 
 public class Instrument_Vaccuum : MonoBehaviour
 {
-    public Transform _SpherecastTransform;
-    public float _Radius = .1f;
     public float _MaxDist = 20;
 
-    public float _FalloffPower = 1;
-
     public LayerMask _LayerMask;
-
     public float _ForceStrength = 10;
 
-    // Start is called before the first frame update
-    void Start()
+    public AnimationCurve _FallOff;
+
+    // Test for later to get a laggy line
+    Vector3[] _ForwardDirections;
+    int _SegementCount = 20;
+
+
+    void UpdateForwardDirections()
     {
-        
+        for (int i = 1; i < _ForwardDirections.Length; i++)
+        {
+            _ForwardDirections[i] = _ForwardDirections[i-1];
+        }
+
+        _ForwardDirections[0] = transform.forward;
+
+
+        for (int i = 0; i < _SegementCount; i++)
+        {
+            float norm = i / (_SegementCount - 1f);
+            Vector3 forward = _ForwardDirections[i] * norm * _MaxDist;
+            //_Line.SetPosition(i, transform.position + forward);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnTriggerStay(Collider other)
     {
-        RaycastHit hit;
-        float normDist = 0;
-
-        if (Physics.SphereCast(_SpherecastTransform.transform.position, _Radius, _SpherecastTransform.forward,out hit, _MaxDist, _LayerMask))
+        if (other.attachedRigidbody)
         {
-            normDist = hit.distance / _MaxDist;
-            float strength = Mathf.Pow(normDist, _FalloffPower) * _ForceStrength;
+            float dist = Vector3.Distance(transform.position, other.transform.position);
+            float normDist = dist / _MaxDist;
+            float strength = _FallOff.Evaluate(normDist) * _ForceStrength;
+            Vector3 direction = (other.transform.position - transform.position).normalized;
 
-            Vector3 direction = (hit.point - _SpherecastTransform.position).normalized;
-
-            hit.rigidbody.AddForce(direction * strength);
+            other.attachedRigidbody.AddForce(direction * strength);
         }
     }
 
     private void OnDrawGizmos()
     {
-        if (_SpherecastTransform != null)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                float norm = i / 4f;
-                Gizmos.DrawWireSphere(_SpherecastTransform.position + (_SpherecastTransform.forward * norm * _MaxDist), _Radius);
-            }
-        }
+        //if (_SpherecastTransform != null)
+        //{
+        //    for (int i = 0; i < 5; i++)
+        //    {
+        //        float norm = i / 4f;
+        //        Gizmos.DrawWireSphere(_SpherecastTransform.position + (_SpherecastTransform.forward * norm * _MaxDist), _Radius);
+        //    }
+        //}
     }
 }
