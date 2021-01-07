@@ -146,13 +146,16 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         _HeadPosition = FindObjectOfType<Camera>().transform;
     }
 
-    public void Collided(Collision collision)
+    public override void Collided(Collision collision)
     {
-        _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
-        _EmissionProps._Density._InteractionInput.CollisionData(collision);
-        _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
-        _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
-        _EmissionProps._Volume._InteractionInput.CollisionData(collision);
+        if (_MaxAudibleDistance > Mathf.Abs((_HeadPosition.position - transform.position).magnitude))
+        {
+            _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
+            _EmissionProps._Density._InteractionInput.CollisionData(collision);
+            _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
+            _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
+            _EmissionProps._Volume._InteractionInput.CollisionData(collision);
+        }
 }
 
     void Update()
@@ -165,14 +168,14 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         EmitterComponent emitterData = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : emitterData._SpeakerIndex;
-        float distanceAmplitude = 1;
+        float volumeDistanceAdjust = 1;
 
         if (emitterData._AttachedToSpeaker)
         {
-            distanceAmplitude = AudioUtils.DistanceAttenuation(
-                _HeadPosition.position,
+            volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
                 GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-                transform.position);
+                transform.position) *
+                AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
         }
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
@@ -233,7 +236,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _InteractionInput = _EmissionProps._Volume.GetInteractionValue()
         };
 
-        emitterData._DistanceAmplitude = distanceAmplitude;
+        emitterData._DistanceAmplitude = volumeDistanceAdjust;
         _EntityManager.SetComponentData(_EmitterEntity, emitterData);
         #endregion
 

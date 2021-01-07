@@ -38,11 +38,18 @@ public class AudioUtils
         return Mathf.Clamp(freq, 20, 20000);
     }
 
-    public static float DistanceAttenuation(Vector3 listener, Vector3 speaker, Vector3 emitter)
+    public static float EmitterFromSpeakerVolumeAdjust(Vector3 listener, Vector3 speaker, Vector3 emitter)
     {
         float speakerDist = Mathf.Abs((listener - speaker).magnitude);
         float emitterDist = Mathf.Abs((listener - emitter).magnitude);
         float amplitude = speakerDist / emitterDist;
         return Mathf.Clamp(amplitude, 0.0f, 2.0f);
+    }
+
+    // Inverse square attenuation for audio sources based on distance
+    public static float EmitterFromListenerVolumeAdjust(Vector3 listener, Vector3 emitter, float maxDistance)
+    {
+        float emitterDist = Mathf.Clamp(Mathf.Abs((listener - emitter).magnitude) / maxDistance, 0f, 1f);
+        return Mathf.Clamp(Mathf.Pow(2, -10 * emitterDist), 0f, 1f);
     }
 }

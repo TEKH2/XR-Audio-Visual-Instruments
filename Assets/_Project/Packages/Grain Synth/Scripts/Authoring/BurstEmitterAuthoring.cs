@@ -182,16 +182,19 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
 
     public override void Collided(Collision collision)
     {
-        _Collision = collision;
-        _Triggered = true;
-        _CollisionImpact = collision.relativeVelocity.magnitude;
+        if (_MaxAudibleDistance > Mathf.Abs((_HeadPosition.position - transform.position).magnitude))
+        {
+            _Collision = collision;
+            _Triggered = true;
+            _CollisionImpact = collision.relativeVelocity.magnitude;
 
-        _BurstEmissionProps._Playhead._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._BurstDuration._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Density._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Transpose._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Volume._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._Playhead._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._BurstDuration._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._Density._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._Transpose._InteractionInput.CollisionData(collision);
+            _BurstEmissionProps._Volume._InteractionInput.CollisionData(collision);
+        }
     }
 
     void Update()
@@ -206,14 +209,14 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_BurstEntity);
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
-            float distanceAmplitude = 1;
+            float volumeDistanceAdjust = 1;
 
             if (burstData._AttachedToSpeaker)
             {
-                distanceAmplitude = AudioUtils.DistanceAttenuation(
-                    _HeadPosition.position,
+                volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
                     GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-                    transform.position);
+                    transform.position) *
+                    AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
             }
 
             burstData._Playing = true;
@@ -299,7 +302,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             };
 
 
-            burstData._DistanceAmplitude = distanceAmplitude;
+            burstData._DistanceAmplitude = volumeDistanceAdjust;
 
             _EntityManager.SetComponentData(_BurstEntity, burstData);
 
