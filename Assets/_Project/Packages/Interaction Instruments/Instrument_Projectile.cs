@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EXP.XR;
 
 public class Instrument_Projectile : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class Instrument_Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _Firing = f>.8f);
     }
 
     // Update is called once per frame

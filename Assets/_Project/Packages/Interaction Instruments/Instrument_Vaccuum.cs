@@ -7,7 +7,6 @@ public class Instrument_Vaccuum : MonoBehaviour
 {
     public float _MaxDist = 20;
 
-    public LayerMask _LayerMask;
     public float _ForceStrength = 10;
 
     public AnimationCurve _FallOff;
@@ -17,10 +16,18 @@ public class Instrument_Vaccuum : MonoBehaviour
     int _SegementCount = 20;
 
     float _TriggerScalar = 0;
+    bool _Pull = false;
+    bool _Push = false;
 
     private void Start()
     {
-        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _TriggerScalar = f);        
+        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _TriggerScalar = f);
+
+        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnDownEvent.AddListener(() => _Pull = true);
+        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnUpEvent.AddListener(() => _Pull = false);
+
+        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].OnDownEvent.AddListener(() => _Push = true);
+        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].OnUpEvent.AddListener(() => _Push = false);
     }
 
     private void Update()
@@ -53,7 +60,12 @@ public class Instrument_Vaccuum : MonoBehaviour
         {
             float dist = Vector3.Distance(transform.position, other.transform.position);
             float normDist = dist / _MaxDist;
-            float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _TriggerScalar;
+
+            float force = 0;
+            if (_Push) force = _ForceStrength;
+            else if (_Pull) force = -_ForceStrength;
+
+            float strength = _FallOff.Evaluate(normDist) * force * _TriggerScalar;
             Vector3 direction = (other.transform.position - transform.position).normalized;
 
             other.attachedRigidbody.AddForce(direction * strength);
