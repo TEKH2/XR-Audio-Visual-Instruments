@@ -16,8 +16,8 @@ public class Instrument_Vaccuum : MonoBehaviour
     Vector3[] _ForwardDirections;
     int _SegementCount = 20;
 
-    float _ThumbScalar = 0;   
-  
+    float _ThumbScalar = 0;
+    float _DestroyRadius = .2f;
 
     private void Start()
     {
@@ -50,20 +50,38 @@ public class Instrument_Vaccuum : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
+        Vacuum(other);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Vacuum(other);
+    }
+
+    void Vacuum(Collider other)
+    {
         if (other.attachedRigidbody)
         {
             float dist = Vector3.Distance(transform.position, other.transform.position);
-            float normDist = dist / _MaxDist;
 
-           
-            float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _ThumbScalar;
-            Vector3 direction = (other.transform.position - transform.position).normalized;
+            if(dist < _DestroyRadius && _ThumbScalar < 0)
+            {
+                // Destroy
+                Destroy(other.gameObject);
+            }
+            else
+            {
+                float normDist = dist / _MaxDist;
 
-            other.attachedRigidbody.AddForce(direction * strength);
+                float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _ThumbScalar;
+                Vector3 direction = (other.transform.position - transform.position).normalized;
+
+                other.attachedRigidbody.AddForce(direction * strength);
+            }
         }
     }
 
-    private void OnDrawGizmos()
+     private void OnDrawGizmos()
     {
         //if (_SpherecastTransform != null)
         //{
