@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EXP.XR;
+using Unity.Entities.UniversalDelegates;
 
 public class Instrument_Vaccuum : MonoBehaviour
 {
@@ -15,24 +16,17 @@ public class Instrument_Vaccuum : MonoBehaviour
     Vector3[] _ForwardDirections;
     int _SegementCount = 20;
 
-    float _TriggerScalar = 0;
-    bool _Pull = false;
-    bool _Push = false;
+    float _ThumbScalar = 0;   
+  
 
     private void Start()
     {
-        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _TriggerScalar = f);
-
-        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnDownEvent.AddListener(() => _Pull = true);
-        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].OnUpEvent.AddListener(() => _Pull = false);
-
-        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].OnDownEvent.AddListener(() => _Push = true);
-        XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].OnUpEvent.AddListener(() => _Push = false);
+        XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
     }
 
     private void Update()
     {
-        _TriggerScalar = Input.GetMouseButton(0) ? 1 : 0;
+        _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
     }
 
 
@@ -61,11 +55,8 @@ public class Instrument_Vaccuum : MonoBehaviour
             float dist = Vector3.Distance(transform.position, other.transform.position);
             float normDist = dist / _MaxDist;
 
-            float force = 0;
-            if (_Push) force = _ForceStrength;
-            else if (_Pull) force = -_ForceStrength;
-
-            float strength = _FallOff.Evaluate(normDist) * force * _TriggerScalar;
+           
+            float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _ThumbScalar;
             Vector3 direction = (other.transform.position - transform.position).normalized;
 
             other.attachedRigidbody.AddForce(direction * strength);

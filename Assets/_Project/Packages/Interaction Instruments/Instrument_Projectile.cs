@@ -38,9 +38,7 @@ public class Instrument_Projectile : MonoBehaviour
            
 
 
-        if (_Firing
-            && XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].Value == false
-            && XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].Value == false)
+        if (_Firing)
         {
             if (_SpawnTimer >= SpawnInterval)
             {

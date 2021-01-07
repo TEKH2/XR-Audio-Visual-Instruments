@@ -172,6 +172,12 @@ namespace EXP.XR
                     if (_Value.x > -_AxisCutoffTrigger && value.x < -_AxisCutoffTrigger)
                         OnXNegOne.Invoke();
 
+                    if (_Value.y < _AxisCutoffTrigger && value.y > _AxisCutoffTrigger)
+                        OnYOne.Invoke();
+
+                    if (_Value.y > -_AxisCutoffTrigger && value.y < -_AxisCutoffTrigger)
+                        OnYNegOne.Invoke();
+
                     _Value = value;
 
                     OnValueUpdate.Invoke(_Value);                   
@@ -186,6 +192,9 @@ namespace EXP.XR
 
         public UnityEvent OnXOne = new UnityEvent();
         public UnityEvent OnXNegOne = new UnityEvent();
+
+        public UnityEvent OnYOne = new UnityEvent();
+        public UnityEvent OnYNegOne = new UnityEvent();
         public Vector2Event OnValueUpdate = new Vector2Event();
 
         public TrackedInputFeatureVector2(InputFeatureUsage<Vector2> inputFeature)
