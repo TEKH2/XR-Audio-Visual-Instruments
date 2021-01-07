@@ -20,7 +20,12 @@ public class Instrument_Vaccuum : MonoBehaviour
 
     private void Start()
     {
-        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _TriggerScalar = f);
+        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueUpdate.AddListener((float f) => _TriggerScalar = f);        
+    }
+
+    private void Update()
+    {
+        _TriggerScalar = Input.GetMouseButton(0) ? 1 : 0;
     }
 
 
