@@ -49,7 +49,15 @@ public class AudioUtils
     // Inverse square attenuation for audio sources based on distance
     public static float EmitterFromListenerVolumeAdjust(Vector3 listener, Vector3 emitter, float maxDistance)
     {
+        // TODO --- THIS IS A VERY SHARP CURVE WHEN COMBINED WITH "WITHIN-EARSHOT" COMPONENT TO SWITCH ON/OFF EMITTERS
+        // CONVERTING TO DIFFERENT CURVE FOR DEBUG, BUT NEED TO WORK OUT A BETTER APPROACH SO THE DISTANCE ATTENUATION
+        // IS MORE REALISTIC, WHILE STILL ATTENUATING THE AUDIO PRIOR TO EARSHOT OFF STATE
+
         float emitterDist = Mathf.Clamp(Mathf.Abs((listener - emitter).magnitude) / maxDistance, 0f, 1f);
-        return Mathf.Clamp(Mathf.Pow(2, -10 * emitterDist), 0f, 1f);
+
+        return Mathf.Clamp(Mathf.Pow(500, -0.5f * emitterDist), 0f, 1f);
+
+        //return Mathf.Clamp(Mathf.Pow(2, -10 * emitterDist), 0f, 1f);
+        //return Mathf.Clamp(emitterDist, 0f, 1f);
     }
 }

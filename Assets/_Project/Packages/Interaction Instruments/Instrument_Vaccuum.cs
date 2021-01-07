@@ -39,7 +39,6 @@ public class Instrument_Vaccuum : MonoBehaviour
 
         _ForwardDirections[0] = transform.forward;
 
-
         for (int i = 0; i < _SegementCount; i++)
         {
             float norm = i / (_SegementCount - 1f);

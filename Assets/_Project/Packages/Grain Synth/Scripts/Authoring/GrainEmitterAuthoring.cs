@@ -148,35 +148,42 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
 
     public override void Collided(Collision collision)
     {
-        if (_MaxAudibleDistance > Mathf.Abs((_HeadPosition.position - transform.position).magnitude))
-        {
-            _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
-            _EmissionProps._Density._InteractionInput.CollisionData(collision);
-            _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
-            _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
-            _EmissionProps._Volume._InteractionInput.CollisionData(collision);
-        }
-}
+        _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
+        _EmissionProps._Density._InteractionInput.CollisionData(collision);
+        _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
+        _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
+        _EmissionProps._Volume._InteractionInput.CollisionData(collision);
+    }
 
     void Update()
     {
         if (!_Initialized)
             return;
 
+        _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);
+
+        if (_CurrentDistance < _MaxAudibleDistance)
+        {
+            _WithinEarshot = true;
+            _EntityManager.AddComponent<WithinEarshot>(_EmitterEntity);
+        }
+        else
+        {
+            _WithinEarshot = false;
+            _EntityManager.RemoveComponent<WithinEarshot>(_EmitterEntity);
+        }
+
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
         EmitterComponent emitterData = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
         int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : emitterData._SpeakerIndex;
-        float volumeDistanceAdjust = 1;
 
-        if (emitterData._AttachedToSpeaker)
-        {
-            volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
+        _DistanceVolume = AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
+
+        float volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
                 GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-                transform.position) *
-                AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
-        }
+                transform.position) * _DistanceVolume;
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 

@@ -72,7 +72,7 @@ public class GrainSynthSystem : SystemBase
 
         JobHandle emitGrains = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (
-            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref EmitterComponent emitter) =>
+            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref EmitterComponent emitter, ref WithinEarshot earshot) =>
             {
                 if (emitter._AttachedToSpeaker && emitter._Playing)
                 {
@@ -138,7 +138,7 @@ public class GrainSynthSystem : SystemBase
 
                         // Add DSP parameters to grain processor
                         DynamicBuffer<DSPParametersElement> dspParameters = entityCommandBuffer.AddBuffer<DSPParametersElement>(entityInQueryIndex, grainProcessorEntity);
-                        
+
                         for (int i = 0; i < dspChain.Length; i++)
                         {
                             DSPParametersElement tempParams = dspChain[i];
@@ -181,7 +181,7 @@ public class GrainSynthSystem : SystemBase
         #region BURST GRAINS
         JobHandle emitBurst = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (
-            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst) =>
+            (int nativeThreadIndex, int entityInQueryIndex, ref DynamicBuffer<DSPParametersElement> dspChain, ref BurstEmitterComponent burst, ref WithinEarshot earshot) =>
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {

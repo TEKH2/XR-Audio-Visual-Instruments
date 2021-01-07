@@ -62,6 +62,10 @@ public struct StaticallyPairedTag : IComponentData
 {
 }
 
+public struct WithinEarshot : IComponentData
+{
+}
+
 public struct DSPTimerComponent : IComponentData
 {
     public int _CurrentDSPSample;
