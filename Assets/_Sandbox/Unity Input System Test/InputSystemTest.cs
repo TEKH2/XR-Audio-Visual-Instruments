@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using EXP.XR;
 
 public class InputSystemTest : MonoBehaviour
 {
@@ -35,6 +36,11 @@ public class InputSystemTest : MonoBehaviour
         _PlayerControls.Player.RightThumbstick.started += ctx => _RightThumb = ctx.ReadValue<Vector2>(); print("Started... " + _RightThumb);
         _PlayerControls.Player.RightThumbstick.performed += ctx => _RightThumb = ctx.ReadValue<Vector2>(); print("performed... " + _RightThumb);
         _PlayerControls.Player.RightThumbstick.canceled += ctx => _RightThumb = ctx.ReadValue<Vector2>(); print("cacnelled... " + _RightThumb);
+
+
+
+        XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => print(v));
+        XRControllers.Instance._LeftControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => print(v));
     }
 
     void Update()
