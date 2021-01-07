@@ -21,6 +21,7 @@ public class Instrument_Projectile : MonoBehaviour
 
     public float _Speed = 3;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +36,7 @@ public class Instrument_Projectile : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
             TriggerUp();
            
+
 
         if (_Firing)
         {
