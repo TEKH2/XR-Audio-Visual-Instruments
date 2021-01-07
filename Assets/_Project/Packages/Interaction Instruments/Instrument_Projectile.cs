@@ -21,6 +21,7 @@ public class Instrument_Projectile : MonoBehaviour
 
     public float _Speed = 3;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +37,10 @@ public class Instrument_Projectile : MonoBehaviour
             TriggerUp();
            
 
-        if (_Firing)
+
+        if (_Firing
+            && XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.PrimaryButton].Value == false
+            && XRControllers.Instance._RightControllerFeatures._XRBoolDict[XRBools.SecondaryButton].Value == false)
         {
             if (_SpawnTimer >= SpawnInterval)
             {
