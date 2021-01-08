@@ -11,7 +11,8 @@ public class InteractionParameter : InteractionBase
         AccelerationAbsolute,
         Acceleration,
         Deacceleration,
-        Scale
+        Scale,
+        Aux
     }
 
     public InteractionParameterType _SourceParameter;
@@ -51,6 +52,11 @@ public class InteractionParameter : InteractionBase
             default:
                 break;
         }
+    }
+
+    public void SetAuxValue(float val)
+    {
+        UpdateOutputValue(val);
     }
 
     private void UpdateOutputValue(float inputValue)

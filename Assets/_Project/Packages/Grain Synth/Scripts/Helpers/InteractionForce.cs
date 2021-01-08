@@ -9,6 +9,9 @@ public class InteractionForce : MonoBehaviour
     public Vector3 _ForceDirection;
     bool _InForceVolume = false;
 
+    public InteractionParameter _InteractionParam_DistFromSource;
+    public InteractionParameter _InteractionParam_InVolume;
+
     Rigidbody _RB;
 
     // Start is called before the first frame update
@@ -27,5 +30,9 @@ public class InteractionForce : MonoBehaviour
         _InForceVolume = inForceVolume;
 
         _DotVelocityToForceDirection = Vector3.Dot(_RB.velocity.normalized, forceDir.normalized);
+
+        _InteractionParam_DistFromSource.SetAuxValue(_DistanceFromForceSource);
+        _InteractionParam_InVolume.SetAuxValue(_InForceVolume ? 1 : 0);
+
     }
 }
