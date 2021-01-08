@@ -49,21 +49,22 @@ public class Instrument_Vaccuum : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        Vacuum(other);
+        Vacuum(other, false);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Vacuum(other);
+        Vacuum(other, true);
     }
 
-    void Vacuum(Collider other)
+    void Vacuum(Collider other, bool inTrigger)
     {
         if (other.attachedRigidbody)
         {
             float dist = Vector3.Distance(transform.position, other.transform.position);
+            Vector3 direction = Vector3.zero;
 
-            if(dist < _DestroyRadius && _ThumbScalar < 0)
+            if (dist < _DestroyRadius && _ThumbScalar < 0)
             {
                 // Destroy
                 Destroy(other.gameObject);
@@ -73,9 +74,16 @@ public class Instrument_Vaccuum : MonoBehaviour
                 float normDist = dist / _MaxDist;
 
                 float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _ThumbScalar;
-                Vector3 direction = (other.transform.position - transform.position).normalized;
+                direction = (other.transform.position - transform.position).normalized;
 
                 other.attachedRigidbody.AddForce(direction * strength);
+            }
+
+            //---   INTERACTION FORCE
+            InteractionForce interactionForce = other.gameObject.GetComponent<InteractionForce>();
+            if(interactionForce != null)
+            {
+                interactionForce.UpdateInteractionForce(dist, direction, inTrigger);
             }
         }
     }
