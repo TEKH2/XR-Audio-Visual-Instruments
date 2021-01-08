@@ -22,6 +22,9 @@ public class Instrument_Vaccuum : MonoBehaviour
     public float forceTowardLine = .5f;
     public float forceTowardSource = .5f;
 
+    public float _TotalVacuumedMass = 0;
+    public InteractionParameter _TotalMassInteractionParam;
+
     private void Start()
     {
         XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
@@ -58,11 +61,17 @@ public class Instrument_Vaccuum : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         Vacuum(other, false);
+
+        _TotalVacuumedMass -= other.attachedRigidbody.mass;
+        _TotalMassInteractionParam.SetAuxValue(_TotalVacuumedMass);
     }
 
     void OnTriggerEnter(Collider other)
     {
         Vacuum(other, true);
+
+        _TotalVacuumedMass += other.attachedRigidbody.mass;
+        _TotalMassInteractionParam.SetAuxValue(_TotalVacuumedMass);
     }
 
     void Vacuum(Collider other, bool inTrigger)

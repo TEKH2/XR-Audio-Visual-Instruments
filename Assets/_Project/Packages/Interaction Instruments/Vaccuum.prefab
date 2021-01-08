@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 7595123676224152040}
   - component: {fileID: 7595123676224152041}
   - component: {fileID: 7595123676224152045}
+  - component: {fileID: 1507394218}
   m_Layer: 0
   m_Name: Vacuum volume
   m_TagString: Untagged
@@ -1289,6 +1290,26 @@ MonoBehaviour:
     m_RotationOrder: 4
   forceTowardLine: 0.5
   forceTowardSource: 0.5
+  _TotalVacuumedMass: 0
+  _TotalMassInteractionParam: {fileID: 1507394218}
+--- !u!114 &1507394218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7595123676224152043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac38bc9eb0958540bae7a9593d81a97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SourceObject: {fileID: 0}
+  _InputMin: 0
+  _InputMax: 1
+  _OutputValue: 0
+  _SourceParameter: 5
+  _Smoothing: 0.2
 --- !u!1 &7595123676436803330
 GameObject:
   m_ObjectHideFlags: 0
