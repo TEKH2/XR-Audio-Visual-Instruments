@@ -19,6 +19,9 @@ public class Instrument_Vaccuum : MonoBehaviour
     float _ThumbScalar = 0;
     float _DestroyRadius = .2f;
 
+    public float forceTowardLine = .5f;
+    public float forceTowardSource = .5f;
+
     private void Start()
     {
         XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
@@ -27,6 +30,11 @@ public class Instrument_Vaccuum : MonoBehaviour
     private void Update()
     {
         _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
+
+        if (Input.GetKey(KeyCode.DownArrow))
+            _ThumbScalar = -1;
+        else
+            _ThumbScalar = 0;
     }
 
 
@@ -62,7 +70,10 @@ public class Instrument_Vaccuum : MonoBehaviour
         if (other.attachedRigidbody)
         {
             float dist = Vector3.Distance(transform.position, other.transform.position);
+            Vector3 directionTowardLine = Vector3.zero;
+            Vector3 directionTowardSource = Vector3.zero;
             Vector3 direction = Vector3.zero;
+            Vector3 force = Vector3.zero;
 
             if (dist < _DestroyRadius && _ThumbScalar < 0)
             {
@@ -71,24 +82,41 @@ public class Instrument_Vaccuum : MonoBehaviour
             }
             else
             {
-                float normDist = dist / _MaxDist;
+                float normDistToSource = dist / _MaxDist;
 
-                float strength = _FallOff.Evaluate(normDist) * _ForceStrength * _ThumbScalar;
-                direction = (other.transform.position - transform.position).normalized;
+                Vector3 linePoint = NearestPointOnLine(transform.position, transform.forward, other.transform.position);
 
-                other.attachedRigidbody.AddForce(direction * strength);
+                directionTowardLine = (other.transform.position - linePoint).normalized;
+                directionTowardSource = (other.transform.position - transform.position).normalized;
+
+                float falloffStrength = _FallOff.Evaluate(normDistToSource) * _ForceStrength * _ThumbScalar;
+
+                force = (forceTowardLine * directionTowardLine * falloffStrength) + (forceTowardSource * directionTowardSource * falloffStrength);
+
+                other.attachedRigidbody.AddForce(force);
             }
 
             //---   INTERACTION FORCE
             InteractionForce interactionForce = other.gameObject.GetComponent<InteractionForce>();
             if(interactionForce != null)
             {
-                interactionForce.UpdateInteractionForce(dist, direction, inTrigger);
+                interactionForce.UpdateInteractionForce(dist, force, inTrigger);
             }
         }
     }
 
-     private void OnDrawGizmos()
+    //linePnt - point the line passes through
+    //lineDir - unit vector in direction of line, either direction works
+    //pnt - the point to find nearest on line for
+    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
+    {
+        lineDir.Normalize();//this needs to be a unit vector
+        var v = pnt - linePnt;
+        var d = Vector3.Dot(v, lineDir);
+        return linePnt + lineDir * d;
+    }
+
+    private void OnDrawGizmos()
     {
         //if (_SpherecastTransform != null)
         //{
