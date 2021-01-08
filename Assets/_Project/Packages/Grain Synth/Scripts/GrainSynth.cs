@@ -36,6 +36,8 @@ public class GrainSynth :  MonoBehaviour
     public List<GrainSpeakerAuthoring> _GrainSpeakers = new List<GrainSpeakerAuthoring>();
     public int _MaxDyanmicSpeakers = 5;
 
+    int _MaxSpeakers;
+
     [Range(0, 100)]
     public float _GrainQueueInMS = 50;
     int _SampleRate;
@@ -50,6 +52,7 @@ public class GrainSynth :  MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        _MaxSpeakers = AudioSettings.GetConfiguration().numRealVoices;
     }
 
     public void Start()
@@ -195,7 +198,7 @@ public class GrainSynth :  MonoBehaviour
     {
         if (speaker._Registered || _GrainSpeakers.Contains(speaker))
         {
-            //print("Speaker already regsitered.");
+            print("Speaker already regsitered. Name: " + speaker.name);
             return;
         }
 
