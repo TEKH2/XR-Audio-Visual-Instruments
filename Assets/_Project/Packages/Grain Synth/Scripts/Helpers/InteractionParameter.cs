@@ -19,7 +19,6 @@ public class InteractionParameter : InteractionBase
 
     [Range(0f, 1f)]
     public float _Smoothing = 0.2f;
-    private float _ActualSmoothing = 0;
 
     private float _PreviousInputValue = 0;
 
@@ -61,8 +60,8 @@ public class InteractionParameter : InteractionBase
 
     private void UpdateOutputValue(float inputValue)
     {
-        _ActualSmoothing = (1 - _Smoothing) * 10f;
         float newValue = Map(inputValue, _InputMin, _InputMax, 0, 1);
-        _OutputValue = Mathf.Lerp(_OutputValue, newValue, _ActualSmoothing * Time.deltaTime);
+        float actualSmoothing = (1 - _Smoothing) * 10f;
+        _OutputValue = Mathf.Lerp(_OutputValue, newValue, actualSmoothing * Time.deltaTime);
     }
 }
