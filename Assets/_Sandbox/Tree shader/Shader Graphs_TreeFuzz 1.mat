@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_TreeFuzz
+  m_Name: Shader Graphs_TreeFuzz 1
   m_Shader: {fileID: -6465566751694194690, guid: 115792da28821bb4a931bb546e95ac35,
     type: 3}
   m_ShaderKeywords: 

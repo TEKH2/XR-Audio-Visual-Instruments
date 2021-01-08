@@ -116,7 +116,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _PooledGrainCount = _GrainPlaybackDataArray.Length;
 
-        Debug.Log(_PooledGrainCount);
+        //Debug.Log(_PooledGrainCount);
 
         ////---   ADD RING BUFFER COMP AND INIT
         //dstManager.AddComponentData(entity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 0 });
@@ -164,10 +164,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 
 
-        //---   Put playback data object after its previous grain has reached the end of its playhead
+        //---   Pool playback data object after its previous grain has reached the end of its playhead
         for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
         {
-            if(!_GrainPlaybackDataArray[i]._IsPlaying && _GrainPlaybackDataArray[i]._PlayheadIndex >= _GrainPlaybackDataArray[i]._SizeInSamples)
+            if (!_GrainPlaybackDataArray[i]._IsPlaying && _GrainPlaybackDataArray[i]._PlayheadIndex >= _GrainPlaybackDataArray[i]._SizeInSamples && _GrainPlaybackDataArray[i]._Pooled == false)
             {
                 _GrainPlaybackDataArray[i]._Pooled = true;
                 _PooledGrainCount++;
@@ -184,14 +184,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             //---   IF PREVIOUSLY CONNCETED AND NOW DISCONNECTED
             if (_ConnectedToEmitter && !isCurrentlyConnected)
-            {               
+            {
                 for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
                 {
                     _GrainPlaybackDataArray[i]._Pooled = true;
                     _GrainPlaybackDataArray[i]._IsPlaying = false;
-                }                    
-               
-                _PooledGrainCount = _GrainPlaybackDataArray.Length;                
+                }
+
+                _PooledGrainCount = _GrainPlaybackDataArray.Length;
             }
 
 
@@ -204,6 +204,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             _MeshRenderer.enabled = isCurrentlyConnected;
             _ConnectedToEmitter = isCurrentlyConnected;
         }
+
+        //if (_PooledGrainCount == _GrainPlaybackDataToPool)
+        //    Debug.Log("Ignoring Speaker " + _SpeakerIndex);
         #endregion
     }
 
@@ -309,7 +312,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     void OnAudioFilterRead(float[] data, int channels)
     {
-        if (!_Initialized)
+        // BRAD! Fixed pool count and added condition to ignore DSP processing entirely if pooling has no active grains
+        if (!_Initialized || _PooledGrainCount == _GrainPlaybackDataToPool)
             return;
 
         _SamplesPerRead = 0;
