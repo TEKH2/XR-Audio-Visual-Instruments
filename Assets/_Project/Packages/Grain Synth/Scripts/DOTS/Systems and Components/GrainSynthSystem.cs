@@ -178,6 +178,7 @@ public class GrainSynthSystem : SystemBase
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
         #endregion
 
+
         #region BURST GRAINS
         JobHandle emitBurst = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (

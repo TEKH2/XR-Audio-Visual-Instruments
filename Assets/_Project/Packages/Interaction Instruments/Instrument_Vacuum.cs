@@ -26,19 +26,31 @@ public class Instrument_Vacuum : MonoBehaviour
 
     public List<GameObject> _ObjectsCurrentBeingVacuumed;
 
+    public bool _UseKB = false;
+
     private void Start()
     {
-        XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
+        if(!_UseKB)
+            XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
     }
 
     private void Update()
     {
-        _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
+      
 
-        if (Input.GetKey(KeyCode.DownArrow))
-            _ThumbScalar = -1;
+        if (_UseKB)
+        {
+            if (Input.GetKey(KeyCode.DownArrow))
+                _ThumbScalar = -1;
+            else if (Input.GetKey(KeyCode.UpArrow))
+                _ThumbScalar = 1;
+            else
+                _ThumbScalar = 0;
+        }
         else
-            _ThumbScalar = 0;
+        {
+            _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
+        }
     }
 
     private void FixedUpdate()
@@ -102,6 +114,16 @@ public class Instrument_Vacuum : MonoBehaviour
             {
                 // Destroy
                 _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);
+
+                GrainSpeakerAuthoring speaker = GetComponentInChildren<GrainSpeakerAuthoring>(other.gameObject);
+                BurstEmitterAuthoring burst = GetComponentInChildren<BurstEmitterAuthoring>(other.gameObject);
+                GrainEmitterAuthoring emit = GetComponentInChildren<GrainEmitterAuthoring>(other.gameObject);
+
+                if (speaker != null) speaker.DestroyEntity();
+                if (burst != null) burst.DestroyEntity();
+                if (emit != null) emit.DestroyEntity();
+
+
                 Destroy(other.gameObject);
             }
             else

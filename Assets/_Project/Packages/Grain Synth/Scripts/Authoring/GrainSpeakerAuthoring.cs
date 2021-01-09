@@ -284,7 +284,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     }
     #endregion
 
-
+    public void DestroyEntity()
+    {
+        _EntityManager.DestroyEntity(_Entity);
+    }
 
     void ReportGrainsDebug(string action)
     {
