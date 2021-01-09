@@ -39,6 +39,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
     public bool _StaticallyPaired = false;
     bool _InRangeTemp = false;
 
+    private float[] _PerlinSeedArray;
+
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -52,6 +54,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         }
 
         int attachedSpeakerIndex = int.MaxValue;
+
+        Debug.Log("PAIRED SPEAKER: " + _PairedSpeaker.name);
 
         if(_PairedSpeaker != null)
         {
@@ -76,7 +80,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
                 _StartValue = _EmissionProps._Playhead._Idle,
                 _InteractionAmount = _EmissionProps._Playhead._InteractionAmount,
                 _Shape = _EmissionProps._Playhead._InteractionShape,
-                _Random = _EmissionProps._Playhead._Random,
+                _Noise = _EmissionProps._Playhead._Noise,
+                _PerlinNoise = _EmissionProps._Playhead._PerlinNoise,
                 _Min = _EmissionProps._Playhead._Min,
                 _Max = _EmissionProps._Playhead._Max
             },
@@ -85,7 +90,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
                 _StartValue = _EmissionProps._Density._Idle,
                 _InteractionAmount = _EmissionProps._Density._InteractionAmount,
                 _Shape = _EmissionProps._Density._InteractionShape,
-                _Random = _EmissionProps._Density._Random,
+                _Noise = _EmissionProps._Density._Noise,
+                _PerlinNoise = _EmissionProps._Density._PerlinNoise,
                 _Min = _EmissionProps._Density._Min,
                 _Max = _EmissionProps._Density._Max
             },
@@ -94,7 +100,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
                 _StartValue = _EmissionProps._GrainDuration._Idle * samplesPerMS,
                 _InteractionAmount = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
                 _Shape = _EmissionProps._GrainDuration._InteractionShape,
-                _Random = _EmissionProps._GrainDuration._Random,
+                _Noise = _EmissionProps._GrainDuration._Noise,
+                _PerlinNoise = _EmissionProps._GrainDuration._PerlinNoise,
                 _Min = _EmissionProps._GrainDuration._Min * samplesPerMS,
                 _Max = _EmissionProps._GrainDuration._Max * samplesPerMS
             },
@@ -103,7 +110,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
                 _StartValue = _EmissionProps._Transpose._Idle,
                 _InteractionAmount = _EmissionProps._Transpose._InteractionAmount,
                 _Shape = _EmissionProps._Transpose._InteractionShape,
-                _Random = _EmissionProps._Transpose._Random,
+                _Noise = _EmissionProps._Transpose._Noise,
+                _PerlinNoise = _EmissionProps._Transpose._PerlinNoise,
                 _Min = _EmissionProps._Transpose._Min,
                 _Max = _EmissionProps._Transpose._Max
             },
@@ -112,7 +120,8 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
                 _StartValue = _EmissionProps._Volume._Idle,
                 _InteractionAmount = _EmissionProps._Volume._InteractionAmount,
                 _Shape = _EmissionProps._Volume._InteractionShape,
-                _Random = _EmissionProps._Volume._Random,
+                _Noise = _EmissionProps._Volume._Noise,
+                _PerlinNoise = _EmissionProps._Volume._PerlinNoise,
                 _Min = _EmissionProps._Volume._Min,
                 _Max = _EmissionProps._Volume._Max
             },
@@ -145,6 +154,13 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
     {
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _HeadPosition = FindObjectOfType<Camera>().transform;
+
+        _PerlinSeedArray = new float[5];
+        for (int i = 0; i < _PerlinSeedArray.Length; i++)
+        {
+            float offset = Random.Range(0, 1000);
+            _PerlinSeedArray[i] = Mathf.PerlinNoise(offset, offset * 0.5f);
+        }
     }
 
     public override void Collided(Collision collision)
@@ -198,7 +214,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _StartValue = _EmissionProps._Playhead._Idle,
             _InteractionAmount = _EmissionProps._Playhead._InteractionAmount,
             _Shape = _EmissionProps._Playhead._InteractionShape,
-            _Random = _EmissionProps._Playhead._Random,
+            _Noise = _EmissionProps._Playhead._Noise,
+            _PerlinNoise = _EmissionProps._Playhead._PerlinNoise,
+            _PerlinValue = GeneratePerlinForParameter(0),
             _Min = _EmissionProps._Playhead._Min,
             _Max = _EmissionProps._Playhead._Max,
             _InteractionInput = _EmissionProps._Playhead.GetInteractionValue()
@@ -208,7 +226,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _StartValue = _EmissionProps._Density._Idle,
             _InteractionAmount = _EmissionProps._Density._InteractionAmount,
             _Shape = _EmissionProps._Density._InteractionShape,
-            _Random = _EmissionProps._Density._Random,
+            _Noise = _EmissionProps._Density._Noise,
+            _PerlinNoise = _EmissionProps._Density._PerlinNoise,
+            _PerlinValue = GeneratePerlinForParameter(1),
             _Min = _EmissionProps._Density._Min,
             _Max = _EmissionProps._Density._Max,
             _InteractionInput = _EmissionProps._Density.GetInteractionValue()
@@ -218,7 +238,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _StartValue = _EmissionProps._GrainDuration._Idle * samplesPerMS,
             _InteractionAmount = _EmissionProps._GrainDuration._InteractionAmount * samplesPerMS,
             _Shape = _EmissionProps._GrainDuration._InteractionShape,
-            _Random = _EmissionProps._GrainDuration._Random,
+            _Noise = _EmissionProps._GrainDuration._Noise,
+            _PerlinNoise = _EmissionProps._GrainDuration._PerlinNoise,
+            _PerlinValue = GeneratePerlinForParameter(2),
             _Min = _EmissionProps._GrainDuration._Min * samplesPerMS,
             _Max = _EmissionProps._GrainDuration._Max * samplesPerMS,
             _InteractionInput = _EmissionProps._GrainDuration.GetInteractionValue()
@@ -228,7 +250,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _StartValue = _EmissionProps._Transpose._Idle,
             _InteractionAmount = _EmissionProps._Transpose._InteractionAmount,
             _Shape = _EmissionProps._Transpose._InteractionShape,
-            _Random = _EmissionProps._Transpose._Random,
+            _Noise = _EmissionProps._Transpose._Noise,
+            _PerlinNoise = _EmissionProps._Transpose._PerlinNoise,
+            _PerlinValue = GeneratePerlinForParameter(3),
             _Min = _EmissionProps._Transpose._Min,
             _Max = _EmissionProps._Transpose._Max,
             _InteractionInput = _EmissionProps._Transpose.GetInteractionValue()
@@ -238,7 +262,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _StartValue = _EmissionProps._Volume._Idle,
             _InteractionAmount = _EmissionProps._Volume._InteractionAmount,
             _Shape = _EmissionProps._Volume._InteractionShape,
-            _Random = _EmissionProps._Volume._Random,
+            _Noise = _EmissionProps._Volume._Noise,
+            _PerlinNoise = _EmissionProps._Volume._PerlinNoise,
+            _PerlinValue = GeneratePerlinForParameter(4),
             _Min = _EmissionProps._Volume._Min,
             _Max = _EmissionProps._Volume._Max,
             _InteractionInput = _EmissionProps._Volume.GetInteractionValue()
@@ -274,6 +300,11 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         {
             dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
+    }
+
+    public float GeneratePerlinForParameter(int parameterIndex)
+    {
+        return Mathf.PerlinNoise(Time.time + _PerlinSeedArray[parameterIndex], (Time.time + _PerlinSeedArray[parameterIndex]) * 0.5f);
     }
 
     void OnDrawGizmos()

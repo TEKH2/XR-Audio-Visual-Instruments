@@ -5,6 +5,11 @@ using UnityEngine;
 public class EmitterPropBase
 {
     public InteractionBase _InteractionInput;
+    public bool _PerlinNoise = false;
+
+    [Range(0f, 1.0f)]
+    [SerializeField]
+    public float _Noise = 0f;
 
     public float GetInteractionValue()
     {
@@ -23,9 +28,6 @@ public class EmitterPropDensity : EmitterPropBase
     [Range(0.1f, 10f)]
     [SerializeField]
     public float _Idle = 2f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [Range(-9.9f, 9.9f)]
     [SerializeField]
     public float _InteractionAmount = 0f;
@@ -44,9 +46,6 @@ public class EmitterPropDuration : EmitterPropBase
     [Range(2f, 500f)]
     [SerializeField]
     public float _Idle = 50f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0.01f;
     [Range(-502f, 502f)]
     [SerializeField]
     public float _InteractionAmount = 0f;
@@ -65,9 +64,6 @@ public class EmitterPropPlayhead : EmitterPropBase
     [Range(0f, 1f)]
     [SerializeField]
     public float _Idle = 0f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0.01f;
     [Range(-1f, 1f)]
     [SerializeField]
     public float _InteractionAmount = 0f;
@@ -86,9 +82,6 @@ public class EmitterPropTranspose : EmitterPropBase
     [Range(-3f, 3f)]
     [SerializeField]
     public float _Idle = 1;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [Range(-6f, 6f)]
     [SerializeField]
     public float _InteractionAmount = 0f;
@@ -107,9 +100,6 @@ public class EmitterPropVolume : EmitterPropBase
     [Range(0f, 2f)]
     [SerializeField]
     public float _Idle = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [Range(-2f, 2f)]
     [SerializeField]
     public float _InteractionAmount = 0f;
@@ -137,9 +127,6 @@ public class BurstPropDensity : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = 0.1f;
     [HideInInspector]
@@ -158,9 +145,6 @@ public class BurstPropDuration : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = 10f;
     [HideInInspector]
@@ -182,9 +166,6 @@ public class BurstPropGrainDuration : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = 5f;
     [HideInInspector]
@@ -208,9 +189,6 @@ public class BurstPropPlayhead : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = 0f;
     [HideInInspector]
@@ -234,9 +212,6 @@ public class BurstPropTranspose : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = -3f;
     [HideInInspector]
@@ -260,9 +235,6 @@ public class BurstPropVolume : EmitterPropBase
     [Range(0.5f, 5.0f)]
     [SerializeField]
     public float _InteractionShape = 1f;
-    [Range(0f, 1.0f)]
-    [SerializeField]
-    public float _Random = 0f;
     [HideInInspector]
     public float _Min = 0f;
     [HideInInspector]
