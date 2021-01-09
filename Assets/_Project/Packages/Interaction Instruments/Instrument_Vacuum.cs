@@ -47,8 +47,9 @@ public class Instrument_Vacuum : MonoBehaviour
 
         foreach (GameObject item in _ObjectsCurrentBeingVacuumed)
         {
-            _TotalVacuumedMass += Mathf.Clamp(1 - Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist * 20, 0f, 0.5f);
-            //item.GetComponent<Rigidbody>().mass * 
+            _TotalVacuumedMass += item.GetComponent<Rigidbody>().mass * 
+                Mathf.Clamp(1 - Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist * 50, 0f, 0.5f) *
+                Mathf.Abs(Mathf.Min(_ThumbScalar, 0));
         }
 
         //_TotalVacuumedMass = _ObjectsCurrentBeingVacuumed.Count;

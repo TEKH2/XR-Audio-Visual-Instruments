@@ -22,20 +22,21 @@ public class GrainEmissionProps
 [RequiresEntityConversion]
 public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
 {
+    [Header("Emitter Config")]
+    public GrainEmissionProps _EmissionProps;
+    public DSPBase[] _DSPChainParams;
+
     [Header("Debug")]
     public bool _AttachedToSpeaker;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
 
-    public GrainEmissionProps _EmissionProps;
-    public DSPBase[] _DSPChainParams;
-
     Entity _EmitterEntity;
     EntityManager _EntityManager;
 
     bool _Initialized = false;
-    bool _StaticallyPaired = false;
+    public bool _StaticallyPaired = false;
     bool _InRangeTemp = false;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
