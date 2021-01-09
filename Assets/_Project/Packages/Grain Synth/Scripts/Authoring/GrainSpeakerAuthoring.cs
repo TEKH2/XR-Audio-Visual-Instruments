@@ -30,6 +30,7 @@ public class GrainPlaybackData
     }
 }
 
+[RequireComponent(typeof(AudioSource))]
 public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public delegate void GrainEmitted(GrainPlaybackData data, int currentDSPSample);
@@ -61,11 +62,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     AudioSource _AudioSource;
     float _VolumeSmoothing = 4;
-
     float _TargetVolume = 0;
-
-  
-
 
     public bool _Registered = false;
 
@@ -73,10 +70,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public bool StaticallyPairedToEmitter { get { return _StaticallyPairedEmitters.Count > 0; } }
     public List<GameObject> _StaticallyPairedEmitters = new List<GameObject>();
 
-
     // TODO - Change to state?
     bool _ConnectedToEmitter = false;
-
     public bool _DebugLog = false;
     #endregion
 
@@ -107,7 +102,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             print("- Adding pooled component for non statically paired speaker");
         }
 
-
         //---   CREATE GRAIN PLAYBACK DATA ARRAY - CURRENT MAXIMUM LENGTH SET TO ONE SECOND OF SAMPLES (_SAMPLERATE)      
         _GrainPlaybackDataArray = new GrainPlaybackData[_GrainPlaybackDataToPool];
 
@@ -116,6 +110,9 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         _PooledGrainCount = _GrainPlaybackDataArray.Length;
 
+        _AudioSource.rolloffMode = AudioRolloffMode.Custom;
+        _AudioSource.maxDistance = 500;
+        
         //Debug.Log(_PooledGrainCount);
 
         ////---   ADD RING BUFFER COMP AND INIT
@@ -162,8 +159,6 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
         }
 
-
-
         //---   Pool playback data object after its previous grain has reached the end of its playhead
         for (int i = 0; i < _GrainPlaybackDataArray.Length; i++)
         {
@@ -201,7 +196,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
             if (_TargetVolume == 0 && _AudioSource.volume < .005f)
                 _AudioSource.volume = 0;
 
-            _MeshRenderer.enabled = isCurrentlyConnected;
+            if (_MeshRenderer != null)
+                _MeshRenderer.enabled = isCurrentlyConnected;
             _ConnectedToEmitter = isCurrentlyConnected;
         }
 

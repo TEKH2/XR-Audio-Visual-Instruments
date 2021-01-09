@@ -11,6 +11,8 @@ public class InteractionBase : MonoBehaviour
     public float _InputMax = 1f;
     public float _OutputValue = 0;
 
+    protected float _PreviousInputValue = 0;
+
     void Start()
     {
         if (_SourceObject == null)
@@ -25,6 +27,13 @@ public class InteractionBase : MonoBehaviour
     public float GetValue()
     {
         return Mathf.Clamp(_OutputValue, 0f, 1f);
+    }
+
+    public void UpdateSmoothedOutputValue(float inputValue, float smoothing)
+    {
+        float newValue = Map(inputValue, _InputMin, _InputMax, 0, 1);
+        float actualSmoothing = (1 - smoothing) * 10f;
+        _OutputValue = Mathf.Lerp(_OutputValue, newValue, actualSmoothing * Time.deltaTime);
     }
 
     public virtual void CollisionData(Collision collision) {}
