@@ -32,10 +32,10 @@ public class InteractionVacuum : InteractionBase
             switch (_SourceParameter)
             {
                 case InteractionVacuumType.SuckAmount:
-                    currentValue = _VacuumInstrument._ThumbScalar;
+                    currentValue = Mathf.Abs(Mathf.Min(_VacuumInstrument._ThumbScalar, 0));
                     break;
                 case InteractionVacuumType.BlowAmount:
-                    currentValue = _VacuumInstrument._ThumbScalar;
+                    currentValue = Mathf.Max(_VacuumInstrument._ThumbScalar, 0);
                     break;
                 case InteractionVacuumType.VacuumMass:
                     currentValue = _VacuumInstrument._TotalVacuumedMass;

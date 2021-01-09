@@ -24,7 +24,7 @@ public class Instrument_Vacuum : MonoBehaviour
 
     public float _TotalVacuumedMass = 0;
 
-    private List<GameObject> _ObjectsCurrentBeingVacuumed;
+    public List<GameObject> _ObjectsCurrentBeingVacuumed;
 
     private void Start()
     {
@@ -47,10 +47,11 @@ public class Instrument_Vacuum : MonoBehaviour
 
         foreach (GameObject item in _ObjectsCurrentBeingVacuumed)
         {
-            _TotalVacuumedMass += item.GetComponent<Rigidbody>().mass * (1 - Vector3.Distance(item.transform.position, transform.position) / _MaxDist);
+            _TotalVacuumedMass += Mathf.Clamp(1 - Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist * 20, 0f, 0.5f);
+            //item.GetComponent<Rigidbody>().mass * 
         }
 
-        _TotalVacuumedMass = _ObjectsCurrentBeingVacuumed.Count;
+        //_TotalVacuumedMass = _ObjectsCurrentBeingVacuumed.Count;
     }
 
     void UpdateForwardDirections()
@@ -90,7 +91,7 @@ public class Instrument_Vacuum : MonoBehaviour
     {
         if (other.attachedRigidbody)
         {
-            float dist = Vector3.Distance(transform.position, other.transform.position);
+            float dist = Vector3.Distance(transform.parent.position, other.transform.position);
             Vector3 directionTowardLine = Vector3.zero;
             Vector3 directionTowardSource = Vector3.zero;
             Vector3 direction = Vector3.zero;
@@ -99,6 +100,7 @@ public class Instrument_Vacuum : MonoBehaviour
             if (dist < _DestroyRadius && _ThumbScalar < 0)
             {
                 // Destroy
+                _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);
                 Destroy(other.gameObject);
             }
             else
@@ -110,7 +112,7 @@ public class Instrument_Vacuum : MonoBehaviour
                 directionTowardLine = (other.transform.position - linePoint).normalized;
                 directionTowardSource = (other.transform.position - transform.position).normalized;
 
-                float falloffStrength = _FallOff.Evaluate(normDistToSource) * _ForceStrength * _ThumbScalar;
+                float falloffStrength = _FallOff.Evaluate(1-normDistToSource) * _ForceStrength * _ThumbScalar;
 
                 force = (forceTowardLine * directionTowardLine * falloffStrength) + (forceTowardSource * directionTowardSource * falloffStrength);
 
