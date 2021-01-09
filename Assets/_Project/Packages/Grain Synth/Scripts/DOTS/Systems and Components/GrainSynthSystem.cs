@@ -194,7 +194,7 @@ public class GrainSynthSystem : SystemBase
 
                     int burstDurationRange = (int)(burst._BurstDuration._Max - burst._BurstDuration._Min);
                     int burstDurationInteraction = (int)(Map(burst._BurstDuration._InteractionInput, 0, 1, 0, 1, burst._BurstDuration._Shape) * burst._BurstDuration._InteractionAmount);
-                    int burstDurationRandom = (int)(randomGen.NextFloat(-1, 1) * burst._BurstDuration._Random * burstDurationRange);
+                    int burstDurationRandom = (int)(randomGen.NextFloat(-1, 1) * burst._BurstDuration._Noise * burstDurationRange);
 
                     int totalBurstSampleCount = (int)(Mathf.Clamp(burst._BurstDuration._StartValue + burstDurationInteraction + burstDurationRandom,
                         burst._BurstDuration._Min, burst._BurstDuration._Max));
@@ -328,8 +328,6 @@ public class GrainSynthSystem : SystemBase
 
                         // Adjusted for volume and windowing
                         sourceValue *= grain._Volume;
-
-                        // Map doesn't work inside a job TODO investigate how to use methods in a job
                         sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
                         sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
@@ -418,8 +416,16 @@ public class GrainSynthSystem : SystemBase
     }
     public static float ComputeEmitterParameter(ModulateParameterComponent mod, float r)
     {
-        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape) * mod._InteractionAmount;
-        float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
+        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape);
+
+        float random;
+
+        if (mod._PerlinNoise)
+        {
+            random = mod._PerlinValue * mod._Noise * Mathf.Abs(mod._Max - mod._Min);
+        }   
+        else
+            random = r * mod._Noise * Mathf.Abs(mod._Max - mod._Min);
 
         return Mathf.Clamp(mod._StartValue + interaction + random, mod._Min, mod._Max);
     }
@@ -436,10 +442,11 @@ public class GrainSynthSystem : SystemBase
         else if (mod._LockEndValue)
             interaction *= 1 - timeShaped;
 
-        float random = r * mod._Random * Mathf.Abs(mod._Max - mod._Min);
+        float random = r * mod._Noise * Mathf.Abs(mod._Max - mod._Min);
 
         return Mathf.Clamp(mod._StartValue + modulationOverTime + interaction + random, mod._Min, mod._Max);
     }
+
     #endregion
 }
 

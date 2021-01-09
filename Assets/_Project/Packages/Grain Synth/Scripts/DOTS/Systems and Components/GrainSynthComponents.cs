@@ -76,7 +76,9 @@ public struct ModulateParameterComponent : IComponentData
 {
     public float _StartValue;
     public float _EndValue;
-    public float _Random;
+    public float _Noise;
+    public bool _PerlinNoise;
+    public float _PerlinValue;
     public float _Shape;
     public float _InteractionAmount;
     public float _Min;

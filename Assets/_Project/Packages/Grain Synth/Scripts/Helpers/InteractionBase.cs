@@ -33,13 +33,11 @@ public class InteractionBase : MonoBehaviour
     {
         float newValue = Map(inputValue, _InputMin, _InputMax, 0, 1);
 
-        if (Mathf.Abs(inputValue - newValue) < 0.001f)
+        float actualSmoothing = (1 - smoothing) * 10f;
+        _OutputValue = Mathf.Lerp(_OutputValue, newValue, actualSmoothing * Time.deltaTime);
+
+        if (_OutputValue < 0.001f)
             _OutputValue = 0;
-        else
-        {
-            float actualSmoothing = (1 - smoothing) * 10f;
-            _OutputValue = Mathf.Lerp(_OutputValue, newValue, actualSmoothing * Time.deltaTime);
-        }
     }
 
     public virtual void CollisionData(Collision collision) {}
