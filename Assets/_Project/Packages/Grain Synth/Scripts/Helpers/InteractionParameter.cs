@@ -12,6 +12,8 @@ public class InteractionParameter : InteractionBase
         Acceleration,
         Deacceleration,
         Scale,
+        Roll,
+        Slide,
         Aux
     }
 
@@ -44,11 +46,28 @@ public class InteractionParameter : InteractionBase
             case InteractionParameterType.Scale:
                 currentValue = _SourceObject.transform.localScale.magnitude;
                 break;
+            case InteractionParameterType.Roll:
+                if (_CurrentCollisionCount > 0)
+                    currentValue = _RigidBody.angularVelocity.magnitude;
+                else
+                    currentValue = 0;
+                break;
+            case InteractionParameterType.Slide:
+                if (_CurrentCollisionCount > 0)
+                    currentValue = _RigidBody.velocity.magnitude;
+                else
+                    currentValue = 0;
+                break;
             default:
                 break;
         }
 
         UpdateSmoothedOutputValue(currentValue, _Smoothing);
+    }
+
+    public override void SetCollisionData(Collision collision, int numCollisions)
+    {
+        _CurrentCollisionCount = numCollisions;
     }
 
     public void SetAuxValue(float val)

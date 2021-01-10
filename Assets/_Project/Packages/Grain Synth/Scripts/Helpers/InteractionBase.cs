@@ -12,6 +12,7 @@ public class InteractionBase : MonoBehaviour
     public float _OutputValue = 0;
 
     protected float _PreviousInputValue = 0;
+    public int _CurrentCollisionCount = 0;
 
     void Start()
     {
@@ -42,7 +43,7 @@ public class InteractionBase : MonoBehaviour
         _OutputValue = Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
-    public virtual void SetCollisionData(Collision collision, int currentCollisionCount) { }
+    public virtual void SetCollisionData(Collision collision, int numCollisions) { }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
