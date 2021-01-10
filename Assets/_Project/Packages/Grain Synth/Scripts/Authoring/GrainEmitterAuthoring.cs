@@ -22,10 +22,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 {
     public GrainEmissionProps _EmissionProps;
 
-    [Header("Debug")]
-    public bool _AttachedToSpeaker;
-    public int _AttachedSpeakerIndex;
-    public GrainSpeakerAuthoring _PairedSpeaker;
 
 
 
@@ -145,17 +141,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
         _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
         _EmissionProps._Volume._InteractionInput.CollisionData(collision);
-    }
-
-    private void OnDestroy()
-    {
-        DestroyEntity();
-    }
-
-    public void DestroyEntity()
-    {
-        print("Grain emitter DestroyEntity");
-        _EntityManager.DestroyEntity(_EmitterEntity);       
     }
 
     void Update()

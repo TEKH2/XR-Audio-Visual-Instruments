@@ -22,24 +22,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 {
     public BurstEmissionProps _BurstEmissionProps;
 
-    [Header("Debug")]
-    public bool _AttachedToSpeaker = false;
-    public int _AttachedSpeakerIndex;
-    public GrainSpeakerAuthoring _PairedSpeaker;
     public float _CollisionImpact = 0f;
     public bool _Triggered = false;
-
-
-    private void OnDestroy()
-    {
-        DestroyEntity();
-    }
-
-    public void DestroyEntity()
-    {
-        print("Burst DestroyEntity");
-        _EntityManager.DestroyEntity(_BurstEntity);
-    }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 

@@ -40,7 +40,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     // TODO -- Tidy up
     #region -------------------------- VARIABLES  
     EntityManager _EntityManager;
-    Entity _Entity;
+    Entity _SpeakerEntity;
     GrainSpeakerComponent _SpeakerComponenet;
 
     MeshRenderer _MeshRenderer;
@@ -90,10 +90,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
         print("---   CONVERT GRAIN SPEAKER...");
         //---   CREATE ENTITY, REGISTER AND NAME
-        _Entity = entity;
+        _SpeakerEntity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
         _GrainSynth.RegisterSpeaker(this);
-        dstManager.SetName(_Entity, "Speaker " + _SpeakerIndex);
+        dstManager.SetName(_SpeakerEntity, "Speaker " + _SpeakerIndex);
 
 
         //---   ADD SPEAKER COMP
@@ -161,7 +161,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         //---   UPDATE TRANSLATION COMPONENT 
         if (!StaticallyPairedToEmitter)
         {
-            transform.position = _EntityManager.GetComponentData<Translation>(_Entity).Value;
+            transform.position = _EntityManager.GetComponentData<Translation>(_SpeakerEntity).Value;
         }
 
         //---   Pool playback data object after its previous grain has reached the end of its playhead
@@ -178,8 +178,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (!StaticallyPairedToEmitter)
         {
             //---   CLEAR PLAYBACK DATA IF NOT CONNECTED TOO EMITTERS
-            _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_Entity);
-            bool isCurrentlyConnected = _EntityManager.GetComponentData<PooledObjectComponent>(_Entity)._State == PooledObjectState.Active;
+            _SpeakerComponenet = _EntityManager.GetComponentData<GrainSpeakerComponent>(_SpeakerEntity);
+            bool isCurrentlyConnected = _EntityManager.GetComponentData<PooledObjectComponent>(_SpeakerEntity)._State == PooledObjectState.Active;
 
 
             //---   IF PREVIOUSLY CONNCETED AND NOW DISCONNECTED
@@ -297,7 +297,8 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public void DestroyEntity()
     {
         print("Speaker DestroyEntity");
-        _EntityManager.DestroyEntity(_Entity);
+        if (_SpeakerEntity != null)
+            _EntityManager.DestroyEntity(_SpeakerEntity);
     }
 
     void ReportGrainsDebug(string action)

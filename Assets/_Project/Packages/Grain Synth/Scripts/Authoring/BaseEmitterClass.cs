@@ -27,6 +27,10 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected EntityManager _EntityManager;
     protected float[] _PerlinSeedArray;
 
+    public bool _AttachedToSpeaker = false;
+    public int _AttachedSpeakerIndex;
+    public GrainSpeakerAuthoring _PairedSpeaker;
+
     public DSPBase[] _DSPChainParams;
 
     void Start()
@@ -49,7 +53,14 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public void DestroyEntity()
     {
-        _EntityManager.DestroyEntity(_EmitterEntity);
+        print("Emitter Entity Destroyed");
+        if (_EmitterEntity != null)
+            _EntityManager.DestroyEntity(_EmitterEntity);
+    }
+
+    private void OnDestroy()
+    {
+        DestroyEntity();
     }
 
     protected void UpdateDSPBuffer(bool clear = true)

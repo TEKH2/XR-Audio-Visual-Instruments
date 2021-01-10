@@ -17,7 +17,7 @@ public class Instrument_Vacuum : MonoBehaviour
     int _SegementCount = 20;
 
     public float _ThumbScalar = 0;
-    float _DestroyRadius = .2f;
+    float _DestroyRadius = .4f;
 
     public float forceTowardLine = .5f;
     public float forceTowardSource = .5f;
@@ -70,8 +70,6 @@ public class Instrument_Vacuum : MonoBehaviour
                 Mathf.Clamp(1 - 10 * Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist, 0f, 0.5f) *
                 Mathf.Abs(Mathf.Min(_ThumbScalar, 0));
         }
-
-        //_TotalVacuumedMass = _ObjectsCurrentBeingVacuumed.Count;
     }
 
     void UpdateForwardDirections()
@@ -118,22 +116,7 @@ public class Instrument_Vacuum : MonoBehaviour
             Vector3 force = Vector3.zero;
 
             if (dist < _DestroyRadius && _ThumbScalar < 0)
-            {
-                // Destroy
-                _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);
-
-
-                GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(other.gameObject);
-                BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(other.gameObject);
-
-                for (int i = 0; i < speakers.Length; i++)
-                    speakers[i].DestroyEntity();
-
-                for (int i = 0; i < emitters.Length; i++)
-                    emitters[i].DestroyEntity();
-
-                Destroy(other.gameObject);
-            }
+                DestroyEmitter(other.gameObject);
             else
             {
                 float normDistToSource = dist / _MaxDist;
@@ -163,13 +146,14 @@ public class Instrument_Vacuum : MonoBehaviour
     {
         _ObjectsCurrentBeingVacuumed.Remove(go);
 
-        GrainSpeakerAuthoring speaker = GetComponentInChildren<GrainSpeakerAuthoring>(go);
-        BurstEmitterAuthoring burst = GetComponentInChildren<BurstEmitterAuthoring>(go);
-        GrainEmitterAuthoring emit = GetComponentInChildren<GrainEmitterAuthoring>(go);
+        GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(go);
+        BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(go);
 
-        if (speaker != null) speaker.DestroyEntity();
-        if (burst != null) burst.DestroyEntity();
-        if (emit != null) emit.DestroyEntity();
+        for (int i = 0; i < speakers.Length; i++)
+            speakers[i].DestroyEntity();
+
+        for (int i = 0; i < emitters.Length; i++)
+            emitters[i].DestroyEntity();
 
         print("Destroying emitter + " + go.name);
 
