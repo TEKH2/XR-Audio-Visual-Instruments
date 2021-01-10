@@ -20,6 +20,12 @@ public class EmitterPropBase
 
         return interaction;
     }
+
+     public void SetCollisionData(Collision collision, int currentCollisionCount)
+    {
+        if (_InteractionInput != null)
+            _InteractionInput.SetCollisionData(collision, currentCollisionCount);
+    }
 }
 
 [System.Serializable]

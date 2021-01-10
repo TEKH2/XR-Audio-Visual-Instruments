@@ -16,7 +16,16 @@ public class ColliderScript : MonoBehaviour
         foreach (var emitter in _Emitters)
         {
             if (emitter != null && emitter.enabled)
-                emitter.Collided(collision);
+                emitter.CollisionEnter(collision);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        foreach (var emitter in _Emitters)
+        {
+            if (emitter != null && emitter.enabled)
+                emitter.CollisionExit(collision);
         }
     }
 }

@@ -416,7 +416,7 @@ public class GrainSynthSystem : SystemBase
     }
     public static float ComputeEmitterParameter(ModulateParameterComponent mod, float r)
     {
-        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape);
+        float interaction = Mathf.Pow(mod._InteractionInput / 1, mod._Shape) * mod._InteractionAmount;
 
         float random;
 

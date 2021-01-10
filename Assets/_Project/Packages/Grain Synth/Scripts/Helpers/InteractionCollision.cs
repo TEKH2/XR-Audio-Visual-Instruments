@@ -9,11 +9,14 @@ public class InteractionCollision : InteractionBase
         CollisionForce,
         CollisionPoint,
         CollisionNormal,
+        Roll,
+        Slide
     }
 
     public InteractionCollisionType _SourceParameter;
 
-    public override void CollisionData(Collision collision)
+
+    public override void SetCollisionData(Collision collision, int currentCollisionCount)
     {
         switch (_SourceParameter)
         {
@@ -25,9 +28,22 @@ public class InteractionCollision : InteractionBase
             case InteractionCollisionType.CollisionNormal:
                 _OutputValue = collision.GetContact(0).normal.magnitude;
                 break;
+            case InteractionCollisionType.Roll:
+                if (currentCollisionCount > 0)
+                    _OutputValue = _RigidBody.angularVelocity.magnitude;
+                else
+                    _OutputValue = 0;
+                break;
+            case InteractionCollisionType.Slide:
+                if (currentCollisionCount > 0)
+                    _OutputValue = _RigidBody.velocity.magnitude;
+                else
+                    _OutputValue = 0;
+                break;
             default:
                 break;
         }
+
         _OutputValue = Map(_OutputValue, _InputMin, _InputMax, 0, 1);
     }
 }

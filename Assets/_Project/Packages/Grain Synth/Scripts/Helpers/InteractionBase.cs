@@ -26,7 +26,7 @@ public class InteractionBase : MonoBehaviour
 
     public float GetValue()
     {
-        return Mathf.Clamp(_OutputValue, 0f, 1f);
+        return _OutputValue;
     }
 
     public void UpdateSmoothedOutputValue(float inputValue, float smoothing)
@@ -38,9 +38,11 @@ public class InteractionBase : MonoBehaviour
 
         if (_OutputValue < 0.001f)
             _OutputValue = 0;
+
+        _OutputValue = Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
-    public virtual void CollisionData(Collision collision) {}
+    public virtual void SetCollisionData(Collision collision, int currentCollisionCount) { }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {

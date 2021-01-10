@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class EmissionPropertiesUI : MonoBehaviour
 {
     public GrainEmitterAuthoring _GrainEmitterAuthoring;
-    GrainEmissionProps _EmissionProps;
+    EmissionProps _EmissionProps;
 
     public Slider _Playhead;
     public Slider _PlayheadRand;
@@ -81,7 +81,7 @@ public class EmissionPropertiesUI : MonoBehaviour
         UpdateSliderValues();
     }
 
-    public void AssignEmitterProps(GrainEmissionProps emitProps)
+    public void AssignEmitterProps(EmissionProps emitProps)
     {
         _EmissionProps = emitProps;
         UpdateSliderValues();

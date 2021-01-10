@@ -5,7 +5,7 @@ using Unity.Transforms;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public class GrainEmissionProps
+public class EmissionProps
 {
     public bool _Playing = true;
     public int _ClipIndex = 0;
@@ -20,12 +20,7 @@ public class GrainEmissionProps
 
 public class GrainEmitterAuthoring : BaseEmitterClass
 {
-    public GrainEmissionProps _EmissionProps;
-
-
-
-
-    public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
+    public EmissionProps _EmissionProps;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -134,13 +129,14 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _Initialized = true;
     }
 
-    public override void Collided(Collision collision)
+    protected override void SetCollisionData(Collision collision)
     {
-        _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
-        _EmissionProps._Density._InteractionInput.CollisionData(collision);
-        _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
-        _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
-        _EmissionProps._Volume._InteractionInput.CollisionData(collision);
+        Debug.Log("COLLISION: " + collision.collider.gameObject.name);
+        _EmissionProps._Playhead.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _EmissionProps._Density.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _EmissionProps._GrainDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _EmissionProps._Transpose.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _EmissionProps._Volume.SetCollisionData(collision, _CollidingGameObjects.Count);
     }
 
     void Update()

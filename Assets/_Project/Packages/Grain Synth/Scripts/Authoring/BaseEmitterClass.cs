@@ -1,4 +1,6 @@
-﻿using Unity.Entities;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
@@ -20,16 +22,18 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _Initialized = false;
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
-
-    public Transform _HeadPosition;
-
-    protected Entity _EmitterEntity;
-    protected EntityManager _EntityManager;
-    protected float[] _PerlinSeedArray;
+    protected bool _CollisionTriggered = false;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
+    public Transform _HeadPosition;
+
+    public List<GameObject> _CollidingGameObjects;
+
+    protected Entity _EmitterEntity;
+    protected EntityManager _EntityManager;
+    protected float[] _PerlinSeedArray;
 
     public DSPBase[] _DSPChainParams;
 
@@ -63,6 +67,8 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         DestroyEntity();
     }
 
+    public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
+
     protected void UpdateDSPBuffer(bool clear = true)
     {
         //--- TODO not sure if clearing and adding again is the best way to do this
@@ -88,5 +94,17 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem) { }
 
-    public virtual void Collided(Collision collision) { }
+    protected virtual void SetCollisionData(Collision collision) { }
+
+    public void CollisionEnter(Collision collision)
+    {
+        _CollisionTriggered = true;
+        _CollidingGameObjects.Add(collision.gameObject);
+        SetCollisionData(collision);
+    }
+
+    public void CollisionExit(Collision collision)
+    {
+        _CollidingGameObjects.Remove(collision.gameObject);
+    }
 }

@@ -13,10 +13,10 @@ public class AutomationData
     public Vector2 _Range = new Vector2(0, 1);
     private float _Phase = 0;
     private GrainSynth _GrainSynth;
-    private GrainEmissionProps _Props;
+    private EmissionProps _Props;
     private bool LinkedPhase = false;
 
-    public void SetData(GrainSynth grainSynth, GrainEmissionProps props)
+    public void SetData(GrainSynth grainSynth, EmissionProps props)
     {
         _GrainSynth = grainSynth;
         _Props = props;
@@ -78,7 +78,7 @@ public class EmitterPropModSimpleNoise : MonoBehaviour
 
     public GrainSynth _GrainSynth;
     private GrainEmitterAuthoring _Emitter;
-    private GrainEmissionProps _EmissionProps;
+    private EmissionProps _EmissionProps;
 
     public AutomationData _Playhead;
     public AutomationData _Transpose;

@@ -22,11 +22,6 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 {
     public BurstEmissionProps _BurstEmissionProps;
 
-    public float _CollisionImpact = 0f;
-    public bool _Triggered = false;
-
-    public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
-
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;
@@ -153,17 +148,14 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _Initialized = true;
     }
 
-    public override void Collided(Collision collision)
+    protected override void SetCollisionData(Collision collision)
     {
-        _Triggered = true;
-        _CollisionImpact = collision.relativeVelocity.magnitude;
-
-        _BurstEmissionProps._Playhead._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._BurstDuration._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Density._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Transpose._InteractionInput.CollisionData(collision);
-        _BurstEmissionProps._Volume._InteractionInput.CollisionData(collision);
+        _BurstEmissionProps._Playhead.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._BurstDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._Density.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._GrainDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._Transpose.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._Volume.SetCollisionData(collision, _CollidingGameObjects.Count);
     }
 
     void Update()
@@ -186,7 +178,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
-        if (_Triggered & _WithinEarshot)
+        if (_CollisionTriggered & _WithinEarshot)
         {
             BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
@@ -299,7 +291,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
                 Value = transform.position
             });
 
-            _Triggered = false;
+            _CollisionTriggered = false;
         }
     }
 }
