@@ -115,13 +115,15 @@ public class Instrument_Vacuum : MonoBehaviour
                 // Destroy
                 _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);
 
-                GrainSpeakerAuthoring speaker = GetComponentInChildren<GrainSpeakerAuthoring>(other.gameObject);
-                BurstEmitterAuthoring burst = GetComponentInChildren<BurstEmitterAuthoring>(other.gameObject);
-                GrainEmitterAuthoring emit = GetComponentInChildren<GrainEmitterAuthoring>(other.gameObject);
 
-                if (speaker != null) speaker.DestroyEntity();
-                if (burst != null) burst.DestroyEntity();
-                if (emit != null) emit.DestroyEntity();
+                GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(other.gameObject);
+                BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(other.gameObject);
+
+                for (int i = 0; i < speakers.Length; i++)
+                    speakers[i].DestroyEntity();
+
+                for (int i = 0; i < emitters.Length; i++)
+                    emitters[i].DestroyEntity();
 
                 Destroy(other.gameObject);
             }

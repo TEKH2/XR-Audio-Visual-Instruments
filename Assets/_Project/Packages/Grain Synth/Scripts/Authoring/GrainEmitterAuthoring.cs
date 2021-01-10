@@ -3,53 +3,35 @@ using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
 using Random = UnityEngine.Random;
-using System;
 
 [System.Serializable]
 public class GrainEmissionProps
 {
     public bool _Playing = true;
     public int _ClipIndex = 0;
+
     public EmitterPropPlayhead _Playhead;
     public EmitterPropDensity _Density;
     public EmitterPropDuration _GrainDuration;
     public EmitterPropTranspose _Transpose;
     public EmitterPropVolume _Volume;
+
 }
 
-
-[RequireComponent(typeof(ConvertToEntity))]
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
+public class GrainEmitterAuthoring : BaseEmitterClass
 {
-    [Header("Emitter Config")]
     public GrainEmissionProps _EmissionProps;
-    public DSPBase[] _DSPChainParams;
 
     [Header("Debug")]
     public bool _AttachedToSpeaker;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
-    public Transform _HeadPosition;
 
-    Entity _EmitterEntity;
-    EntityManager _EntityManager;
 
-    bool _Initialized = false;
-    public bool _StaticallyPaired = false;
-    bool _InRangeTemp = false;
-
-    private float[] _PerlinSeedArray;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
-    public void Awake()
-    {
-        GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
-    }
-
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;
 
@@ -156,19 +138,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         _Initialized = true;
     }
 
-    void Start()
-    {
-        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        _HeadPosition = FindObjectOfType<Camera>().transform;
-
-        _PerlinSeedArray = new float[5];
-        for (int i = 0; i < _PerlinSeedArray.Length; i++)
-        {
-            float offset = Random.Range(0, 1000);
-            _PerlinSeedArray[i] = Mathf.PerlinNoise(offset, offset * 0.5f);
-        }
-    }
-
     public override void Collided(Collision collision)
     {
         _EmissionProps._Playhead._InteractionInput.CollisionData(collision);
@@ -176,11 +145,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         _EmissionProps._GrainDuration._InteractionInput.CollisionData(collision);
         _EmissionProps._Transpose._InteractionInput.CollisionData(collision);
         _EmissionProps._Volume._InteractionInput.CollisionData(collision);
-    }
-
-    public void DestroyEntity()
-    {
-        _EntityManager.DestroyEntity(_EmitterEntity);       
     }
 
     void Update()
@@ -298,29 +262,5 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         {
             Value = transform.position
         });
-    }
-
-    void UpdateDSPBuffer(bool clear = true)
-    {
-        //--- TODO not sure if clearing and adding again is the best way to do this
-        DynamicBuffer<DSPParametersElement> dspBuffer = _EntityManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
-        
-        if (clear) dspBuffer.Clear();
-
-        for (int i = 0; i < _DSPChainParams.Length; i++)
-        {
-            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
-        }
-    }
-
-    public float GeneratePerlinForParameter(int parameterIndex)
-    {
-        return Mathf.PerlinNoise(Time.time + _PerlinSeedArray[parameterIndex], (Time.time + _PerlinSeedArray[parameterIndex]) * 0.5f);
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = _InRangeTemp ? Color.yellow : Color.blue;
-        Gizmos.DrawSphere(transform.position, .1f);
     }
 }

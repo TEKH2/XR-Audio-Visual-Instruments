@@ -18,50 +18,22 @@ public class BurstEmissionProps
     public BurstPropVolume _Volume;
 }
 
-
-[RequireComponent(typeof(ConvertToEntity))]
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
+public class BurstEmitterAuthoring : BaseEmitterClass
 {
+    public BurstEmissionProps _BurstEmissionProps;
+
     [Header("Debug")]
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
-    public Transform _HeadPosition;
     public float _CollisionImpact = 0f;
     public bool _Triggered = false;
 
-    [Header("Burst Properties")]
-    public BurstEmissionProps _BurstEmissionProps;
-
-    [Header("DSP Effects")]
-    public DSPBase[] _DSPChainParams;
-
-    Entity _BurstEntity;
-    EntityManager _EntityManager;
-
-    bool _Initialized = false;
-    bool _StaticallyPaired = false;
-    bool _InRangeTemp = false;
-    
-    Collision _Collision;
-
-    public void DestroyEntity()
-    {
-        _EntityManager.DestroyEntity(_BurstEntity);
-    }
-
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
-    public void Awake()
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
-    }
-
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
-    {
-        _BurstEntity = entity;
+        _EmitterEntity = entity;
 
         // If this emitter has a speaker componenet then it is statically paired        
         if (_PairedSpeaker == null && gameObject.GetComponent<GrainSpeakerAuthoring>() != null)
@@ -75,7 +47,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         {
             _PairedSpeaker.AddPairedEmitter(gameObject);
             _StaticallyPaired = true;
-            dstManager.AddComponentData(_BurstEntity, new StaticallyPairedTag { });
+            dstManager.AddComponentData(_EmitterEntity, new StaticallyPairedTag { });
             attachedSpeakerIndex =_PairedSpeaker.GetRegisterAndGetIndex();
         }
 
@@ -83,7 +55,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         int samplesPerMS = (int)(AudioSettings.outputSampleRate * .001f);
 
         #region ADD EMITTER COMPONENT
-        dstManager.AddComponentData(_BurstEntity, new BurstEmitterComponent
+        dstManager.AddComponentData(_EmitterEntity, new BurstEmitterComponent
         {
             _Playing = false,
             _AttachedToSpeaker = _StaticallyPaired,
@@ -173,8 +145,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         #endregion
 
 
-        dstManager.AddBuffer<DSPParametersElement>(_BurstEntity);
-        DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_BurstEntity);
+        dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
+        DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
         for (int i = 0; i < _DSPChainParams.Length; i++)
         {
             dspParams.Add(_DSPChainParams[i].GetDSPBufferElement());
@@ -185,15 +157,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         _Initialized = true;
     }
 
-    void Start()
-    {
-        _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        _HeadPosition = FindObjectOfType<Camera>().transform;
-    }
-
     public override void Collided(Collision collision)
     {
-        _Collision = collision;
         _Triggered = true;
         _CollisionImpact = collision.relativeVelocity.magnitude;
 
@@ -215,19 +180,19 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
         if (_CurrentDistance < _MaxAudibleDistance)
         {
             _WithinEarshot = true;
-            _EntityManager.AddComponent<WithinEarshot>(_BurstEntity);
+            _EntityManager.AddComponent<WithinEarshot>(_EmitterEntity);
         }
         else
         {
             _WithinEarshot = false;
-            _EntityManager.RemoveComponent<WithinEarshot>(_BurstEntity);
+            _EntityManager.RemoveComponent<WithinEarshot>(_EmitterEntity);
         }
 
         float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
 
         if (_Triggered & _WithinEarshot)
         {
-            BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_BurstEntity);
+            BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
             
@@ -322,7 +287,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
 
             burstData._DistanceAmplitude = volumeDistanceAdjust;
 
-            _EntityManager.SetComponentData(_BurstEntity, burstData);
+            _EntityManager.SetComponentData(_EmitterEntity, burstData);
 
             //---   DSP CHAIN        
             UpdateDSPBuffer();
@@ -332,32 +297,13 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
             _AttachedSpeakerIndex = burstData._SpeakerIndex;
             _AttachedToSpeaker = burstData._AttachedToSpeaker;
 
-            Translation trans = _EntityManager.GetComponentData<Translation>(_BurstEntity);
-            _EntityManager.SetComponentData(_BurstEntity, new Translation
+            Translation trans = _EntityManager.GetComponentData<Translation>(_EmitterEntity);
+            _EntityManager.SetComponentData(_EmitterEntity, new Translation
             {
                 Value = transform.position
             });
 
             _Triggered = false;
         }
-    }
-
-    void UpdateDSPBuffer(bool clear = true)
-    {
-        //--- TODO not sure if clearing and adding again is the best way to do this
-        DynamicBuffer<DSPParametersElement> dspBuffer = _EntityManager.GetBuffer<DSPParametersElement>(_BurstEntity);
-
-        if (clear) dspBuffer.Clear();
-
-        for (int i = 0; i < _DSPChainParams.Length; i++)
-        {
-            dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = _InRangeTemp ? Color.yellow : Color.blue;
-        Gizmos.DrawSphere(transform.position, .1f);
     }
 }
