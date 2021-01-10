@@ -21,10 +21,20 @@ public class EmitterPropBase
         return interaction;
     }
 
-     public void SetCollisionData(Collision collision, int currentCollisionCount)
+     public void SetCollisionData(Collision collision)
     {
         if (_InteractionInput != null)
-            _InteractionInput.SetCollisionData(collision, currentCollisionCount);
+            _InteractionInput.SetCollisionData(collision);
+    }
+
+    public void UpdateCollisionNumbers(int numCollisions)
+    {
+        if (_InteractionInput != null)
+        {
+            Debug.Log("Number of collision: " + numCollisions);
+            _InteractionInput._CurrentCollisionCount = numCollisions;
+            Debug.Log("Input Param Collision Count: " + _InteractionInput._CurrentCollisionCount);
+        }
     }
 }
 

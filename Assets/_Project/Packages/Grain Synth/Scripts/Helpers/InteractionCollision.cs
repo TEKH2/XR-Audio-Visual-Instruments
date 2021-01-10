@@ -14,7 +14,7 @@ public class InteractionCollision : InteractionBase
     public InteractionCollisionType _SourceParameter;
 
 
-    public override void SetCollisionData(Collision collision, int numCollisions)
+    public override void SetCollisionData(Collision collision)
     {
         switch (_SourceParameter)
         {

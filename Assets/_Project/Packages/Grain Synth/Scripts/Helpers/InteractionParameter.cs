@@ -65,11 +65,6 @@ public class InteractionParameter : InteractionBase
         UpdateSmoothedOutputValue(currentValue, _Smoothing);
     }
 
-    public override void SetCollisionData(Collision collision, int numCollisions)
-    {
-        _CurrentCollisionCount = numCollisions;
-    }
-
     public void SetAuxValue(float val)
     {
         UpdateSmoothedOutputValue(val, _Smoothing);

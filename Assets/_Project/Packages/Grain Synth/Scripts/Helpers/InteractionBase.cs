@@ -43,7 +43,7 @@ public class InteractionBase : MonoBehaviour
         _OutputValue = Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
-    public virtual void SetCollisionData(Collision collision, int numCollisions) { }
+    public virtual void SetCollisionData(Collision collision) { }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {

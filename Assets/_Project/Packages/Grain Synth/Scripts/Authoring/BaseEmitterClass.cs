@@ -96,15 +96,19 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     protected virtual void SetCollisionData(Collision collision) { }
 
+    protected virtual void UpdateCollisionNumbers(int currentCollisionCount) { }
+
     public void CollisionEnter(Collision collision)
     {
         _CollisionTriggered = true;
         _CollidingGameObjects.Add(collision.gameObject);
+        UpdateCollisionNumbers(_CollidingGameObjects.Count);
         SetCollisionData(collision);
     }
 
     public void CollisionExit(Collision collision)
     {
         _CollidingGameObjects.Remove(collision.gameObject);
+        UpdateCollisionNumbers(_CollidingGameObjects.Count);
     }
 }

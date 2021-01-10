@@ -150,12 +150,12 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
     protected override void SetCollisionData(Collision collision)
     {
-        _BurstEmissionProps._Playhead.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _BurstEmissionProps._BurstDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _BurstEmissionProps._Density.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _BurstEmissionProps._GrainDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _BurstEmissionProps._Transpose.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _BurstEmissionProps._Volume.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _BurstEmissionProps._Playhead.SetCollisionData(collision);
+        _BurstEmissionProps._BurstDuration.SetCollisionData(collision);
+        _BurstEmissionProps._Density.SetCollisionData(collision);
+        _BurstEmissionProps._GrainDuration.SetCollisionData(collision);
+        _BurstEmissionProps._Transpose.SetCollisionData(collision);
+        _BurstEmissionProps._Volume.SetCollisionData(collision);
     }
 
     void Update()

@@ -131,12 +131,20 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
     protected override void SetCollisionData(Collision collision)
     {
-        Debug.Log("COLLISION: " + collision.collider.gameObject.name);
-        _EmissionProps._Playhead.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _EmissionProps._Density.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _EmissionProps._GrainDuration.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _EmissionProps._Transpose.SetCollisionData(collision, _CollidingGameObjects.Count);
-        _EmissionProps._Volume.SetCollisionData(collision, _CollidingGameObjects.Count);
+        _EmissionProps._Playhead.SetCollisionData(collision);
+        _EmissionProps._Density.SetCollisionData(collision);
+        _EmissionProps._GrainDuration.SetCollisionData(collision);
+        _EmissionProps._Transpose.SetCollisionData(collision);
+        _EmissionProps._Volume.SetCollisionData(collision);
+    }
+
+    protected override void UpdateCollisionNumbers(int currentCollisionCount)
+    {
+        _EmissionProps._Playhead.UpdateCollisionNumbers(_CollidingGameObjects.Count);
+        _EmissionProps._Density.UpdateCollisionNumbers(_CollidingGameObjects.Count);
+        _EmissionProps._GrainDuration.UpdateCollisionNumbers(_CollidingGameObjects.Count);
+        _EmissionProps._Transpose.UpdateCollisionNumbers(_CollidingGameObjects.Count);
+        _EmissionProps._Volume.UpdateCollisionNumbers(_CollidingGameObjects.Count);
     }
 
     void Update()
