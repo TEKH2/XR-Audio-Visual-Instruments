@@ -32,8 +32,7 @@ public class EmitterPropBase
         if (_InteractionInput != null)
         {
             Debug.Log("Number of collision: " + numCollisions);
-            _InteractionInput._CurrentCollisionCount = numCollisions;
-            Debug.Log("Input Param Collision Count: " + _InteractionInput._CurrentCollisionCount);
+            _InteractionInput.SetCollisionCount(numCollisions);
         }
     }
 }

@@ -12,7 +12,7 @@ public class InteractionBase : MonoBehaviour
     public float _OutputValue = 0;
 
     protected float _PreviousInputValue = 0;
-    public int _CurrentCollisionCount = 0;
+    protected int _CurrentCollisionCount = 0;
 
     void Start()
     {
@@ -44,6 +44,12 @@ public class InteractionBase : MonoBehaviour
     }
 
     public virtual void SetCollisionData(Collision collision) { }
+
+    public void SetCollisionCount(int count)
+    {
+        _CurrentCollisionCount = count;
+        Debug.Log("ACTUAL COLLISION COUNT IN INTERACTION BASE: " + _CurrentCollisionCount);
+    }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {
