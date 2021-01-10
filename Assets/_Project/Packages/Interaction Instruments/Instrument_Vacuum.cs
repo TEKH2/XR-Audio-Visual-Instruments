@@ -146,14 +146,14 @@ public class Instrument_Vacuum : MonoBehaviour
     {
         _ObjectsCurrentBeingVacuumed.Remove(go);
 
-        GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(go);
-        BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(go);
+        //GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(go);
+        //BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(go);
 
-        for (int i = 0; i < speakers.Length; i++)
-            speakers[i].DestroyEntity();
+        //for (int i = 0; i < speakers.Length; i++)
+        //    speakers[i].DestroyEntity();
 
-        for (int i = 0; i < emitters.Length; i++)
-            emitters[i].DestroyEntity();
+        //for (int i = 0; i < emitters.Length; i++)
+        //    emitters[i].DestroyEntity();
 
         print("Destroying emitter + " + go.name);
 
