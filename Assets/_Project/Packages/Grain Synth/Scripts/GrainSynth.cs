@@ -15,6 +15,7 @@ using Unity.Entities.CodeGeneratedJobForEach;
 using Random = UnityEngine.Random;
 using System.Runtime.InteropServices;
 
+[RequireComponent(typeof(AudioSource))]
 public class GrainSynth :  MonoBehaviour
 {
     public static GrainSynth Instance;
@@ -32,21 +33,27 @@ public class GrainSynth :  MonoBehaviour
 
     public AudioClip[] _AudioClips;
 
+
+    [Header("Emitters")]
+    public float _EmitterToListenerActivationRange = 3;
+    public float _EmitterToSpeakerAttachRadius = 1;
+    [SerializeField]
+    int _GrainProcessorCount = 0;
+
+    [Header("Speakers")]
     public GrainSpeakerAuthoring _SpeakerPrefab;
     public List<GrainSpeakerAuthoring> _GrainSpeakers = new List<GrainSpeakerAuthoring>();
     public int _MaxDyanmicSpeakers = 5;
 
     int _MaxSpeakers;
 
+    [Header("DSP Config")]
+    [SerializeField]
+    int _SampleRate;
+    public int _CurrentDSPSample;
     [Range(0, 100)]
     public float _GrainQueueInMS = 50;
-    int _SampleRate;
     public int _GrainQueueDurationInSamples { get { return (int)(_GrainQueueInMS * _SampleRate * .001f); } }
-
-    public int _CurrentDSPSample;
-
-    public float _EmitterToListenerActivationRange = 3;
-    public float _EmitterToSpeakerAttachRadius = 1;
 
 
     private void Awake()
@@ -151,6 +158,7 @@ public class GrainSynth :  MonoBehaviour
             _EmitterToSpeakerAttachRadius = _EmitterToSpeakerAttachRadius
         });
 
+        _GrainProcessorCount = (int)Mathf.Lerp(_GrainProcessorCount, currentGrainProcessors.Length, Time.deltaTime * 10f);
 
         //----    Loop through all grain processors and fill audio buffers of assigned speakers
         for (int i = 0; i < currentGrainProcessors.Length; i++)

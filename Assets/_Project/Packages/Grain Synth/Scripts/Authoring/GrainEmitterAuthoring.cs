@@ -18,6 +18,7 @@ public class GrainEmissionProps
 }
 
 
+[RequireComponent(typeof(ConvertToEntity))]
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
@@ -42,6 +43,11 @@ public class GrainEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
     private float[] _PerlinSeedArray;
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
+
+    public void Awake()
+    {
+        GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
+    }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
