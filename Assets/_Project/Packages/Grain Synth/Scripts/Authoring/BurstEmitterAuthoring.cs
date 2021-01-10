@@ -46,9 +46,14 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
     bool _InRangeTemp = false;
     
     Collision _Collision;
+    private void OnDestroy()
+    {
+        DestroyEntity();
+    }
 
     public void DestroyEntity()
     {
+        print("Burst DestroyEntity");
         _EntityManager.DestroyEntity(_BurstEntity);
     }
 

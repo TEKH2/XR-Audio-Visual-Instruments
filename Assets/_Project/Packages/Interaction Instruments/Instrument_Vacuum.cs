@@ -52,9 +52,11 @@ public class Instrument_Vacuum : MonoBehaviour
             _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
         }
 
-        if(Input.GetKey(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.D))
         {
-            DestroyEmitter(FindObjectOfType<InteractionForce>().gameObject);
+            GameObject go = FindObjectOfType<InteractionForce>().gameObject;
+            if(go != null)
+                DestroyEmitter(go);
         }
     }
 
