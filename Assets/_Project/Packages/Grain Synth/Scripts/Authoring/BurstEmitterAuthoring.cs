@@ -19,6 +19,7 @@ public class BurstEmissionProps
 }
 
 
+[RequireComponent(typeof(ConvertToEntity))]
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntity
@@ -52,6 +53,11 @@ public class BurstEmitterAuthoring : BaseEmitterClass, IConvertGameObjectToEntit
     }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
+
+    public void Awake()
+    {
+        GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
+    }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

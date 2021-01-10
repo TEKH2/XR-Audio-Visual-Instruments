@@ -31,6 +31,7 @@ public class GrainPlaybackData
 }
 
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(ConvertToEntity))]
 public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public delegate void GrainEmitted(GrainPlaybackData data, int currentDSPSample);
@@ -75,6 +76,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public bool _DebugLog = false;
     #endregion
 
+    public void Awake()
+    {
+        GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
+    }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

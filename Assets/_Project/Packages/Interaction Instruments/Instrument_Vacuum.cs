@@ -123,7 +123,6 @@ public class Instrument_Vacuum : MonoBehaviour
                 if (burst != null) burst.DestroyEntity();
                 if (emit != null) emit.DestroyEntity();
 
-
                 Destroy(other.gameObject);
             }
             else
