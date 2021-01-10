@@ -289,8 +289,14 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     }
     #endregion
 
+    private void OnDestroy()
+    {
+        DestroyEntity();
+    }
+
     public void DestroyEntity()
     {
+        print("Speaker DestroyEntity");
         _EntityManager.DestroyEntity(_Entity);
     }
 

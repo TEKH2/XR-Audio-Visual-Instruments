@@ -147,6 +147,17 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _EmissionProps._Volume._InteractionInput.CollisionData(collision);
     }
 
+    private void OnDestroy()
+    {
+        DestroyEntity();
+    }
+
+    public void DestroyEntity()
+    {
+        print("Grain emitter DestroyEntity");
+        _EntityManager.DestroyEntity(_EmitterEntity);       
+    }
+
     void Update()
     {
         if (!_Initialized)

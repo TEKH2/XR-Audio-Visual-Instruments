@@ -29,6 +29,18 @@ public class BurstEmitterAuthoring : BaseEmitterClass
     public float _CollisionImpact = 0f;
     public bool _Triggered = false;
 
+
+    private void OnDestroy()
+    {
+        DestroyEntity();
+    }
+
+    public void DestroyEntity()
+    {
+        print("Burst DestroyEntity");
+        _EntityManager.DestroyEntity(_BurstEntity);
+    }
+
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

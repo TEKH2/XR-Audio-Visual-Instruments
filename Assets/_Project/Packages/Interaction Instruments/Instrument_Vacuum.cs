@@ -51,6 +51,13 @@ public class Instrument_Vacuum : MonoBehaviour
         {
             _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
         }
+
+        if(Input.GetKeyDown(KeyCode.D))
+        {
+            GameObject go = FindObjectOfType<InteractionForce>().gameObject;
+            if(go != null)
+                DestroyEmitter(go);
+        }
     }
 
     private void FixedUpdate()
@@ -150,6 +157,23 @@ public class Instrument_Vacuum : MonoBehaviour
                 interactionForce.UpdateInteractionForce(dist, force, inTrigger);
             }
         }
+    }
+
+    void DestroyEmitter(GameObject go)
+    {
+        _ObjectsCurrentBeingVacuumed.Remove(go);
+
+        GrainSpeakerAuthoring speaker = GetComponentInChildren<GrainSpeakerAuthoring>(go);
+        BurstEmitterAuthoring burst = GetComponentInChildren<BurstEmitterAuthoring>(go);
+        GrainEmitterAuthoring emit = GetComponentInChildren<GrainEmitterAuthoring>(go);
+
+        if (speaker != null) speaker.DestroyEntity();
+        if (burst != null) burst.DestroyEntity();
+        if (emit != null) emit.DestroyEntity();
+
+        print("Destroying emitter + " + go.name);
+
+        Destroy(go);
     }
 
     //linePnt - point the line passes through
