@@ -17,7 +17,7 @@ public class ColliderScript : MonoBehaviour
     {
         foreach (var emitter in _Emitters)
         {
-            emitter._CollisionTriggered = true;
+            emitter.NewCollision(collision);
         }
 
         foreach (var interaction in _Interactions)
@@ -28,6 +28,11 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        foreach (var emitter in _Emitters)
+        {
+            emitter.UpdateCurrentCollisionStatus(true);
+        }
+
         foreach (var interaction in _Interactions)
         {
             interaction.SetColliding(true);
@@ -37,5 +42,9 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        foreach (var emitter in _Emitters)
+        {
+            emitter.UpdateCurrentCollisionStatus(false);
+        }
     }
 }

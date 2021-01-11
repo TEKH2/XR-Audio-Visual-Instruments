@@ -34,7 +34,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
         int attachedSpeakerIndex = int.MaxValue;
 
-        Debug.Log("PAIRED SPEAKER: " + _PairedSpeaker.name);
+        //Debug.Log("PAIRED SPEAKER: " + _PairedSpeaker.name);
 
         if(_PairedSpeaker != null)
         {

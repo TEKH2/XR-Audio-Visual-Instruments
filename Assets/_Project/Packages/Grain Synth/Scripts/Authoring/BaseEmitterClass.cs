@@ -22,7 +22,8 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _Initialized = false;
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
-    public bool _CollisionTriggered = false;
+    protected bool _CollisionTriggered = false;
+    public bool _Colliding = false;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
@@ -65,6 +66,17 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         DestroyEntity();
     }
 
+    public void NewCollision(Collision collision)
+    {
+        print("New collision of " + name + " with " + collision.collider.name);
+        _CollisionTriggered = true;
+    }
+
+    public void UpdateCurrentCollisionStatus(bool CollisionOccuring)
+    {
+        _Colliding = CollisionOccuring;
+    }
+
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
     protected void UpdateDSPBuffer(bool clear = true)
@@ -79,6 +91,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
             dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
     }
+
     public float GeneratePerlinForParameter(int parameterIndex)
     {
         return Mathf.PerlinNoise(Time.time + _PerlinSeedArray[parameterIndex], (Time.time + _PerlinSeedArray[parameterIndex]) * 0.5f);
