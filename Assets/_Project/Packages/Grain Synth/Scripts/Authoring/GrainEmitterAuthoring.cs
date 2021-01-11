@@ -34,8 +34,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
         int attachedSpeakerIndex = int.MaxValue;
 
-        //Debug.Log("PAIRED SPEAKER: " + _PairedSpeaker.name);
-
         if(_PairedSpeaker != null)
         {
             _PairedSpeaker.AddPairedEmitter(gameObject);
@@ -116,7 +114,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         #endregion
 
 
-        //---   DSP CHAIN
         dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
         DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
         for (int i = 0; i < _DSPChainParams.Length; i++)

@@ -170,8 +170,6 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
         if (_CollisionTriggered & _WithinEarshot)
         {
-            Debug.Log("The thing is happening that you wanted to happen");
-
             BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
