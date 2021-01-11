@@ -48,7 +48,7 @@ public class InteractionBase : MonoBehaviour
     public void SetCollisionCount(int count)
     {
         _CurrentCollisionCount = count;
-        Debug.Log("ACTUAL COLLISION COUNT IN INTERACTION BASE: " + _CurrentCollisionCount);
+        //Debug.Log("ACTUAL COLLISION COUNT IN INTERACTION BASE: " + _CurrentCollisionCount);
     }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
