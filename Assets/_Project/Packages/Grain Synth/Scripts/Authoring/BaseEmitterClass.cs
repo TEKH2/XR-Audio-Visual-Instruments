@@ -22,14 +22,12 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _Initialized = false;
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
-    protected bool _CollisionTriggered = false;
+    public bool _CollisionTriggered = false;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
-
-    public List<GameObject> _CollidingGameObjects;
 
     protected Entity _EmitterEntity;
     protected EntityManager _EntityManager;
@@ -94,21 +92,5 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem) { }
 
-    protected virtual void SetCollisionData(Collision collision) { }
-
     protected virtual void UpdateCollisionNumbers(int currentCollisionCount) { }
-
-    public void CollisionEnter(Collision collision)
-    {
-        _CollisionTriggered = true;
-        _CollidingGameObjects.Add(collision.gameObject);
-        UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        SetCollisionData(collision);
-    }
-
-    public void CollisionExit(Collision collision)
-    {
-        _CollidingGameObjects.Remove(collision.gameObject);
-        UpdateCollisionNumbers(_CollidingGameObjects.Count);
-    }
 }

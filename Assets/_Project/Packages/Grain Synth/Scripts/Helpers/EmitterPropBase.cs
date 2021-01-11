@@ -26,15 +26,6 @@ public class EmitterPropBase
         if (_InteractionInput != null)
             _InteractionInput.SetCollisionData(collision);
     }
-
-    public void UpdateCollisionNumbers(int numCollisions)
-    {
-        if (_InteractionInput != null)
-        {
-            //Debug.Log("Number of collision: " + numCollisions);
-            _InteractionInput.SetCollisionCount(numCollisions);
-        }
-    }
 }
 
 [System.Serializable]
