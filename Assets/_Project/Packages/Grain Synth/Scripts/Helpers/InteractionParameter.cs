@@ -47,17 +47,13 @@ public class InteractionParameter : InteractionBase
                 currentValue = _SourceObject.transform.localScale.magnitude;
                 break;
             case InteractionParameterType.Roll:
-                Debug.Log("COLLISION COUNT INSIDE THE FIXED UPDATE FOR INTERACTION PARAMETER: " + _CurrentCollisionCount);
-                if (_CurrentCollisionCount > 0)
-                {
-                    Debug.Log("ROLL UPDATED!");
+                if (_Colliding)
                     currentValue = _RigidBody.angularVelocity.magnitude;
-                }
                 else
                     currentValue = 0;
                 break;
             case InteractionParameterType.Slide:
-                if (_CurrentCollisionCount > 0)
+                if (_Colliding)
                     currentValue = _RigidBody.velocity.magnitude;
                 else
                     currentValue = 0;
