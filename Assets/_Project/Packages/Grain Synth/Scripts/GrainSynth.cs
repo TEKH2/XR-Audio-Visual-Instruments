@@ -32,6 +32,7 @@ public class GrainSynth :  MonoBehaviour
     AudioListener _Listener;
 
     public AudioClip[] _AudioClips;
+    List<AudioClip> _AudioClipList = new List<AudioClip>();
 
 
     [Header("Emitters")]
@@ -62,8 +63,30 @@ public class GrainSynth :  MonoBehaviour
         _MaxSpeakers = AudioSettings.GetConfiguration().numRealVoices;
     }
 
+    public int RegisterAudioClip(AudioClip clip)
+    {
+        int index = 0;
+        if(_AudioClipList.Contains(clip))
+        {
+            index = _AudioClipList.IndexOf(clip);
+        }
+        else
+        {
+            _AudioClipList.Add(clip);
+            index = _AudioClipList.IndexOf(clip);
+        }
+
+        return index;
+    }
+
     public void Start()
     {
+        // Find all emitters or emitters in list
+        // Add all audio clips too array and assign clip indecies to the emitters
+
+        
+
+
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _SampleRate = AudioSettings.outputSampleRate;
 
