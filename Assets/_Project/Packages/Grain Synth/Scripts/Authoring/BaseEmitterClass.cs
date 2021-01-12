@@ -68,7 +68,6 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public void NewCollision(Collision collision)
     {
-        print("New collision of " + name + " with " + collision.collider.name);
         _CollisionTriggered = true;
     }
 

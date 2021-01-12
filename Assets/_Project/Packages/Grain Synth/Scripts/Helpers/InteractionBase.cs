@@ -45,13 +45,9 @@ public class InteractionBase : MonoBehaviour
         _OutputValue = Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
-    public void SetColliding(bool collide)
+    public void SetColliding(bool collide, PhysicMaterial material)
     {
         _Colliding = collide;
-    }
-
-    public void SetCollidingMaterial(PhysicMaterial material)
-    {
         _CollidedMaterial = material;
     }
 

@@ -35,13 +35,17 @@ public class ColliderScript : MonoBehaviour
 
         foreach (var interaction in _Interactions)
         {
-            interaction.SetColliding(true);
-            interaction.SetCollidingMaterial(collision.collider.material);
+            interaction.SetColliding(true, collision.collider.material);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
+        foreach (var interaction in _Interactions)
+        {
+            interaction.SetColliding(false, collision.collider.material);
+        }
+
         foreach (var emitter in _Emitters)
         {
             emitter.UpdateCurrentCollisionStatus(false);
