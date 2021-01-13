@@ -13,6 +13,8 @@ public class InteractionBase : MonoBehaviour
 
     protected float _PreviousInputValue = 0;
 
+    public bool _UseCollidingObjectSpeaker = false;
+
     protected bool _Colliding = false;
     protected PhysicMaterial _CollidedMaterial;
 
