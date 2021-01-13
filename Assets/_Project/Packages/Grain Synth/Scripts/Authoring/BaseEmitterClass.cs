@@ -23,13 +23,14 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
     protected bool _CollisionTriggered = false;
+    public bool _Colliding = false;
+
+    public bool _UseCollidingObjectSpeaker = false;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
     public GrainSpeakerAuthoring _PairedSpeaker;
     public Transform _HeadPosition;
-
-    public List<GameObject> _CollidingGameObjects;
 
     protected Entity _EmitterEntity;
     protected EntityManager _EntityManager;
@@ -67,6 +68,16 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         DestroyEntity();
     }
 
+    public void NewCollision(Collision collision)
+    {
+        _CollisionTriggered = true;
+    }
+
+    public void UpdateCurrentCollisionStatus(bool CollisionOccuring)
+    {
+        _Colliding = CollisionOccuring;
+    }
+
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
     protected void UpdateDSPBuffer(bool clear = true)
@@ -81,6 +92,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
             dspBuffer.Add(_DSPChainParams[i].GetDSPBufferElement());
         }
     }
+
     public float GeneratePerlinForParameter(int parameterIndex)
     {
         return Mathf.PerlinNoise(Time.time + _PerlinSeedArray[parameterIndex], (Time.time + _PerlinSeedArray[parameterIndex]) * 0.5f);
@@ -94,21 +106,5 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem) { }
 
-    protected virtual void SetCollisionData(Collision collision) { }
-
     protected virtual void UpdateCollisionNumbers(int currentCollisionCount) { }
-
-    public void CollisionEnter(Collision collision)
-    {
-        _CollisionTriggered = true;
-        _CollidingGameObjects.Add(collision.gameObject);
-        UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        SetCollisionData(collision);
-    }
-
-    public void CollisionExit(Collision collision)
-    {
-        _CollidingGameObjects.Remove(collision.gameObject);
-        UpdateCollisionNumbers(_CollidingGameObjects.Count);
-    }
 }

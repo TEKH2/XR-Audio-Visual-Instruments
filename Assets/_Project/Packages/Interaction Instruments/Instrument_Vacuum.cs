@@ -27,17 +27,21 @@ public class Instrument_Vacuum : MonoBehaviour
     public List<GameObject> _ObjectsCurrentBeingVacuumed;
 
     public bool _UseKB = false;
+    public bool _UseMouse = false;
+
+    public MeshRenderer _MatMesh;
+    Material _VacuumMat;
 
     private void Start()
     {
-        if(!_UseKB)
+        _VacuumMat = _MatMesh.material;
+
+        if (!_UseKB)
             XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
     }
 
     private void Update()
     {
-      
-
         if (_UseKB)
         {
             if (Input.GetKey(KeyCode.DownArrow))
@@ -47,10 +51,6 @@ public class Instrument_Vacuum : MonoBehaviour
             else
                 _ThumbScalar = 0;
         }
-        else
-        {
-            _ThumbScalar = Input.GetMouseButton(0) ? 1 : 0;
-        }
 
         if(Input.GetKeyDown(KeyCode.D))
         {
@@ -58,6 +58,9 @@ public class Instrument_Vacuum : MonoBehaviour
             if(go != null)
                 DestroyEmitter(go);
         }
+
+        _VacuumMat.SetFloat("_Speed", -_ThumbScalar);
+        _VacuumMat.SetFloat("_Alpha", Mathf.Abs(_ThumbScalar));
     }
 
     private void FixedUpdate()

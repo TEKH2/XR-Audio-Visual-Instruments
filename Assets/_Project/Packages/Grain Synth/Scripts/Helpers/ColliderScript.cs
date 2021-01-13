@@ -5,27 +5,50 @@ using UnityEngine;
 public class ColliderScript : MonoBehaviour
 {
     public BaseEmitterClass[] _Emitters;
+    public InteractionBase[] _Interactions;
 
     private void Start()
     {
-        _Emitters = Helper.FindComponentsInChildrenWithTag<BaseEmitterClass>(this.gameObject, "Emitter", true);
+        _Emitters = GetComponentsInChildren<BaseEmitterClass>();
+        _Interactions = GetComponentsInChildren<InteractionBase>();
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         foreach (var emitter in _Emitters)
         {
-            if (emitter != null && emitter.enabled)
-                emitter.CollisionEnter(collision);
+            emitter.NewCollision(collision);
+        }
+
+        foreach (var interaction in _Interactions)
+        {
+            interaction.SetCollisionData(collision);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        foreach (var emitter in _Emitters)
+        {
+            emitter.UpdateCurrentCollisionStatus(true);
+        }
+
+        foreach (var interaction in _Interactions)
+        {
+            interaction.SetColliding(true, collision.collider.material);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
+        foreach (var interaction in _Interactions)
+        {
+            interaction.SetColliding(false, collision.collider.material);
+        }
+
         foreach (var emitter in _Emitters)
         {
-            if (emitter != null && emitter.enabled)
-                emitter.CollisionExit(collision);
+            emitter.UpdateCurrentCollisionStatus(false);
         }
     }
 }

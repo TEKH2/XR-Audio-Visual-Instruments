@@ -12,7 +12,9 @@ public class InteractionBase : MonoBehaviour
     public float _OutputValue = 0;
 
     protected float _PreviousInputValue = 0;
-    protected int _CurrentCollisionCount = 0;
+
+    protected bool _Colliding = false;
+    protected PhysicMaterial _CollidedMaterial;
 
     void Start()
     {
@@ -43,13 +45,13 @@ public class InteractionBase : MonoBehaviour
         _OutputValue = Mathf.Clamp(_OutputValue, 0f, 1f);
     }
 
-    public virtual void SetCollisionData(Collision collision) { }
-
-    public void SetCollisionCount(int count)
+    public void SetColliding(bool collide, PhysicMaterial material)
     {
-        _CurrentCollisionCount = count;
-        Debug.Log("ACTUAL COLLISION COUNT IN INTERACTION BASE: " + _CurrentCollisionCount);
+        _Colliding = collide;
+        _CollidedMaterial = material;
     }
+
+    public virtual void SetCollisionData(Collision collision) { }
 
     public static float Map(float val, float inMin, float inMax, float outMin, float outMax)
     {

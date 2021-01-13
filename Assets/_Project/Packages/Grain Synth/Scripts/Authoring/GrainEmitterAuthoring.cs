@@ -34,8 +34,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
         int attachedSpeakerIndex = int.MaxValue;
 
-        Debug.Log("PAIRED SPEAKER: " + _PairedSpeaker.name);
-
         if(_PairedSpeaker != null)
         {
             _PairedSpeaker.AddPairedEmitter(gameObject);
@@ -116,7 +114,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         #endregion
 
 
-        //---   DSP CHAIN
         dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
         DynamicBuffer<DSPParametersElement> dspParams = dstManager.GetBuffer<DSPParametersElement>(_EmitterEntity);
         for (int i = 0; i < _DSPChainParams.Length; i++)
@@ -127,24 +124,6 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         dstManager.AddComponentData(entity, new QuadEntityType { _Type = QuadEntityType.QuadEntityTypeEnum.Emitter });
 
         _Initialized = true;
-    }
-
-    protected override void SetCollisionData(Collision collision)
-    {
-        _EmissionProps._Playhead.SetCollisionData(collision);
-        _EmissionProps._Density.SetCollisionData(collision);
-        _EmissionProps._GrainDuration.SetCollisionData(collision);
-        _EmissionProps._Transpose.SetCollisionData(collision);
-        _EmissionProps._Volume.SetCollisionData(collision);
-    }
-
-    protected override void UpdateCollisionNumbers(int currentCollisionCount)
-    {
-        _EmissionProps._Playhead.UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        _EmissionProps._Density.UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        _EmissionProps._GrainDuration.UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        _EmissionProps._Transpose.UpdateCollisionNumbers(_CollidingGameObjects.Count);
-        _EmissionProps._Volume.UpdateCollisionNumbers(_CollidingGameObjects.Count);
     }
 
     void Update()

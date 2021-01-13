@@ -45,8 +45,11 @@ public class InteractionForce : MonoBehaviour
 
         _DotVelocityToForceDirection = Vector3.Dot(_RigidBody.velocity.normalized, forceDir.normalized);
 
-        _InteractionParam_DistFromSource.SetAuxValue(_DistanceFromForceSource);
-        _InteractionParam_InVolume.SetAuxValue(_InForceVolume ? 1 : 0);
+        if (_InteractionParam_DistFromSource != null && _InteractionParam_InVolume != null)
+        {
+            _InteractionParam_DistFromSource.SetAuxValue(_DistanceFromForceSource);
+            _InteractionParam_InVolume.SetAuxValue(_InForceVolume ? 1 : 0);
+        }
 
     }
 }
