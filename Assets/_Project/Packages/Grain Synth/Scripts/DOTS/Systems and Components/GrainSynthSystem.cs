@@ -399,10 +399,10 @@ public class GrainSynthSystem : SystemBase
         //        audioBuffer[currentIndex] = new AudioSampleBufferElement { Value = sinWaveSample };
         //    }
         //}).ScheduleParallel();
-        //this.Dependency = dspGrains;
+
         #endregion
 
-
+        this.Dependency = dspGrains;
     }
 
     #region HELPERS
