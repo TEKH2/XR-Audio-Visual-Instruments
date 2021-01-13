@@ -116,26 +116,6 @@ public class GravityWell : MonoBehaviour
         return pointOnLine;
     }
 
-    public static Vector3 TangentDirectionAlongLine(Vector3 lineOrigin, Vector3 lineDir, Vector3 worldPosToProject, float maxLineLength = float.MaxValue)
-    {
-        lineDir.Normalize();//this needs to be a unit vector
-        Vector3 vectorToOrigin = worldPosToProject - lineOrigin;
-        float dotOriginAndDir = Vector3.Dot(vectorToOrigin, lineDir);
-        Vector3 pointOnLine = lineOrigin + lineDir * dotOriginAndDir;
-
-        float distOriginToPoint = Vector3.Distance(pointOnLine, lineOrigin);
-
-        if (maxLineLength != float.MaxValue && distOriginToPoint > maxLineLength)
-            pointOnLine = lineOrigin + (lineDir * maxLineLength); // pointOnLine.normalized * maxLineLength;
-
-        if (Vector3.Dot(lineDir, lineOrigin - pointOnLine) > 0)
-            pointOnLine = lineOrigin;
-
-     
-
-
-        return pointOnLine;
-    }
 
     private void OnDrawGizmos()
     {

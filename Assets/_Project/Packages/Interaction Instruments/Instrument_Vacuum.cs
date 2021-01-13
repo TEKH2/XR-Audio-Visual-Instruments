@@ -113,27 +113,13 @@ public class Instrument_Vacuum : MonoBehaviour
         if (other.attachedRigidbody)
         {
             float dist = Vector3.Distance(transform.parent.position, other.transform.position);
-            Vector3 directionTowardLine = Vector3.zero;
-            Vector3 directionTowardSource = Vector3.zero;
-            Vector3 direction = Vector3.zero;
             Vector3 force = Vector3.zero;
 
             if (dist < _DestroyRadius && _ThumbScalar < 0)
                 DestroyEmitter(other.gameObject);
             else
             {
-                float normDistToSource = dist / _MaxDist;
-
-                Vector3 linePoint = NearestPointOnLine(transform.position, transform.forward, other.transform.position);
-
-                directionTowardLine = (other.transform.position - linePoint).normalized;
-                directionTowardSource = (other.transform.position - transform.position).normalized;
-
-                float falloffStrength = _FallOff.Evaluate(1-normDistToSource) * _ForceStrength * _ThumbScalar;
-
-                force = (forceTowardLine * directionTowardLine * falloffStrength) + (forceTowardSource * directionTowardSource * falloffStrength);
-
-                other.attachedRigidbody.AddForce(force);
+                force = VacuumRB(other.attachedRigidbody);
             }
 
             //---   INTERACTION FORCE
@@ -145,37 +131,110 @@ public class Instrument_Vacuum : MonoBehaviour
         }
     }
 
+    public float _ForceTowardLine = .5f;
+    public float _ForceTowardSource = .5f;
+    public float _ForceAlongTangent = .5f;
+
+    public float _GravitationalRadius = 4;
+
+    public float _MinVel = 0;
+    public float _MaxVel = 2;
+    public float _MaxForce = 20;
+    public float _Gain = 5f;
+
+    Vector3 _LastPointOnLine;
+    Vector3 _LastRBPos;
+
+    public float _MasterScalar = .5f;
+
+    Vector3 VacuumRB(Rigidbody rb)
+    {
+        float dist = Vector3.Distance(transform.position, rb.gameObject.transform.position);
+        Vector3 directionTowardLine = Vector3.zero;
+        Vector3 directionTowardSource = Vector3.zero;
+        Vector3 direction = Vector3.zero;
+        Vector3 force = Vector3.zero;
+
+        float normDistToSource = dist / _MaxDist;
+
+
+
+        // Line force
+        Vector3 linePoint = NearestPointOnLine(transform.position, transform.forward, rb.transform.position, _MaxDist);
+        directionTowardLine = (rb.transform.position - linePoint).normalized;
+        Vector3 vecToProjectedPoint = rb.gameObject.transform.position - linePoint;
+        float lineGravitationalFactor = 1 - (vecToProjectedPoint.magnitude / _GravitationalRadius);
+        lineGravitationalFactor = Mathf.Clamp(lineGravitationalFactor, .1f, 1f);
+        //directionTowardLine *= lineGravitationalFactor * _ForceTowardLine;
+        directionTowardLine *= _ForceTowardLine;
+
+        // Tan force      
+        Vector3 dirToProjectedPoint = vecToProjectedPoint.normalized;
+        Vector3 tangentialForce = Vector3.Cross(transform.forward, dirToProjectedPoint);
+
+        tangentialForce *= _ForceAlongTangent;
+
+        // Source force
+        directionTowardSource = (rb.transform.position - transform.position).normalized;
+        directionTowardSource *= _ForceTowardSource;
+
+
+
+        // Move to target
+        Vector3 distToTarget = linePoint - rb.transform.position;
+        // calc a target vel proportional to distance (clamped to maxVel)
+        Vector3 tgtVel = Vector3.ClampMagnitude(_MinVel * distToTarget, _MaxVel);
+        // calculate the velocity error
+        Vector3 error = tgtVel - rb.velocity;
+        // calc a force proportional to the error (clamped to maxForce)
+        Vector3 toTargetForce = Vector3.ClampMagnitude(_Gain * error, _MaxForce);
+
+        rb.AddForce(toTargetForce * Mathf.Abs(_ThumbScalar) * _MasterScalar);
+
+
+        force = directionTowardLine + directionTowardSource + tangentialForce;
+        rb.AddForce(force * -(_ThumbScalar * _MasterScalar));
+
+        // DEBUG
+        _LastPointOnLine = linePoint;
+        _LastRBPos = rb.transform.position;
+
+        return force;
+    }
+
+    public static Vector3 NearestPointOnLine(Vector3 lineOrigin, Vector3 lineDir, Vector3 worldPosToProject, float maxLineLength = float.MaxValue)
+    {
+        lineDir.Normalize();//this needs to be a unit vector
+        Vector3 vectorToOrigin = worldPosToProject - lineOrigin;
+        float dotOriginAndDir = Vector3.Dot(vectorToOrigin, lineDir);
+        Vector3 pointOnLine = lineOrigin + lineDir * dotOriginAndDir;
+
+        float distOriginToPoint = Vector3.Distance(pointOnLine, lineOrigin);
+
+        if (maxLineLength != float.MaxValue && distOriginToPoint > maxLineLength)
+            pointOnLine = lineOrigin + (lineDir * maxLineLength); // pointOnLine.normalized * maxLineLength;
+
+        if (Vector3.Dot(lineDir, lineOrigin - pointOnLine) > 0)
+            pointOnLine = lineOrigin;
+
+        return pointOnLine;
+    }
+
+
     void DestroyEmitter(GameObject go)
     {
         _ObjectsCurrentBeingVacuumed.Remove(go);
-
-        //GrainSpeakerAuthoring[] speakers = GetComponentsInChildren<GrainSpeakerAuthoring>(go);
-        //BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>(go);
-
-        //for (int i = 0; i < speakers.Length; i++)
-        //    speakers[i].DestroyEntity();
-
-        //for (int i = 0; i < emitters.Length; i++)
-        //    emitters[i].DestroyEntity();
-
-        print("Destroying emitter + " + go.name);
-
         Destroy(go);
-    }
-
-    //linePnt - point the line passes through
-    //lineDir - unit vector in direction of line, either direction works
-    //pnt - the point to find nearest on line for
-    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
-    {
-        lineDir.Normalize();//this needs to be a unit vector
-        var v = pnt - linePnt;
-        var d = Vector3.Dot(v, lineDir);
-        return linePnt + lineDir * d;
-    }
+    }  
 
     private void OnDrawGizmos()
     {
+        if(Application.isPlaying)
+        {
+            Debug.DrawLine(transform.position, transform.position + transform.forward * _MaxDist);
+            Debug.DrawLine(_LastPointOnLine, _LastRBPos);
+        }
+
         //if (_SpherecastTransform != null)
         //{
         //    for (int i = 0; i < 5; i++)

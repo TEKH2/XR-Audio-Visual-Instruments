@@ -152,9 +152,15 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
         _DistanceVolume = AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
 
-        float volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
-                GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
-                transform.position) * _DistanceVolume;
+        float volumeDistanceAdjust = 0;
+        if (attachedSpeakerIndex >= GrainSynth.Instance._GrainSpeakers.Count)
+            print(gameObject.name + " - Speaker index out of range ERROR. " + attachedSpeakerIndex + " / " + GrainSynth.Instance._GrainSpeakers.Count);
+        else
+        {
+            volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
+                    GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
+                    transform.position) * _DistanceVolume;
+        }
 
         EmitterComponent emitter = _EntityManager.GetComponentData<EmitterComponent>(_EmitterEntity);
 
