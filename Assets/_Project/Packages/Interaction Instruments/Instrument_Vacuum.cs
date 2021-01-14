@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EXP.XR;
+using UnityEngine.InputSystem;
 using Unity.Entities.UniversalDelegates;
 
 public class Instrument_Vacuum : MonoBehaviour
@@ -32,32 +33,37 @@ public class Instrument_Vacuum : MonoBehaviour
     public MeshRenderer _MatMesh;
     Material _VacuumMat;
 
+    [SerializeField]
+    InputActionProperty _RightThumbstickAction;
+   
+
     private void Start()
     {
         _VacuumMat = _MatMesh.material;
 
-        if (!_UseKB)
-            XRControllers.Instance._RightControllerFeatures._XRVector2Dict[XRVector2s.PrimaryAxis].OnValueUpdate.AddListener((Vector2 v) => _ThumbScalar = v.y );
+        _RightThumbstickAction.action.started += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("Started... " + _ThumbScalar);
+        _RightThumbstickAction.action.performed += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("performed... " + _ThumbScalar);
+        _RightThumbstickAction.action.canceled += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("cancelled... " + _ThumbScalar);
     }
 
     private void Update()
     {
-        if (_UseKB)
-        {
-            if (Input.GetKey(KeyCode.DownArrow))
-                _ThumbScalar = -1;
-            else if (Input.GetKey(KeyCode.UpArrow))
-                _ThumbScalar = 1;
-            else
-                _ThumbScalar = 0;
-        }
+        //if (_UseKB)
+        //{
+        //    if (Input.GetKey(KeyCode.DownArrow))
+        //        _ThumbScalar = -1;
+        //    else if (Input.GetKey(KeyCode.UpArrow))
+        //        _ThumbScalar = 1;
+        //    else
+        //        _ThumbScalar = 0;
+        //}
 
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            GameObject go = FindObjectOfType<InteractionForce>().gameObject;
-            if(go != null)
-                DestroyEmitter(go);
-        }
+        //if(Input.GetKeyDown(KeyCode.D))
+        //{
+        //    GameObject go = FindObjectOfType<InteractionForce>().gameObject;
+        //    if(go != null)
+        //        DestroyEmitter(go);
+        //}
 
         _VacuumMat.SetFloat("_Speed", -_ThumbScalar);
         _VacuumMat.SetFloat("_Alpha", Mathf.Abs(_ThumbScalar));

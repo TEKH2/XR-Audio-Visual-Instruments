@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using EXP.XR;
 
 public class Instrument_Projectile : MonoBehaviour
@@ -23,7 +24,9 @@ public class Instrument_Projectile : MonoBehaviour
     bool _Firing = false;
     public float _Speed = 3;
 
-   
+    [SerializeField]
+    InputActionProperty _TriggerAction;
+
 
     Rigidbody _SpawnedPowerUpProjectileRB;
     public Vector2 _ScaleRange = new Vector2(.1f, .5f);
@@ -32,17 +35,21 @@ public class Instrument_Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueOne.AddListener(() => TriggerDown());
-        XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueZero.AddListener(() => TriggerUp());
+        _TriggerAction.action.started += ctx => TriggerDown();
+        _TriggerAction.action.canceled += ctx => TriggerUp();
+
+        //XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueOne.AddListener(() => TriggerDown());
+        //XRControllers.Instance._RightControllerFeatures._XRFloatDict[XRFloats.Trigger].OnValueZero.AddListener(() => TriggerUp());
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            TriggerDown();
-        else if (Input.GetMouseButtonUp(0))
-            TriggerUp();
+        //if (Input.GetMouseButtonDown(0))
+        //    TriggerDown();
+        //else if (Input.GetMouseButtonUp(0))
+        //    TriggerUp();
 
 
         if (_FiringMode == FiringMode.Automatic)
