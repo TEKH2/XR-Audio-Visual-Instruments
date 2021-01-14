@@ -68,7 +68,7 @@ public class Instrument_Vacuum : MonoBehaviour
 
     private void Update()
     {      
-        _VacuumMat.SetFloat("_Speed", -_PushPullScalar);
+        _VacuumMat.SetFloat("_Speed", _PushPullScalar * .5f);
         _VacuumMat.SetFloat("_Alpha", Mathf.Clamp01( Mathf.Abs(_PushPullScalar) + Mathf.Abs(_TractorBeamScalar) ));
     }
 

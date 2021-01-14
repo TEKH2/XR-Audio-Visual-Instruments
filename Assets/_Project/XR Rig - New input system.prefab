@@ -1380,8 +1380,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
+      propertyPath: _TractorBeamGain
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _ForceAlongTangent
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _ForceTowardSource
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
       propertyPath: _MaxTractorBeamVel
-      value: 30
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
@@ -1390,8 +1405,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
+      propertyPath: _GravitationalRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
       propertyPath: _MaxTractorBeamForce
-      value: 30
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
@@ -1411,8 +1431,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
+      propertyPath: _RightTriggerAction.m_Reference
+      value: 
+      objectReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
       propertyPath: _RightGripAction.m_Action.m_Name
       value: Right Grip
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightTriggerAction.m_Action.m_Id
+      value: 30702156-d1a0-4e8e-b562-71963d8305d8
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
@@ -1420,6 +1451,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -8198699208435500284, guid: c348712bda248c246b8c49b3db54643f,
         type: 3}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightTriggerAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightTriggerAction.m_Action.m_Name
+      value: Right Trigger
+      objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
       propertyPath: _RightThumbstickAction.m_Action.m_Id
