@@ -62,7 +62,7 @@ public struct StaticallyPairedTag : IComponentData
 {
 }
 
-public struct TagPingPong : IComponentData
+public struct PingPongTag : IComponentData
 {
 }
 
