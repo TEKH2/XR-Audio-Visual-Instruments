@@ -51,6 +51,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _Playing = false,
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
+            _PingPong = _PingPongAtEndOfClip,
 
             _BurstDuration = new ModulateParameterComponent
             {
@@ -192,6 +193,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             burstData._Playing = true;
             burstData._SpeakerIndex = attachedSpeakerIndex;
             burstData._AudioClipIndex = _BurstEmissionProps._ClipIndex;
+            burstData._PingPong = _PingPongAtEndOfClip;
 
             burstData._BurstDuration = new ModulateParameterComponent
             {

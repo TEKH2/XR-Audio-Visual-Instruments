@@ -26,6 +26,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public bool _Colliding = false;
 
     public bool _UseCollidingObjectSpeaker = false;
+    public bool _PingPongAtEndOfClip = true;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;

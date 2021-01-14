@@ -34,8 +34,6 @@ public struct GrainProcessor : IComponentData
     public float _Pitch;
     public float _Volume;
 
-    public bool _PingPong;
-
     public int _SpeakerIndex;
 
     public int _DSPStartIndex;
@@ -61,6 +59,10 @@ public enum PooledObjectState
 }
 
 public struct StaticallyPairedTag : IComponentData
+{
+}
+
+public struct TagPingPong : IComponentData
 {
 }
 
@@ -100,6 +102,7 @@ public struct EmitterComponent : IComponentData
     public int _EmitterIndex;
     public bool _Playing;   
     public int _AudioClipIndex;
+    public bool _PingPong;
 
     public ModulateParameterComponent _Playhead;
     public ModulateParameterComponent _Density;
@@ -127,6 +130,8 @@ public struct BurstEmitterComponent : IComponentData
     public int _EmitterIndex;
     public bool _Playing;
     public int _AudioClipIndex;
+    public bool _PingPong;
+
     public ModulateParameterComponent _BurstDuration;
     public ModulateParameterComponent _Density;
     public ModulateParameterComponent _Playhead;

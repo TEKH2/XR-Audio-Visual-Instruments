@@ -51,6 +51,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
             _Playing = _EmissionProps._Playing,
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
+            _PingPong = _PingPongAtEndOfClip,
 
             _Playhead = new ModulateParameterComponent
             {
@@ -170,6 +171,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         emitterData._Playing = _EmissionProps._Playing;
         emitterData._SpeakerIndex = attachedSpeakerIndex;
         emitterData._AudioClipIndex = _EmissionProps._ClipIndex;
+        emitterData._PingPong = _PingPongAtEndOfClip;
 
         #region UPDATE EMITTER COMPONENT
         emitterData._Playhead = new ModulateParameterComponent
