@@ -320,7 +320,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2576496752088268929}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -397,7 +397,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2576496752088268929}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -502,7 +502,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2576496752088268929}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e988983f96fe1dd48800bcdfc82f23e9, type: 3}
   m_Name: 
@@ -704,6 +704,7 @@ GameObject:
   - component: {fileID: 2576496752839984461}
   - component: {fileID: 2576496752839984460}
   - component: {fileID: 2576496752839984463}
+  - component: {fileID: 1343010469}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -794,12 +795,12 @@ MonoBehaviour:
     m_Name: Main Camera - TPD - Position
     m_Type: 0
     m_ExpectedControlType: Vector3
-    m_Id: 
+    m_Id: 94f968ee-532c-48fa-a988-0ddc325a6220
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 
+      m_Id: f00aeb7a-6760-49c3-b997-b8b82a70219b
       m_Path: <XRHMD>/centerEyePosition
       m_Interactions: 
       m_Processors: 
@@ -810,18 +811,49 @@ MonoBehaviour:
     m_Name: Main Camera - TPD - Rotation
     m_Type: 0
     m_ExpectedControlType: Quaternion
-    m_Id: 
+    m_Id: 804b0be1-277c-49f0-984e-056cdfa2595d
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 
+      m_Id: bb6adc64-266c-466b-bc03-9b4baccbebcb
       m_Path: <XRHMD>/centerEyeRotation
       m_Interactions: 
       m_Processors: 
       m_Groups: 
       m_Action: Main Camera - TPD - Rotation
       m_Flags: 0
+--- !u!114 &1343010469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2576496752839984462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &2576496753077401295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,17 +1335,84 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _TriggerAction.m_Reference
+      value: 
+      objectReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _TriggerAction.m_Action.m_Id
       value: 6925022f-45ca-436b-b7ff-da30d92fda18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _ThumbStickAction.m_Reference
+      value: 
+      objectReference: {fileID: -8198699208435500284, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _TriggerAction.m_UseReference
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _TriggerAction.m_Action.m_Name
       value: Trigger
       objectReference: {fileID: 0}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _ThumbStickAction.m_Action.m_Id
+      value: 19b1b830-1ca6-4d00-9b64-fc357d08ec37
+      objectReference: {fileID: 0}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _ThumbStickAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _ThumbStickAction.m_Action.m_Name
+      value: Thumb Stick
+      objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152041, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _MasterScalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _MaxTractorBeamVel
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _MinTractorBeamVel
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _MaxTractorBeamForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightGripAction.m_Reference
+      value: 
+      objectReference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightGripAction.m_Action.m_Id
+      value: 77e31fa5-7753-45e5-a7ca-42638b9e19f3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightGripAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
+        type: 3}
+      propertyPath: _RightGripAction.m_Action.m_Name
+      value: Right Grip
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152045, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
