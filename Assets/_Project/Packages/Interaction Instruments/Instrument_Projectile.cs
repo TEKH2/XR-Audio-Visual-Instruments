@@ -27,6 +27,11 @@ public class Instrument_Projectile : MonoBehaviour
     [SerializeField]
     InputActionProperty _TriggerAction;
 
+    [SerializeField]
+    InputActionProperty _ThumbStickAction;
+
+    bool ThumbStickUsed { get { return _ThumbStickAction.action.phase == InputActionPhase.Started || _ThumbStickAction.action.phase == InputActionPhase.Performed; } }
+
 
     Rigidbody _SpawnedPowerUpProjectileRB;
     public Vector2 _ScaleRange = new Vector2(.1f, .5f);
@@ -51,6 +56,9 @@ public class Instrument_Projectile : MonoBehaviour
         //else if (Input.GetMouseButtonUp(0))
         //    TriggerUp();
 
+
+        if (_Firing && ThumbStickUsed)
+            TriggerUp();
 
         if (_FiringMode == FiringMode.Automatic)
         {
@@ -87,6 +95,11 @@ public class Instrument_Projectile : MonoBehaviour
     public void TriggerDown()
     {
         print("Trigger down");
+
+        if (ThumbStickUsed)
+            return;
+
+
         switch (_FiringMode)
         {
             case FiringMode.Automatic:

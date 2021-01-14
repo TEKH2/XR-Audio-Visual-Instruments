@@ -9,16 +9,16 @@ public class Instrument_Vacuum : MonoBehaviour
 {
     public float _MaxDist = 20;
 
-    public float _ForceStrength = 10;
+    [Range(0,1)]
+    public float _TractorBeamScalar = 0;
+    [Range(-1, 1)]
+    public float _PushPullScalar = 0;
+    [Range(-1, 1)]
+    public float _TanScalar = 0;
 
-    public AnimationCurve _FallOff;
-
-    // Test for later to get a laggy line
-    Vector3[] _ForwardDirections;
-    int _SegementCount = 20;
-
-    public float _ThumbScalar = 0;
     float _DestroyRadius = .4f;
+
+   
 
     public float forceTowardLine = .5f;
     public float forceTowardSource = .5f;
@@ -35,38 +35,41 @@ public class Instrument_Vacuum : MonoBehaviour
 
     [SerializeField]
     InputActionProperty _RightThumbstickAction;
-   
+
+    [SerializeField]
+    InputActionProperty _RightGripAction;
+
+    [SerializeField]
+    InputActionProperty _RightTriggerAction;
+
+    bool _DestroyActive = false;
+
 
     private void Start()
     {
         _VacuumMat = _MatMesh.material;
 
-        _RightThumbstickAction.action.started += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("Started... " + _ThumbScalar);
-        _RightThumbstickAction.action.performed += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("performed... " + _ThumbScalar);
-        _RightThumbstickAction.action.canceled += ctx => _ThumbScalar = ctx.ReadValue<Vector2>().y; print("cancelled... " + _ThumbScalar);
+        _RightGripAction.action.started += ctx => _TractorBeamScalar = 1; print("Grip... " + _TractorBeamScalar);
+        _RightGripAction.action.performed += ctx => _TractorBeamScalar = 1; 
+        _RightGripAction.action.canceled += ctx => _TractorBeamScalar = 0;
+
+        _RightTriggerAction.action.started += ctx => _DestroyActive = true;
+        _RightTriggerAction.action.performed += ctx => _DestroyActive = true;
+        _RightTriggerAction.action.canceled += ctx => _DestroyActive = false;
+
+        _RightThumbstickAction.action.started += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
+        _RightThumbstickAction.action.performed += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
+        _RightThumbstickAction.action.canceled += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
+
+        _RightThumbstickAction.action.started += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
+        _RightThumbstickAction.action.performed += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
+        _RightThumbstickAction.action.canceled += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
     }
 
     private void Update()
-    {
-        //if (_UseKB)
-        //{
-        //    if (Input.GetKey(KeyCode.DownArrow))
-        //        _ThumbScalar = -1;
-        //    else if (Input.GetKey(KeyCode.UpArrow))
-        //        _ThumbScalar = 1;
-        //    else
-        //        _ThumbScalar = 0;
-        //}
-
-        //if(Input.GetKeyDown(KeyCode.D))
-        //{
-        //    GameObject go = FindObjectOfType<InteractionForce>().gameObject;
-        //    if(go != null)
-        //        DestroyEmitter(go);
-        //}
-
-        _VacuumMat.SetFloat("_Speed", -_ThumbScalar);
-        _VacuumMat.SetFloat("_Alpha", Mathf.Abs(_ThumbScalar));
+    {      
+        _VacuumMat.SetFloat("_Speed", _PushPullScalar * .5f);
+        _VacuumMat.SetFloat("_Alpha", Mathf.Clamp01( Mathf.Abs(_PushPullScalar) + Mathf.Abs(_TractorBeamScalar) ));
     }
 
     private void FixedUpdate()
@@ -77,24 +80,7 @@ public class Instrument_Vacuum : MonoBehaviour
         {
             _TotalVacuumedMass += item.GetComponent<Rigidbody>().mass * 
                 Mathf.Clamp(1 - 10 * Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist, 0f, 0.7f) *
-                Mathf.Abs(Mathf.Min(_ThumbScalar, 0));
-        }
-    }
-
-    void UpdateForwardDirections()
-    {
-        for (int i = 1; i < _ForwardDirections.Length; i++)
-        {
-            _ForwardDirections[i] = _ForwardDirections[i-1];
-        }
-
-        _ForwardDirections[0] = transform.forward;
-
-        for (int i = 0; i < _SegementCount; i++)
-        {
-            float norm = i / (_SegementCount - 1f);
-            Vector3 forward = _ForwardDirections[i] * norm * _MaxDist;
-            //_Line.SetPosition(i, transform.position + forward);
+                Mathf.Abs(Mathf.Min(_PushPullScalar, 0));
         }
     }
 
@@ -121,7 +107,7 @@ public class Instrument_Vacuum : MonoBehaviour
             float dist = Vector3.Distance(transform.parent.position, other.transform.position);
             Vector3 force = Vector3.zero;
 
-            if (dist < _DestroyRadius && _ThumbScalar < 0)
+            if (dist < _DestroyRadius && _PushPullScalar < 0 && _DestroyActive)
                 DestroyEmitter(other.gameObject);
             else
             {
@@ -137,75 +123,58 @@ public class Instrument_Vacuum : MonoBehaviour
         }
     }
 
-    public float _ForceTowardLine = .5f;
     public float _ForceTowardSource = .5f;
     public float _ForceAlongTangent = .5f;
 
     public float _GravitationalRadius = 4;
 
-    public float _MinVel = 0;
-    public float _MaxVel = 2;
-    public float _MaxForce = 20;
-    public float _Gain = 5f;
+    [Header("Tractor Beam")]
+    public float _MinTractorBeamVel = 0;
+    public float _MaxTractorBeamVel = 2;
+    public float _MaxTractorBeamForce = 20;
+    public float _TractorBeamGain = 5f;
 
     Vector3 _LastPointOnLine;
     Vector3 _LastRBPos;
 
-    public float _MasterScalar = .5f;
-
     Vector3 VacuumRB(Rigidbody rb)
     {
-        float dist = Vector3.Distance(transform.position, rb.gameObject.transform.position);
-        Vector3 directionTowardLine = Vector3.zero;
-        Vector3 directionTowardSource = Vector3.zero;
-        Vector3 direction = Vector3.zero;
-        Vector3 force = Vector3.zero;
-
-        float normDistToSource = dist / _MaxDist;
-
-
-
         // Line force
-        Vector3 linePoint = NearestPointOnLine(transform.position, transform.forward, rb.transform.position, _MaxDist);
-        directionTowardLine = (rb.transform.position - linePoint).normalized;
+        Vector3 linePoint = NearestPointOnLine(transform.position, transform.forward, rb.transform.position, _MaxDist);       
         Vector3 vecToProjectedPoint = rb.gameObject.transform.position - linePoint;
-        float lineGravitationalFactor = 1 - (vecToProjectedPoint.magnitude / _GravitationalRadius);
-        lineGravitationalFactor = Mathf.Clamp(lineGravitationalFactor, .1f, 1f);
-        //directionTowardLine *= lineGravitationalFactor * _ForceTowardLine;
-        directionTowardLine *= _ForceTowardLine;
+       
 
-        // Tan force      
+        //---  TAN FORCE      
         Vector3 dirToProjectedPoint = vecToProjectedPoint.normalized;
         Vector3 tangentialForce = Vector3.Cross(transform.forward, dirToProjectedPoint);
-
         tangentialForce *= _ForceAlongTangent;
+        rb.AddForce(tangentialForce * _TanScalar);
 
-        // Source force
-        directionTowardSource = (rb.transform.position - transform.position).normalized;
+
+        //---   PUSH PULL FORCE
+        Vector3 directionTowardSource = (rb.transform.position - transform.position).normalized;
         directionTowardSource *= _ForceTowardSource;
+        rb.AddForce(directionTowardSource * -_PushPullScalar);
 
 
-
-        // Move to target
+        //---   TRACTOR BEAM TO PROJECTED POINT ON LINE
+        // MOVE TO TARGET
         Vector3 distToTarget = linePoint - rb.transform.position;
-        // calc a target vel proportional to distance (clamped to maxVel)
-        Vector3 tgtVel = Vector3.ClampMagnitude(_MinVel * distToTarget, _MaxVel);
-        // calculate the velocity error
+        // CALC A TARGET VEL PROPORTIONAL TO DISTANCE (CLAMPED TO MAXVEL)
+        Vector3 tgtVel = Vector3.ClampMagnitude(_MinTractorBeamVel * distToTarget, _MaxTractorBeamVel);
+        // CALCULATE THE VELOCITY ERROR
         Vector3 error = tgtVel - rb.velocity;
-        // calc a force proportional to the error (clamped to maxForce)
-        Vector3 toTargetForce = Vector3.ClampMagnitude(_Gain * error, _MaxForce);
+        // CALC A FORCE PROPORTIONAL TO THE ERROR (CLAMPED TO MAXFORCE)
+        Vector3 tractorBeamForce = Vector3.ClampMagnitude(_TractorBeamGain * error, _MaxTractorBeamForce);
+        // ADD FORCE
+        rb.AddForce(tractorBeamForce * _TractorBeamScalar);
 
-        rb.AddForce(toTargetForce * Mathf.Abs(_ThumbScalar) * _MasterScalar);
-
-
-        force = directionTowardLine + directionTowardSource + tangentialForce;
-        rb.AddForce(force * -(_ThumbScalar * _MasterScalar));
 
         // DEBUG
         _LastPointOnLine = linePoint;
         _LastRBPos = rb.transform.position;
 
-        return force;
+        return (tangentialForce * _TanScalar) + (directionTowardSource * -_PushPullScalar) + (tractorBeamForce * _TractorBeamScalar);
     }
 
     public static Vector3 NearestPointOnLine(Vector3 lineOrigin, Vector3 lineDir, Vector3 worldPosToProject, float maxLineLength = float.MaxValue)
