@@ -5,7 +5,6 @@ using UnityEngine;
 public class EmitterPropBase
 {
     public InteractionBase _InteractionInput;
-    public bool _PerlinNoise = false;
 
     [Range(0f, 1.0f)]
     [SerializeField]
@@ -22,8 +21,18 @@ public class EmitterPropBase
     }
 }
 
+public class GrainPropBase : EmitterPropBase
+{
+    public bool _PerlinNoise = false;
+}
+
+public class BurstPropBase : EmitterPropBase
+{
+    public bool _LockNoise = false;
+}
+
 [System.Serializable]
-public class EmitterPropDensity : EmitterPropBase
+public class EmitterPropDensity : GrainPropBase
 {
     [Range(0.1f, 10f)]
     [SerializeField]
@@ -41,7 +50,7 @@ public class EmitterPropDensity : EmitterPropBase
 }
 
 [System.Serializable]
-public class EmitterPropDuration : EmitterPropBase
+public class EmitterPropDuration : GrainPropBase
 {
     [Range(2f, 500f)]
     [SerializeField]
@@ -59,7 +68,7 @@ public class EmitterPropDuration : EmitterPropBase
 }
 
 [System.Serializable]
-public class EmitterPropPlayhead : EmitterPropBase
+public class EmitterPropPlayhead : GrainPropBase
 {
     [Range(0f, 1f)]
     [SerializeField]
@@ -77,7 +86,7 @@ public class EmitterPropPlayhead : EmitterPropBase
 }
 
 [System.Serializable]
-public class EmitterPropTranspose : EmitterPropBase
+public class EmitterPropTranspose : GrainPropBase
 {
     [Range(-3f, 3f)]
     [SerializeField]
@@ -95,7 +104,7 @@ public class EmitterPropTranspose : EmitterPropBase
 }
 
 [System.Serializable]
-public class EmitterPropVolume : EmitterPropBase
+public class EmitterPropVolume : GrainPropBase
 {
     [Range(0f, 2f)]
     [SerializeField]
@@ -112,8 +121,10 @@ public class EmitterPropVolume : EmitterPropBase
     public float _Max = 2f;
 }
 
+
+
 [System.Serializable]
-public class BurstPropDensity : EmitterPropBase
+public class BurstPropDensity : BurstPropBase
 {
     [Range(0.1f, 10f)]
     [SerializeField]
@@ -134,7 +145,7 @@ public class BurstPropDensity : EmitterPropBase
 }
 
 [System.Serializable]
-public class BurstPropDuration : EmitterPropBase
+public class BurstPropDuration : BurstPropBase
 {
     [Range(10f, 1000f)]
     [SerializeField]
@@ -152,7 +163,7 @@ public class BurstPropDuration : EmitterPropBase
 }
 
 [System.Serializable]
-public class BurstPropGrainDuration : EmitterPropBase
+public class BurstPropGrainDuration : BurstPropBase
 {
     [Range(5f, 500f)]
     [SerializeField]
@@ -173,7 +184,7 @@ public class BurstPropGrainDuration : EmitterPropBase
 }
 
 [System.Serializable]
-public class BurstPropPlayhead : EmitterPropBase
+public class BurstPropPlayhead : BurstPropBase
 {
     [Range(0f, 1f)]
     [SerializeField]
@@ -196,7 +207,7 @@ public class BurstPropPlayhead : EmitterPropBase
 }
 
 [System.Serializable]
-public class BurstPropTranspose : EmitterPropBase
+public class BurstPropTranspose : BurstPropBase
 {
     [Range(-3f, 3f)]
     [SerializeField]
@@ -219,7 +230,7 @@ public class BurstPropTranspose : EmitterPropBase
 }
 
 [System.Serializable]
-public class BurstPropVolume : EmitterPropBase
+public class BurstPropVolume : BurstPropBase
 {
     [Range(0f, 1f)]
     [SerializeField]

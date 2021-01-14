@@ -260,11 +260,16 @@ public class GrainSynthSystem : SystemBase
                         }
 
                         // Get random values for next iteration and update random array to avoid repeating values
-                        randomDensity = randomGen.NextFloat(-1, 1);
-                        randomPlayhead = randomGen.NextFloat(-1, 1);
-                        randomGrainDuration = randomGen.NextFloat(-1, 1);
+                        if (!burst._Density._LockNoise)
+                            randomDensity = randomGen.NextFloat(-1, 1);
+                        if (!burst._Playhead._LockNoise)
+                            randomPlayhead = randomGen.NextFloat(-1, 1);
+                        if (!burst._GrainDuration._LockNoise)
+                            randomGrainDuration = randomGen.NextFloat(-1, 1);
                         randomVolume = randomGen.NextFloat(-1, 1);
-                        randomTranspose = randomGen.NextFloat(-1, 1);
+                        if (!burst._Transpose._LockNoise)
+                            randomTranspose = randomGen.NextFloat(-1, 1);
+
                         randomArray[nativeThreadIndex] = randomGen;
 
                         // Compute grain values for next iteration

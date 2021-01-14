@@ -34,6 +34,8 @@ public struct GrainProcessor : IComponentData
     public float _Pitch;
     public float _Volume;
 
+    public bool _PingPong;
+
     public int _SpeakerIndex;
 
     public int _DSPStartIndex;
@@ -78,6 +80,7 @@ public struct ModulateParameterComponent : IComponentData
     public float _EndValue;
     public float _Noise;
     public bool _PerlinNoise;
+    public bool _LockNoise;
     public float _PerlinValue;
     public float _Shape;
     public float _InteractionAmount;
