@@ -8,7 +8,7 @@ PhysicMaterial:
   m_PrefabAsset: {fileID: 0}
   m_Name: Physics - Cue Ball
   dynamicFriction: 0.01
-  staticFriction: 0.01
-  bounciness: 0.9
+  staticFriction: 0.001
+  bounciness: 0.8
   frictionCombine: 0
-  bounceCombine: 3
+  bounceCombine: 2

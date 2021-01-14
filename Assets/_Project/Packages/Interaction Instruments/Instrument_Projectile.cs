@@ -101,15 +101,18 @@ public class Instrument_Projectile : MonoBehaviour
 
     public void TriggerUp()
     {
-        if (_FiringMode == FiringMode.Automatic)
-        {           
-            _SpawnTimer = 0;
-        }
-        else if (_FiringMode == FiringMode.PowerUpShot)
+        if (_SpawnedPowerUpProjectileRB != null)
         {
-            _SpawnedPowerUpProjectileRB.transform.SetParent(null);
-            _SpawnedPowerUpProjectileRB.isKinematic = false;
-            _SpawnedPowerUpProjectileRB.AddForce(_SpawnTransform.forward * _Speed, ForceMode.VelocityChange);
+            if (_FiringMode == FiringMode.Automatic)
+            {
+                _SpawnTimer = 0;
+            }
+            else if (_FiringMode == FiringMode.PowerUpShot)
+            {
+                _SpawnedPowerUpProjectileRB.transform.SetParent(null);
+                _SpawnedPowerUpProjectileRB.isKinematic = false;
+                _SpawnedPowerUpProjectileRB.AddForce(_SpawnTransform.forward * _Speed, ForceMode.VelocityChange);
+            }
         }
 
         _Firing = false;
