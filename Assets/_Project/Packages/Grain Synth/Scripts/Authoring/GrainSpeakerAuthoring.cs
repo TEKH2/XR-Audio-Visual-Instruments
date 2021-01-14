@@ -93,7 +93,10 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _SpeakerEntity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
         _GrainSynth.RegisterSpeaker(this);
+
+#if UNITY_EDITOR
         dstManager.SetName(_SpeakerEntity, "Speaker " + _SpeakerIndex);
+#endif
 
 
         //---   ADD SPEAKER COMP

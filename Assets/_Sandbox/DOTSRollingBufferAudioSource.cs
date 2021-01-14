@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
-using UnityEditor.ShaderGraph.Internal;
-using Unity.Entities.UniversalDelegates;
-using Unity.Mathematics;
 using Unity.Collections;
 
 public class DOTSRollingBufferAudioSource : MonoBehaviour
@@ -22,7 +19,9 @@ public class DOTSRollingBufferAudioSource : MonoBehaviour
         //----  Create and entity and add a rolling audio buffer
         _EntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _RollingAudioBufferEntity = _EntityManager.CreateEntity();
+#if UNITY_EDITOR
         _EntityManager.SetName(_RollingAudioBufferEntity, "Rolling audio buffer");
+#endif
         _EntityManager.AddComponentData(_RollingAudioBufferEntity, new RingBufferFiller { _StartIndex = 0, _SampleCount = 400 });
         _EntityManager.AddBuffer<AudioRingBufferElement>(_RollingAudioBufferEntity);
 

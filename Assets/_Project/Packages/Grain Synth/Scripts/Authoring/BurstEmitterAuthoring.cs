@@ -138,8 +138,11 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _SampleRate = AudioSettings.outputSampleRate
         });
 
+#if UNITY_EDITOR
         dstManager.SetName(entity, "Emitter");
-        #endregion
+#endif
+
+#endregion
 
 
         dstManager.AddBuffer<DSPParametersElement>(_EmitterEntity);
