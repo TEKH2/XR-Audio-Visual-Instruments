@@ -6,6 +6,7 @@ public class ColliderScript : MonoBehaviour
 {
     public BaseEmitterClass[] _Emitters;
     public InteractionBase[] _Interactions;
+    public bool _StaticSurface = false;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class ColliderScript : MonoBehaviour
     {
         foreach (var emitter in _Emitters)
         {
+            emitter.IsStaticSurface(_StaticSurface);
             emitter.NewCollision(collision);
         }
 

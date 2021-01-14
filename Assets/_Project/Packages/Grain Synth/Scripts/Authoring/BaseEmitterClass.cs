@@ -25,7 +25,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _CollisionTriggered = false;
     public bool _Colliding = false;
 
-    public bool _UseCollidingObjectSpeaker = false;
+    private bool _StaticSurface = false;
     public bool _PingPongAtEndOfClip = true;
 
     public bool _AttachedToSpeaker = false;
@@ -72,6 +72,11 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public void NewCollision(Collision collision)
     {
         _CollisionTriggered = true;
+    }
+
+    public void IsStaticSurface(bool staticSurface)
+    {
+        _StaticSurface = staticSurface;
     }
 
     public void UpdateCurrentCollisionStatus(bool CollisionOccuring)
