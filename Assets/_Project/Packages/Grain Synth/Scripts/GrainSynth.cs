@@ -142,7 +142,10 @@ public class GrainSynth :  MonoBehaviour
                 // ---------------------------------- CREATE REFERENCE AND ASSIGN TO ENTITY
                 BlobAssetReference<FloatBlobAsset> audioClipBlobAssetRef = blobBuilder.CreateBlobAssetReference<FloatBlobAsset>(Allocator.Persistent);
                 _EntityManager.AddComponentData(audioClipDataEntity, new AudioClipDataComponent { _ClipDataBlobAsset = audioClipBlobAssetRef, _ClipIndex = i });
+
+#if UNITY_EDITOR
                 _EntityManager.SetName(audioClipDataEntity, "Audio clip blob asset " + i);
+#endif
             }
         }
 

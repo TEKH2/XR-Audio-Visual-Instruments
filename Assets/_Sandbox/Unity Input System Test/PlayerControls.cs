@@ -326,6 +326,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""RightThumbstick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2324465-76bd-4d69-8f57-ae97de7ae2a1"",
+                    ""path"": ""*/{Point}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightThumbstick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
