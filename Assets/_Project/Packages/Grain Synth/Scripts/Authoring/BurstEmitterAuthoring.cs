@@ -276,7 +276,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
                 _Max = _BurstEmissionProps._Volume._Max,
                 _LockStartValue = false,
                 _LockEndValue = _BurstEmissionProps._Volume._LockEndValue,
-                _InteractionInput = _BurstEmissionProps._Volume.GetInteractionValue()
+                _InteractionInput = _BurstEmissionProps._Volume.GetInteractionValue() * _VolumeMultiply
             };
 
 

@@ -192,7 +192,6 @@ public class GrainSynthSystem : SystemBase
         _CommandBufferSystem.AddJobHandleForProducer(emitGrains);
         #endregion
 
-
         #region BURST GRAINS
         JobHandle emitBurst = Entities.WithNativeDisableParallelForRestriction(randomArray).ForEach
         (
@@ -322,7 +321,6 @@ public class GrainSynthSystem : SystemBase
 
         #endregion
 
-
         #region POPULATE GRAINS
         // ----------------------------------- GRAIN PROCESSOR UPDATE
         //---   TAKES GRAIN PROCESSOR INFORMATION AND FILLS THE SAMPLE BUFFER + DSP BUFFER (W/ 0s TO THE SAME LENGTH AS SAMPLE BUFFER)
@@ -337,36 +335,42 @@ public class GrainSynthSystem : SystemBase
                     float increment = grain._Pitch;
 
                     // Find length of source sample read, stopping at end of clip. Then work out how many zeros we need at the end, if any
-                    int populatedGrainCount = (int)(math.min(sourceIndex + increment * grain._SampleCount, clipArray.Length) - sourceIndex - 1);
-                    int zeroedGrainCount = sampleOutputBuffer.Length - populatedGrainCount - 1;
+                    //int populatedGrainCount = (int)(math.min(sourceIndex + increment * grain._SampleCount, clipArray.Length) - sourceIndex - 1);
+                    //int zeroedGrainCount = sampleOutputBuffer.Length - populatedGrainCount - 1;
 
                     // Suck up all the juicy samples from the source content
-                    for (int i = 0; i < populatedGrainCount - 1; i++)
+                    for (int i = 0; i < grain._SampleCount - 1; i++)
                     {
                         // Set rate of sample read to alter pitch - interpolate sample if not integer to create 
                         sourceIndex += increment;
                         float sourceIndexRemainder = sourceIndex % 1;
                         float sourceValue;
 
-                        if (sourceIndexRemainder != 0)
-                            sourceValue = math.lerp(clipArray[(int)sourceIndex], clipArray[(int)sourceIndex + 1], sourceIndexRemainder);
+                        if (sourceIndex + 1 >= clipArray.Length)
+                            sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
                         else
-                            sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
+                        {
+                            if (sourceIndexRemainder != 0)
+                                sourceValue = math.lerp(clipArray[(int)sourceIndex], clipArray[(int)sourceIndex + 1], sourceIndexRemainder);
+                            else
+                                sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
 
-                        // Adjusted for volume and windowing
-                        sourceValue *= grain._Volume;
-                        sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, populatedGrainCount, 0, windowingData._WindowingArray.Value.array.Length)];
+                            // Adjusted for volume and windowing
+                            sourceValue *= grain._Volume;
+                            sourceValue *= windowingData._WindowingArray.Value.array[(int)Map(i, 0, grain._SampleCount, 0, windowingData._WindowingArray.Value.array.Length)];
 
-                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
+                            sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = sourceValue });
+                        }
+
                         dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
                     }
 
                     // Fill any blank samples at the end
-                    for (int i = populatedGrainCount; i < populatedGrainCount + zeroedGrainCount; i++)
-                    {
-                        sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
-                        dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
-                    }
+                    //for (int i = populatedGrainCount; i < populatedGrainCount + zeroedGrainCount; i++)
+                    //{
+                    //    sampleOutputBuffer.Add(new GrainSampleBufferElement { Value = 0 });
+                    //    dspBuffer.Add(new DSPSampleBufferElement { Value = 0 });
+                    //}
 
                     // --Add additional samples to increase grain playback size based on DSP effect tail length
                     for (int i = 0; i < grain._DSPEffectSampleTailLength; i++)
@@ -472,7 +476,6 @@ public class GrainSynthSystem : SystemBase
            }
         ).ScheduleParallel(processPingPongGrains);
         #endregion
-
 
         #region ROLLING BUFFER
 
