@@ -31,7 +31,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     private bool _StaticSurface = false;
     public bool _PingPongAtEndOfClip = true;
     public bool _MultiplyVolumeByColliderRigidity = false;
-    protected float _VolumeMultiply = 1;
+    public float _VolumeMultiply = 1;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
@@ -83,9 +83,12 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     {
         _CollisionTriggered = true;
 
-        if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
+        Debug.Log("New collision of  " + name + "  with  " + collision.collider.name);
+
+        if (!_MultiplyVolumeByColliderRigidity)
+            _VolumeMultiply = 1;
+        else if (collision.collider.GetComponent<SurfaceParameters>() != null)
             _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
-        else _VolumeMultiply = 1;
     }
 
 
@@ -109,6 +112,9 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
                     SetRemoteEmitter(otherEmitter);
                 }
             }
+
+            if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
+                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
             _Colliding = true;
         }
     }

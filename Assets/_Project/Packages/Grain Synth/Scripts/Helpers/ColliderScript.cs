@@ -7,7 +7,7 @@ public class ColliderScript : MonoBehaviour
     public BaseEmitterClass[] _Emitters;
     public InteractionBase[] _Interactions;
     public bool _StaticSurface = false;
-    private int _CollidingCount = 0;
+    public int _CollidingCount = 0;
 
     private void Start()
     {
