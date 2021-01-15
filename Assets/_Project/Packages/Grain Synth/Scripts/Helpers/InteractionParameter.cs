@@ -22,7 +22,7 @@ public class InteractionParameter : InteractionBase
     [Range(0f, 1f)]
     public float _Smoothing = 0.2f;
 
-    private void FixedUpdate()
+    private void Update()
     {
         float currentValue = _PreviousInputValue;
 

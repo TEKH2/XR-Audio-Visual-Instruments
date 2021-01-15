@@ -88,7 +88,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         _AudioSource = gameObject.GetComponent<AudioSource>();
         _SampleRate = AudioSettings.outputSampleRate;
 
-        print("---   CONVERT GRAIN SPEAKER...");
+        //print("---   CONVERT GRAIN SPEAKER...");
         //---   CREATE ENTITY, REGISTER AND NAME
         _SpeakerEntity = entity;
         _GrainSynth = FindObjectOfType<GrainSynth>();
@@ -107,7 +107,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         if (!StaticallyPairedToEmitter)
         {
             dstManager.AddComponentData(entity, new PooledObjectComponent { _State = PooledObjectState.Pooled });
-            print("- Adding pooled component for non statically paired speaker");
+            //print("- Adding pooled component for non statically paired speaker");
         }
 
         //---   CREATE GRAIN PLAYBACK DATA ARRAY - CURRENT MAXIMUM LENGTH SET TO ONE SECOND OF SAMPLES (_SAMPLERATE)      
@@ -299,7 +299,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public void DestroyEntity()
     {
-        print("Speaker DestroyEntity");
+        //print("Speaker DestroyEntity");
         if (_SpeakerEntity != null)
             _EntityManager.DestroyEntity(_SpeakerEntity);
     }
