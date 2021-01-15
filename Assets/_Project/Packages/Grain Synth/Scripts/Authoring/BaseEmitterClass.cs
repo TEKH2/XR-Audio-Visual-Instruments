@@ -79,14 +79,10 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         {
             DummyEmitter otherEmitter = collision.collider.GetComponentInChildren<DummyEmitter>();
 
-
             if (otherEmitter != null)
             {
                 SetRemoteEmitter(otherEmitter);
-                Debug.Log("COLLIDING OBJECT: " + otherEmitter.name);
             }
-            else
-                Debug.Log("COLLIDING OBJECT NULL");
         }
     }
 
