@@ -66,7 +66,6 @@ public class Instrument_Projectile : MonoBehaviour
             {
                 if (_SpawnTimer >= SpawnInterval)
                 {
-
                     GameObject newGO = InstantiateProjectile(_SpawnTransform.localScale);
 
                     Rigidbody rb = newGO.GetComponent<Rigidbody>();
@@ -86,7 +85,9 @@ public class Instrument_Projectile : MonoBehaviour
             if (_Firing && _SpawnedPowerUpProjectileRB != null)
             {
                 _SpawnTimer += Time.deltaTime;
+
                 float scale = Mathf.Lerp(_ScaleRange.x, _ScaleRange.y, Mathf.Clamp01(_SpawnTimer / _PowerupDuration));
+                _SpawnedPowerUpProjectileRB.transform.localPosition = new Vector3(0, 0, scale * .5f); 
                 _SpawnedPowerUpProjectileRB.transform.localScale = Vector3.one * scale;
             }
         }
@@ -112,6 +113,7 @@ public class Instrument_Projectile : MonoBehaviour
                 print("_SpawnedPowerUpProjectileRB spawned");
                 _SpawnedPowerUpProjectileRB.isKinematic = true;
                 _SpawnedPowerUpProjectileRB.transform.SetParent(_SpawnTransform);
+                _SpawnedPowerUpProjectileRB.transform.localPosition = new Vector3(0, 0, _ScaleRange.x * .5f);
                 _SpawnTimer = 0;
                 break;
         }
