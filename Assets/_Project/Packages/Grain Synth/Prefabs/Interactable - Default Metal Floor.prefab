@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _EmissionProps:
     _Playing: 1
-    _ClipIndex: 1
+    _ClipIndex: 15
     _Playhead:
       _InteractionInput: {fileID: 1553334060}
       _Noise: 0.3
@@ -136,8 +136,8 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 0.2
-      _InteractionShape: 5
+      _InteractionAmount: 1
+      _InteractionShape: 3
       _Min: 0
       _Max: 2
 --- !u!1 &1400935971890276942
@@ -454,7 +454,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8e0884a6ad2d6e4daaf7b1e43b5d868, type: 2}
+  - {fileID: -3035101939719975992, guid: 87dd12a6dbd23e643a6eee4f4a24c587, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -504,6 +504,7 @@ MonoBehaviour:
   _Emitters: []
   _Interactions: []
   _StaticSurface: 0
+  _CollidingCount: 0
 --- !u!114 &148386808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -516,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a66ba68c5fd1eeb42a031436feb15455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Rigidity: 0.297
+  _Rigidity: 0.15
 --- !u!1 &1400935973269727561
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,8 +615,11 @@ MonoBehaviour:
   _CurrentDistance: 0
   _DistanceVolume: 0
   _WithinEarshot: 1
-  _PingPongAtEndOfClip: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _PingPongAtEndOfClip: 0
   _MultiplyVolumeByColliderRigidity: 0
+  _VolumeMultiply: 1
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 2
   _PairedSpeaker: {fileID: 1400935971898002409}
@@ -629,9 +633,9 @@ MonoBehaviour:
       _Noise: 0
       _LockNoise: 0
       _Start: 0
-      _LockStartValue: 0
+      _LockStartValue: 1
       _End: 0.2
-      _InteractionAmount: 0.4
+      _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 0
       _Max: 1

@@ -25,12 +25,13 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
     protected bool _CollisionTriggered = false;
-    protected bool _Colliding = false;
+    public bool _Colliding = false;
+    public string _ColldingObjectName = "";
 
     private bool _StaticSurface = false;
     public bool _PingPongAtEndOfClip = true;
     public bool _MultiplyVolumeByColliderRigidity = false;
-    protected float _VolumeMultiply = 1;
+    public float _VolumeMultiply = 1;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
@@ -73,42 +74,52 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         DestroyEntity();
     }
 
-    public void NewCollision(Collision collision)
-    {
-        _CollisionTriggered = true;
-
-        if (_TakePropertiesFromCollidingObject)
-        {
-            DummyEmitter otherEmitter = collision.collider.GetComponentInChildren<DummyEmitter>();
-
-            if (otherEmitter != null)
-            {
-                SetRemoteEmitter(otherEmitter);
-            }
-        }
-
-        if (_MultiplyVolumeByColliderRigidity)
-        {
-            if (collision.collider.GetComponent<SurfaceParameters>() != null)
-                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
-            else
-                _VolumeMultiply = 1;
-        }
-        else
-            _VolumeMultiply = 1;
-    }
-
-    public virtual void SetRemoteEmitter(DummyEmitter emitter) {}
-
     public void IsStaticSurface(bool staticSurface)
     {
         _StaticSurface = staticSurface;
     }
 
-    public void UpdateCurrentCollisionStatus(bool CollisionOccuring)
+    public void NewCollision(Collision collision)
     {
-        _Colliding = CollisionOccuring;
+        _CollisionTriggered = true;
+
+        Debug.Log("New collision of  " + name + "  with  " + collision.collider.name);
+
+        if (!_MultiplyVolumeByColliderRigidity)
+            _VolumeMultiply = 1;
+        else if (collision.collider.GetComponent<SurfaceParameters>() != null)
+            _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
     }
+
+
+    // TODO -=- This seems inefficient to set everything OnCollisionStay tick. Doing this to avoid extra collisions
+    // from breaking the roll sounds
+    public void UpdateCurrentCollisionStatus(Collision collision)
+    {
+        if (collision == null)
+        {
+            _Colliding = false;
+            _VolumeMultiply = 1;
+        }
+        else
+        {
+            if (_TakePropertiesFromCollidingObject)
+            {
+                DummyEmitter otherEmitter = collision.collider.GetComponentInChildren<DummyEmitter>();
+
+                if (otherEmitter != null)
+                {
+                    SetRemoteEmitter(otherEmitter);
+                }
+            }
+
+            if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
+                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+            _Colliding = true;
+        }
+    }
+
+    public virtual void SetRemoteEmitter(DummyEmitter emitter) { }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 

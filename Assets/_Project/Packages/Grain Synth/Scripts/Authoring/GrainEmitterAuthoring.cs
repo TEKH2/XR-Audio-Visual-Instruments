@@ -249,7 +249,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
             _PerlinValue = GeneratePerlinForParameter(4),
             _Min = _EmissionProps._Volume._Min,
             _Max = _EmissionProps._Volume._Max,
-            _InteractionInput = _EmissionProps._Volume.GetInteractionValue()
+            _InteractionInput = _EmissionProps._Volume.GetInteractionValue() * _VolumeMultiply
         };
 
         emitterData._DistanceAmplitude = volumeDistanceAdjust;
