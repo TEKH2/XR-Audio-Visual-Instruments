@@ -27,6 +27,13 @@ public class InteractionBase : MonoBehaviour
         _RigidBody = _SourceObject.GetComponent<Rigidbody>();
     }
 
+    public void UpdateSourceObject(GameObject gameObject)
+    {
+        _SourceObject = gameObject;
+        _RigidBody = _SourceObject.GetComponent<Rigidbody>();
+        Debug.Log("InteractionInput pointing at: " + _SourceObject.name);
+    }
+
     public float GetValue()
     {
         return _OutputValue;

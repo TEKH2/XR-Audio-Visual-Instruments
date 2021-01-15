@@ -11,6 +11,8 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(ConvertToEntity))]
 public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 {
+    public bool _TakePropertiesFromCollidingObject = false;
+
     [Range(0.1f, 50f)]
     public float _MaxAudibleDistance = 10f;
 
@@ -23,7 +25,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected bool _StaticallyPaired = false;
     protected bool _InRangeTemp = false;
     protected bool _CollisionTriggered = false;
-    public bool _Colliding = false;
+    protected bool _Colliding = false;
 
     private bool _StaticSurface = false;
     public bool _PingPongAtEndOfClip = true;
@@ -59,7 +61,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public void DestroyEntity()
     {
-        print("Emitter Entity Destroyed");
+        //print("Emitter Entity Destroyed");
         if (_EmitterEntity != null)
             _EntityManager.DestroyEntity(_EmitterEntity);
     }
@@ -72,7 +74,23 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public void NewCollision(Collision collision)
     {
         _CollisionTriggered = true;
+
+        if (_TakePropertiesFromCollidingObject)
+        {
+            DummyEmitter otherEmitter = collision.collider.GetComponentInChildren<DummyEmitter>();
+
+
+            if (otherEmitter != null)
+            {
+                SetRemoteEmitter(otherEmitter);
+                Debug.Log("COLLIDING OBJECT: " + otherEmitter.name);
+            }
+            else
+                Debug.Log("COLLIDING OBJECT NULL");
+        }
     }
+
+    public virtual void SetRemoteEmitter(DummyEmitter emitter) {}
 
     public void IsStaticSurface(bool staticSurface)
     {

@@ -22,6 +22,17 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 {
     public EmissionProps _EmissionProps;
 
+    public override void SetRemoteEmitter(DummyEmitter emitter)
+    {
+        _EmissionProps = emitter._EmissionProps;
+
+        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+    }
+
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;
