@@ -332,7 +332,7 @@ public class GrainSynthSystem : SystemBase
             {
                 if (!grain._SamplePopulated)
                 {
-                    BlobArray<float> clipArray = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array;
+                    ref BlobArray<float> clipArray = ref grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array;
                     float sourceIndex = grain._PlayheadNorm * clipArray.Length;
                     float increment = grain._Pitch;
 
