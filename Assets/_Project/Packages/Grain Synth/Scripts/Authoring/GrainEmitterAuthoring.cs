@@ -143,7 +143,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
     void Update()
     {
-        if (!_Initialized)
+        if (!_Initialized || (_TakePropertiesFromCollidingObject && !_Colliding))
             return;
 
         _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);

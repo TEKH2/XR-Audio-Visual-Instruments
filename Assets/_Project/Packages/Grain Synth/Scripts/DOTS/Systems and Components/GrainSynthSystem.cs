@@ -332,16 +332,16 @@ public class GrainSynthSystem : SystemBase
             {
                 if (!grain._SamplePopulated)
                 {
-                    int clipLength = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array.Length;
-                    float sourceIndex = grain._PlayheadNorm * clipLength;
+                    BlobArray<float> clipArray = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array;
+                    float sourceIndex = grain._PlayheadNorm * clipArray.Length;
                     float increment = grain._Pitch;
 
                     // Find length of source sample read, stopping at end of clip. Then work out how many zeros we need at the end, if any
-                    int populatedGrainCount = (int)(math.min(sourceIndex + increment * grain._SampleCount, clipLength) - sourceIndex - 1);
+                    int populatedGrainCount = (int)(math.min(sourceIndex + increment * grain._SampleCount, clipArray.Length) - sourceIndex - 1);
                     int zeroedGrainCount = sampleOutputBuffer.Length - populatedGrainCount - 1;
 
                     // Suck up all the juicy samples from the source content
-                    for (int i = 0; i < populatedGrainCount; i++)
+                    for (int i = 0; i < populatedGrainCount - 1; i++)
                     {
                         // Set rate of sample read to alter pitch - interpolate sample if not integer to create 
                         sourceIndex += increment;
@@ -349,16 +349,9 @@ public class GrainSynthSystem : SystemBase
                         float sourceValue;
 
                         if (sourceIndexRemainder != 0)
-                        {
-                            sourceValue = math.lerp(
-                                grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex],
-                                grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex + 1],
-                                sourceIndexRemainder);
-                        }
+                            sourceValue = math.lerp(clipArray[(int)sourceIndex], clipArray[(int)sourceIndex + 1], sourceIndexRemainder);
                         else
-                        {
                             sourceValue = grain._AudioClipDataComponent._ClipDataBlobAsset.Value.array[(int)sourceIndex];
-                        }
 
                         // Adjusted for volume and windowing
                         sourceValue *= grain._Volume;
