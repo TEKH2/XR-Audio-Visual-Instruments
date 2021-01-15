@@ -711,7 +711,7 @@ ScriptedImporter:
       - name: _ReceiveShadows
         float: 1
       - name: _Smoothness
-        float: 1
+        float: 0.855
       - name: _SmoothnessTextureChannel
         float: 0
       - name: _SpecularHighlights
