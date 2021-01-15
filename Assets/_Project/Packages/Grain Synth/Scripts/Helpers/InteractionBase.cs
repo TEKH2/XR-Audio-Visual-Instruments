@@ -31,7 +31,6 @@ public class InteractionBase : MonoBehaviour
     {
         _SourceObject = gameObject;
         _RigidBody = _SourceObject.GetComponent<Rigidbody>();
-        Debug.Log("InteractionInput pointing at: " + _SourceObject.name);
     }
 
     public float GetValue()
