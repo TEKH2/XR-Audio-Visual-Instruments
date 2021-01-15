@@ -31,6 +31,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
         _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
         _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+
+        // TODO Replace this boolean with removing entity
+        _EmissionProps._Playing = true;
     }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -143,8 +146,11 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
     void Update()
     {
-        if (!_Initialized || (_TakePropertiesFromCollidingObject && !_Colliding))
+        if (!_Initialized)
             return;
+
+        if (_TakePropertiesFromCollidingObject && !_Colliding)
+            _EmissionProps._Playing = false;
 
         _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);
 

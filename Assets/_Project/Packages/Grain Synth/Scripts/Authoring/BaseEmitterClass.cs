@@ -29,6 +29,8 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     private bool _StaticSurface = false;
     public bool _PingPongAtEndOfClip = true;
+    public bool _MultiplyVolumeByColliderRigidity = false;
+    protected float _VolumeMultiply = 1;
 
     public bool _AttachedToSpeaker = false;
     public int _AttachedSpeakerIndex;
@@ -84,6 +86,16 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
                 SetRemoteEmitter(otherEmitter);
             }
         }
+
+        if (_MultiplyVolumeByColliderRigidity)
+        {
+            if (collision.collider.GetComponent<SurfaceParameters>() != null)
+                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+            else
+                _VolumeMultiply = 1;
+        }
+        else
+            _VolumeMultiply = 1;
     }
 
     public virtual void SetRemoteEmitter(DummyEmitter emitter) {}
