@@ -22,18 +22,34 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 {
     public EmissionProps _EmissionProps;
 
-    public override void SetRemoteEmitter(DummyEmitter emitter)
+    public override void Initialise()
     {
-        _EmissionProps = emitter._EmissionProps;
+        _EmitterType = EmitterType.Grain;
 
-        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Playhead.CheckInteractionInput();
+        _EmissionProps._Density.CheckInteractionInput();
+        _EmissionProps._GrainDuration.CheckInteractionInput();
+        _EmissionProps._Transpose.CheckInteractionInput();
+        _EmissionProps._Volume.CheckInteractionInput();
+    }
 
-        // TODO Replace this boolean with removing entity
-        _EmissionProps._Playing = true;
+    public override void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter)
+    {
+        if (dummyEmitter == null)
+            _EmissionProps._Playing = false;
+        else
+        {
+            _EmissionProps = dummyEmitter._EmissionProps;
+
+            _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+
+            // TODO Replace this boolean with removing entity
+            _EmissionProps._Playing = true;
+        }
     }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

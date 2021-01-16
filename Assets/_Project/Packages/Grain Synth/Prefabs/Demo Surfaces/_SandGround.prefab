@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7702519511101971117}
-  - component: {fileID: 7702519511101971116}
+  - component: {fileID: 1742417582}
   m_Layer: 8
   m_Name: Surface Roll Emitter
   m_TagString: Emitter
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 7702519512653573034}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7702519511101971116
+--- !u!114 &1742417582
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7702519511101971118}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60a55ceded4c1fc4f9e10cbd3c6259dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9956f0793bfdcc24bb593295bf48208d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _EmissionProps:
@@ -76,7 +76,7 @@ MonoBehaviour:
     _Transpose:
       _InteractionInput: {fileID: 7702519511409446623}
       _Noise: 0.066
-      _PerlinNoise: 0
+      _PerlinNoise: 1
       _Idle: 0
       _InteractionAmount: 0
       _InteractionShape: 1
@@ -198,6 +198,7 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 2
   _PairedSpeaker: {fileID: 7702519512913628353}
   _HeadPosition: {fileID: 0}
+  _EmitterType: 0
   _DSPChainParams: []
   _BurstEmissionProps:
     _Playing: 1
@@ -305,7 +306,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7702519512653573035}
-  m_LocalRotation: {x: -0, y: -0.9961005, z: -0, w: -0.088225916}
+  m_LocalRotation: {x: -0, y: -0.9961006, z: 0, w: -0.088224985}
   m_LocalPosition: {x: -0.87321025, y: 0.2048904, z: 3.2936406}
   m_LocalScale: {x: 1.7448001, y: 1.2689899, z: 1.7448001}
   m_Children:
@@ -317,7 +318,7 @@ Transform:
   - {fileID: 7702519511409446616}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -167.857, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -190.123, z: 0}
 --- !u!33 &7702519512653573039
 MeshFilter:
   m_ObjectHideFlags: 0

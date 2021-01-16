@@ -1,5 +1,127 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &717583691521831447
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5671166289905621425}
+  - component: {fileID: 2588643161699803193}
+  - component: {fileID: 8106902190844956976}
+  m_Layer: 8
+  m_Name: Dummy Collision Emitter
+  m_TagString: Emitter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5671166289905621425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717583691521831447}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.062300004, y: 2.58, z: 0.0645}
+  m_LocalScale: {x: 0.02, y: 0.79999995, z: 0.02}
+  m_Children: []
+  m_Father: {fileID: 2021371492460092113}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2588643161699803193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717583691521831447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b5fdd17571c534c9658876f722f551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 17
+    _Playhead:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _LockStartValue: 1
+      _End: 0.2
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _BurstDuration:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0
+      _LockNoise: 0
+      _Default: 250
+      _InteractionAmount: 200
+      _InteractionShape: 1
+      _Min: 10
+      _Max: 1000
+    _Density:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 4
+      _End: 4
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 30
+      _End: 250
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 5
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0.062
+      _LockNoise: 0
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 2021371492424627892}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 1
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 2
+--- !u!114 &8106902190844956976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717583691521831447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
 --- !u!1 &1115843161546113138
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,9 +131,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1115843161546113137}
-  - component: {fileID: 1115843161546113142}
+  - component: {fileID: 1683579854}
   m_Layer: 8
-  m_Name: Surface Roll Emitter
+  m_Name: Dummy Roll Emitter
   m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +153,7 @@ Transform:
   m_Father: {fileID: 2021371492460092113}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1115843161546113142
+--- !u!114 &1683579854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +162,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1115843161546113138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60a55ceded4c1fc4f9e10cbd3c6259dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9956f0793bfdcc24bb593295bf48208d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _EmissionProps:
@@ -66,10 +188,10 @@ MonoBehaviour:
       _Max: 10
     _GrainDuration:
       _InteractionInput: {fileID: 1115843162104471767}
-      _Noise: 0.05
+      _Noise: 0
       _PerlinNoise: 0
-      _Idle: 210
-      _InteractionAmount: -160
+      _Idle: 50
+      _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 2
       _Max: 500
@@ -157,7 +279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2021371492037867233
 Transform:
   m_ObjectHideFlags: 0
@@ -198,6 +320,7 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 2
   _PairedSpeaker: {fileID: 2021371493762520082}
   _HeadPosition: {fileID: 0}
+  _EmitterType: 0
   _DSPChainParams: []
   _BurstEmissionProps:
     _Playing: 1
@@ -353,7 +476,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021371492460092112}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.43, z: 0}
   m_LocalScale: {x: 20, y: 0.5, z: 20}
   m_Children:
@@ -363,6 +486,7 @@ Transform:
   - {fileID: 2021371492424627891}
   - {fileID: 1115843161546113137}
   - {fileID: 1115843162104471760}
+  - {fileID: 5671166289905621425}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
