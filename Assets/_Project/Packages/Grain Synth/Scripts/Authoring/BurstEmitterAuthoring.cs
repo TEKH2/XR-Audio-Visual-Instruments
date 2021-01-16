@@ -22,6 +22,38 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 {
     public BurstEmissionProps _BurstEmissionProps;
 
+    public override void Initialise()
+    {
+        _EmitterType = EmitterType.Burst;
+
+        _BurstEmissionProps._Playhead.CheckInteractionInput();
+        _BurstEmissionProps._BurstDuration.CheckInteractionInput();
+        _BurstEmissionProps._Density.CheckInteractionInput();
+        _BurstEmissionProps._GrainDuration.CheckInteractionInput();
+        _BurstEmissionProps._Transpose.CheckInteractionInput();
+        _BurstEmissionProps._Volume.CheckInteractionInput();
+    }
+
+    public override void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter)
+    {
+        if (dummyEmitter == null)
+            _BurstEmissionProps._Playing = false;
+        else
+        {
+            _BurstEmissionProps = dummyEmitter._EmissionProps;
+
+            _BurstEmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _BurstEmissionProps._BurstDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _BurstEmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _BurstEmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _BurstEmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+            _BurstEmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+
+            // TODO Replace this boolean with removing entity
+            _BurstEmissionProps._Playing = true;
+        }
+    }
+
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         _EmitterEntity = entity;

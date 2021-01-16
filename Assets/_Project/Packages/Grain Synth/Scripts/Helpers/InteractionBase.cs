@@ -64,3 +64,7 @@ public class InteractionBase : MonoBehaviour
         return outMin + ((outMax - outMin) / (inMax - inMin)) * (val - inMin);
     }
 }
+
+public class BlankInteraction : InteractionBase
+{
+}

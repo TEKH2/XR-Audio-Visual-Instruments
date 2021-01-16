@@ -19,6 +19,12 @@ public class EmitterPropBase
 
         return interaction;
     }
+
+    public void CheckInteractionInput()
+    {
+        if (_InteractionInput == null)
+            _InteractionInput = new BlankInteraction();
+    }
 }
 
 public class GrainPropBase : EmitterPropBase

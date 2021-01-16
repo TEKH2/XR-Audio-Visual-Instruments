@@ -6,11 +6,20 @@ using UnityEngine;
 using Unity.Transforms;
 using Random = UnityEngine.Random;
 
+
+
+
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 [RequireComponent(typeof(ConvertToEntity))]
 public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 {
+    public enum EmitterType
+    {
+        Grain,
+        Burst
+    }
+
     public bool _TakePropertiesFromCollidingObject = false;
 
     [Range(0.1f, 50f)]
@@ -42,6 +51,8 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     protected EntityManager _EntityManager;
     protected float[] _PerlinSeedArray;
 
+    public EmitterType _EmitterType;
+
     public DSPBase[] _DSPChainParams;
 
     void Start()
@@ -60,6 +71,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public void Awake()
     {
         GetComponent<ConvertToEntity>().ConversionMode = ConvertToEntity.Mode.ConvertAndInjectGameObject;
+        Initialise();
     }
 
     public void DestroyEntity()
@@ -83,7 +95,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     {
         _CollisionTriggered = true;
 
-        Debug.Log("New collision of  " + name + "  with  " + collision.collider.name);
+        //Debug.Log("New collision of  " + name + "  with  " + collision.collider.name);
 
         if (!_MultiplyVolumeByColliderRigidity)
             _VolumeMultiply = 1;
@@ -105,12 +117,10 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         {
             if (_TakePropertiesFromCollidingObject)
             {
-                DummyEmitter otherEmitter = collision.collider.GetComponentInChildren<DummyEmitter>();
-
-                if (otherEmitter != null)
-                {
-                    SetRemoteEmitter(otherEmitter);
-                }
+                if (_EmitterType == EmitterType.Grain)
+                    SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>());
+                else if (_EmitterType == EmitterType.Burst)
+                    SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
             }
 
             if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
@@ -119,7 +129,11 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         }
     }
 
-    public virtual void SetRemoteEmitter(DummyEmitter emitter) { }
+    public virtual void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter) { }
+
+    public virtual void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter) { }
+
+    public virtual void Initialise() { }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 
