@@ -108,13 +108,13 @@ public class Instrument_Vacuum : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        other.attachedRigidbody.useGravity = false;
+        //other.attachedRigidbody.useGravity = false;
         _ObjectsCurrentBeingVacuumed.Add(other.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
     {        
-        other.attachedRigidbody.useGravity = true;
+        //other.attachedRigidbody.useGravity = true;
         Vacuum(other, false);
         _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);        
     }
