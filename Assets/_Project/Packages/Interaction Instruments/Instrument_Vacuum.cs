@@ -4,6 +4,7 @@ using UnityEngine;
 using EXP.XR;
 using UnityEngine.InputSystem;
 using Unity.Entities.UniversalDelegates;
+using UnityEditorInternal;
 
 public class Instrument_Vacuum : MonoBehaviour
 {
@@ -44,6 +45,11 @@ public class Instrument_Vacuum : MonoBehaviour
 
     bool _DestroyActive = false;
 
+    public ParticleSystem _BeamPS;
+    ParticleSystem.MainModule _PSMainModule;
+    ParticleSystem.EmissionModule _PSEmit;
+    ParticleSystem.MinMaxCurve _BeamMinMax;
+    public float _PushPullSpeed = 2;
 
     private void Start()
     {
@@ -64,12 +70,21 @@ public class Instrument_Vacuum : MonoBehaviour
         _RightThumbstickAction.action.started += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
         _RightThumbstickAction.action.performed += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
         _RightThumbstickAction.action.canceled += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
+
+        _PSMainModule = _BeamPS.main;
+        _PSEmit = _BeamPS.emission;
     }
 
     private void Update()
     {      
         _VacuumMat.SetFloat("_Speed", _PushPullScalar * .5f);
         _VacuumMat.SetFloat("_Alpha", Mathf.Clamp01( Mathf.Abs(_PushPullScalar) + Mathf.Abs(_TractorBeamScalar) ));
+
+        _BeamMinMax.constantMin = -.2f + (_PushPullScalar * _PushPullSpeed);
+        _BeamMinMax.constantMax = .2f + (_PushPullScalar * _PushPullSpeed);
+        _PSMainModule.startSpeed = _BeamMinMax;
+
+        _PSEmit.rateOverTime = _TractorBeamScalar * 600;
     }
 
     private void FixedUpdate()
@@ -82,6 +97,8 @@ public class Instrument_Vacuum : MonoBehaviour
                 Mathf.Clamp(1 - 10 * Vector3.Distance(item.transform.position, transform.parent.position) / _MaxDist, 0f, 0.7f) *
                 Mathf.Abs(Mathf.Min(_PushPullScalar, 0));
         }
+
+       
     }
 
     void OnTriggerStay(Collider other)
