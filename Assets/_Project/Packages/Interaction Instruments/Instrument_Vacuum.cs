@@ -108,23 +108,25 @@ public class Instrument_Vacuum : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        other.attachedRigidbody.useGravity = false;
         _ObjectsCurrentBeingVacuumed.Add(other.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
-    {
+    {        
+        other.attachedRigidbody.useGravity = true;
         Vacuum(other, false);
-        _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);
+        _ObjectsCurrentBeingVacuumed.Remove(other.gameObject);        
     }
 
     void Vacuum(Collider other, bool inTrigger)
     {
-        if (other.attachedRigidbody)
+        if (other.attachedRigidbody && _TractorBeamScalar > 0)
         {
-            float dist = Vector3.Distance(transform.parent.position, other.transform.position);
+            float dist = Vector3.Distance(transform.parent.position, other.transform.position) - (other.transform.localScale.x * .5f) ;
             Vector3 force = Vector3.zero;
 
-            if (dist < _DestroyRadius && _PushPullScalar < 0 && _DestroyActive)
+            if (dist < _DestroyRadius && _PushPullScalar < 0)
                 DestroyEmitter(other.gameObject);
             else
             {
@@ -165,13 +167,13 @@ public class Instrument_Vacuum : MonoBehaviour
         Vector3 dirToProjectedPoint = vecToProjectedPoint.normalized;
         Vector3 tangentialForce = Vector3.Cross(transform.forward, dirToProjectedPoint);
         tangentialForce *= _ForceAlongTangent;
-        rb.AddForce(tangentialForce * _TanScalar);
+        rb.AddForce(tangentialForce * _TanScalar * rb.mass);
 
 
         //---   PUSH PULL FORCE
         Vector3 directionTowardSource = (rb.transform.position - transform.position).normalized;
         directionTowardSource *= _ForceTowardSource;
-        rb.AddForce(directionTowardSource * -_PushPullScalar);
+        rb.AddForce(directionTowardSource * -_PushPullScalar * rb.mass);
 
 
         //---   TRACTOR BEAM TO PROJECTED POINT ON LINE
@@ -184,7 +186,7 @@ public class Instrument_Vacuum : MonoBehaviour
         // CALC A FORCE PROPORTIONAL TO THE ERROR (CLAMPED TO MAXFORCE)
         Vector3 tractorBeamForce = Vector3.ClampMagnitude(_TractorBeamGain * error, _MaxTractorBeamForce);
         // ADD FORCE
-        rb.AddForce(tractorBeamForce * _TractorBeamScalar);
+        rb.AddForce(tractorBeamForce * _TractorBeamScalar * rb.mass);
 
 
         // DEBUG
