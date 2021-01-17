@@ -17,11 +17,12 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        _CollidingCount++;
+
         foreach (var emitter in _Emitters)
         {
             emitter.IsStaticSurface(_StaticSurface);
             emitter.NewCollision(collision);
-            _CollidingCount++;
         }
 
         foreach (var interaction in _Interactions)
@@ -32,9 +33,6 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (_CollidingCount <= 0)
-            _CollidingCount = 1;
-
         foreach (var emitter in _Emitters)
         {
             emitter.UpdateCurrentCollisionStatus(collision);
@@ -48,12 +46,14 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        _CollidingCount--;
+
         foreach (var emitter in _Emitters)
         {
-            _CollidingCount--;
-
             if (_CollidingCount == 0)
+            {
                 emitter.UpdateCurrentCollisionStatus(null);
+            } 
         }
 
         foreach (var interaction in _Interactions)

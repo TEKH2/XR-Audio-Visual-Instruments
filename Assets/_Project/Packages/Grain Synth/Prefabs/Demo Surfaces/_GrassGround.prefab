@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConversionMode: 0
+  ConversionMode: 1
 --- !u!1 &1115843161546113138
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,6 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1115843161546113137}
   - component: {fileID: 1683579854}
+  - component: {fileID: 859085755}
   m_Layer: 8
   m_Name: Dummy Roll Emitter
   m_TagString: Emitter
@@ -213,6 +214,19 @@ MonoBehaviour:
       _InteractionShape: 3
       _Min: 0
       _Max: 2
+--- !u!114 &859085755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115843161546113138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
 --- !u!1 &1115843162104471761
 GameObject:
   m_ObjectHideFlags: 0

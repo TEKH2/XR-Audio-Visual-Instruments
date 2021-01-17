@@ -76,7 +76,6 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public void DestroyEntity()
     {
-        //print("Emitter Entity Destroyed");
         if (_EmitterEntity != null)
             _EntityManager.DestroyEntity(_EmitterEntity);
     }
@@ -95,12 +94,16 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     {
         _CollisionTriggered = true;
 
-        //Debug.Log("New collision of  " + name + "  with  " + collision.collider.name);
-
         if (!_MultiplyVolumeByColliderRigidity)
             _VolumeMultiply = 1;
         else if (collision.collider.GetComponent<SurfaceParameters>() != null)
             _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+
+        if (_TakePropertiesFromCollidingObject && _EmitterType == EmitterType.Burst)
+        {
+            SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
+        }
+                
     }
 
 
@@ -112,19 +115,23 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         {
             _Colliding = false;
             _VolumeMultiply = 1;
+
+            if (_TakePropertiesFromCollidingObject && _EmitterType == EmitterType.Grain)
+                SetRemoteGrainEmitter(null);
         }
         else
         {
-            if (_TakePropertiesFromCollidingObject)
+            if (_EmitterType == EmitterType.Grain)
             {
-                if (_EmitterType == EmitterType.Grain)
+                if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
+                    _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+
+                 if (_TakePropertiesFromCollidingObject && collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
+                {
                     SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>());
-                else if (_EmitterType == EmitterType.Burst)
-                    SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
+                }
             }
 
-            if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
-                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
             _Colliding = true;
         }
     }

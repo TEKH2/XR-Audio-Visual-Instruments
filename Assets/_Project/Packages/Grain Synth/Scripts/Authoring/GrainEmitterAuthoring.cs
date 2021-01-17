@@ -36,7 +36,10 @@ public class GrainEmitterAuthoring : BaseEmitterClass
     public override void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter)
     {
         if (dummyEmitter == null)
+        {
             _EmissionProps._Playing = false;
+        }
+            
         else
         {
             _EmissionProps = dummyEmitter._EmissionProps;
@@ -49,6 +52,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
             // TODO Replace this boolean with removing entity
             _EmissionProps._Playing = true;
+            _Colliding = true;
         }
     }
 

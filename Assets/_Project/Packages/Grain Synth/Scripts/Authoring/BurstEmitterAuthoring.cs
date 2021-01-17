@@ -36,9 +36,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
     public override void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter)
     {
-        if (dummyEmitter == null)
-            _BurstEmissionProps._Playing = false;
-        else
+        if (dummyEmitter != null)
         {
             _BurstEmissionProps = dummyEmitter._EmissionProps;
 
@@ -51,6 +49,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
             // TODO Replace this boolean with removing entity
             _BurstEmissionProps._Playing = true;
+            _CollisionTriggered = true;
         }
     }
 
