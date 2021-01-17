@@ -1,5 +1,385 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &490294904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 490294905}
+  - component: {fileID: 490294907}
+  - component: {fileID: 490294906}
+  m_Layer: 8
+  m_Name: Constant Emitter
+  m_TagString: Emitter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &490294905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490294904}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8746403795402303889}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &490294907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490294904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TakePropertiesFromCollidingObject: 0
+  _MaxAudibleDistance: 20
+  _CurrentDistance: 3.4678795
+  _DistanceVolume: 0.5834551
+  _WithinEarshot: 1
+  _Colliding: 1
+  _ColldingObjectName: 
+  _PingPongAtEndOfClip: 1
+  _MultiplyVolumeByColliderRigidity: 0
+  _VolumeMultiply: 1
+  _AttachedToSpeaker: 1
+  _AttachedSpeakerIndex: 0
+  _PairedSpeaker: {fileID: 8746403794089393554}
+  _HeadPosition: {fileID: 0}
+  _EmitterType: 0
+  _DSPChainParams: []
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 31
+    _Playhead:
+      _InteractionInput: {fileID: 8746403795636811690}
+      _Noise: 0.192
+      _PerlinNoise: 0
+      _Idle: 0.5
+      _InteractionAmount: 0.2
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 8746403793997228432}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 3
+      _InteractionAmount: -2.5
+      _InteractionShape: 3.11
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 8746403793997228432}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 200
+      _InteractionAmount: -100
+      _InteractionShape: 2
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 8746403795636811690}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 2
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 8746403795636811690}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0.5
+      _InteractionAmount: -0.5
+      _InteractionShape: 0.5
+      _Min: 0
+      _Max: 2
+--- !u!114 &490294906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490294904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
+--- !u!1 &1683896047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1683896048}
+  - component: {fileID: 1683896050}
+  - component: {fileID: 1683896049}
+  m_Layer: 8
+  m_Name: Remote Roll Emitter
+  m_TagString: Emitter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1683896048
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683896047}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.0400002, y: 1.6924999, z: 2.0749998}
+  m_LocalScale: {x: 0.37499997, y: 0.37499997, z: 0.37499997}
+  m_Children: []
+  m_Father: {fileID: 8746403795402303889}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1683896050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683896047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TakePropertiesFromCollidingObject: 1
+  _MaxAudibleDistance: 10
+  _CurrentDistance: 2.366159
+  _DistanceVolume: 0.47939157
+  _WithinEarshot: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _PingPongAtEndOfClip: 1
+  _MultiplyVolumeByColliderRigidity: 0
+  _VolumeMultiply: 1
+  _AttachedToSpeaker: 1
+  _AttachedSpeakerIndex: 1
+  _PairedSpeaker: {fileID: 8746403794089393554}
+  _HeadPosition: {fileID: 0}
+  _EmitterType: 0
+  _DSPChainParams: []
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 4
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0.3
+      _InteractionAmount: 0.5
+      _InteractionShape: 3
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 2
+      _InteractionAmount: 3
+      _InteractionShape: 0.5
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 200
+      _InteractionAmount: -150
+      _InteractionShape: 0.5
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 0
+      _InteractionShape: 0.5
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 0.35
+      _InteractionShape: 2
+      _Min: 0
+      _Max: 2
+--- !u!114 &1683896049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683896047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
+--- !u!1 &2072066276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2072066277}
+  - component: {fileID: 2072066279}
+  - component: {fileID: 2072066278}
+  m_Layer: 8
+  m_Name: Remote Collision Emitter
+  m_TagString: Emitter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2072066277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072066276}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.0400002, y: 1.6924999, z: 2.0749998}
+  m_LocalScale: {x: 0.37499997, y: 0.37499997, z: 0.37499997}
+  m_Children: []
+  m_Father: {fileID: 8746403795402303889}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2072066279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072066276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c831bc9c2d0ed4c8b24fdcc05fce3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TakePropertiesFromCollidingObject: 1
+  _MaxAudibleDistance: 10
+  _CurrentDistance: 2.8965824
+  _DistanceVolume: 0.40411898
+  _WithinEarshot: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _PingPongAtEndOfClip: 0
+  _MultiplyVolumeByColliderRigidity: 0
+  _VolumeMultiply: 1
+  _AttachedToSpeaker: 1
+  _AttachedSpeakerIndex: 1
+  _PairedSpeaker: {fileID: 8746403794089393554}
+  _HeadPosition: {fileID: 0}
+  _EmitterType: 0
+  _DSPChainParams: []
+  _BurstEmissionProps:
+    _Playing: 1
+    _ClipIndex: 5
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _LockStartValue: 1
+      _End: 0.6
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _BurstDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Default: 100
+      _InteractionAmount: 200
+      _InteractionShape: 1
+      _Min: 10
+      _Max: 1000
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 5
+      _End: 2
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 20
+      _End: 150
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 5
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0.031
+      _LockNoise: 1
+      _Start: 0.5
+      _End: 0.5
+      _LockEndValue: 1
+      _InteractionAmount: -1
+      _InteractionShape: 2
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 1
+      _InteractionShape: 2
+      _Min: 0
+      _Max: 2
+--- !u!114 &2072066278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072066276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
 --- !u!1 &8746403793997228430
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
+  _MaxAudibleDistance: 20
   _CurrentDistance: 2.2232127
   _DistanceVolume: 0.50116503
   _WithinEarshot: 1
@@ -353,6 +733,7 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 8746403794089393554}
   _HeadPosition: {fileID: 0}
+  _EmitterType: 0
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
@@ -460,25 +841,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
+  _MaxAudibleDistance: 20
   _CurrentDistance: 2.0371172
   _DistanceVolume: 0.5309995
   _WithinEarshot: 1
   _Colliding: 0
   _ColldingObjectName: 
   _PingPongAtEndOfClip: 1
-  _MultiplyVolumeByColliderRigidity: 0
+  _MultiplyVolumeByColliderRigidity: 1
   _VolumeMultiply: 1
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 8746403794089393554}
   _HeadPosition: {fileID: 0}
+  _EmitterType: 0
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
     _ClipIndex: 1
     _Playhead:
-      _InteractionInput: {fileID: 0}
+      _InteractionInput: {fileID: 8746403795636811690}
       _Noise: 0.109
       _PerlinNoise: 0
       _Idle: 0.5
@@ -518,8 +900,8 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 1.5
-      _InteractionShape: 1.5
+      _InteractionAmount: 2
+      _InteractionShape: 1
       _Min: 0
       _Max: 2
 --- !u!114 &8746403794841364564
@@ -578,7 +960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac38bc9eb0958540bae7a9593d81a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _SourceObject: {fileID: 0}
+  _SourceObject: {fileID: 8746403795402303886}
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
@@ -714,7 +1096,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8746403795402303886}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.246, y: 0.86, z: 1.29}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children:
@@ -728,6 +1110,9 @@ Transform:
   - {fileID: 8746403794076650197}
   - {fileID: 8746403795247165162}
   - {fileID: 8746403794915756722}
+  - {fileID: 1683896048}
+  - {fileID: 2072066277}
+  - {fileID: 490294905}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5761,7 +6146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
+  _MaxAudibleDistance: 20
   _CurrentDistance: 2.136486
   _DistanceVolume: 0.5412787
   _WithinEarshot: 1
@@ -5774,6 +6159,7 @@ MonoBehaviour:
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 8746403794089393554}
   _HeadPosition: {fileID: 0}
+  _EmitterType: 0
   _DSPChainParams: []
   _BurstEmissionProps:
     _Playing: 1
@@ -5799,7 +6185,7 @@ MonoBehaviour:
       _Min: 10
       _Max: 1000
     _Density:
-      _InteractionInput: {fileID: 0}
+      _InteractionInput: {fileID: 8746403795247165165}
       _Noise: 0
       _LockNoise: 0
       _Start: 5
