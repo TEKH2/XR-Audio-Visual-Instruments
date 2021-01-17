@@ -91,8 +91,8 @@ MonoBehaviour:
       _InteractionInput: {fileID: 0}
       _Noise: 0.062
       _LockNoise: 0
-      _Start: 0
-      _End: 0
+      _Start: 1
+      _End: 1
       _LockEndValue: 1
       _InteractionAmount: 0
       _InteractionShape: 1
@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 7702519511101971117}
   - component: {fileID: 1742417582}
   m_Layer: 8
-  m_Name: Surface Roll Emitter
+  m_Name: Dummy Roll Emitter
   m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,7 +170,7 @@ MonoBehaviour:
     _ClipIndex: 28
     _Playhead:
       _InteractionInput: {fileID: 7702519511409446623}
-      _Noise: 0.4
+      _Noise: 0.3
       _PerlinNoise: 0
       _Idle: 0.5
       _InteractionAmount: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
       _Noise: 0.1
       _PerlinNoise: 0
       _Idle: 1
-      _InteractionAmount: 3
+      _InteractionAmount: 2
       _InteractionShape: 3
       _Min: 0.1
       _Max: 10
@@ -190,8 +190,8 @@ MonoBehaviour:
       _InteractionInput: {fileID: 7702519511409446623}
       _Noise: 0.05
       _PerlinNoise: 0
-      _Idle: 240
-      _InteractionAmount: -100
+      _Idle: 326
+      _InteractionAmount: -158
       _InteractionShape: 1
       _Min: 2
       _Max: 500
@@ -199,7 +199,7 @@ MonoBehaviour:
       _InteractionInput: {fileID: 7702519511409446623}
       _Noise: 0.066
       _PerlinNoise: 1
-      _Idle: 0
+      _Idle: 1
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: -3
@@ -209,8 +209,8 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 0.3
-      _InteractionShape: 3
+      _InteractionAmount: 0.2
+      _InteractionShape: 5
       _Min: 0
       _Max: 2
 --- !u!1 &7702519511409446617
@@ -258,9 +258,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
   _InputMin: 0
-  _InputMax: 10
+  _InputMax: 4
   _OutputValue: 0
-  _SourceParameter: 5
+  _SourceParameter: 6
   _Smoothing: 0.1
 --- !u!1 &7702519512021143425
 GameObject:
@@ -776,9 +776,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
   _InputMin: 0
-  _InputMax: 10
+  _InputMax: 8
   _OutputValue: 0
-  _SourceParameter: 0
+  _SourceParameter: 1
 --- !u!1 &7702519512990900799
 GameObject:
   m_ObjectHideFlags: 0

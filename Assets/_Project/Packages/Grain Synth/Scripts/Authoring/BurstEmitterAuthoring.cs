@@ -51,6 +51,10 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _BurstEmissionProps._Playing = true;
             _CollisionTriggered = true;
         }
+        else
+        {
+            _BurstEmissionProps._Playing = false;
+        }
     }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

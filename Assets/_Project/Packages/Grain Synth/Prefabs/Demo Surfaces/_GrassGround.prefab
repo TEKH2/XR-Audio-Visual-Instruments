@@ -191,8 +191,8 @@ MonoBehaviour:
       _InteractionInput: {fileID: 1115843162104471767}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: 50
-      _InteractionAmount: 0
+      _Idle: 200
+      _InteractionAmount: -150
       _InteractionShape: 1
       _Min: 2
       _Max: 500
@@ -272,9 +272,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
   _InputMin: 0
-  _InputMax: 10
+  _InputMax: 5
   _OutputValue: 0
-  _SourceParameter: 5
+  _SourceParameter: 6
   _Smoothing: 0.5
 --- !u!1 &2021371492037867232
 GameObject:
@@ -459,9 +459,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2021371492460092112}
   _InputMin: 0
-  _InputMax: 10
+  _InputMax: 6
   _OutputValue: 0
-  _SourceParameter: 0
+  _SourceParameter: 1
 --- !u!1 &2021371492460092112
 GameObject:
   m_ObjectHideFlags: 0

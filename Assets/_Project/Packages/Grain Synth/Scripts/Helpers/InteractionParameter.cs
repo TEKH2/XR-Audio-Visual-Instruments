@@ -13,6 +13,7 @@ public class InteractionParameter : InteractionBase
         Deacceleration,
         Scale,
         Roll,
+        RollTimesMass,
         Slide,
         Aux
     }
@@ -54,9 +55,15 @@ public class InteractionParameter : InteractionBase
                     else
                         currentValue = 0;
                     break;
+                case InteractionParameterType.RollTimesMass:
+                    if (_Colliding)
+                        currentValue = _RigidBody.angularVelocity.magnitude * _RigidBody.mass;
+                    else
+                        currentValue = 0;
+                    break;
                 case InteractionParameterType.Slide:
                     if (_Colliding)
-                        currentValue = _RigidBody.velocity.magnitude;
+                        currentValue = _RigidBody.velocity.magnitude / _RigidBody.angularVelocity.magnitude;
                     else
                         currentValue = 0;
                     break;

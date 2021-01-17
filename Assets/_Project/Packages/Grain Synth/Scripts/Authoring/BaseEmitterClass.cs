@@ -101,7 +101,10 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
         if (_TakePropertiesFromCollidingObject && _EmitterType == EmitterType.Burst)
         {
-            SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
+            if (collision.collider.GetComponentInChildren<DummyBurstEmitter>() != null)
+                SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
+            else
+                _CollisionTriggered = false;
         }
                 
     }
@@ -121,18 +124,21 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         }
         else
         {
+            _Colliding = true;
+
             if (_EmitterType == EmitterType.Grain)
             {
                 if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
                     _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
 
-                 if (_TakePropertiesFromCollidingObject && collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
+                 if (_TakePropertiesFromCollidingObject)
                 {
-                    SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>());
+                    if (collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
+                        SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>());
+                    else
+                        _Colliding = false;
                 }
             }
-
-            _Colliding = true;
         }
     }
 

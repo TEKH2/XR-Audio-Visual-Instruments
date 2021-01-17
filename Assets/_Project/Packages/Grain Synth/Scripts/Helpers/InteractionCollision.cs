@@ -7,6 +7,7 @@ public class InteractionCollision : InteractionBase
     public enum InteractionCollisionType
     {
         CollisionForce,
+        CollisionForceTimesMass,
         CollisionPoint,
         CollisionNormal,
     }
@@ -20,6 +21,10 @@ public class InteractionCollision : InteractionBase
         {
             case InteractionCollisionType.CollisionForce:
                 _OutputValue = collision.relativeVelocity.magnitude;
+                break;
+            case InteractionCollisionType.CollisionForceTimesMass:
+                if (_RigidBody != null)
+                _OutputValue = collision.relativeVelocity.magnitude * _RigidBody.mass;
                 break;
             case InteractionCollisionType.CollisionPoint:
                 break;
