@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1821926095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1821926096}
+  - component: {fileID: 1821926097}
+  m_Layer: 0
+  m_Name: Speed
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1821926096
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821926095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2021371492460092113}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1821926097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821926095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac38bc9eb0958540bae7a9593d81a97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SourceObject: {fileID: 0}
+  _InputMin: 0
+  _InputMax: 5
+  _OutputValue: 0
+  _SourceParameter: 0
+  _Smoothing: 0.2
 --- !u!1 &717583691521831447
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +228,7 @@ MonoBehaviour:
       _Min: 0
       _Max: 1
     _Density:
-      _InteractionInput: {fileID: 1115843162104471767}
+      _InteractionInput: {fileID: 1821926097}
       _Noise: 0.1
       _PerlinNoise: 0
       _Idle: 1
@@ -188,12 +237,12 @@ MonoBehaviour:
       _Min: 0.1
       _Max: 10
     _GrainDuration:
-      _InteractionInput: {fileID: 1115843162104471767}
+      _InteractionInput: {fileID: 1821926097}
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 200
       _InteractionAmount: -150
-      _InteractionShape: 1
+      _InteractionShape: 2
       _Min: 2
       _Max: 500
     _Transpose:
@@ -210,7 +259,7 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 1
+      _InteractionAmount: 0.5
       _InteractionShape: 3
       _Min: 0
       _Max: 2
@@ -501,6 +550,7 @@ Transform:
   - {fileID: 1115843161546113137}
   - {fileID: 1115843162104471760}
   - {fileID: 5671166289905621425}
+  - {fileID: 1821926096}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

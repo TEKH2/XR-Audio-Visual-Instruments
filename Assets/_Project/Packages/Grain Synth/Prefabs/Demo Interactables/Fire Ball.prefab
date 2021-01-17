@@ -103,8 +103,8 @@ MonoBehaviour:
       _InteractionInput: {fileID: 8746403795636811690}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: 0.5
-      _InteractionAmount: -0.5
+      _Idle: 0.4
+      _InteractionAmount: -0.4
       _InteractionShape: 0.5
       _Min: 0
       _Max: 2
@@ -779,8 +779,8 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 1
-      _InteractionShape: 0.5
+      _InteractionAmount: 0.7
+      _InteractionShape: 1
       _Min: 0
       _Max: 2
 --- !u!114 &8746403794755844653

@@ -9,6 +9,7 @@ public class InteractionVacuum : InteractionBase
         SuckAmount,
         BlowAmount,
         VacuumMass,
+        Tractor
     }
 
     private Instrument_Vacuum _VacuumInstrument;
@@ -39,6 +40,9 @@ public class InteractionVacuum : InteractionBase
                     break;
                 case InteractionVacuumType.VacuumMass:
                     currentValue = _VacuumInstrument._TotalVacuumedMass;
+                    break;
+                case InteractionVacuumType.Tractor:
+                    currentValue = _VacuumInstrument._TractorBeamScalar;
                     break;
                 default:
                     break;

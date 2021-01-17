@@ -4812,6 +4812,127 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &99387770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 99387771}
+  - component: {fileID: 99387773}
+  - component: {fileID: 99387772}
+  m_Layer: 0
+  m_Name: Tractor Emitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &99387771
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99387770}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7595123676031722318}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &99387773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99387770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TakePropertiesFromCollidingObject: 0
+  _MaxAudibleDistance: 10
+  _CurrentDistance: 0.7138927
+  _DistanceVolume: 0.801053
+  _WithinEarshot: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _PingPongAtEndOfClip: 1
+  _MultiplyVolumeByColliderRigidity: 0
+  _VolumeMultiply: 1
+  _AttachedToSpeaker: 1
+  _AttachedSpeakerIndex: 4
+  _PairedSpeaker: {fileID: 2080845514}
+  _HeadPosition: {fileID: 2576496752839984450}
+  _EmitterType: 0
+  _DSPChainParams: []
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 34
+    _Playhead:
+      _InteractionInput: {fileID: 1876494700}
+      _Noise: 0.175
+      _PerlinNoise: 1
+      _Idle: 0.238
+      _InteractionAmount: 0.591
+      _InteractionShape: 1.54
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 3.4
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 204
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 1876494700}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: -1
+      _InteractionAmount: 0.2
+      _InteractionShape: 0.5
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 1876494700}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 1.2
+      _InteractionShape: 1.36
+      _Min: 0
+      _Max: 2
+--- !u!114 &99387772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99387770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
 --- !u!1 &1504623881
 GameObject:
   m_ObjectHideFlags: 0
@@ -4843,6 +4964,55 @@ Transform:
   m_Father: {fileID: 7595123677437875006}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1876494698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1876494699}
+  - component: {fileID: 1876494700}
+  m_Layer: 0
+  m_Name: Vacuum Tractor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1876494699
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876494698}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7595123676031722318}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1876494700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876494698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f520b973067bcc94eb1a680f00bba67a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SourceObject: {fileID: 7595123677376348200}
+  _InputMin: 0
+  _InputMax: 0.8
+  _OutputValue: 0
+  _SourceParameter: 3
+  _Smoothing: 0.4
 --- !u!1 &1930255145
 GameObject:
   m_ObjectHideFlags: 0
@@ -15917,6 +16087,50 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 2576496752839984450}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _DistanceVolume
+      value: 0.8621913
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _CurrentDistance
+      value: 0.47719213
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _AttachedSpeakerIndex
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._ClipIndex
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Density._Idle
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Playhead._Idle
+      value: 0.372
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Playhead._Noise
+      value: 0.111
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._GrainDuration._Idle
+      value: 385
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Volume._InteractionAmount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Playhead._InteractionAmount
+      value: -0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 1187812030, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _ScaleRange.x
       value: 0.05
@@ -15960,8 +16174,44 @@ PrefabInstance:
       value: Thumb Stick
       objectReference: {fileID: 0}
     - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _HeadPosition
+      value: 
+      objectReference: {fileID: 2576496752839984450}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _DistanceVolume
+      value: 0.801053
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _CurrentDistance
+      value: 0.7138927
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _AttachedSpeakerIndex
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._ClipIndex
-      value: 12
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Transpose._Idle
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Volume._InteractionAmount
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _EmissionProps._Transpose._InteractionAmount
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959038673, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _Smoothing
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979400931, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
+      propertyPath: _Smoothing
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7595123676224152041, guid: 95963fee03b2dec45aef18c47eb734b2,
         type: 3}
@@ -16229,9 +16479,27 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1163059651}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7595123677376348200 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7595123676224152043, guid: 95963fee03b2dec45aef18c47eb734b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1163059651}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7595123677437875006 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7595123676442604285, guid: 95963fee03b2dec45aef18c47eb734b2,
     type: 3}
   m_PrefabInstance: {fileID: 1163059651}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2080845514 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 961924873, guid: 95963fee03b2dec45aef18c47eb734b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1163059651}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c01514539c1544cb161730a3cc95e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

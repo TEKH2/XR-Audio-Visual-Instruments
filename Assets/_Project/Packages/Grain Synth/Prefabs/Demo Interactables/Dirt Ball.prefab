@@ -386,7 +386,7 @@ MonoBehaviour:
       _InteractionInput: {fileID: 2306625123323876118}
       _Noise: 0
       _LockNoise: 0
-      _Default: 300
+      _Default: 150
       _InteractionAmount: 500
       _InteractionShape: 2
       _Min: 10
@@ -430,7 +430,7 @@ MonoBehaviour:
       _End: 0
       _LockEndValue: 1
       _InteractionAmount: 2
-      _InteractionShape: 0.75
+      _InteractionShape: 1.5
       _Min: 0
       _Max: 2
 --- !u!114 &2306625123130947477
@@ -647,7 +647,7 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 0.25
+      _InteractionAmount: 0.2
       _InteractionShape: 1.5
       _Min: 0
       _Max: 2
