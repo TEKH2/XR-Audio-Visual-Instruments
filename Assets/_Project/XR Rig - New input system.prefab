@@ -4856,21 +4856,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _EmitterType: 0
+  _EmitterSetup: 0
   _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 0.7138927
-  _DistanceVolume: 0.801053
-  _WithinEarshot: 1
-  _Colliding: 0
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 1
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 4
   _PairedSpeaker: {fileID: 2080845514}
-  _HeadPosition: {fileID: 2576496752839984450}
-  _EmitterType: 0
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _CurrentDistance: 0.7138927
+  _DistanceVolume: 0.801053
+  _WithinEarshot: 1
+  _CollidingRemoteEmitterGO: {fileID: 0}
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1

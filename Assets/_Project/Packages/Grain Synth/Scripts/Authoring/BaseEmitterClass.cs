@@ -14,45 +14,46 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(ConvertToEntity))]
 public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public enum EmitterType
-    {
-        Grain,
-        Burst
-    }
+    public enum EmitterType {Grain, Burst}
+    public enum EmitterSetup {Local, Remote, Dummy}
 
+    [Header("Emitter Config")]
+    public EmitterType _EmitterType;
+    public EmitterSetup _EmitterSetup;
     public bool _TakePropertiesFromCollidingObject = false;
-
-    [Range(0.1f, 50f)]
-    public float _MaxAudibleDistance = 10f;
-
-    [Header("DEBUG")]
-    public float _CurrentDistance = 0;
-    public float _DistanceVolume = 0;
-    public bool _WithinEarshot = true;
-
     protected bool _Initialized = false;
     protected bool _StaticallyPaired = false;
+    public bool _AttachedToSpeaker = false;
+    public int _AttachedSpeakerIndex;
+    public GrainSpeakerAuthoring _PairedSpeaker;
+    protected Entity _EmitterEntity;
+    protected EntityManager _EntityManager;
+    protected float[] _PerlinSeedArray;
+    protected Transform _HeadPosition;
+
+    [Header("Playback Config")]
+    [Range(0.1f, 50f)]
+    public float _MaxAudibleDistance = 10f;
+    public bool _MultiplyVolumeByColliderRigidity = false;
+    protected float _VolumeMultiply = 1;
+    public bool _PingPongAtEndOfClip = true;
+
+    [Header("Runtime Activity")]
     protected bool _InRangeTemp = false;
     protected bool _CollisionTriggered = false;
     public bool _Colliding = false;
     public string _ColldingObjectName = "";
 
-    private bool _StaticSurface = false;
-    public bool _PingPongAtEndOfClip = true;
-    public bool _MultiplyVolumeByColliderRigidity = false;
-    public float _VolumeMultiply = 1;
+    public float _CurrentDistance = 0;
+    public float _DistanceVolume = 0;
+    public bool _WithinEarshot = true;
 
-    public bool _AttachedToSpeaker = false;
-    public int _AttachedSpeakerIndex;
-    public GrainSpeakerAuthoring _PairedSpeaker;
-    public Transform _HeadPosition;
+    [SerializeField]
+    protected GameObject _CollidingRemoteEmitterGO;
+    protected GameObject[] _RemoteInteractions;
 
-    protected Entity _EmitterEntity;
-    protected EntityManager _EntityManager;
-    protected float[] _PerlinSeedArray;
 
-    public EmitterType _EmitterType;
-
+    [Header("Sound Config")]
     public DSPBase[] _DSPChainParams;
 
     void Start()
@@ -85,11 +86,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         DestroyEntity();
     }
 
-    public void IsStaticSurface(bool staticSurface)
-    {
-        _StaticSurface = staticSurface;
-    }
-
+    // Only for burst emitter types
     public void NewCollision(Collision collision)
     {
         _CollisionTriggered = true;
@@ -99,19 +96,18 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         else if (collision.collider.GetComponent<SurfaceParameters>() != null)
             _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
 
-        if (_TakePropertiesFromCollidingObject && _EmitterType == EmitterType.Burst)
+        // Copy dummy emitter if this is a remote emitter
+        if (_EmitterSetup == EmitterSetup.Remote)
         {
-            if (collision.collider.GetComponentInChildren<DummyBurstEmitter>() != null)
+            BurstEmitterAuthoring colliderDummyEmitter = collision.collider.GetComponentInChildren<BurstEmitterAuthoring>();
+            if (colliderDummyEmitter != null && colliderDummyEmitter._EmitterSetup == EmitterSetup.Dummy)
                 SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
             else
                 _CollisionTriggered = false;
-        }
-                
+        }       
     }
 
-
-    // TODO -=- This seems inefficient to set everything OnCollisionStay tick. Doing this to avoid extra collisions
-    // from breaking the roll sounds
+    // Only for grain emitter types
     public void UpdateCurrentCollisionStatus(Collision collision)
     {
         if (collision == null)
@@ -119,30 +115,44 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
             _Colliding = false;
             _VolumeMultiply = 1;
 
-            if (_TakePropertiesFromCollidingObject && _EmitterType == EmitterType.Grain)
-                SetRemoteGrainEmitter(null);
+            // Clear emitter if it's set to remote
+            if (_EmitterSetup == EmitterSetup.Remote)
+            {
+                SetRemoteGrainEmitter(null, null);
+            }
         }
         else
         {
             _Colliding = true;
 
-            if (_EmitterType == EmitterType.Grain)
-            {
-                if (_MultiplyVolumeByColliderRigidity && collision.collider.GetComponent<SurfaceParameters>() != null)
-                    _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+            if (!_MultiplyVolumeByColliderRigidity)
+                _VolumeMultiply = 1;
+            else if (collision.collider.GetComponent<SurfaceParameters>() != null)
+                _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
 
-                 if (_TakePropertiesFromCollidingObject)
+            if (_EmitterSetup == EmitterSetup.Remote && _CollidingRemoteEmitterGO != collision.collider.gameObject)
+            {
+                _CollidingRemoteEmitterGO = collision.collider.gameObject;
+
+                if (collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
                 {
-                    if (collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
-                        SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>());
-                    else
-                        _Colliding = false;
+                    SetRemoteGrainEmitter(collision.collider.GetComponentInChildren<DummyGrainEmitter>(), collision.collider.GetComponentsInChildren<InteractionBase>());
                 }
+                else
+                {
+                    _Colliding = false;
+                }
+                    
             }
+        }
+
+        if (!_Colliding)
+        {
+            InteractionBase[] remoteInteractions = GetComponentsInChildren<InteractionBase>();
         }
     }
 
-    public virtual void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter) { }
+    public virtual void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter, InteractionBase[] remoteInteractions) { }
 
     public virtual void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter) { }
 

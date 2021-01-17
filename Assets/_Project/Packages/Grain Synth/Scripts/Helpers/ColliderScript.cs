@@ -21,8 +21,8 @@ public class ColliderScript : MonoBehaviour
 
         foreach (var emitter in _Emitters)
         {
-            emitter.IsStaticSurface(_StaticSurface);
-            emitter.NewCollision(collision);
+            if (emitter._EmitterType == BaseEmitterClass.EmitterType.Burst)
+                emitter.NewCollision(collision);
         }
 
         foreach (var interaction in _Interactions)
@@ -35,7 +35,8 @@ public class ColliderScript : MonoBehaviour
     {
         foreach (var emitter in _Emitters)
         {
-            emitter.UpdateCurrentCollisionStatus(collision);
+            if (emitter._EmitterType == BaseEmitterClass.EmitterType.Grain)
+                emitter.UpdateCurrentCollisionStatus(collision);
         }
 
         foreach (var interaction in _Interactions)
@@ -52,7 +53,8 @@ public class ColliderScript : MonoBehaviour
         {
             if (_CollidingCount == 0)
             {
-                emitter.UpdateCurrentCollisionStatus(null);
+                if (emitter._EmitterType == BaseEmitterClass.EmitterType.Grain)
+                    emitter.UpdateCurrentCollisionStatus(null);
             } 
         }
 

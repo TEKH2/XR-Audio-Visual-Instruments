@@ -26,23 +26,49 @@ public class GrainEmitterAuthoring : BaseEmitterClass
     {
         _EmitterType = EmitterType.Grain;
 
-        _EmissionProps._Playhead.CheckInteractionInput();
-        _EmissionProps._Density.CheckInteractionInput();
-        _EmissionProps._GrainDuration.CheckInteractionInput();
-        _EmissionProps._Transpose.CheckInteractionInput();
-        _EmissionProps._Volume.CheckInteractionInput();
+        if (_EmitterSetup != EmitterSetup.Remote)
+        {
+            _EmissionProps._Playhead.CheckInteractionInput();
+            _EmissionProps._Density.CheckInteractionInput();
+            _EmissionProps._GrainDuration.CheckInteractionInput();
+            _EmissionProps._Transpose.CheckInteractionInput();
+            _EmissionProps._Volume.CheckInteractionInput();
+        }
+        else
+        {
+            _EmissionProps = new EmissionProps();
+            _EmissionProps._Playing = false;
+        }
     }
 
-    public override void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter)
+    public override void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter, InteractionBase[] remoteInteractions)
     {
         if (dummyEmitter == null)
         {
             _EmissionProps._Playing = false;
+
+            for (int i = 0; i < _RemoteInteractions.Length; i++)
+            {
+                Destroy(_RemoteInteractions[i].gameObject);
+            }
+
+            if (_RemoteInteractions != null)
+                _RemoteInteractions = null;
+
+            _CollidingRemoteEmitterGO = null;
         }
             
         else
         {
             _EmissionProps = dummyEmitter._EmissionProps;
+
+            _RemoteInteractions = new GameObject[remoteInteractions.Length];
+
+            for (int i = 0; i < _RemoteInteractions.Length; i++)
+            {
+                _RemoteInteractions[i] = Instantiate(remoteInteractions[i].gameObject, remoteInteractions[i].gameObject.transform);
+                //_RemoteInteractions[i].Updat
+            }
 
             _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
             _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
