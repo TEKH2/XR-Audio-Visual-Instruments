@@ -84,7 +84,7 @@ public class Instrument_Vacuum : MonoBehaviour
         _BeamMinMax.constantMax = .2f + (_PushPullScalar * _PushPullSpeed);
         _PSMainModule.startSpeed = _BeamMinMax;
 
-        _PSEmit.rateOverTime = _TractorBeamScalar * 600;
+        _PSEmit.rateOverTime = Mathf.Clamp01(_TractorBeamScalar + Mathf.Abs(_PushPullScalar)) * 600;
     }
 
     private void FixedUpdate()
@@ -101,15 +101,15 @@ public class Instrument_Vacuum : MonoBehaviour
        
     }
 
-    void OnTriggerStay(Collider other)
-    {
-        Vacuum(other, true);
-    }
-
     void OnTriggerEnter(Collider other)
     {
         //other.attachedRigidbody.useGravity = false;
         _ObjectsCurrentBeingVacuumed.Add(other.gameObject);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        Vacuum(other, true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -121,12 +121,12 @@ public class Instrument_Vacuum : MonoBehaviour
 
     void Vacuum(Collider other, bool inTrigger)
     {
-        if (other.attachedRigidbody && _TractorBeamScalar > 0)
+        if (other.attachedRigidbody)
         {
             float dist = Vector3.Distance(transform.parent.position, other.transform.position) - (other.transform.localScale.x * .5f) ;
             Vector3 force = Vector3.zero;
 
-            if (dist < _DestroyRadius && _PushPullScalar < 0)
+            if (dist < _DestroyRadius && _PushPullScalar < 0 && _TractorBeamScalar > 0)
                 DestroyEmitter(other.gameObject);
             else
             {
