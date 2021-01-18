@@ -68,7 +68,7 @@ public class Instrument_Vacuum : MonoBehaviour
 
         _RightThumbstickAction.action.started += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
         _RightThumbstickAction.action.performed += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
-        _RightThumbstickAction.action.canceled += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
+        _RightThumbstickAction.action.canceled += ctx => _PushPullScalar = 0;
 
         _RightThumbstickAction.action.started += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
         _RightThumbstickAction.action.performed += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
@@ -86,7 +86,9 @@ public class Instrument_Vacuum : MonoBehaviour
         _BeamMinMax.constantMin = -.2f + (_PushPullScalar * _PushPullSpeed);
         _BeamMinMax.constantMax = .2f + (_PushPullScalar * _PushPullSpeed);
         _PSMainModule.startSpeed = _BeamMinMax;
-        _PSMainModule.startColor = _PushPullColGrad.Evaluate(_PushPullScalar);
+        Color col = _PushPullColGrad.Evaluate(Mathf.InverseLerp(-1f, 1f, _PushPullScalar));
+        _PSMainModule.startColor = col;
+
 
         _PSEmit.rateOverTime = Mathf.Clamp01(_TractorBeamScalar + Mathf.Abs(_PushPullScalar)) * 600;
     }
