@@ -8,7 +8,7 @@ public class ColliderScript : MonoBehaviour
     public GrainSpeakerAuthoring _Speaker;
     public List<BaseEmitterClass> _LocalEmitters;
     public List<BaseEmitterClass> _DummyEmitters;
-    public List<BaseEmitterClass> _TempEmitters;
+    public List<BaseEmitterClass> _TempGrainEmitters;
     public InteractionBase[] _Interactions;
     public int _CollidingCount = 0;
     public List<GameObject> _CollidingObjects;
@@ -48,12 +48,12 @@ public class ColliderScript : MonoBehaviour
                 if (_HostDummyEmittersOnCollision)
                     foreach (var remoteDummyEmitter in newColliderScript._DummyEmitters)
                     {
-                        if (!_TempEmitters.Contains(remoteDummyEmitter))
-                        {
-                            GameObject newTempEmitter = Instantiate(remoteDummyEmitter.gameObject, gameObject.transform);
-                            newTempEmitter.GetComponent<BaseEmitterClass>().SetupTempEmitter(collision.collider.gameObject, _Speaker);
-                            _TempEmitters.Add(newTempEmitter.GetComponent<BaseEmitterClass>());
-                        }
+                        GameObject newTempEmitter = Instantiate(remoteDummyEmitter.gameObject, gameObject.transform);
+                        newTempEmitter.GetComponent<BaseEmitterClass>().SetupTempEmitter(collision.collider.gameObject, _Speaker);
+                        if (newTempEmitter.GetComponent<GrainEmitterAuthoring>() != null)
+                            _TempGrainEmitters.Add(newTempEmitter.GetComponent<BaseEmitterClass>());
+
+                        Debug.Log("Created new dummy emitter: " + newTempEmitter.gameObject.name);
                     }
             }
         }
@@ -104,12 +104,12 @@ public class ColliderScript : MonoBehaviour
             interaction.SetColliding(false, collision.collider.material);
         }
 
-        for (int i = _TempEmitters.Count - 1; i >= 0; i--)
+        for (int i = _TempGrainEmitters.Count - 1; i >= 0; i--)
         {
-            if (_TempEmitters[i]._ColldingObject == collision.collider.gameObject)
+            if (_TempGrainEmitters[i]._ColldingObject == collision.collider.gameObject)
             {
-                Destroy(_TempEmitters[i].gameObject);
-                _TempEmitters.RemoveAt(i);
+                Destroy(_TempGrainEmitters[i].gameObject);
+                _TempGrainEmitters.RemoveAt(i);
             }
         }
 

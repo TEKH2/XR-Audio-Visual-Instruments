@@ -5,7 +5,7 @@ using UnityEngine;
 public class InteractionBase : MonoBehaviour
 {
     public GameObject _SourceObject;
-    protected Rigidbody _RigidBody;
+    public Rigidbody _RigidBody;
 
     public float _InputMin = 0f;
     public float _InputMax = 1f;
@@ -31,6 +31,7 @@ public class InteractionBase : MonoBehaviour
     {
         _SourceObject = gameObject;
         _RigidBody = _SourceObject.GetComponent<Rigidbody>();
+        _Colliding = true;
     }
 
     public float GetValue()
