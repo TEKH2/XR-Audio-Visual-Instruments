@@ -21,6 +21,7 @@ public class BurstEmissionProps
 public class BurstEmitterAuthoring : BaseEmitterClass
 {
     public BurstEmissionProps _EmissionProps;
+    public float _TimeExisted = 0;
 
     public override void Initialise()
     {
@@ -36,6 +37,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _CollisionTriggered = true;
         _PairedSpeaker = speaker;
         _StaticallyPaired = true;
+
+        _TimeExisted = 0;
 
         gameObject.transform.position = Vector3.zero;
 
@@ -186,6 +189,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
     void Update()
     {
+        _TimeExisted += Time.deltaTime;
+
         if (!_Initialized)
             return;
 
@@ -209,9 +214,9 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
-            
+
             _DistanceVolume = AudioUtils.EmitterFromListenerVolumeAdjust(_HeadPosition.position, transform.position, _MaxAudibleDistance);
-            
+
             float volumeDistanceAdjust = AudioUtils.EmitterFromSpeakerVolumeAdjust(_HeadPosition.position,
                     GrainSynth.Instance._GrainSpeakers[attachedSpeakerIndex].gameObject.transform.position,
                     transform.position) * _DistanceVolume;
@@ -326,11 +331,12 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
             _CollisionTriggered = false;
 
-            // Clear emitter props and colliding object when burst is complete if this is a remote burst emitter
-            if (_EmitterSetup == EmitterSetup.Temp)
-            {
-                Destroy(gameObject);
-            }
+
+        }
+        // Clear emitter props and colliding object when burst is complete if this is a remote burst emitter
+        if (_EmitterSetup == EmitterSetup.Temp && _TimeExisted > 3)
+        {
+            Destroy(gameObject);
         }
     }
 }
