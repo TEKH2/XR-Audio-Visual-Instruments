@@ -25,45 +25,26 @@ public class BurstEmitterAuthoring : BaseEmitterClass
     public override void Initialise()
     {
         _EmitterType = EmitterType.Burst;
-
-        if (_EmitterSetup != EmitterSetup.Remote)
-        {
-            _EmissionProps._Playhead.CheckInteractionInput();
-            _EmissionProps._BurstDuration.CheckInteractionInput();
-            _EmissionProps._Density.CheckInteractionInput();
-            _EmissionProps._GrainDuration.CheckInteractionInput();
-            _EmissionProps._Transpose.CheckInteractionInput();
-            _EmissionProps._Volume.CheckInteractionInput();
-        }
-        else
-        {
-            _EmissionProps = new BurstEmissionProps();
-            _EmissionProps._Playing = false;
-        }
     }
 
-    public override void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter)
+    public override void SetupTempEmitter(GameObject collidingGameObject, GrainSpeakerAuthoring speaker)
     {
-        if (dummyEmitter != null)
-        {
-            _EmissionProps = dummyEmitter._EmissionProps;
+        _ColldingObject = collidingGameObject;
+        _EmitterSetup = EmitterSetup.Temp;
+        _EmissionProps._Playing = true;
+        _Colliding = true;
+        _CollisionTriggered = true;
+        _PairedSpeaker = speaker;
+        _StaticallyPaired = true;
 
-            _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._BurstDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-
-            // TODO Replace this boolean with removing entity
-            _EmissionProps._Playing = true;
-            _CollisionTriggered = true;
-        }
-        else
-        {
-            _EmissionProps._Playing = false;
-        }
+        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._BurstDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
     }
+
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -344,10 +325,9 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _CollisionTriggered = false;
 
             // Clear emitter props and colliding object when burst is complete if this is a remote burst emitter
-            if (_EmitterSetup == EmitterSetup.Remote)
+            if (_EmitterSetup == EmitterSetup.Temp)
             {
-                _EmissionProps = new BurstEmissionProps();
-                _CollidingDummyEmitterGameObject = null;
+                Destroy(this);
             }
         }
     }

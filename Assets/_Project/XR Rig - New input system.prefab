@@ -4865,7 +4865,7 @@ MonoBehaviour:
   _MultiplyVolumeByColliderRigidity: 0
   _PingPongAtEndOfClip: 1
   _Colliding: 0
-  _ColldingObjectName: 
+  _ColldingObject: {fileID: 0}
   _CurrentDistance: 0.7138927
   _DistanceVolume: 0.801053
   _WithinEarshot: 1
@@ -4873,21 +4873,21 @@ MonoBehaviour:
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
-    _ClipIndex: 34
+    _ClipIndex: 0
     _Playhead:
-      _InteractionInput: {fileID: 1876494700}
-      _Noise: 0.175
-      _PerlinNoise: 1
-      _Idle: 0.238
-      _InteractionAmount: 0.591
-      _InteractionShape: 1.54
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
       _Min: 0
       _Max: 1
     _Density:
       _InteractionInput: {fileID: 0}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: 3.4
+      _Idle: 2
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 0.1
@@ -4896,27 +4896,27 @@ MonoBehaviour:
       _InteractionInput: {fileID: 0}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: 204
+      _Idle: 50
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 2
       _Max: 500
     _Transpose:
-      _InteractionInput: {fileID: 1876494700}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: -1
-      _InteractionAmount: 0.2
-      _InteractionShape: 0.5
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
       _Min: -3
       _Max: 3
     _Volume:
-      _InteractionInput: {fileID: 1876494700}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _PerlinNoise: 0
-      _Idle: 0
-      _InteractionAmount: 1.2
-      _InteractionShape: 1.36
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
       _Min: 0
       _Max: 2
 --- !u!114 &99387772

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public class EmissionProps : MonoBehaviour
+public class EmissionProps
 {
     public bool _Playing = true;
     public int _ClipIndex = 0;
@@ -17,24 +17,6 @@ public class EmissionProps : MonoBehaviour
     public EmitterPropTranspose _Transpose;
     public EmitterPropVolume _Volume;
 
-    protected List<GameObject> _InteractionObjects;
-
-    public void Start()
-    {
-        _InteractionObjects.Add(_Playhead._InteractionInput._SourceObject);
-
-        AddInteractionGameObject(_Density._InteractionInput._SourceObject);
-        AddInteractionGameObject(_GrainDuration._InteractionInput._SourceObject);
-        AddInteractionGameObject(_Transpose._InteractionInput._SourceObject);
-        AddInteractionGameObject(_Volume._InteractionInput._SourceObject);
-    }
-    public void AddInteractionGameObject(GameObject newInteracitonSourceObject)
-    {
-        if (!_InteractionObjects.Contains(newInteracitonSourceObject))
-        {
-            _InteractionObjects.Add(newInteracitonSourceObject);
-        }
-    }
 }
 
 public class GrainEmitterAuthoring : BaseEmitterClass
@@ -44,63 +26,26 @@ public class GrainEmitterAuthoring : BaseEmitterClass
     public override void Initialise()
     {
         _EmitterType = EmitterType.Grain;
-
-        if (_EmitterSetup != EmitterSetup.Remote)
-        {
-            _EmissionProps._Playhead.CheckInteractionInput();
-            _EmissionProps._Density.CheckInteractionInput();
-            _EmissionProps._GrainDuration.CheckInteractionInput();
-            _EmissionProps._Transpose.CheckInteractionInput();
-            _EmissionProps._Volume.CheckInteractionInput();
-        }
-        else
-        {
-            _EmissionProps = new EmissionProps();
-            _EmissionProps._Playing = false;
-        }
     }
 
-    public override void SetRemoteGrainEmitter(DummyGrainEmitter dummyEmitter, InteractionBase[] remoteInteractions)
+    public override void SetupTempEmitter(GameObject collidingGameObject, GrainSpeakerAuthoring speaker)
     {
-        if (dummyEmitter == null)
-        {
-            _EmissionProps._Playing = false;
+        _ColldingObject = collidingGameObject;
+        _EmitterSetup = EmitterSetup.Temp;
+        _EmissionProps._Playing = true;
+        _Colliding = true;
+        _CollisionTriggered = true;
+        _PairedSpeaker = speaker;
+        _StaticallyPaired = true;
 
-            for (int i = 0; i < _RemoteInteractions.Count; i++)
-            {
-                Destroy(_RemoteInteractions[i].gameObject);
-            }
-
-            if (_RemoteInteractions != null)
-                _RemoteInteractions = null;
-
-            _CollidingDummyEmitterGameObject = null;
-        }
-            
-        else
-        {
-            _EmissionProps = dummyEmitter._EmissionProps;
-
-            
-
-            _RemoteInteractions = new GameObject[remoteInteractions.Length];
-
-            for (int i = 0; i < _RemoteInteractions.Length; i++)
-            {
-                _RemoteInteractions[i] = Instantiate(remoteInteractions[i].gameObject, remoteInteractions[i].gameObject.transform);
-            }
-
-            _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-            _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-
-            // TODO Replace this boolean with removing entity
-            _EmissionProps._Playing = true;
-            _Colliding = true;
-        }
+        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
     }
+
+
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -215,7 +160,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         if (!_Initialized)
             return;
 
-        if ((_EmitterSetup == EmitterSetup.Remote && !_Colliding) || _EmitterSetup == EmitterSetup.Dummy)
+        if ((_EmitterSetup == EmitterSetup.Temp && !_Colliding) || _EmitterSetup == EmitterSetup.Dummy)
             _EmissionProps._Playing = false;
 
         _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);
