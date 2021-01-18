@@ -55,7 +55,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
             if (_RemoteInteractions != null)
                 _RemoteInteractions = null;
 
-            _CollidingRemoteEmitterGO = null;
+            _CollidingDummyEmitterGameObject = null;
         }
             
         else
@@ -195,7 +195,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         if (!_Initialized)
             return;
 
-        if (_TakePropertiesFromCollidingObject && !_Colliding)
+        if ((_EmitterSetup == EmitterSetup.Remote && !_Colliding) || _EmitterSetup == EmitterSetup.Dummy)
             _EmissionProps._Playing = false;
 
         _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);

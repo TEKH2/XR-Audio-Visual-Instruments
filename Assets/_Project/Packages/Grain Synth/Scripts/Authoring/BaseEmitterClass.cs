@@ -20,7 +20,6 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     [Header("Emitter Config")]
     public EmitterType _EmitterType;
     public EmitterSetup _EmitterSetup;
-    public bool _TakePropertiesFromCollidingObject = false;
     protected bool _Initialized = false;
     protected bool _StaticallyPaired = false;
     public bool _AttachedToSpeaker = false;
@@ -49,7 +48,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public bool _WithinEarshot = true;
 
     [SerializeField]
-    protected GameObject _CollidingRemoteEmitterGO;
+    protected GameObject _CollidingDummyEmitterGameObject;
     protected GameObject[] _RemoteInteractions;
 
 
@@ -118,6 +117,12 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
             // Clear emitter if it's set to remote
             if (_EmitterSetup == EmitterSetup.Remote)
             {
+                if (_CollidingDummyEmitterGameObject != null)
+                {
+                    Destroy(_CollidingDummyEmitterGameObject);
+                    _CollidingDummyEmitterGameObject = null;
+                }
+                    
                 SetRemoteGrainEmitter(null, null);
             }
         }
@@ -130,9 +135,9 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
             else if (collision.collider.GetComponent<SurfaceParameters>() != null)
                 _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
 
-            if (_EmitterSetup == EmitterSetup.Remote && _CollidingRemoteEmitterGO != collision.collider.gameObject)
+            if (_EmitterSetup == EmitterSetup.Remote && _CollidingDummyEmitterGameObject != collision.collider.gameObject)
             {
-                _CollidingRemoteEmitterGO = collision.collider.gameObject;
+                _CollidingDummyEmitterGameObject = collision.collider.gameObject;
 
                 if (collision.collider.GetComponentInChildren<DummyGrainEmitter>() != null)
                 {

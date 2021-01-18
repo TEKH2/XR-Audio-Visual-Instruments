@@ -347,7 +347,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             if (_EmitterSetup == EmitterSetup.Remote)
             {
                 _EmissionProps = new BurstEmissionProps();
-                _CollidingRemoteEmitterGO = null;
+                _CollidingDummyEmitterGameObject = null;
             }
         }
     }

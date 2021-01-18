@@ -4858,7 +4858,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _EmitterType: 0
   _EmitterSetup: 0
-  _TakePropertiesFromCollidingObject: 0
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 4
   _PairedSpeaker: {fileID: 2080845514}
@@ -4870,7 +4869,7 @@ MonoBehaviour:
   _CurrentDistance: 0.7138927
   _DistanceVolume: 0.801053
   _WithinEarshot: 1
-  _CollidingRemoteEmitterGO: {fileID: 0}
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1

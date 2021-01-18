@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 0.74999994, y: 0.74999994, z: 0.74999994}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 11
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &503941202
 MonoBehaviour:
@@ -44,32 +44,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c831bc9c2d0ed4c8b24fdcc05fce3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TakePropertiesFromCollidingObject: 1
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 2.8965824
-  _DistanceVolume: 0.40411898
-  _WithinEarshot: 1
-  _Colliding: 0
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 0
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
+  _EmitterType: 1
+  _EmitterSetup: 1
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 2306625124587715183}
-  _HeadPosition: {fileID: 0}
-  _EmitterType: 0
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 0
+  _Colliding: 0
+  _ColldingObjectName: 
+  _CurrentDistance: 2.8965824
+  _DistanceVolume: 0.40411898
+  _WithinEarshot: 1
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
-  _BurstEmissionProps:
+  _EmissionProps:
     _Playing: 1
-    _ClipIndex: 5
+    _ClipIndex: 0
     _Playhead:
       _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
       _Start: 0
       _LockStartValue: 1
-      _End: 0.6
+      _End: 1
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 0
@@ -79,7 +78,7 @@ MonoBehaviour:
       _Noise: 0
       _LockNoise: 0
       _Default: 100
-      _InteractionAmount: 200
+      _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 10
       _Max: 1000
@@ -87,7 +86,7 @@ MonoBehaviour:
       _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
-      _Start: 5
+      _Start: 2
       _End: 2
       _InteractionAmount: 0
       _InteractionShape: 1
@@ -98,20 +97,20 @@ MonoBehaviour:
       _Noise: 0
       _LockNoise: 0
       _Start: 20
-      _End: 150
+      _End: 20
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 5
       _Max: 500
     _Transpose:
       _InteractionInput: {fileID: 0}
-      _Noise: 0.031
-      _LockNoise: 1
-      _Start: 0.5
-      _End: 0.5
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _End: 0
       _LockEndValue: 1
-      _InteractionAmount: -1
-      _InteractionShape: 2
+      _InteractionAmount: 0
+      _InteractionShape: 1
       _Min: -3
       _Max: 3
     _Volume:
@@ -122,7 +121,7 @@ MonoBehaviour:
       _End: 0
       _LockEndValue: 1
       _InteractionAmount: 1
-      _InteractionShape: 2
+      _InteractionShape: 1
       _Min: 0
       _Max: 2
 --- !u!114 &503941201
@@ -168,7 +167,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625122888338320
 MonoBehaviour:
@@ -182,21 +181,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 0
-  _DistanceVolume: 0
-  _WithinEarshot: 1
-  _Colliding: 0
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 1
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
+  _EmitterType: 0
+  _EmitterSetup: 0
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 2306625124587715183}
-  _HeadPosition: {fileID: 0}
-  _EmitterType: 0
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _CurrentDistance: 0
+  _DistanceVolume: 0
+  _WithinEarshot: 1
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
@@ -288,7 +286,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625122942469269
 MonoBehaviour:
@@ -352,85 +350,84 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c831bc9c2d0ed4c8b24fdcc05fce3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 2.0768652
-  _DistanceVolume: 0.6107256
-  _WithinEarshot: 1
-  _Colliding: 1
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 0
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
+  _EmitterType: 1
+  _EmitterSetup: 0
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 2306625124587715183}
-  _HeadPosition: {fileID: 0}
-  _EmitterType: 1
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 0
+  _Colliding: 1
+  _ColldingObjectName: 
+  _CurrentDistance: 2.0768652
+  _DistanceVolume: 0.6107256
+  _WithinEarshot: 1
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
-  _BurstEmissionProps:
+  _EmissionProps:
     _Playing: 1
-    _ClipIndex: 8
+    _ClipIndex: 0
     _Playhead:
-      _InteractionInput: {fileID: 2306625123323876118}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
       _Start: 0
       _LockStartValue: 1
-      _End: 0.4
-      _InteractionAmount: 0.3
+      _End: 1
+      _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 0
       _Max: 1
     _BurstDuration:
-      _InteractionInput: {fileID: 2306625123323876118}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
-      _Default: 150
-      _InteractionAmount: 500
-      _InteractionShape: 2
+      _Default: 100
+      _InteractionAmount: 0
+      _InteractionShape: 1
       _Min: 10
       _Max: 1000
     _Density:
-      _InteractionInput: {fileID: 2306625123323876118}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
-      _Start: 4
-      _End: 4
+      _Start: 2
+      _End: 2
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 0.1
       _Max: 10
     _GrainDuration:
-      _InteractionInput: {fileID: 2306625123323876118}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
-      _Start: 30
-      _End: 300
+      _Start: 20
+      _End: 20
       _InteractionAmount: 0
       _InteractionShape: 1
       _Min: 5
       _Max: 500
     _Transpose:
-      _InteractionInput: {fileID: 2306625124145120892}
-      _Noise: 0.05
-      _LockNoise: 1
-      _Start: 1.5
-      _End: 1.5
-      _LockEndValue: 0
-      _InteractionAmount: -1
-      _InteractionShape: 2
-      _Min: -3
-      _Max: 3
-    _Volume:
-      _InteractionInput: {fileID: 2306625123323876118}
+      _InteractionInput: {fileID: 0}
       _Noise: 0
       _LockNoise: 0
       _Start: 0
       _End: 0
       _LockEndValue: 1
-      _InteractionAmount: 2
-      _InteractionShape: 1.5
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _LockNoise: 0
+      _Start: 0
+      _End: 0
+      _LockEndValue: 1
+      _InteractionAmount: 1
+      _InteractionShape: 1
       _Min: 0
       _Max: 2
 --- !u!114 &2306625123130947477
@@ -475,7 +472,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625123320307641
 MonoBehaviour:
@@ -524,7 +521,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625123323876118
 MonoBehaviour:
@@ -573,7 +570,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625123428463756
 MonoBehaviour:
@@ -587,21 +584,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TakePropertiesFromCollidingObject: 0
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 2.5814574
-  _DistanceVolume: 0.44836962
-  _WithinEarshot: 1
-  _Colliding: 0
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 1
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
+  _EmitterType: 0
+  _EmitterSetup: 0
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 2306625124587715183}
-  _HeadPosition: {fileID: 0}
-  _EmitterType: 0
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _CurrentDistance: 2.5814574
+  _DistanceVolume: 0.44836962
+  _WithinEarshot: 1
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
@@ -693,7 +689,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625123773013502
 MonoBehaviour:
@@ -742,7 +738,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625124145120892
 MonoBehaviour:
@@ -792,7 +788,7 @@ Transform:
   m_LocalScale: {x: 0.74999994, y: 0.74999994, z: 0.74999994}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625124242744131
 MonoBehaviour:
@@ -806,21 +802,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb25b32de46662c4290324e7e242351e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TakePropertiesFromCollidingObject: 1
-  _MaxAudibleDistance: 10
-  _CurrentDistance: 2.366159
-  _DistanceVolume: 0.47939157
-  _WithinEarshot: 1
-  _Colliding: 0
-  _ColldingObjectName: 
-  _PingPongAtEndOfClip: 1
-  _MultiplyVolumeByColliderRigidity: 0
-  _VolumeMultiply: 1
+  _EmitterType: 0
+  _EmitterSetup: 1
   _AttachedToSpeaker: 1
   _AttachedSpeakerIndex: 1
   _PairedSpeaker: {fileID: 2306625124587715183}
-  _HeadPosition: {fileID: 0}
-  _EmitterType: 0
+  _MaxAudibleDistance: 10
+  _MultiplyVolumeByColliderRigidity: 0
+  _PingPongAtEndOfClip: 1
+  _Colliding: 0
+  _ColldingObjectName: 
+  _CurrentDistance: 2.366159
+  _DistanceVolume: 0.47939157
+  _WithinEarshot: 1
+  _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
   _EmissionProps:
     _Playing: 1
@@ -918,18 +913,18 @@ Transform:
   m_LocalPosition: {x: -0.659, y: 0.9, z: 1.29}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
+  - {fileID: 2306625124587715184}
   - {fileID: 2306625122888338322}
   - {fileID: 2306625123428463758}
-  - {fileID: 2306625124242744133}
   - {fileID: 2306625123130947476}
-  - {fileID: 2306625124587715184}
+  - {fileID: 2306625124242744133}
+  - {fileID: 503941200}
   - {fileID: 2306625123773013441}
   - {fileID: 2306625122942469268}
   - {fileID: 2306625123320307640}
   - {fileID: 2306625124145120895}
   - {fileID: 2306625123323876121}
   - {fileID: 2306625124520197428}
-  - {fileID: 503941200}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1167,7 +1162,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625124520197429
 MonoBehaviour:
@@ -1218,7 +1213,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 2306625124509221287}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2306625124587715183
 MonoBehaviour:
