@@ -5007,6 +5007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 7595123677376348200}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 0.8
   _OutputValue: 0
