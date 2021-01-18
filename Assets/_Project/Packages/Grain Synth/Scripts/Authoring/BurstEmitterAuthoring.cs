@@ -39,7 +39,6 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _StaticallyPaired = true;
 
         _TimeExisted = 0;
-
         gameObject.transform.position = Vector3.zero;
 
         _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
@@ -189,8 +188,6 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
     void Update()
     {
-        _TimeExisted += Time.deltaTime;
-
         if (!_Initialized)
             return;
 
@@ -334,9 +331,12 @@ public class BurstEmitterAuthoring : BaseEmitterClass
 
         }
         // Clear emitter props and colliding object when burst is complete if this is a remote burst emitter
-        if (_EmitterSetup == EmitterSetup.Temp && _TimeExisted > 3)
+        if (_EmitterSetup == EmitterSetup.Temp)
         {
-            Destroy(gameObject);
+            _TimeExisted += Time.deltaTime;
+
+            if (_TimeExisted > 10)
+                Destroy(gameObject);
         }
     }
 }
