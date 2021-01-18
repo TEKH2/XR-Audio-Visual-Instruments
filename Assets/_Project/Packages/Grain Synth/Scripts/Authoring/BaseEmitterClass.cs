@@ -49,7 +49,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     [SerializeField]
     protected GameObject _CollidingDummyEmitterGameObject;
-    protected GameObject[] _RemoteInteractions;
+    protected List<GameObject> _RemoteInteractions;
 
 
     [Header("Sound Config")]

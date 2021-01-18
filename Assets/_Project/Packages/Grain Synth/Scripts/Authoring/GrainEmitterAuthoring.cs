@@ -2,10 +2,11 @@
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
+using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public class EmissionProps
+public class EmissionProps : MonoBehaviour
 {
     public bool _Playing = true;
     public int _ClipIndex = 0;
@@ -16,6 +17,24 @@ public class EmissionProps
     public EmitterPropTranspose _Transpose;
     public EmitterPropVolume _Volume;
 
+    protected List<GameObject> _InteractionObjects;
+
+    public void Start()
+    {
+        _InteractionObjects.Add(_Playhead._InteractionInput._SourceObject);
+
+        AddInteractionGameObject(_Density._InteractionInput._SourceObject);
+        AddInteractionGameObject(_GrainDuration._InteractionInput._SourceObject);
+        AddInteractionGameObject(_Transpose._InteractionInput._SourceObject);
+        AddInteractionGameObject(_Volume._InteractionInput._SourceObject);
+    }
+    public void AddInteractionGameObject(GameObject newInteracitonSourceObject)
+    {
+        if (!_InteractionObjects.Contains(newInteracitonSourceObject))
+        {
+            _InteractionObjects.Add(newInteracitonSourceObject);
+        }
+    }
 }
 
 public class GrainEmitterAuthoring : BaseEmitterClass
@@ -47,7 +66,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         {
             _EmissionProps._Playing = false;
 
-            for (int i = 0; i < _RemoteInteractions.Length; i++)
+            for (int i = 0; i < _RemoteInteractions.Count; i++)
             {
                 Destroy(_RemoteInteractions[i].gameObject);
             }
@@ -62,12 +81,13 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         {
             _EmissionProps = dummyEmitter._EmissionProps;
 
+            
+
             _RemoteInteractions = new GameObject[remoteInteractions.Length];
 
             for (int i = 0; i < _RemoteInteractions.Length; i++)
             {
                 _RemoteInteractions[i] = Instantiate(remoteInteractions[i].gameObject, remoteInteractions[i].gameObject.transform);
-                //_RemoteInteractions[i].Updat
             }
 
             _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
