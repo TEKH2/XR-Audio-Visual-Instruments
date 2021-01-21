@@ -22,6 +22,7 @@ public class ColliderScript : MonoBehaviour
             _Speaker = GetComponentInChildren<GrainSpeakerAuthoring>();
 
 
+
         BaseEmitterClass[] emitters = GetComponentsInChildren<BaseEmitterClass>();
 
         foreach (var emitter in emitters)

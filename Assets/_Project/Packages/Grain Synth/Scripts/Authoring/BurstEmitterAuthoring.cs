@@ -339,7 +339,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         {
             _TimeExisted += Time.deltaTime;
 
-            if (_TimeExisted > 10)
+            if (_TimeExisted > 3)
                 Destroy(gameObject);
         }
     }

@@ -36,6 +36,18 @@ ScriptedImporter:
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _EmissionMap
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
@@ -53,7 +65,23 @@ ScriptedImporter:
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _SpecGlossMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_Lightmaps
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_LightmapsInd
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_ShadowMasks
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -64,10 +92,18 @@ ScriptedImporter:
         float: 0
       - name: _BumpScale
         float: 1
+      - name: _ClearCoatMask
+        float: 0
+      - name: _ClearCoatSmoothness
+        float: 0
       - name: _Cull
         float: 2
       - name: _Cutoff
         float: 0.5
+      - name: _DetailAlbedoMapScale
+        float: 1
+      - name: _DetailNormalMapScale
+        float: 1
       - name: _DstBlend
         float: 0
       - name: _EnvironmentReflections
@@ -82,6 +118,8 @@ ScriptedImporter:
         float: 0
       - name: _OcclusionStrength
         float: 1
+      - name: _Parallax
+        float: 0.005
       - name: _QueueOffset
         float: 0
       - name: _ReceiveShadows
@@ -244,6 +282,18 @@ ScriptedImporter:
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _EmissionMap
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
@@ -261,7 +311,23 @@ ScriptedImporter:
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _SpecGlossMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_Lightmaps
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_LightmapsInd
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_ShadowMasks
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -272,10 +338,18 @@ ScriptedImporter:
         float: 0
       - name: _BumpScale
         float: 1
+      - name: _ClearCoatMask
+        float: 0
+      - name: _ClearCoatSmoothness
+        float: 0
       - name: _Cull
         float: 2
       - name: _Cutoff
         float: 0.5
+      - name: _DetailAlbedoMapScale
+        float: 1
+      - name: _DetailNormalMapScale
+        float: 1
       - name: _DstBlend
         float: 0
       - name: _EnvironmentReflections
@@ -290,6 +364,8 @@ ScriptedImporter:
         float: 0
       - name: _OcclusionStrength
         float: 1
+      - name: _Parallax
+        float: 0.005
       - name: _QueueOffset
         float: 0
       - name: _ReceiveShadows
@@ -452,6 +528,18 @@ ScriptedImporter:
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _EmissionMap
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
@@ -469,7 +557,23 @@ ScriptedImporter:
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _SpecGlossMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_Lightmaps
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_LightmapsInd
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_ShadowMasks
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -480,10 +584,18 @@ ScriptedImporter:
         float: 0
       - name: _BumpScale
         float: 1
+      - name: _ClearCoatMask
+        float: 0
+      - name: _ClearCoatSmoothness
+        float: 0
       - name: _Cull
         float: 2
       - name: _Cutoff
         float: 0.5
+      - name: _DetailAlbedoMapScale
+        float: 1
+      - name: _DetailNormalMapScale
+        float: 1
       - name: _DstBlend
         float: 0
       - name: _EnvironmentReflections
@@ -498,6 +610,8 @@ ScriptedImporter:
         float: 0
       - name: _OcclusionStrength
         float: 1
+      - name: _Parallax
+        float: 0.005
       - name: _QueueOffset
         float: 0
       - name: _ReceiveShadows
@@ -660,6 +774,18 @@ ScriptedImporter:
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _EmissionMap
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
@@ -677,7 +803,23 @@ ScriptedImporter:
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
       - name: _SpecGlossMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_Lightmaps
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_LightmapsInd
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: unity_ShadowMasks
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -688,10 +830,18 @@ ScriptedImporter:
         float: 0
       - name: _BumpScale
         float: 1
+      - name: _ClearCoatMask
+        float: 0
+      - name: _ClearCoatSmoothness
+        float: 0
       - name: _Cull
         float: 2
       - name: _Cutoff
         float: 0.5
+      - name: _DetailAlbedoMapScale
+        float: 1
+      - name: _DetailNormalMapScale
+        float: 1
       - name: _DstBlend
         float: 0
       - name: _EnvironmentReflections
@@ -706,6 +856,8 @@ ScriptedImporter:
         float: 0
       - name: _OcclusionStrength
         float: 1
+      - name: _Parallax
+        float: 0.005
       - name: _QueueOffset
         float: 0
       - name: _ReceiveShadows
