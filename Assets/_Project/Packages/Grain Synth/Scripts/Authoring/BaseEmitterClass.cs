@@ -93,17 +93,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
         if (!_MultiplyVolumeByColliderRigidity)
             _VolumeMultiply = 1;
         else if (collision.collider.GetComponent<SurfaceParameters>() != null)
-            _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
-
-        // Copy dummy emitter if this is a remote emitter
-        //if (_EmitterSetup == EmitterSetup.Temp)
-        //{
-        //    BurstEmitterAuthoring colliderDummyEmitter = collision.collider.GetComponentInChildren<BurstEmitterAuthoring>();
-        //    if (colliderDummyEmitter != null && colliderDummyEmitter._EmitterSetup == EmitterSetup.Dummy)
-        //        SetRemoteBurstEmitter(collision.collider.GetComponentInChildren<DummyBurstEmitter>());
-        //    else
-        //        _CollisionTriggered = false;
-        //}       
+            _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;    
     }
 
     // Only for grain emitter types
@@ -156,9 +146,11 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     //public virtual void SetRemoteBurstEmitter(DummyBurstEmitter dummyEmitter) { }
 
-    public virtual void SetupTempEmitter(GameObject collidingGameObject, GrainSpeakerAuthoring speaker) { }
+    public virtual void SetupTempEmitter(Collision collision, GrainSpeakerAuthoring speaker) { }
 
     public virtual void Initialise() { }
+
+    public virtual BurstEmissionProps GetBurstEmissionProps() { return null; }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 

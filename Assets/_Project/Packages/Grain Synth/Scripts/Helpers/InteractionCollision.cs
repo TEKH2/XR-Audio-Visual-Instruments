@@ -14,6 +14,17 @@ public class InteractionCollision : InteractionBase
 
     public InteractionCollisionType _SourceParameter;
 
+    public bool _UseMassOfCollidingBody = false;
+
+    public override void UpdateTempEmitterInteractionSource(GameObject gameObject, Collision collision)
+    {
+        _SourceObject = gameObject;
+        _RigidBody = _SourceObject.GetComponent<Rigidbody>();
+        _Colliding = true;
+
+        SetCollisionData(collision);
+    }
+
 
     public override void SetCollisionData(Collision collision)
     {
@@ -24,7 +35,21 @@ public class InteractionCollision : InteractionBase
                 break;
             case InteractionCollisionType.CollisionForceTimesMass:
                 if (_RigidBody != null)
-                _OutputValue = collision.relativeVelocity.magnitude * _RigidBody.mass;
+                {
+
+                    if (_UseMassOfCollidingBody)
+                    {
+                        Rigidbody remoteRB = collision.collider.GetComponent<Rigidbody>();
+                        if (remoteRB != null)
+                            _OutputValue = collision.relativeVelocity.magnitude * remoteRB.mass;
+                    }
+                    else
+                    {
+                        _OutputValue = collision.relativeVelocity.magnitude * _RigidBody.mass;
+                    }
+
+                }
+
                 break;
             case InteractionCollisionType.CollisionPoint:
                 break;
@@ -34,7 +59,7 @@ public class InteractionCollision : InteractionBase
             default:
                 break;
         }
-
         _OutputValue = Map(_OutputValue, _InputMin, _InputMax, 0, 1);
+        
     }
 }

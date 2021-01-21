@@ -28,9 +28,9 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _EmitterType = EmitterType.Burst;
     }
 
-    public override void SetupTempEmitter(GameObject collidingGameObject, GrainSpeakerAuthoring speaker)
+    public override void SetupTempEmitter(Collision collision, GrainSpeakerAuthoring speaker)
     {
-        _ColldingObject = collidingGameObject;
+        _ColldingObject = collision.collider.gameObject;
         _EmitterSetup = EmitterSetup.Temp;
         _EmissionProps._Playing = true;
         _Colliding = true;
@@ -41,14 +41,18 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _TimeExisted = 0;
         gameObject.transform.position = Vector3.zero;
 
-        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._BurstDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Playhead._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._BurstDuration._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Density._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._GrainDuration._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Transpose._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Volume._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
     }
 
+    public override BurstEmissionProps GetBurstEmissionProps()
+    {
+        return _EmissionProps;
+    }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

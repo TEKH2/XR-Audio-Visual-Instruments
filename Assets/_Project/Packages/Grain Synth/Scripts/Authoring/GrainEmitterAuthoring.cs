@@ -28,9 +28,9 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _EmitterType = EmitterType.Grain;
     }
 
-    public override void SetupTempEmitter(GameObject collidingGameObject, GrainSpeakerAuthoring speaker)
+    public override void SetupTempEmitter(Collision collision, GrainSpeakerAuthoring speaker)
     {
-        _ColldingObject = collidingGameObject;
+        _ColldingObject = collision.collider.gameObject;
         _EmitterSetup = EmitterSetup.Temp;
         _EmissionProps._Playing = true;
         _Colliding = true;
@@ -40,11 +40,11 @@ public class GrainEmitterAuthoring : BaseEmitterClass
 
         gameObject.transform.position = Vector3.zero;
 
-        _EmissionProps._Playhead._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Density._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._GrainDuration._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Transpose._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
-        _EmissionProps._Volume._InteractionInput.UpdateSourceObject(this.transform.parent.gameObject);
+        _EmissionProps._Playhead._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Density._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._GrainDuration._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Transpose._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
+        _EmissionProps._Volume._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
     }
 
 

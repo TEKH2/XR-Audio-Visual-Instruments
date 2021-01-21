@@ -37,23 +37,33 @@ public class ColliderScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        ColliderScript newColliderScript = collision.collider.GetComponent<ColliderScript>();
-        
-        if (newColliderScript != null)
+        foreach (var interaction in _Interactions)
         {
-            if (!_CollidingObjects.Contains(newColliderScript.gameObject))
+            interaction.SetCollisionData(collision);
+        }
+
+        ColliderScript remoteColliderScript = collision.collider.GetComponent<ColliderScript>();
+        
+        if (remoteColliderScript != null)
+        {
+            if (!_CollidingObjects.Contains(remoteColliderScript.gameObject))
             {
-                _CollidingObjects.Add(newColliderScript.gameObject);
+                _CollidingObjects.Add(remoteColliderScript.gameObject);
 
                 if (_HostDummyEmittersOnCollision)
-                    foreach (var remoteDummyEmitter in newColliderScript._DummyEmitters)
+                    foreach (var remoteDummyEmitter in remoteColliderScript._DummyEmitters)
                     {
+
+                        if (remoteDummyEmitter._EmitterType == BaseEmitterClass.EmitterType.Burst)
+                        {
+                            BurstEmissionProps tempBurstEmissionProps = remoteDummyEmitter.GetBurstEmissionProps();
+                        }
+
                         GameObject newTempEmitter = Instantiate(remoteDummyEmitter.gameObject, gameObject.transform);
-                        newTempEmitter.GetComponent<BaseEmitterClass>().SetupTempEmitter(collision.collider.gameObject, _Speaker);
+                        newTempEmitter.GetComponent<BaseEmitterClass>().SetupTempEmitter(collision, _Speaker);
+
                         if (newTempEmitter.GetComponent<GrainEmitterAuthoring>() != null)
                             _TempGrainEmitters.Add(newTempEmitter.GetComponent<BaseEmitterClass>());
-
-                        Debug.Log("Created new dummy emitter: " + newTempEmitter.gameObject.name);
                     }
             }
         }
@@ -64,25 +74,20 @@ public class ColliderScript : MonoBehaviour
                 emitter.NewCollision(collision);
         }
 
-        foreach (var interaction in _Interactions)
-        {
-            interaction.SetCollisionData(collision);
-        }
-
         _CollidingCount++;
     }
 
     private void OnCollisionStay(Collision collision)
     {
+        foreach (var interaction in _Interactions)
+        {
+            interaction.SetColliding(true, collision.collider.material);
+        }
+
         foreach (var emitter in _LocalEmitters)
         {
             if (emitter._EmitterType == BaseEmitterClass.EmitterType.Grain)
                 emitter.UpdateCurrentCollisionStatus(collision);
-        }
-
-        foreach (var interaction in _Interactions)
-        {
-            interaction.SetColliding(true, collision.collider.material);
         }
     }
 

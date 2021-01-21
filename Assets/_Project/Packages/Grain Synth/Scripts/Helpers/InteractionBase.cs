@@ -13,6 +13,8 @@ public class InteractionBase : MonoBehaviour
 
     protected float _PreviousInputValue = 0;
 
+    protected bool _HoldTempValue = false;
+
     protected bool _Colliding = false;
     protected PhysicMaterial _CollidedMaterial;
 
@@ -27,12 +29,7 @@ public class InteractionBase : MonoBehaviour
         _RigidBody = _SourceObject.GetComponent<Rigidbody>();
     }
 
-    public void UpdateSourceObject(GameObject gameObject)
-    {
-        _SourceObject = gameObject;
-        _RigidBody = _SourceObject.GetComponent<Rigidbody>();
-        _Colliding = true;
-    }
+    public virtual void UpdateTempEmitterInteractionSource(GameObject gameObject, Collision collision) { }
 
     public float GetValue()
     {

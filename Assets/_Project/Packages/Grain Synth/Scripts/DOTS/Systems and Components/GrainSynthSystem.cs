@@ -199,6 +199,8 @@ public class GrainSynthSystem : SystemBase
             {
                 if (burst._AttachedToSpeaker && burst._Playing)
                 {
+                    int grainsCreated = 0;
+
 
                     // TODO - CHECK IF THIS NEEDS TO HAVE GRAIN QUEUE DURATION ADDED, POSSIBLE CAUSE OF UNESSESSARY LATENCY ON BURST TRIGGER
                     int currentDSPTime = dspTimer._CurrentDSPSample + dspTimer._GrainQueueDuration;
@@ -309,7 +311,10 @@ public class GrainSynthSystem : SystemBase
                         duration = (int)ComputeBurstParameter(burst._GrainDuration, offset, totalBurstSampleCount, randomGrainDuration);
                         transpose = ComputeBurstParameter(burst._Transpose, offset, totalBurstSampleCount, randomTranspose);
                         volume = ComputeBurstParameter(burst._Volume, offset, totalBurstSampleCount, randomVolume);
+
+                        grainsCreated++;
                     }
+
                     burst._Playing = false;
                 }
             }

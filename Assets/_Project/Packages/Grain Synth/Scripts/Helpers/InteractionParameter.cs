@@ -23,6 +23,14 @@ public class InteractionParameter : InteractionBase
     [Range(0f, 1f)]
     public float _Smoothing = 0.2f;
 
+    public override void UpdateTempEmitterInteractionSource(GameObject gameObject, Collision collision)
+    {
+        _SourceObject = gameObject;
+        _RigidBody = _SourceObject.GetComponent<Rigidbody>();
+        _Colliding = true;
+    }
+
+
     private void Update()
     {
         float currentValue = _PreviousInputValue;
