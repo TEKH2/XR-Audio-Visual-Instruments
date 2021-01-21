@@ -25,8 +25,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821926095}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -3.2250001, z: -3.225}
-  m_LocalScale: {x: 50, y: 1.2500001, z: 50}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 501}
   m_Children: []
   m_Father: {fileID: 1115843161546113137}
   m_RootOrder: 3
@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 5
   _OutputValue: 0
@@ -74,8 +75,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 64329264801518891}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -3.2250001, z: -3.225}
-  m_LocalScale: {x: 50, y: 1.2500001, z: 50}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5671166289905621425}
   m_RootOrder: 3
@@ -93,6 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 5
   _OutputValue: 0
@@ -110,7 +112,7 @@ GameObject:
   - component: {fileID: 875488836391583607}
   - component: {fileID: 8106902190844956976}
   m_Layer: 8
-  m_Name: Dummy Collision Emitter
+  m_Name: Dummy Grass Collision Emitter
   m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,8 +126,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 717583691521831447}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.062300004, y: 2.58, z: 0.0645}
-  m_LocalScale: {x: 0.02, y: 0.79999995, z: 0.02}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2554293736377042909}
   - {fileID: 982127098704879650}
@@ -147,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _EmitterType: 1
-  _EmitterSetup: 2
+  _EmitterSetup: 1
   _AttachedToSpeaker: 0
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 2021371493762520082}
@@ -155,7 +157,7 @@ MonoBehaviour:
   _MultiplyVolumeByColliderRigidity: 0
   _PingPongAtEndOfClip: 0
   _Colliding: 0
-  _ColldingObjectName: 
+  _ColldingObject: {fileID: 0}
   _CurrentDistance: 0
   _DistanceVolume: 0
   _WithinEarshot: 1
@@ -222,10 +224,11 @@ MonoBehaviour:
       _Start: 0
       _End: 0
       _LockEndValue: 1
-      _InteractionAmount: 1
+      _InteractionAmount: 0.5
       _InteractionShape: 1
       _Min: 0
       _Max: 2
+  _TimeExisted: 0
 --- !u!114 &8106902190844956976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +254,7 @@ GameObject:
   - component: {fileID: 5193848795730048090}
   - component: {fileID: 859085755}
   m_Layer: 8
-  m_Name: Dummy Roll Emitter
+  m_Name: Dummy Grass Roll Emitter
   m_TagString: Emitter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -265,8 +268,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1115843161546113138}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.062300004, y: 2.58, z: 0.0645}
-  m_LocalScale: {x: 0.02, y: 0.79999995, z: 0.02}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2021371493804078518}
   - {fileID: 2021371492424627891}
@@ -288,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _EmitterType: 0
-  _EmitterSetup: 2
+  _EmitterSetup: 1
   _AttachedToSpeaker: 0
   _AttachedSpeakerIndex: 0
   _PairedSpeaker: {fileID: 2021371493762520082}
@@ -296,7 +299,7 @@ MonoBehaviour:
   _MultiplyVolumeByColliderRigidity: 0
   _PingPongAtEndOfClip: 1
   _Colliding: 0
-  _ColldingObjectName: 
+  _ColldingObject: {fileID: 0}
   _CurrentDistance: 0
   _DistanceVolume: 0
   _WithinEarshot: 1
@@ -318,7 +321,7 @@ MonoBehaviour:
       _InteractionInput: {fileID: 1821926097}
       _Noise: 0.1
       _PerlinNoise: 0
-      _Idle: 1
+      _Idle: 3
       _InteractionAmount: 3
       _InteractionShape: 0.5
       _Min: 0.1
@@ -346,7 +349,7 @@ MonoBehaviour:
       _Noise: 0
       _PerlinNoise: 0
       _Idle: 0
-      _InteractionAmount: 0.5
+      _InteractionAmount: 0.3
       _InteractionShape: 3
       _Min: 0
       _Max: 2
@@ -407,6 +410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 5
   _OutputValue: 0
@@ -456,6 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 5
   _OutputValue: 0
@@ -486,8 +491,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1667625329066428912}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -2.8, z: -3.225}
-  m_LocalScale: {x: 0.375, y: 0.375, z: 0.375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5671166289905621425}
   m_RootOrder: 1
@@ -505,10 +510,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2021371492460092112}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 6
   _OutputValue: 0
   _SourceParameter: 1
+  _UseMassOfCollidingBody: 0
 --- !u!1 &2021371492424627890
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,8 +541,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021371492424627890}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -2.8, z: -3.225}
-  m_LocalScale: {x: 0.375, y: 0.375, z: 0.375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1115843161546113137}
   m_RootOrder: 1
@@ -553,10 +560,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2021371492460092112}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 6
   _OutputValue: 0
   _SourceParameter: 1
+  _UseMassOfCollidingBody: 0
 --- !u!1 &2021371492460092112
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,10 +678,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Emitters: []
+  _HostDummyEmittersOnCollision: 0
+  _Speaker: {fileID: 0}
+  _LocalEmitters: []
+  _DummyEmitters: []
+  _TempGrainEmitters: []
   _Interactions: []
-  _StaticSurface: 0
   _CollidingCount: 0
+  _CollidingObjects: []
+  _ThisGameObject: {fileID: 0}
 --- !u!114 &1115843163375070211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -713,8 +727,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021371493762520094}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.34000003, z: 0}
-  m_LocalScale: {x: 0.015, y: 0.6, z: 0.015}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2021371492460092113}
   m_RootOrder: 0
@@ -908,8 +922,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021371493804078517}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -2.8, z: -3.225}
-  m_LocalScale: {x: 0.375, y: 0.375, z: 0.375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1115843161546113137}
   m_RootOrder: 0
@@ -927,6 +941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2021371492460092112}
+  _RigidBody: {fileID: 0}
   _InputMin: 1
   _InputMax: 20
   _OutputValue: 0
@@ -957,8 +972,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4629434763557222397}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.1150002, y: -2.8, z: -3.225}
-  m_LocalScale: {x: 0.375, y: 0.375, z: 0.375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5671166289905621425}
   m_RootOrder: 0
@@ -976,6 +991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2021371492460092112}
+  _RigidBody: {fileID: 0}
   _InputMin: 1
   _InputMax: 20
   _OutputValue: 0

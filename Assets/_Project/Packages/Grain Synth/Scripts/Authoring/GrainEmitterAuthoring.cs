@@ -38,7 +38,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
         _PairedSpeaker = speaker;
         _StaticallyPaired = true;
 
-        gameObject.transform.position = Vector3.zero;
+        gameObject.transform.localPosition = Vector3.zero;
 
         _EmissionProps._Playhead._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
         _EmissionProps._Density._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);

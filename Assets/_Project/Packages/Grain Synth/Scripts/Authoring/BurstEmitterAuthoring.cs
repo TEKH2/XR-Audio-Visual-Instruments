@@ -39,7 +39,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _StaticallyPaired = true;
 
         _TimeExisted = 0;
-        gameObject.transform.position = Vector3.zero;
+        gameObject.transform.localPosition = Vector3.zero;
 
         _EmissionProps._Playhead._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
         _EmissionProps._BurstDuration._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);

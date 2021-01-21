@@ -54,12 +54,6 @@ public class ColliderScript : MonoBehaviour
                 if (_HostDummyEmittersOnCollision)
                     foreach (var remoteDummyEmitter in remoteColliderScript._DummyEmitters)
                     {
-
-                        if (remoteDummyEmitter._EmitterType == BaseEmitterClass.EmitterType.Burst)
-                        {
-                            BurstEmissionProps tempBurstEmissionProps = remoteDummyEmitter.GetBurstEmissionProps();
-                        }
-
                         GameObject newTempEmitter = Instantiate(remoteDummyEmitter.gameObject, gameObject.transform);
                         newTempEmitter.GetComponent<BaseEmitterClass>().SetupTempEmitter(collision, _Speaker);
 
