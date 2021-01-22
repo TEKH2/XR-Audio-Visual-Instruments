@@ -86,15 +86,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     }
 
     // Only for burst emitter types
-    public void NewCollision(Collision collision)
-    {
-        _CollisionTriggered = true;
-
-        if (!_MultiplyVolumeByColliderRigidity)
-            _VolumeMultiply = 1;
-        else if (collision.collider.GetComponent<SurfaceParameters>() != null)
-            _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;    
-    }
+    public virtual void NewCollision(Collision collision) { }
 
     // Only for grain emitter types
     public void UpdateCurrentCollisionStatus(Collision collision)
@@ -149,8 +141,6 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
     public virtual void SetupTempEmitter(Collision collision, GrainSpeakerAuthoring speaker) { }
 
     public virtual void Initialise() { }
-
-    public virtual BurstEmissionProps GetBurstEmissionProps() { return null; }
 
     public GrainSpeakerAuthoring DynamicallyAttachedSpeaker { get { return GrainSynth.Instance._GrainSpeakers[_AttachedSpeakerIndex]; } }
 

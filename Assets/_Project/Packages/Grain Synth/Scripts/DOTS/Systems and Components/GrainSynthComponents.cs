@@ -66,7 +66,23 @@ public struct PingPongTag : IComponentData
 {
 }
 
+public struct IsPlayingTag : IComponentData
+{
+}
+
 public struct WithinEarshot : IComponentData
+{
+}
+
+public struct AttachedToSpeakerTag : IComponentData
+{
+}
+
+public struct PopulatedTag : IComponentData
+{
+}
+
+public struct AudibleGrain : IComponentData
 {
 }
 

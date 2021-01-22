@@ -49,9 +49,15 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         _EmissionProps._Volume._InteractionInput.UpdateTempEmitterInteractionSource(this.transform.parent.gameObject, collision);
     }
 
-    public override BurstEmissionProps GetBurstEmissionProps()
+    public override void NewCollision(Collision collision)
     {
-        return _EmissionProps;
+        _CollisionTriggered = true;
+        _EmissionProps._Playing = true;
+
+        if (!_MultiplyVolumeByColliderRigidity)
+            _VolumeMultiply = 1;
+        else if (collision.collider.GetComponent<SurfaceParameters>() != null)
+            _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
     }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -171,9 +177,9 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _SampleRate = AudioSettings.outputSampleRate
         });
 
-#if UNITY_EDITOR
-        dstManager.SetName(entity, "Emitter");
-#endif
+        #if UNITY_EDITOR
+                dstManager.SetName(entity, "Burst Emitter:   " + transform.parent.name + " " + gameObject.name);
+        #endif
 
 #endregion
 
@@ -195,6 +201,9 @@ public class BurstEmitterAuthoring : BaseEmitterClass
         if (!_Initialized)
             return;
 
+        if ((_EmitterSetup == EmitterSetup.Temp && !_Colliding) || _EmitterSetup == EmitterSetup.Dummy)
+            _EmissionProps._Playing = false;
+
         _CurrentDistance = Mathf.Abs((_HeadPosition.position - transform.position).magnitude);
 
         if (_CurrentDistance < _MaxAudibleDistance)
@@ -208,10 +217,15 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _EntityManager.RemoveComponent<WithinEarshot>(_EmitterEntity);
         }
 
-        float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
+        if (_EmissionProps._Playing)
+            _EntityManager.AddComponent<IsPlayingTag>(_EmitterEntity);
+        else
+            _EntityManager.RemoveComponent<IsPlayingTag>(_EmitterEntity);
 
-        if (_CollisionTriggered & _WithinEarshot)
+        if (_CollisionTriggered & _WithinEarshot & _EmissionProps._Playing)
         {
+            float samplesPerMS = AudioSettings.outputSampleRate * 0.001f;
+
             BurstEmitterComponent burstData = _EntityManager.GetComponentData<BurstEmitterComponent>(_EmitterEntity);
 
             int attachedSpeakerIndex = _StaticallyPaired ? _PairedSpeaker._SpeakerIndex : burstData._SpeakerIndex;
@@ -331,8 +345,7 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             });
 
             _CollisionTriggered = false;
-
-
+            _EmissionProps._Playing = false;
         }
         // Clear emitter props and colliding object when burst is complete if this is a remote burst emitter
         if (_EmitterSetup == EmitterSetup.Temp)
