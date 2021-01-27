@@ -80,6 +80,7 @@ public class GrainEmitterAuthoring : BaseEmitterClass
             _AttachedToSpeaker = _StaticallyPaired,
             _StaticallyPaired = _StaticallyPaired,
             _PingPong = _PingPongAtEndOfClip,
+            _LastGrainEmissionDSPIndex = GrainSynth.Instance._CurrentDSPSample,
 
             _Playhead = new ModulateParameterComponent
             {
