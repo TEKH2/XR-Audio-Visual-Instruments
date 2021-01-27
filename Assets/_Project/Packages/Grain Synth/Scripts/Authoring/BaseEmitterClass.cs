@@ -76,7 +76,7 @@ public class BaseEmitterClass : MonoBehaviour, IConvertGameObjectToEntity
 
     public void DestroyEntity()
     {
-        if (_EmitterEntity != null)
+        if (World.All.Count != 0 && _EmitterEntity != null)
             _EntityManager.DestroyEntity(_EmitterEntity);
     }
 

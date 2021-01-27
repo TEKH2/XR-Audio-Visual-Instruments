@@ -300,7 +300,7 @@ public class GrainSpeakerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
     public void DestroyEntity()
     {
         //print("Speaker DestroyEntity");
-        if (_SpeakerEntity != null)
+        if (World.All.Count != 0 && _SpeakerEntity != null)
             _EntityManager.DestroyEntity(_SpeakerEntity);
     }
 
