@@ -66,13 +66,13 @@ public class Instrument_Vacuum : MonoBehaviour
         _RightTriggerAction.action.performed += ctx => _DestroyActive = true;
         _RightTriggerAction.action.canceled += ctx => _DestroyActive = false;
 
-        _RightThumbstickAction.action.started += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
-        _RightThumbstickAction.action.performed += ctx => _PushPullScalar = ctx.ReadValue<Vector2>().y;
+        _RightThumbstickAction.action.started += ctx => _PushPullScalar = Mathf.Abs(ctx.ReadValue<Vector2>().y) > .15f ? ctx.ReadValue<Vector2>().y : 0;
+        _RightThumbstickAction.action.performed += ctx => _PushPullScalar = Mathf.Abs(ctx.ReadValue<Vector2>().y) > .15f ? ctx.ReadValue<Vector2>().y : 0;
         _RightThumbstickAction.action.canceled += ctx => _PushPullScalar = 0;
 
-        _RightThumbstickAction.action.started += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
-        _RightThumbstickAction.action.performed += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
-        _RightThumbstickAction.action.canceled += ctx => _TanScalar = ctx.ReadValue<Vector2>().x;
+        _RightThumbstickAction.action.started += ctx => _TanScalar = Mathf.Abs(ctx.ReadValue<Vector2>().x) > .15f ? ctx.ReadValue<Vector2>().x : 0;
+        _RightThumbstickAction.action.performed += ctx => _TanScalar = Mathf.Abs(ctx.ReadValue<Vector2>().x) > .15f ? ctx.ReadValue<Vector2>().x : 0;
+        _RightThumbstickAction.action.canceled += ctx => _TanScalar = 0;
 
         _PSMainModule = _BeamPS.main;
         _PSEmit = _BeamPS.emission;
