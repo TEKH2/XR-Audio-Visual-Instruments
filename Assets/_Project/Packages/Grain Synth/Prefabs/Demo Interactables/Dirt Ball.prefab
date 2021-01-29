@@ -59,7 +59,54 @@ MonoBehaviour:
   _WithinEarshot: 1
   _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
-  _EmissionProps: {fileID: 0}
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 0
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 2
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 50
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 2
 --- !u!114 &2306625122888338323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2306625124509221286}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
@@ -246,6 +294,7 @@ MonoBehaviour:
       _InteractionShape: 1
       _Min: 0
       _Max: 2
+  _TimeExisted: 0
 --- !u!114 &2306625123130947477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,6 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2306625124509221286}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
@@ -352,10 +402,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2306625124509221286}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 12
   _OutputValue: 0
   _SourceParameter: 0
+  _UseMassOfCollidingBody: 0
 --- !u!1 &2306625123428463761
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,7 +467,54 @@ MonoBehaviour:
   _WithinEarshot: 1
   _CollidingDummyEmitterGameObject: {fileID: 0}
   _DSPChainParams: []
-  _EmissionProps: {fileID: 0}
+  _EmissionProps:
+    _Playing: 1
+    _ClipIndex: 0
+    _Playhead:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 0
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 1
+    _Density:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 2
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0.1
+      _Max: 10
+    _GrainDuration:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 50
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 2
+      _Max: 500
+    _Transpose:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: -3
+      _Max: 3
+    _Volume:
+      _InteractionInput: {fileID: 0}
+      _Noise: 0
+      _PerlinNoise: 0
+      _Idle: 1
+      _InteractionAmount: 0
+      _InteractionShape: 1
+      _Min: 0
+      _Max: 2
 --- !u!114 &2306625123428463759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,6 +572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2306625124509221286}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
@@ -522,6 +622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 2306625124509221286}
+  _RigidBody: {fileID: 0}
   _InputMin: 0.15
   _InputMax: 0.5
   _OutputValue: 0
@@ -602,7 +703,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 631979ce890f947469cf39f10f46b1bc, type: 2}
+  - {fileID: 2100000, guid: e69a390a47694d2468452ed4c9a2b5a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -759,11 +860,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fede2376eb93c5408d3f8b75ff00ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _HostDummyEmittersOnCollision: 0
+  _Speaker: {fileID: 0}
   _LocalEmitters: []
   _DummyEmitters: []
-  _TempEmitters: []
+  _TempGrainEmitters: []
   _Interactions: []
-  _HostDummyEmittersOnCollision: 0
   _CollidingCount: 0
   _CollidingObjects: []
   _ThisGameObject: {fileID: 0}
@@ -828,6 +930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SourceObject: {fileID: 0}
+  _RigidBody: {fileID: 0}
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
