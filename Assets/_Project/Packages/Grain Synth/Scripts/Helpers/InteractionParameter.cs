@@ -65,7 +65,7 @@ public class InteractionParameter : InteractionBase
                     break;
                 case InteractionParameterType.RollTimesMass:
                     if (_Colliding)
-                        currentValue = _RigidBody.angularVelocity.magnitude * _RigidBody.mass;
+                        currentValue = _RigidBody.angularVelocity.magnitude * (_RigidBody.mass / 2 + 0.5f);
                     else
                         currentValue = 0;
                     break;

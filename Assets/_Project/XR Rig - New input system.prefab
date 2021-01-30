@@ -16196,7 +16196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._Volume._InteractionAmount
-      value: 1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 411316786, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._Playhead._InteractionAmount
@@ -16266,11 +16266,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._Transpose._Idle
-      value: -1
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._Volume._InteractionAmount
-      value: 0.25
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1627501197, guid: 95963fee03b2dec45aef18c47eb734b2, type: 3}
       propertyPath: _EmissionProps._Transpose._InteractionAmount

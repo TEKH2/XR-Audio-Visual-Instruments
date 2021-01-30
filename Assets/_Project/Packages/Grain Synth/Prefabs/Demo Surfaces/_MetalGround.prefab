@@ -323,7 +323,7 @@ MonoBehaviour:
   _SourceObject: {fileID: 0}
   _RigidBody: {fileID: 0}
   _InputMin: 0
-  _InputMax: 8
+  _InputMax: 20
   _OutputValue: 0
   _SourceParameter: 6
   _Smoothing: 0.5
@@ -424,8 +424,8 @@ MonoBehaviour:
       _InteractionInput: {fileID: 1257597140914544361}
       _Noise: 0.066
       _PerlinNoise: 0
-      _Idle: 0
-      _InteractionAmount: 0
+      _Idle: 1
+      _InteractionAmount: -1
       _InteractionShape: 1
       _Min: -3
       _Max: 3
@@ -1119,7 +1119,7 @@ MonoBehaviour:
   _InputMin: 0
   _InputMax: 10
   _OutputValue: 0
-  _SourceParameter: 0
+  _SourceParameter: 1
   _UseMassOfCollidingBody: 0
 --- !u!1 &6726486784944058959
 GameObject:
