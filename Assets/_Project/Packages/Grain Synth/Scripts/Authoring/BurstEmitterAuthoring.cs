@@ -58,6 +58,8 @@ public class BurstEmitterAuthoring : BaseEmitterClass
             _VolumeMultiply = 1;
         else if (collision.collider.GetComponent<SurfaceParameters>() != null)
             _VolumeMultiply = collision.collider.GetComponent<SurfaceParameters>()._Rigidity;
+        else
+            _VolumeMultiply = 1;
     }
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

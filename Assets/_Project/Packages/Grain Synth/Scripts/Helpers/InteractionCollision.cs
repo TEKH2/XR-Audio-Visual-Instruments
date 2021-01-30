@@ -41,7 +41,7 @@ public class InteractionCollision : InteractionBase
                     {
                         Rigidbody remoteRB = collision.collider.GetComponent<Rigidbody>();
                         if (remoteRB != null)
-                            _OutputValue = collision.relativeVelocity.magnitude * remoteRB.mass;
+                            _OutputValue = collision.relativeVelocity.magnitude * (1 - remoteRB.mass / 2);
                     }
                     else
                     {
